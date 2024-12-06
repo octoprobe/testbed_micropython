@@ -21,5 +21,5 @@ Connections
 * Board Power
   * Board GND <=> Tentacle GND
 
-* FUT_UART_LOOPBACK
+* FUT_EXTMOD_HARDWARE
   * Board GPIO0 <=> Board GPIO1

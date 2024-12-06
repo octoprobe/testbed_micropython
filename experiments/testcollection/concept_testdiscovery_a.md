@@ -30,7 +30,6 @@ Strategy to run test so that the test run terminates as quick as possible.
       * Tentacle serial number
         * TentacleBoard
       * FirmwareSpec
-      * Role (WLAN_STA, WLAN_AP)
       * portRequired
       * test to run (perftest.py, wlan-test, basic-test)
 
@@ -49,12 +48,12 @@ list_remaining_test_run_specs = generate_specs()
 While ConnectedTentacle available:
   if len(list_remaining_test_run_specs) == 0:
       return # We are done
-  for TestRunSpec in list_remaining_test_run_specs:
+  for test_run_spec in list_remaining_test_run_specs:
+    for TestRunSpec in test_run_spec.generate():
       list_testrun = generate_tests(TestRunSpec)
       calculate_priority(list_testrun)
-      list_testrun.sort()
-      TestRun = list_testrun[-1]
-      del list_remaining_test_run_specs[TestRun]
+      TestRun = max(list_testrun)
+      TestRun.test_run_spec.decrement()
       yield TestRun
 ```
 

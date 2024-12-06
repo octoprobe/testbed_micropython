@@ -1,0 +1,89 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "static check",
+            "type": "shell",
+            "command": "echo DONE",
+            "problemMatcher": [],
+            "dependsOn": [
+                "ruff",
+                "mypy",
+                "pylint",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "ruff",
+            "type": "shell",
+            "command": "ruff check --config pyproject.toml --fix || true",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "mypy",
+            "type": "shell",
+            "command": "python -m mypy --config-file pyproject.toml src tests || true",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "pylint",
+            "type": "shell",
+            "command": "PYTHONPATH=${workspaceFolder} python -m pylint src tests || true",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "sphinx-intersphinx",
+            "type": "shell",
+            "command": "python -m sphinx.ext.intersphinx http://octoprobe.org/testbed_tutorial/objects.inv",
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "sphinx-build",
+            "type": "shell",
+            // "command": "rm -rf _build && sphinx-build --write-all --fresh-env . _build && google-chrome _build/index.html",
+            "command": "rm -rf _build  && sphinx-build --write-all --fresh-env . _build && rst_sections_validator",
+            "options": {
+                "cwd": "${workspaceFolder}/docs",
+                "env": {"LOG_LEVEL": "4"}
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ]
+}
