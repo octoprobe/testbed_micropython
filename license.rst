@@ -1,4 +1,7 @@
-MIT License
+Octoprobe license information
+=============================
+
+The MIT License (MIT)
 
 Copyright (c) 2024 Hans Märki
 
