@@ -10,7 +10,7 @@ import abc
 import dataclasses
 import enum
 import itertools
-from typing import Iterator
+from collections.abc import Iterator
 
 
 class EnumFut(enum.StrEnum):

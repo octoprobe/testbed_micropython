@@ -175,6 +175,7 @@ disable = '''
     too-many-return-statements,
     unreachable,
     unused-argument,
+    wrong-import-order,
 '''
 
 [tool.pylint]

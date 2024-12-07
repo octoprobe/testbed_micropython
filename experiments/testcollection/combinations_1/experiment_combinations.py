@@ -1,5 +1,5 @@
-import itertools
 import dataclasses
+import itertools
 
 
 @dataclasses.dataclass(order=True, frozen=True, unsafe_hash=True)

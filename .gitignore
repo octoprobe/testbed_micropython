@@ -1,2 +1,12 @@
+**/__pycache__/
+schematics_kicad/kicad/testbed-backups/*
+docs/_build/**
+results/**
+results_*/**
+git_cache/**
+downloads/**
+*.log
+testbed.lock
+mpbuild/tests_mpbuild/results/*.txt
 **/*\ copy.py
 **/*\ copy\ [0-9]*.py

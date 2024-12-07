@@ -4,5 +4,38 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"[python]": {
+			"editor.formatOnSave": true,
+			"editor.defaultFormatter": "ms-python.black-formatter"
+		},
+		"ruff.enable": true,
+		"ruff.fixAll": true,
+		"ruff.lint.enable": true,
+		"ruff.lint.run": "onSave",
+		"mpremote.srcSubdirectory": "src",
+		"python.testing.pytestArgs": [
+			"-v",
+			"-s",
+			"--git-micropython-tests=https://github.com/dpgeorge/micropython.git@tests-full-test-runner",
+			// "--firmware-json=${workspaceFolder}/pytest_args_firmware_RPI_PICO_v1.23.0.json",
+			// "--firmware-json=${workspaceFolder}/pytest_args_firmware_RPI_PICO2_v1.24.0.json",
+			"--firmware-build-url=https://github.com/micropython/micropython.git@v1.24.1",
+			"tests"
+		],
+		"python.testing.cwd": "${workspaceFolder}",
+		"python.testing.unittestEnabled": false,
+		"python.testing.pytestEnabled": true
+	},
+	"extensions": {
+		"recommendations": [
+			"charliermarsh.ruff",
+			"njpwerner.autodocstring",
+			"hediet.vscode-drawio",
+			"swyddfa.esbonio",
+			"ms-python.python",
+			"lextudio.restructuredtext",
+			"trond-snekvik.simple-rst"
+		]
+	}
 }

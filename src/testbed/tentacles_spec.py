@@ -6,16 +6,16 @@ import enum
 from octoprobe import util_mcu_esp32C3, util_mcu_esp8266, util_mcu_pyboard, util_mcu_rp2
 from octoprobe.util_baseclasses import TentacleSpec
 
-from testbed.constants import, TentacleType
+from testbed.constants import TentacleType
 
 
 class EnumTentacleTag(enum.StrEnum):
-    MCU_PYBV11 = "MCU_PYBV11"
-    MCU_RPI_PICO = "MCU_RPI_PICO"
-    MCU_RPI_PICO2 = "MCU_RPI_PICO2"
-    MCU_RPI_PICO2W = "MCU_RPI_PICO2W"
-    MCU_LOLIN_D1_MINI = "MCU_LOLIN_D1_MINI"
-    MCU_LOLIN_C3_MINI = "MCU_LOLIN_C3_MINI"
+    MCU_LOLIN_C3_MINI = "lolin_C3"
+    MCU_LOLIN_D1_MINI = "lolin_D1"
+    MCU_PYBV11 = "pybv11"
+    MCU_RPI_PICO = "pico"
+    MCU_RPI_PICO2 = "pico2"
+    MCU_RPI_PICO2W = "pico2W"
 
 
 class EnumFut(enum.StrEnum):
@@ -38,8 +38,6 @@ class McuConfig:
     These variables will be replaced in micropython code
     """
 
-    pass
-
 
 tentacle_spec_mcu_pybv11 = TentacleSpec(
     doc="""
@@ -55,6 +53,7 @@ TODO: Connections
     ],
     mcu_usb_id=util_mcu_pyboard.PYBOARD_USB_ID,
     tags="boards=PYBV11:PYBV11-DP:PYBV11-THREAD:PYBV11-DP_THREAD,mcu=stm32,programmer=dfu-util",
+    mcu_config=McuConfig(),
 )
 
 
@@ -72,6 +71,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2W
     ],
     mcu_usb_id=util_mcu_rp2.RPI_PICO_USB_ID,
     tags="boards=RPI_PICO,mcu=rp2,programmer=picotool",
+    mcu_config=McuConfig(),
 )
 
 
@@ -106,6 +106,7 @@ Connections
     ],
     mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
     tags="boards=RPI_PICO2:RPI_PICO2-RISCV,mcu=rp2,programmer=picotool",
+    mcu_config=McuConfig(),
 )
 
 tentacle_spec_mcu_lolin_d1_mini = TentacleSpec(
@@ -144,6 +145,7 @@ Connections
         "--flash_mode=dio",
         "0",
     ],
+    mcu_config=McuConfig(),
 )
 
 
@@ -183,4 +185,16 @@ Connections
         "-z",
         "0x0",
     ],
+    mcu_config=McuConfig(),
 )
+
+TENTACLES_SPECS: dict[str, TentacleSpec] = {
+    tentacle_spec.tentacle_tag: tentacle_spec
+    for tentacle_spec in (
+        tentacle_spec_mcu_pybv11,
+        tentacle_spec_mcu_rpi_pico,
+        tentacle_spec_mcu_rpi_pico2w,
+        tentacle_spec_mcu_lolin_d1_mini,
+        tentacle_spec_mcu_lolin_c3_mini,
+    )
+}
