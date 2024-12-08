@@ -6,7 +6,7 @@ import enum
 from octoprobe import util_mcu_esp32C3, util_mcu_esp8266, util_mcu_pyboard, util_mcu_rp2
 from octoprobe.util_baseclasses import TentacleSpec
 
-from testbed.constants import TentacleType
+from testbed.constants import EnumFut, EnumTentacleType
 
 
 class EnumTentacleTag(enum.StrEnum):
@@ -18,25 +18,16 @@ class EnumTentacleTag(enum.StrEnum):
     MCU_RPI_PICO2W = "pico2W"
 
 
-class EnumFut(enum.StrEnum):
-    FUT_MCU_ONLY = enum.auto()
-    """
-    Do not provide a empty list, use FUT_MCU_ONLY instead!
-    """
-    FUT_EXTMOD_HARDWARE = enum.auto()
-    """
-    rx-tx loopback connection
-    """
-    FUT_WLAN_STA = enum.auto()
-    FUT_WLAN_AP = enum.auto()
-    FUT_BLE = enum.auto()
-
-
 @dataclasses.dataclass
 class McuConfig:
     """
     These variables will be replaced in micropython code
     """
+
+    micropython_perftest_args: list[str] | None = None
+
+    def __post_init__(self) -> None:
+        assert isinstance(self.micropython_perftest_args, list | None)
 
 
 tentacle_spec_mcu_pybv11 = TentacleSpec(
@@ -45,7 +36,7 @@ See: https://github.com/octoprobe/testbed_tutorial/tree/main/docs/tentacle_MCU_P
 
 TODO: Connections
 """,
-    tentacle_type=TentacleType.TENTACLE_MCU,
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag=EnumTentacleTag.MCU_PYBV11,
     futs=[
         EnumFut.FUT_MCU_ONLY,
@@ -63,7 +54,7 @@ See: https://github.com/octoprobe/testbed_tutorial/tree/main/docs/tentacle_MCU_R
 
 Connections: The same as EnumTentacleTag.MCU_RPI_PICO2W
 """,
-    tentacle_type=TentacleType.TENTACLE_MCU,
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag=EnumTentacleTag.MCU_RPI_PICO,
     futs=[
         EnumFut.FUT_MCU_ONLY,
@@ -95,13 +86,12 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board GPIO0
 """,
-    tentacle_type=TentacleType.TENTACLE_MCU,
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag=EnumTentacleTag.MCU_RPI_PICO2W,
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN_STA,
-        EnumFut.FUT_WLAN_AP,
+        EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
@@ -126,18 +116,16 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board D1/5/rx
 """,
-    tentacle_type=TentacleType.TENTACLE_MCU,
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag=EnumTentacleTag.MCU_LOLIN_D1_MINI,
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN_STA,
-        EnumFut.FUT_WLAN_AP,
+        EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp8266.LOLIN_D1_MINI_USB_ID,
     tags="boards=ESP8266_GENERIC,mcu=esp8266,programmer=esptool",
-    micropython_perftest_args=["50", "36"],
     programmer_args=[
         "--baud=1000000",
         "write_flash",
@@ -145,7 +133,9 @@ Connections
         "--flash_mode=dio",
         "0",
     ],
-    mcu_config=McuConfig(),
+    mcu_config=McuConfig(
+        micropython_perftest_args=["50", "36"],
+    ),
 )
 
 
@@ -165,13 +155,12 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
 """,
-    tentacle_type=TentacleType.TENTACLE_MCU,
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag=EnumTentacleTag.MCU_LOLIN_C3_MINI,
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN_STA,
-        EnumFut.FUT_WLAN_AP,
+        EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp32C3.LOLIN_C3_MINI_USB_ID,

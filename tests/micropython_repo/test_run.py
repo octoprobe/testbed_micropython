@@ -65,7 +65,8 @@ def test_perf_bench(
     * https://github.com/micropython/micropython/blob/master/tests/README.md
     * https://github.com/micropython/micropython/blob/master/tests/run-perfbench.py
     """
-    perftest_args = mcu.tentacle_spec.micropython_perftest_args
+    assert mcu.tentacle_spec.mcu_config is not None
+    perftest_args = mcu.tentacle_spec.mcu_config.micropython_perftest_args
     if perftest_args is None:
         perftest_args = ["100", "100"]
 

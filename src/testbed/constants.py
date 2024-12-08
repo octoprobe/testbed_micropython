@@ -23,7 +23,7 @@ DIRECTORY_GIT_CACHE = DIRECTORY_REPO / "git_cache"
 FILENAME_TESTBED_LOCK = DIRECTORY_REPO / "testbed.lock"
 
 
-class TentacleType(enum.StrEnum):
+class EnumTentacleType(enum.StrEnum):
     TENTACLE_MCU = TENTACLE_TYPE_MCU
     TENTACLE_DEVICE_POTPOURRY = "potourry"
     TENTACLE_DAQ_SALEAE = "daq_saleae"
@@ -35,7 +35,7 @@ class TentacleType(enum.StrEnum):
     ) -> list[Tentacle]:
         """
         Select all tentacles which correspond to this
-        TentacleType and list[EnumFut].
+        EnumTentacleType and list[EnumFut].
         """
 
         def has_required_futs(t: Tentacle) -> bool:
@@ -48,13 +48,16 @@ class TentacleType(enum.StrEnum):
         return [t for t in tentacles if has_required_futs(t)]
 
 
+
+
 class EnumFut(enum.StrEnum):
     FUT_MCU_ONLY = enum.auto()
     """
     Do not provide a empty list, use FUT_MCU_ONLY instead!
     """
-    FUT_I2C = enum.auto()
-    FUT_UART = enum.auto()
-    FUT_ONEWIRE = enum.auto()
-    FUT_TIMER = enum.auto()
     FUT_EXTMOD_HARDWARE = enum.auto()
+    """
+    rx-tx loopback connection
+    """
+    FUT_WLAN = enum.auto()
+    FUT_BLE = enum.auto()
