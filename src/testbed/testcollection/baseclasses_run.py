@@ -8,7 +8,9 @@ import abc
 import dataclasses
 from collections.abc import Iterator
 
-from testbed.testcollection.baseclasses_spec import Tentacle, TentacleVariant
+from octoprobe.lib_tentacle import Tentacle
+
+from testbed.testcollection.baseclasses_spec import TentacleVariant
 
 
 class TestRunSpecBase(abc.ABC):

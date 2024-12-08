@@ -175,6 +175,7 @@ disable = '''
     too-many-return-statements,
     unreachable,
     unused-argument,
+    using-constant-test,
     wrong-import-order,
 '''
 

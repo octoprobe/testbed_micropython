@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import itertools
 
-from testbed.constants import EnumFut
+from octoprobe.lib_tentacle import Tentacle
+
+from testbed.tentacles_spec import (
+    tentacle_spec_mcu_lolin_c3_mini,
+    tentacle_spec_mcu_lolin_d1_mini,
+    tentacle_spec_mcu_rpi_pico2w,
+)
 from testbed.testcollection.bartender import (
     AllTestsDoneException,
     TestBartender,
@@ -11,35 +17,49 @@ from testbed.testcollection.bartender import (
 from testbed.testcollection.baseclasses_run import RunSpecContainer
 from testbed.testcollection.baseclasses_spec import (
     ConnectedTentacles,
-    Tentacle,
-    TentacleSpec,
 )
 from testbed.testcollection.testrun_specs import TestRunSpecSingle, TestRunSpecWlan
 
 
 def main() -> None:
-    spec_pico2w = TentacleSpec(
-        board="RPI_PICO2W",
-        variants=["default", "RISCV"],
-        list_futs=[EnumFut.FUT_MCU_ONLY, EnumFut.FUT_EXTMOD_HARDWARE, EnumFut.FUT_WLAN],
-    )
-    spec_d1 = TentacleSpec(
-        board="LolinD1",
-        variants=["default", "Flash512k"],
-        list_futs=[EnumFut.FUT_MCU_ONLY, EnumFut.FUT_EXTMOD_HARDWARE, EnumFut.FUT_WLAN],
-    )
-    spec_c3 = TentacleSpec(
-        board="LolinC3",
-        variants=["default"],
-        list_futs=[EnumFut.FUT_MCU_ONLY, EnumFut.FUT_EXTMOD_HARDWARE, EnumFut.FUT_WLAN],
-    )
+    # spec_pico2w = TentacleSpec(
+    #     board="RPI_PICO2W",
+    #     variants=["default", "RISCV"],
+    #     list_futs=[EnumFut.FUT_MCU_ONLY, EnumFut.FUT_EXTMOD_HARDWARE, EnumFut.FUT_WLAN],
+    # )
+    # spec_d1 = TentacleSpec(
+    #     board="LolinD1",
+    #     variants=["default", "Flash512k"],
+    #     list_futs=[EnumFut.FUT_MCU_ONLY, EnumFut.FUT_EXTMOD_HARDWARE, EnumFut.FUT_WLAN],
+    # )
+    # spec_c3 = TentacleSpec(
+    #     board="LolinC3",
+    #     variants=["default"],
+    #     list_futs=[EnumFut.FUT_MCU_ONLY, EnumFut.FUT_EXTMOD_HARDWARE, EnumFut.FUT_WLAN],
+    # )
 
     connected_tentacles = ConnectedTentacles(
         [
-            Tentacle(tentacle_spec=spec_pico2w, serial="AA"),
-            Tentacle(tentacle_spec=spec_pico2w, serial="AB"),
-            Tentacle(tentacle_spec=spec_d1, serial="AC"),
-            Tentacle(tentacle_spec=spec_c3, serial="AD"),
+            Tentacle(
+                tentacle_spec=tentacle_spec_mcu_rpi_pico2w,
+                tentacle_serial_number="aa",
+                hw_version="1.0",
+            ),
+            Tentacle(
+                tentacle_spec=tentacle_spec_mcu_rpi_pico2w,
+                tentacle_serial_number="ab",
+                hw_version="1.0",
+            ),
+            Tentacle(
+                tentacle_spec=tentacle_spec_mcu_lolin_d1_mini,
+                tentacle_serial_number="ac",
+                hw_version="1.0",
+            ),
+            Tentacle(
+                tentacle_spec=tentacle_spec_mcu_lolin_c3_mini,
+                tentacle_serial_number="ad",
+                hw_version="1.0",
+            ),
         ]
     )
     testrun_spec_container = RunSpecContainer(
