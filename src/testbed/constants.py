@@ -48,13 +48,16 @@ class EnumTentacleType(enum.StrEnum):
         return [t for t in tentacles if has_required_futs(t)]
 
 
+
+
 class EnumFut(enum.StrEnum):
     FUT_MCU_ONLY = enum.auto()
     """
     Do not provide a empty list, use FUT_MCU_ONLY instead!
     """
-    FUT_I2C = enum.auto()
-    FUT_UART = enum.auto()
-    FUT_ONEWIRE = enum.auto()
-    FUT_TIMER = enum.auto()
     FUT_EXTMOD_HARDWARE = enum.auto()
+    """
+    rx-tx loopback connection
+    """
+    FUT_WLAN = enum.auto()
+    FUT_BLE = enum.auto()

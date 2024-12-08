@@ -6,7 +6,7 @@ import enum
 from octoprobe import util_mcu_esp32C3, util_mcu_esp8266, util_mcu_pyboard, util_mcu_rp2
 from octoprobe.util_baseclasses import TentacleSpec
 
-from testbed.constants import EnumTentacleType
+from testbed.constants import EnumFut, EnumTentacleType
 
 
 class EnumTentacleTag(enum.StrEnum):
@@ -16,20 +16,6 @@ class EnumTentacleTag(enum.StrEnum):
     MCU_RPI_PICO = "pico"
     MCU_RPI_PICO2 = "pico2"
     MCU_RPI_PICO2W = "pico2W"
-
-
-class EnumFut(enum.StrEnum):
-    FUT_MCU_ONLY = enum.auto()
-    """
-    Do not provide a empty list, use FUT_MCU_ONLY instead!
-    """
-    FUT_EXTMOD_HARDWARE = enum.auto()
-    """
-    rx-tx loopback connection
-    """
-    FUT_WLAN_STA = enum.auto()
-    FUT_WLAN_AP = enum.auto()
-    FUT_BLE = enum.auto()
 
 
 @dataclasses.dataclass
@@ -105,8 +91,7 @@ Connections
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN_STA,
-        EnumFut.FUT_WLAN_AP,
+        EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
@@ -136,8 +121,7 @@ Connections
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN_STA,
-        EnumFut.FUT_WLAN_AP,
+        EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp8266.LOLIN_D1_MINI_USB_ID,
@@ -176,8 +160,7 @@ Connections
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN_STA,
-        EnumFut.FUT_WLAN_AP,
+        EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp32C3.LOLIN_C3_MINI_USB_ID,
