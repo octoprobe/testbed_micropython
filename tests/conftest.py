@@ -20,8 +20,8 @@ import testbed.util_testbed
 from testbed.constants import (
     DIRECTORY_TESTRESULTS,
     EnumFut,
+    EnumTentacleType,
     FILENAME_TESTBED_LOCK,
-    TentacleType,
 )
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
 from testbed.tentacles_spec import McuConfig, TENTACLES_SPECS
@@ -96,7 +96,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
             tentacles=TESTBED.tentacles,
         ):
             assert isinstance(firmware_spec, FirmwareSpecBase)
-            tentacles = TentacleType.TENTACLE_MCU.get_tentacles_for_type(
+            tentacles = EnumTentacleType.TENTACLE_MCU.get_tentacles_for_type(
                 tentacles=TESTBED.tentacles,
                 required_futs=_required_futs,
             )
@@ -122,7 +122,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
         metafunc.parametrize("mcu", list_tentacles, ids=lambda t: t.pytest_id)
 
     if "device_potpourry" in metafunc.fixturenames:
-        tentacles = TentacleType.TENTACLE_DEVICE_POTPOURRY.get_tentacles_for_type(
+        tentacles = EnumTentacleType.TENTACLE_DEVICE_POTPOURRY.get_tentacles_for_type(
             TESTBED.tentacles,
             required_futs=_required_futs,
         )
@@ -136,7 +136,7 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
         )
 
     if "daq_saleae" in metafunc.fixturenames:
-        tentacles = TentacleType.TENTACLE_DAQ_SALEAE.get_tentacles_for_type(
+        tentacles = EnumTentacleType.TENTACLE_DAQ_SALEAE.get_tentacles_for_type(
             TESTBED.tentacles,
             required_futs=_required_futs,
         )
@@ -317,7 +317,7 @@ def pytest_sessionstart(session: pytest.Session):
 
         tentacle_spec = TENTACLES_SPECS[enum_tag]
 
-        tentacle = Tentacle[McuConfig, TentacleType, EnumFut](
+        tentacle = Tentacle[McuConfig, EnumTentacleType, EnumFut](
             tentacle_serial_number=serial,
             tentacle_spec=tentacle_spec,
             hw_version=hw_version,

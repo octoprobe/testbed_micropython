@@ -23,7 +23,7 @@ DIRECTORY_GIT_CACHE = DIRECTORY_REPO / "git_cache"
 FILENAME_TESTBED_LOCK = DIRECTORY_REPO / "testbed.lock"
 
 
-class TentacleType(enum.StrEnum):
+class EnumTentacleType(enum.StrEnum):
     TENTACLE_MCU = TENTACLE_TYPE_MCU
     TENTACLE_DEVICE_POTPOURRY = "potourry"
     TENTACLE_DAQ_SALEAE = "daq_saleae"
@@ -35,7 +35,7 @@ class TentacleType(enum.StrEnum):
     ) -> list[Tentacle]:
         """
         Select all tentacles which correspond to this
-        TentacleType and list[EnumFut].
+        EnumTentacleType and list[EnumFut].
         """
 
         def has_required_futs(t: Tentacle) -> bool:
