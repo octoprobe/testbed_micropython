@@ -141,39 +141,3 @@ def test_extmod_hardware(
         test_dir="extmod_hardware",
         micropython_tests=git_micropython_tests,
     )
-
-
-# TODO: Remove 'wip_' prefix
-# Why does discovery report: ValueError: No TENTACLE_DAQ_SALEAE tentacle was selected. Might be the required FUTS specified for TENTACLE_DAQ_SALEAE
-@pytest.mark.required_futs(EnumFut.FUT_EXTMOD_HARDWARE)
-def wip_test_wireing_FUT_EXTMOD_HARDWARE(
-    mcu: Tentacle,
-    daq_saleae: Tentacle,
-) -> None:
-    """
-    With this test, we may verify if the wiring of the tentacles Lolin_D1_MINI and Lonlin_C3_MINI is correct.
-    Trigger on channl D0 on saleae.
-    Channel D1 (trigger_1) and D2 (signal_1) shoud raise to 1 for some ms time
-    """
-    cmd = """
-import sys
-from machine import Pin
-if 'esp8266' in sys.platform:
-    pin1=0
-    pin2=4
-if 'esp32' in sys.platform:
-    pin1=0
-    pin2=4
-
-trigger1 = Pin(pin1, Pin.OUT)
-trigger1.on()
-signal1 = Pin(pin2, Pin.OUT)
-signal1.on()
-"""
-    mcu.dut.mp_remote.exec_raw(cmd=cmd)
-
-    cmd = """
-signal1.off()
-trigger1.off()
-"""
-    mcu.dut.mp_remote.exec_raw(cmd=cmd)

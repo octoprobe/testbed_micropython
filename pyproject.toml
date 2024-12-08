@@ -5,8 +5,8 @@ build-backend = "pdm.backend"
 [project]
 name = "octoprobe_testbed_micropython"
 dynamic = ["version"]
-description = "Octoprobe HIL Testenvironment for Micropython release tesing"
-readme = "README.rst"
+description = "Octoprobe HIL Testenvironment for MicroPython release tesing"
+readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
