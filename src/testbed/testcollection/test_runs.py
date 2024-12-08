@@ -21,13 +21,13 @@ class TestRunSingle(TestRunBase):
 
 
 @dataclasses.dataclass(repr=True)
-class TestRunFirstSecond(TestRunBase):
-    tentacle_variant_first: TentacleVariant
-    tentacle_variant_second: TentacleVariant
+class TestRunWlanAPWlanSTA(TestRunBase):
+    tentacle_variant_wlanAP: TentacleVariant
+    tentacle_variant_wlanSTA: TentacleVariant
 
     @property
     def tentacles(self) -> list[Tentacle]:
         return [
-            self.tentacle_variant_first.tentacle,
-            self.tentacle_variant_second.tentacle,
+            self.tentacle_variant_wlanAP.tentacle,
+            self.tentacle_variant_wlanSTA.tentacle,
         ]
