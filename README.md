@@ -1,5 +1,9 @@
 Welcome to the testbed_micropython wiki!
 
+Links
+
+* [Installation](README_installation.md)
+
 # Background
 
 * There are many tests in https://github.com/micropython/micropython/tree/master/tests.
