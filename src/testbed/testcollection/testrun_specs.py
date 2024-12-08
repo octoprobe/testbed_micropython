@@ -1,21 +1,44 @@
 from __future__ import annotations
 
+import abc
 import dataclasses
 import itertools
 from collections.abc import Iterator
 
-from testbed.testcollection.baseclasses_run import (
-    TestRunBase,
-    TestRunFirstSecond,
-    TestRunSingle,
-    TestRunSpecBase,
-)
-from testbed.testcollection.baseclasses_spec import (
+from .baseclasses_spec import (
     Tentacle,
     TentacleSpecVariant,
     TentacleSpecVariants,
     TentacleVariant,
 )
+
+
+@dataclasses.dataclass
+class TestRunBase:
+    testrun_spec: TestRunSpecBase
+
+    @property
+    @abc.abstractmethod
+    def tentacles(self) -> list[Tentacle]: ...
+
+    def done(self) -> None:
+        self.testrun_spec.done(test_run=self)
+
+
+class TestRunSpecBase(abc.ABC):
+    @abc.abstractmethod
+    def generate(self, available_tentacles: list) -> Iterator[TestRunBase]: ...
+
+    @abc.abstractmethod
+    def done(self, test_run: TestRunBase) -> None: ...
+
+    @property
+    @abc.abstractmethod
+    def tests_tbd(self) -> int: ...
+
+    @property
+    @abc.abstractmethod
+    def iter_text_tsvs(self) -> Iterator[str]: ...
 
 
 class TestRunSpecSingle(TestRunSpecBase):
@@ -40,9 +63,11 @@ class TestRunSpecSingle(TestRunSpecBase):
         """
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(tests_tbd={self.tests_tbd} {self.subprocess_args})"
+        return f"{self.__class__.__name__}({self.subprocess_args})"
 
     def done(self, test_run: TestRunBase) -> None:
+        from .test_runs import TestRunSingle
+
         assert isinstance(test_run, TestRunSingle)
 
         self.tsvs_tbt.remove_tentacle_variant(test_run.tentacle_variant)
@@ -50,6 +75,11 @@ class TestRunSpecSingle(TestRunSpecBase):
     @property
     def tests_tbd(self) -> int:
         return len(self.tsvs_tbt)
+
+    @property
+    def iter_text_tsvs(self) -> Iterator[str]:
+        for tsvs in self.tsvs_tbt:
+            yield f"{tsvs!r}"
 
     def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRunBase]:
         for tsv_to_be_tested in self.tsvs_tbt:
@@ -59,6 +89,8 @@ class TestRunSpecSingle(TestRunSpecBase):
                     is not tsv_to_be_tested.tentacle_spec
                 ):
                     continue
+                from .test_runs import TestRunSingle
+
                 yield TestRunSingle(
                     testrun_spec=self,
                     tentacle_variant=TentacleVariant(
@@ -94,9 +126,11 @@ class TestRunSpecWlan(TestRunSpecBase):
         """
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(tests_tbd={self.tests_tbd} {self.subprocess_args})"
+        return f"{self.__class__.__name__}({self.subprocess_args})"
 
     def done(self, test_run: TestRunBase) -> None:
+        from .test_runs import TestRunFirstSecond
+
         assert isinstance(test_run, TestRunFirstSecond)
 
         self.tsvs_tbt_first.remove_tentacle_variant(test_run.tentacle_variant_first)
@@ -105,6 +139,13 @@ class TestRunSpecWlan(TestRunSpecBase):
     @property
     def tests_tbd(self) -> int:
         return len(self.tsvs_tbt_first) + len(self.tsvs_tbt_second)
+
+    @property
+    def iter_text_tsvs(self) -> Iterator[str]:
+        for tsvs in self.tsvs_tbt_first:
+            yield f"{tsvs!r} first"
+        for tsvs in self.tsvs_tbt_second:
+            yield f"{tsvs!r} second"
 
     def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRunBase]:
         tsvs_combinations: list[tuple[TentacleSpecVariant, TentacleSpecVariant]] = []
@@ -124,6 +165,10 @@ class TestRunSpecWlan(TestRunSpecBase):
                     continue
                 if tentacle_second.tentacle_spec is not second.tentacle_spec:
                     continue
+                from .test_runs import (
+                    TestRunFirstSecond,
+                )
+
                 yield TestRunFirstSecond(
                     testrun_spec=self,
                     tentacle_variant_first=TentacleVariant(

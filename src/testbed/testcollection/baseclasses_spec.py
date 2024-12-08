@@ -32,23 +32,6 @@ class TentacleSpecVariant:
         raise ValueError("Programming error")
 
 
-# class TentacleSpec:
-#     def __init__(self, board: str, variants: list[str], list_futs: list[str]) -> None:
-#         self.board = board
-#         self.variants = variants
-#         self.list_futs = list_futs
-
-#     @property
-#     def tsvs(self) -> list[TentacleSpecVariant]:
-#         """
-#         ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
-#         """
-#         # return [f"{self.board}-{v}" for v in self.variants]
-#         return [
-#             TentacleSpecVariant(tentacle_spec=self, variant=v) for v in self.variants
-#         ]
-
-
 def tentacle_spec_2_tsvs(tentacle_spec: TentacleSpec) -> list[TentacleSpecVariant]:
     """
     ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
@@ -72,22 +55,13 @@ def tentacle_spec_2_variant(tentacle_spec: TentacleSpec) -> list[str]:
     return [i.variant for i in board_variants(boards=boards)]
 
 
-@dataclasses.dataclass(frozen=True, unsafe_hash=True)
+@dataclasses.dataclass(frozen=True, repr=True, unsafe_hash=True)
 class TentacleVariant:
     tentacle: Tentacle
     variant: str
 
     def __repr__(self) -> str:
-        return f"{self.tentacle.tentacle_spec.tentacle_tag}-{self.variant}"
-
-
-# @dataclasses.dataclass
-# class Tentacle:
-#     tentacle_spec: TentacleSpec
-#     serial: str
-
-#     # def __repr__(self)->str:
-#     #     return f"{self.__class__.__name__}({self.serial}, {self.tentacle_spec.__repr__()})"
+        return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant}"
 
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
