@@ -1,6 +1,6 @@
 """
 Call mpbuild for all boards.
-Tests the first two variants.
+Tests the wlanAP two variants.
 
 Goal is a high test coverage of the boards.
 """

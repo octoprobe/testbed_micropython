@@ -102,12 +102,12 @@ class TestRunSpecSingle(TestRunSpecBase):
 
 
 @dataclasses.dataclass
-class TestRunSpecWlan(TestRunSpecBase):
+class TestRunSpecWlanAPvsSTA(TestRunSpecBase):
     """
     Tentacle_WLA_STA connects to Tentacle_WLAN_AP.
     Two tentacles connect to an AP and communicate together.
 
-    Every tentacle has to be tested against two other tentacles. Once as first, and once as second.
+    Every tentacle has to be tested against two other tentacles. Once as wlanAP, and once as wlanSTA.
     """
 
     def __init__(
@@ -118,8 +118,8 @@ class TestRunSpecWlan(TestRunSpecBase):
         assert isinstance(subprocess_args, list)
         assert isinstance(tsvs_tbt, TentacleSpecVariants)
 
-        self.tsvs_tbt_first = TentacleSpecVariants(tsvs_tbt)
-        self.tsvs_tbt_second = TentacleSpecVariants(tsvs_tbt)
+        self.tsvs_tbt_wlanAP = TentacleSpecVariants(tsvs_tbt)
+        self.tsvs_tbt_wlanSTA = TentacleSpecVariants(tsvs_tbt)
         self.subprocess_args = subprocess_args
         """
         wlantest.py
@@ -129,55 +129,55 @@ class TestRunSpecWlan(TestRunSpecBase):
         return f"{self.__class__.__name__}({self.subprocess_args})"
 
     def done(self, test_run: TestRunBase) -> None:
-        from .test_runs import TestRunFirstSecond
+        from .test_runs import TestRunWlanAPWlanSTA
 
-        assert isinstance(test_run, TestRunFirstSecond)
+        assert isinstance(test_run, TestRunWlanAPWlanSTA)
 
-        self.tsvs_tbt_first.remove_tentacle_variant(test_run.tentacle_variant_first)
-        self.tsvs_tbt_second.remove_tentacle_variant(test_run.tentacle_variant_second)
+        self.tsvs_tbt_wlanAP.remove_tentacle_variant(test_run.tentacle_variant_wlanAP)
+        self.tsvs_tbt_wlanSTA.remove_tentacle_variant(test_run.tentacle_variant_wlanSTA)
 
     @property
     def tests_tbd(self) -> int:
-        return len(self.tsvs_tbt_first) + len(self.tsvs_tbt_second)
+        return len(self.tsvs_tbt_wlanAP) + len(self.tsvs_tbt_wlanSTA)
 
     @property
     def iter_text_tsvs(self) -> Iterator[str]:
-        for tsvs in self.tsvs_tbt_first:
-            yield f"{tsvs!r} first"
-        for tsvs in self.tsvs_tbt_second:
-            yield f"{tsvs!r} second"
+        for tsvs in self.tsvs_tbt_wlanAP:
+            yield f"{tsvs!r} wlanAP"
+        for tsvs in self.tsvs_tbt_wlanSTA:
+            yield f"{tsvs!r} wlanSTA"
 
     def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRunBase]:
         tsvs_combinations: list[tuple[TentacleSpecVariant, TentacleSpecVariant]] = []
-        for first in self.tsvs_tbt_first:
-            for second in self.tsvs_tbt_second:
-                tsvs_combinations.append((first, second))
+        for wlanAP in self.tsvs_tbt_wlanAP:
+            for wlanSTA in self.tsvs_tbt_wlanSTA:
+                tsvs_combinations.append((wlanAP, wlanSTA))
 
         if False:
             for s in tsvs_combinations:
                 print(s)
 
-        for first, second in tsvs_combinations:
-            for tentacle_first, tentacle_second in itertools.combinations(
+        for wlanAP, wlanSTA in tsvs_combinations:
+            for tentacle_wlanAP, tentacle_wlanSTA in itertools.combinations(
                 available_tentacles, 2
             ):
-                if tentacle_first.tentacle_spec is not first.tentacle_spec:
+                if tentacle_wlanAP.tentacle_spec is not wlanAP.tentacle_spec:
                     continue
-                if tentacle_second.tentacle_spec is not second.tentacle_spec:
+                if tentacle_wlanSTA.tentacle_spec is not wlanSTA.tentacle_spec:
                     continue
                 from .test_runs import (
-                    TestRunFirstSecond,
+                    TestRunWlanAPWlanSTA,
                 )
 
-                yield TestRunFirstSecond(
+                yield TestRunWlanAPWlanSTA(
                     testrun_spec=self,
-                    tentacle_variant_first=TentacleVariant(
-                        tentacle=tentacle_first,
-                        variant=first.variant,
+                    tentacle_variant_wlanAP=TentacleVariant(
+                        tentacle=tentacle_wlanAP,
+                        variant=wlanAP.variant,
                     ),
-                    tentacle_variant_second=TentacleVariant(
-                        tentacle=tentacle_second,
-                        variant=first.variant,
+                    tentacle_variant_wlanSTA=TentacleVariant(
+                        tentacle=tentacle_wlanSTA,
+                        variant=wlanAP.variant,
                     ),
                 )
                 break
