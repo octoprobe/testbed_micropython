@@ -19,8 +19,8 @@ from testbed.testcollection.baseclasses_spec import (
     ConnectedTentacles,
 )
 from testbed.testcollection.testrun_specs import (
+    TestRunSpecDouble,
     TestRunSpecSingle,
-    TestRunSpecWlanAPvsSTA,
 )
 
 
@@ -53,10 +53,10 @@ def main() -> None:
     testrun_spec_container = RunSpecContainer(
         [
             TestRunSpecSingle(
-                subprocess_args=["perftest.py"],
+                subprocess_args=["run-perfbench.py"],
                 tsvs_tbt=connected_tentacles.tsvs,
             ),
-            TestRunSpecWlanAPvsSTA(
+            TestRunSpecDouble(
                 subprocess_args=["wlantest.py"],
                 tsvs_tbt=connected_tentacles.tsvs,
             ),
@@ -74,7 +74,7 @@ def main() -> None:
         connected_tentacles=connected_tentacles,
         testrun_spec_container=testrun_spec_container,
     )
-    print(f"START: test_dbd={bartender.tests_tbd}")
+    print(f"START: test_tbd={bartender.tests_tbd}")
     for testrun_spec in bartender.testrun_spec_container:
         print(f"  {testrun_spec!r} tests_tbd={testrun_spec.tests_tbd}")
         for tsv in testrun_spec.iter_text_tsvs:

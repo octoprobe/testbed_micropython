@@ -45,7 +45,7 @@ class TestBartender:
         )
         if len(possible_test_runs) == 0:
             if self.tests_tbd == 0:
-                raise AllTestsDoneException
+                raise AllTestsDoneException()
             raise WaitForTestsToTerminateException()
         # Calculate priorities
         # Return max

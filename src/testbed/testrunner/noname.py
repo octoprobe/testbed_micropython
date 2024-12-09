@@ -44,7 +44,7 @@ from octoprobe.util_usb_serial import QueryResultTentacles
 
 from testbed.testcollection.testrun_specs import (
     TestRunSpecSingle,
-    TestRunSpecWlanAPvsSTA,
+    TestRunSpecDouble,
 )
 from testbed.util_firmware_specs import (
     PYTEST_OPT_BUILD_FIRMWARE,
@@ -152,7 +152,7 @@ def run_tests():
                 subprocess_args=["perftest.py"],
                 tsvs_tbt=connected_tentacles.tsvs,
             ),
-            TestRunSpecWlanAPvsSTA(
+            TestRunSpecDouble(
                 subprocess_args=["wlantest.py"],
                 tsvs_tbt=connected_tentacles.tsvs,
             ),
