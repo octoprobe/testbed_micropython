@@ -60,12 +60,17 @@ class TentacleVariant:
     tentacle: Tentacle
     variant: str
 
+    def __post_init__(self) -> None:
+        assert isinstance(self.tentacle, Tentacle)
+        assert isinstance(self.variant, str)
+
     def __repr__(self) -> str:
         return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant}"
 
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
     def remove_tentacle_variant(self, tentacle_variant: TentacleVariant) -> None:
+        assert isinstance(tentacle_variant, TentacleVariant)
         for tsv in self:
             if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
                 if tsv.variant == tentacle_variant.variant:

@@ -18,10 +18,7 @@ from testbed.testcollection.baseclasses_run import RunSpecContainer
 from testbed.testcollection.baseclasses_spec import (
     ConnectedTentacles,
 )
-from testbed.testcollection.testrun_specs import (
-    TestRunSpecDouble,
-    TestRunSpecSingle,
-)
+from testbed.testcollection.testrun_specs import TestRunSpec
 
 
 def main() -> None:
@@ -52,23 +49,18 @@ def main() -> None:
     )
     testrun_spec_container = RunSpecContainer(
         [
-            TestRunSpecSingle(
+            TestRunSpec(
                 subprocess_args=["run-perfbench.py"],
+                tentacles_required=1,
                 tsvs_tbt=connected_tentacles.tsvs,
             ),
-            TestRunSpecDouble(
+            TestRunSpec(
                 subprocess_args=["wlantest.py"],
+                tentacles_required=2,
                 tsvs_tbt=connected_tentacles.tsvs,
             ),
         ]
     )
-    if False:
-        test_runs = list(
-            testrun_spec_container.generate(available_tentacles=connected_tentacles)
-        )
-        for test_run in test_runs:
-            print(test_run)
-        return
 
     bartender = TestBartender(
         connected_tentacles=connected_tentacles,

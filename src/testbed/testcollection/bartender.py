@@ -12,7 +12,7 @@ The bartender
 
 from __future__ import annotations
 
-from testbed.testcollection.baseclasses_run import RunSpecContainer, TestRunBase
+from testbed.testcollection.baseclasses_run import RunSpecContainer
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
 
 
