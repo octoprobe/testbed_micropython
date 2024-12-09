@@ -5,6 +5,26 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "testrunner",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed.scripts.testrunner",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                // "--help",
+                "--micropython-tests-git=https://github.com/micropython/micropython.git@master",
+                "--firmware-build-git=https://github.com/micropython/micropython.git@master",
+                "a",
+                "b",
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "TESTBED_MICROPYTHON_MICROPYTHON_TESTS_GIT": "blabla",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            },
+            "justMyCode": false,
+        },
+        {
             "name": "pytest --firmware-build-url",
             "type": "debugpy",
             "request": "launch",
@@ -16,6 +36,7 @@
                 "-s",
                 "-v",
                 // "--firmware-build-url=https://github.com/dpgeorge/micropython.git@rp2-add-rp2350",
+                "run",
                 "--firmware-build-url=https://github.com/micropython/micropython.git@master",
                 "tests/test_simple.py::test_i2c",
             ],

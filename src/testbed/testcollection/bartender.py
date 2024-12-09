@@ -12,8 +12,9 @@ The bartender
 
 from __future__ import annotations
 
-from testbed.testcollection.baseclasses_run import RunSpecContainer, TestRunBase
+from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
+from testbed.testcollection.testrun_specs import TestRun
 
 
 class WaitForTestsToTerminateException(Exception):
@@ -28,20 +29,22 @@ class TestBartender:
     def __init__(
         self,
         connected_tentacles: ConnectedTentacles,
-        testrun_spec_container: RunSpecContainer,
+        testrun_specs: TestRunSpecs,
     ) -> None:
         assert isinstance(connected_tentacles, ConnectedTentacles)
-        assert isinstance(testrun_spec_container, RunSpecContainer)
+        assert isinstance(testrun_specs, TestRunSpecs)
         self.connected_tentacles = connected_tentacles
-        self.testrun_spec_container = testrun_spec_container
-        self.actual_runs: list[TestRunBase] = []
+        self.testrun_spec = testrun_specs
+        self.actual_runs: list[TestRun] = []
         self.available_tentacles = connected_tentacles.copy()
 
-    def test_run_next(self) -> TestRunBase:
+    @property
+    def tests_tbd(self) -> int:
+        return self.testrun_spec.tests_tbd
+
+    def testrun_next(self) -> TestRun:
         possible_test_runs = list(
-            self.testrun_spec_container.generate(
-                available_tentacles=self.available_tentacles
-            )
+            self.testrun_spec.generate(available_tentacles=self.available_tentacles)
         )
         if len(possible_test_runs) == 0:
             if self.tests_tbd == 0:
@@ -55,18 +58,17 @@ class TestBartender:
         self._reserve(test_run=selected_test_run)
         return selected_test_run
 
-    @property
-    def tests_tbd(self) -> int:
-        return self.testrun_spec_container.tests_tbd
+    def testrun_done(self, test_run: TestRun) -> None:
+        self._release(test_run=test_run)
 
-    def _reserve(self, test_run: TestRunBase) -> None:
+    def _reserve(self, test_run: TestRun) -> None:
         self.actual_runs.append(test_run)
 
         for tentacle in test_run.tentacles:
             assert tentacle in self.available_tentacles
             self.available_tentacles.remove(tentacle)
 
-    def _release(self, test_run: TestRunBase) -> None:
+    def _release(self, test_run: TestRun) -> None:
         assert test_run in self.actual_runs
         self.actual_runs.remove(test_run)
 
@@ -75,6 +77,3 @@ class TestBartender:
         for tentacle in test_run.tentacles:
             assert tentacle not in self.available_tentacles
             self.available_tentacles.append(tentacle)
-
-    def test_run_done(self, test_run: TestRunBase) -> None:
-        self._release(test_run=test_run)

@@ -1,108 +1,60 @@
 from __future__ import annotations
 
-import abc
+import copy
 import dataclasses
 import itertools
 from collections.abc import Iterator
 
 from .baseclasses_spec import (
     Tentacle,
-    TentacleSpecVariant,
     TentacleSpecVariants,
     TentacleVariant,
 )
 
 
-@dataclasses.dataclass
-class TestRunBase:
-    testrun_spec: TestRunSpecBase
+@dataclasses.dataclass(repr=True)
+class TestRun:
+    testrun_spec: TestRunSpec
+    list_tentacle_variant: list[TentacleVariant]
 
-    @property
-    @abc.abstractmethod
-    def tentacles(self) -> list[Tentacle]: ...
+    def __post_init__(self) -> None:
+        assert isinstance(self.testrun_spec, TestRunSpec)
+        assert isinstance(self.list_tentacle_variant, list)
 
     def done(self) -> None:
         self.testrun_spec.done(test_run=self)
 
-
-class TestRunSpecBase(abc.ABC):
-    @abc.abstractmethod
-    def generate(self, available_tentacles: list) -> Iterator[TestRunBase]: ...
-
-    @abc.abstractmethod
-    def done(self, test_run: TestRunBase) -> None: ...
-
-    @property
-    @abc.abstractmethod
-    def tests_tbd(self) -> int: ...
+    def copy_tentacles(self) -> None:
+        self.list_tentacle_variant = [
+            TentacleVariant(
+                tentacle=copy.copy(tv.tentacle),
+                board=tv.board,
+                variant=tv.variant,
+            )
+            for tv in self.list_tentacle_variant
+        ]
 
     @property
-    @abc.abstractmethod
-    def iter_text_tsvs(self) -> Iterator[str]: ...
+    def tentacles(self) -> list[Tentacle]:
+        return [x.tentacle for x in self.list_tentacle_variant]
 
-
-class TestRunSpecSingle(TestRunSpecBase):
-    """
-    Runs tests against a single tentacle.
-
-    Each test has to run on every connected tentacle with FUT_MCU_ONLY.
-    """
-
-    def __init__(
-        self,
-        subprocess_args: list[str],
-        tsvs_tbt: TentacleSpecVariants,
-    ) -> None:
-        assert isinstance(subprocess_args, list)
-        assert isinstance(tsvs_tbt, TentacleSpecVariants)
-
-        self.tsvs_tbt = TentacleSpecVariants(tsvs_tbt)
-        self.subprocess_args = subprocess_args
+    @property
+    def testid(self) -> str:
         """
-        perftest.py, hwtest.py
+        For example: run-perfbench.py[2d2d-lolin_D1-ESP8266_GENERIC]
         """
-
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.subprocess_args})"
-
-    def done(self, test_run: TestRunBase) -> None:
-        from .test_runs import TestRunSingle
-
-        assert isinstance(test_run, TestRunSingle)
-
-        self.tsvs_tbt.remove_tentacle_variant(test_run.tentacle_variant)
-
-    @property
-    def tests_tbd(self) -> int:
-        return len(self.tsvs_tbt)
-
-    @property
-    def iter_text_tsvs(self) -> Iterator[str]:
-        for tsvs in self.tsvs_tbt:
-            yield f"{tsvs!r}"
-
-    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRunBase]:
-        for tsv_to_be_tested in self.tsvs_tbt:
-            for available_tentacle in available_tentacles:
-                if (
-                    available_tentacle.tentacle_spec
-                    is not tsv_to_be_tested.tentacle_spec
-                ):
-                    continue
-                from .test_runs import TestRunSingle
-
-                yield TestRunSingle(
-                    testrun_spec=self,
-                    tentacle_variant=TentacleVariant(
-                        tentacle=available_tentacle,
-                        variant=tsv_to_be_tested.variant,
-                    ),
-                )
-                break
+        subprocess = "-".join(self.testrun_spec.subprocess_args)
+        tentacles = ",".join(
+            [
+                f"{tv.tentacle.label_short2}-{tv.label}"
+                for tv in self.list_tentacle_variant
+            ]
+        )
+        return f"{subprocess}[{tentacles}]"
 
 
 @dataclasses.dataclass
-class TestRunSpecDouble(TestRunSpecBase):
+class TestRunSpec:
     """
     Tentacle_WLA_STA connects to Tentacle_WLAN_AP.
     Two tentacles connect to an AP and communicate together.
@@ -113,13 +65,17 @@ class TestRunSpecDouble(TestRunSpecBase):
     def __init__(
         self,
         subprocess_args: list[str],
+        tentacles_required: int,
         tsvs_tbt: TentacleSpecVariants,
     ) -> None:
         assert isinstance(subprocess_args, list)
+        assert isinstance(tentacles_required, int)
         assert isinstance(tsvs_tbt, TentacleSpecVariants)
 
-        self.tsvs_tbt_first = TentacleSpecVariants(tsvs_tbt)
-        self.tsvs_tbt_second = TentacleSpecVariants(tsvs_tbt)
+        self.tentacles_required = tentacles_required
+        self.list_tsvs_tbt = [
+            TentacleSpecVariants(tsvs_tbt) for _ in range(tentacles_required)
+        ]
         self.subprocess_args = subprocess_args
         """
         wlantest.py
@@ -128,56 +84,59 @@ class TestRunSpecDouble(TestRunSpecBase):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.subprocess_args})"
 
-    def done(self, test_run: TestRunBase) -> None:
-        from .test_runs import TestRunDouble
+    def done(self, test_run: TestRun) -> None:
+        from .testrun_specs import TestRun
 
-        assert isinstance(test_run, TestRunDouble)
+        assert isinstance(test_run, TestRun)
 
-        self.tsvs_tbt_first.remove_tentacle_variant(test_run.tentacle_variant_first)
-        self.tsvs_tbt_second.remove_tentacle_variant(test_run.tentacle_variant_second)
+        assert len(self.list_tsvs_tbt) == len(test_run.list_tentacle_variant)
+        for tsvs, tentacle_variant in zip(
+            self.list_tsvs_tbt, test_run.list_tentacle_variant
+        ):
+            tsvs.remove_tentacle_variant(tentacle_variant)
 
     @property
     def tests_tbd(self) -> int:
-        return len(self.tsvs_tbt_first) + len(self.tsvs_tbt_second)
+        return sum([len(tsvs_tbt) for tsvs_tbt in self.list_tsvs_tbt])
 
     @property
     def iter_text_tsvs(self) -> Iterator[str]:
-        for tsvs in self.tsvs_tbt_first:
-            yield f"{tsvs!r} first"
-        for tsvs in self.tsvs_tbt_second:
-            yield f"{tsvs!r} second"
+        for i in range(self.tentacles_required):
+            tag = ["first", "second", "third"][i]
+            for tsvs in self.list_tsvs_tbt[i]:
+                yield f"{tsvs!r} {tag}"
 
-    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRunBase]:
-        tsvs_combinations: list[tuple[TentacleSpecVariant, TentacleSpecVariant]] = []
-        for first in self.tsvs_tbt_first:
-            for second in self.tsvs_tbt_second:
-                tsvs_combinations.append((first, second))
+    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
+        tsvs_combinations = list(itertools.product(*self.list_tsvs_tbt))
 
-        if False:
-            for s in tsvs_combinations:
-                print(s)
-
-        for first, second in tsvs_combinations:
-            for tentacle_first, tentacle_second in itertools.combinations(
-                available_tentacles, 2
+        for tsvs_combination in tsvs_combinations:
+            for tentacles in itertools.combinations(
+                available_tentacles, self.tentacles_required
             ):
-                if tentacle_first.tentacle_spec is not first.tentacle_spec:
-                    continue
-                if tentacle_second.tentacle_spec is not second.tentacle_spec:
-                    continue
-                from .test_runs import (
-                    TestRunDouble,
-                )
 
-                yield TestRunDouble(
+                def tentacles_available():
+                    assert len(tsvs_combination) == len(tentacles)
+                    for tsv, tentacle in zip(tsvs_combination, tentacles):
+                        if tsv.tentacle_spec is not tentacle.tentacle_spec:
+                            return False
+                    return True
+
+                if not tentacles_available():
+                    continue
+
+                from .testrun_specs import TestRun
+
+                list_tentacle_variant = [
+                    TentacleVariant(
+                        tentacle=tentacle,
+                        board=variant.board,
+                        variant=variant.variant,
+                    )
+                    for variant, tentacle in zip(tsvs_combination, tentacles)
+                ]
+
+                yield TestRun(
                     testrun_spec=self,
-                    tentacle_variant_first=TentacleVariant(
-                        tentacle=tentacle_first,
-                        variant=first.variant,
-                    ),
-                    tentacle_variant_second=TentacleVariant(
-                        tentacle=tentacle_second,
-                        variant=first.variant,
-                    ),
+                    list_tentacle_variant=list_tentacle_variant,
                 )
                 break

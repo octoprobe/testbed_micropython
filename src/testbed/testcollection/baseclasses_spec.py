@@ -58,7 +58,22 @@ def tentacle_spec_2_variant(tentacle_spec: TentacleSpec) -> list[str]:
 @dataclasses.dataclass(frozen=True, repr=True, unsafe_hash=True)
 class TentacleVariant:
     tentacle: Tentacle
+    board: str
     variant: str
+
+    def __post_init__(self) -> None:
+        assert isinstance(self.tentacle, Tentacle)
+        assert isinstance(self.board, str)
+        assert isinstance(self.variant, str)
+
+    @property
+    def label(self) -> str:
+        """
+        Example: RPI_PICO2-RISCV
+        """
+        if self.variant == "":
+            return self.board
+        return f"{self.board}-{self.variant}"
 
     def __repr__(self) -> str:
         return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant}"
@@ -66,6 +81,7 @@ class TentacleVariant:
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
     def remove_tentacle_variant(self, tentacle_variant: TentacleVariant) -> None:
+        assert isinstance(tentacle_variant, TentacleVariant)
         for tsv in self:
             if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
                 if tsv.variant == tentacle_variant.variant:
