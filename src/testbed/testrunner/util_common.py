@@ -5,8 +5,10 @@ testbed_showcase and testbed_micropython
 
 import dataclasses
 import pathlib
-from testbed.util_firmware_mpbuild import CachedGitRepo
+
 from tests.micropython_repo.test_run import un_monkey_patch
+
+from testbed.util_firmware_mpbuild import CachedGitRepo
 
 
 @dataclasses.dataclass
