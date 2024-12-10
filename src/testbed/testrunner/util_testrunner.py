@@ -255,8 +255,11 @@ def run_tests(args: Args):
         testrun.copy_tentacles()
 
         # Assign firmware_spec to each tentacle
-        for tentacle in testrun.tentacles:
-            tentacle._firmware_spec = args.firmware.get_firmware_spec(tentacle=tentacle)
+        for tentacle_variant in testrun.list_tentacle_variant:
+            tentacle_variant.tentacle._firmware_spec = args.firmware.get_firmware_spec(
+                tentacle=tentacle_variant.tentacle,
+                variant=tentacle_variant.variant,
+            )
 
         print(testrun.testid)
 

@@ -28,6 +28,9 @@ class FirmwareBuilder:
 
     def __init__(self, firmware_git_url: str) -> None:
         self._already_build_firmwares: dict[str, FirmwareBuildSpec] = {}
+        """
+        Key: board_variant.name_normalized
+        """
         self.firmware_git_url = firmware_git_url
         self.git_repo = CachedGitRepo(
             directory_cache=DIRECTORY_GIT_CACHE,

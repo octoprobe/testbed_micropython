@@ -4,7 +4,7 @@ import dataclasses
 import pathlib
 import typing
 
-from testbed.util_firmware_mpbuild import collect_firmware_specs
+from testbed.util_firmware_mpbuild import BoardVariant, FirmwareBuildSpec
 
 if typing.TYPE_CHECKING:
     from testbed.constants import Tentacle
@@ -27,7 +27,7 @@ class ArgsFirmware:
         if self.firmware_build_git:
             self._builder = FirmwareBuilder(firmware_git_url=self.firmware_build_git)
 
-    def get_firmware_spec(self, tentacle: Tentacle) -> FirmwareSpecBase:
+    def get_firmware_spec(self, tentacle: Tentacle, variant: str) -> FirmwareSpecBase:
         """
         Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
         Now we create firmware specs.
@@ -43,20 +43,13 @@ class ArgsFirmware:
             #
             # Collect firmware specs by connected tentacles
             #
-            specs = collect_firmware_specs(tentacles=[tentacle])
-            return specs[0]
-
-        firmware_download_json = config.getoption(PYTEST_OPT_DOWNLOAD_FIRMWARE)
-        if firmware_download_json is not None:
-            #
-            # Donwnload firmware and return the spec
-            #
-            from testbed.util_firmware_specs import FirmwareDownloadSpec
-
-            assert firmware_download_json is not None
-            spec = FirmwareDownloadSpec.factory(filename=firmware_download_json)
-            spec.download()
-            return spec
+            return FirmwareBuildSpec(
+                board_variant=BoardVariant(
+                    board=tentacle.tentacle_spec.tentacle_tag.name,
+                    variant=variant,
+                ),
+                micropython_version_text=None,
+            )
 
         #
         # Nothing was specified: We do not flash any firmware
