@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import dataclasses
-import itertools
 import logging
 import pathlib
 import shutil
@@ -9,13 +8,12 @@ import sys
 import time
 
 from octoprobe.lib_tentacle import Tentacle
-from octoprobe.lib_testbed import Testbed
 from octoprobe.octoprobe import NTestRun
 from octoprobe.util_pytest import util_logging
 from octoprobe.util_pytest.util_resultdir import ResultsDir
+from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_run
 from octoprobe.util_testbed_lock import TestbedLock
 from octoprobe.util_usb_serial import QueryResultTentacles
-from tests.micropython_repo.test_run import subprocess_run
 
 from testbed.constants import (
     DIRECTORY_GIT_CACHE,
@@ -25,13 +23,7 @@ from testbed.constants import (
     FILENAME_TESTBED_LOCK,
 )
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
-from testbed.tentacles_spec import (
-    McuConfig,
-    TENTACLES_SPECS,
-    tentacle_spec_mcu_lolin_c3_mini,
-    tentacle_spec_mcu_lolin_d1_mini,
-    tentacle_spec_mcu_rpi_pico2w,
-)
+from testbed.tentacles_spec import McuConfig, TENTACLES_SPECS
 from testbed.testcollection.bartender import (
     AllTestsDoneException,
     TestBartender,
@@ -177,16 +169,22 @@ def run_single_test_parallel(
                     timeout_s=300.0,
                 )
 
-            test_perf_bench(
-                testrun=testrun,
-                mcu=testrun.tentacles[0],
-                testresults_directory=testresults_directory,
-            )
+            try:
+                test_perf_bench(
+                    testrun=testrun,
+                    mcu=testrun.tentacles[0],
+                    testresults_directory=testresults_directory,
+                )
+                logger.warning("Test SUCCESS")
+            except SubprocessExitCodeException as e:
+                logger.warning(f"Test returned exit code: {e!r}")
+            except Exception as e:
+                logger.warning(f"Test failed: {e}")
+                logger.exception(e)
 
         except Exception as e:
             logger.warning(f"Exception during test: {e!r}")
             logger.exception(e)
-            raise
         finally:
             logger.info(
                 f"TEST TEARDOWN {duration_text()} {testresults_directory.test_nodeid}"
@@ -219,12 +217,7 @@ def run_tests(args: Args):
         logger.warning("No tentacles discovered!")
         return
 
-    _testbed = Testbed(
-        workspace="based-on-connected-boards",
-        tentacles=connected_tentacles,
-    )
-
-    _testrun = NTestRun(testbed=_testbed)
+    _testrun = NTestRun(connected_tentacles=connected_tentacles)
     args.firmware.setup()
 
     # _testrun.session_powercycle_tentacles()
@@ -267,12 +260,12 @@ def run_tests(args: Args):
 
         print(testrun.testid)
 
-        # TODO: remove hardcoded EnumFut.FUT_MCU_ONLY
         testresults_directory = ResultsDir(
             directory_top=DIRECTORY_TESTRESULTS,
             test_name=testrun.testid,
             test_nodeid=testrun.testid,
         )
+        # TODO: remove hardcoded EnumFut.FUT_MCU_ONLY
         run_single_test_parallel(
             ntest_run=_testrun,
             required_futs=(EnumFut.FUT_MCU_ONLY,),
@@ -286,92 +279,3 @@ def run_tests(args: Args):
         bartender.testrun_done(test_run=testrun)
 
     _testrun.session_teardown()
-
-    return
-    connected_tentacles = ConnectedTentacles(
-        [
-            Tentacle(
-                tentacle_spec=tentacle_spec_mcu_rpi_pico2w,
-                tentacle_serial_number="1c4a",
-                hw_version="1.0",
-            ),
-            Tentacle(
-                tentacle_spec=tentacle_spec_mcu_rpi_pico2w,
-                tentacle_serial_number="1c4b",
-                hw_version="1.0",
-            ),
-            Tentacle(
-                tentacle_spec=tentacle_spec_mcu_lolin_d1_mini,
-                tentacle_serial_number="1c4c",
-                hw_version="1.0",
-            ),
-            Tentacle(
-                tentacle_spec=tentacle_spec_mcu_lolin_c3_mini,
-                tentacle_serial_number="1c4d",
-                hw_version="1.0",
-            ),
-        ]
-    )
-    testrun_spec_container = TestRunSpecs(
-        [
-            TestRunSpecSingle(
-                subprocess_args=["perftest.py"],
-                tsvs_tbt=connected_tentacles.tsvs,
-            ),
-            TestRunSpecDouble(
-                subprocess_args=["wlantest.py"],
-                tsvs_tbt=connected_tentacles.tsvs,
-            ),
-        ]
-    )
-    if False:
-        test_runs = list(
-            testrun_spec_container.generate(available_tentacles=connected_tentacles)
-        )
-        for test_run in test_runs:
-            print(test_run)
-        return
-
-    bartender = TestBartender(
-        connected_tentacles=connected_tentacles,
-        testrun_specs=testrun_spec_container,
-    )
-    print(f"START: test_dbd={bartender.tests_tbd}")
-    for testrun_spec in bartender.testrun_spec_container:
-        print(f"  {testrun_spec!r} tests_tbd={testrun_spec.tests_tbd}")
-        for tsv in testrun_spec.iter_text_tsvs:
-            print(f"    tsv={tsv}")
-
-    for i in itertools.count():
-        # if i == 10:
-        #     break
-        try:
-            test_run_next = bartender.test_run_next()
-            print(f"{i} test_dbd:{bartender.tests_tbd} test_run_next:{test_run_next}")
-            for test_run in bartender.actual_runs:
-                print("   ", test_run)
-            if len(bartender.actual_runs) >= 3:
-                test_run_done = bartender.actual_runs[-1]
-                print("  test_run_done:", test_run_done)
-                bartender.test_run_done(test_run_done)
-            if test_run_next is None:
-                return
-        except WaitForTestsToTerminateException:
-            print(i, "WaitForTestsToTerminateException")
-            if len(bartender.actual_runs) == 0:
-                print("DONE")
-                break
-            test_run_done = bartender.actual_runs[-1]
-            bartender.test_run_done(test_run_done)
-            print("  test_run_done:", test_run_done)
-
-        except AllTestsDoneException:
-            print("Done")
-            for test_run in bartender.actual_runs:
-                print("   ", test_run)
-            break
-
-
-if __name__ == "__main__":
-
-    run_tests()
