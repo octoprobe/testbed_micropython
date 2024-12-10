@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import logging
 import sys
 
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
+from testbed.testrunner.util_testrunspec import mip_install
+
+logger = logging.getLogger(__file__)
 
 
 class TestRunRunTests(TestRun):
@@ -24,10 +28,21 @@ class TestRunRunTests(TestRun):
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 
+        serial_port = tentacle.dut.get_tty()
+
+        # Install mip
+        mip_install(
+            testargs=testargs,
+            tentacle=tentacle,
+            serial_port=serial_port,
+            mip_package="unittest",
+        )
+
+        # Run tests
         args = [
             sys.executable,
             *self.testrun_spec.subprocess_args,
-            f"-t=port:{tentacle.dut.get_tty()}",
+            f"-t=port:{serial_port}",
             # f"--target={target}",
             "--jobs=1",
             f"--result-dir={testargs.testresults_directory.directory_test}",
