@@ -17,6 +17,12 @@ from .baseclasses_spec import (
 
 
 @dataclasses.dataclass(repr=True)
+class TestArgs:
+    testresults_directory: ResultsDir
+    git_micropython_tests: pathlib.Path
+
+
+@dataclasses.dataclass(repr=True)
 class TestRun:
     testrun_spec: TestRunSpec
     list_tentacle_variant: list[TentacleVariant]
@@ -43,11 +49,7 @@ class TestRun:
         ]
 
     @abc.abstractmethod
-    def test(
-        self,
-        testresults_directory: ResultsDir,
-        git_micropython_tests: pathlib.Path,
-    ) -> None: ...
+    def test(self, testargs: TestArgs) -> None: ...
 
     @property
     def tentacles(self) -> list[Tentacle]:
@@ -81,23 +83,25 @@ class TestRunSpec:
         self,
         subprocess_args: list[str],
         tentacles_required: int,
-        tsvs_tbt: TentacleSpecVariants,
         testrun_class: type[TestRun] = TestRun,
     ) -> None:
         assert isinstance(testrun_class, type(TestRun))
         assert isinstance(subprocess_args, list)
         assert isinstance(tentacles_required, int)
-        assert isinstance(tsvs_tbt, TentacleSpecVariants)
 
         self.testrun_class = testrun_class
         self.tentacles_required = tentacles_required
-        self.list_tsvs_tbt = [
-            TentacleSpecVariants(tsvs_tbt) for _ in range(tentacles_required)
-        ]
+        self.list_tsvs_tbt: list[TentacleSpecVariants] = []
         self.subprocess_args = subprocess_args
         """
         wlantest.py
         """
+
+    def assign_tsvs_tbd(self, tsvs_tbt: TentacleSpecVariants) -> None:
+        assert isinstance(tsvs_tbt, TentacleSpecVariants)
+        self.list_tsvs_tbt = [
+            TentacleSpecVariants(tsvs_tbt) for _ in range(self.tentacles_required)
+        ]
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.subprocess_args})"

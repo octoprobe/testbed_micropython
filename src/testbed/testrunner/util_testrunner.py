@@ -4,7 +4,6 @@ import dataclasses
 import logging
 import pathlib
 import shutil
-import sys
 import time
 
 from octoprobe.lib_tentacle import Tentacle
@@ -31,9 +30,13 @@ from testbed.testcollection.bartender import (
 )
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
-from testbed.testcollection.testrun_specs import TestRun, TestRunSpec
+from testbed.testcollection.testrun_specs import TestArgs, TestRun
+from testbed.testrunner.testrunspec_perftest import TESTRUNSPEC_PERFTEST
+from testbed.testrunner.testrunspec_runtests import (
+    TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+    TESTRUNSPEC_RUNTESTS_MISC,
+)
 from testbed.testrunner.util_common import ArgsMpTest
-from testbed.testrunner.util_testrun import TestRunPerfTest, TestRunRunTests
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 logger = logging.getLogger(__file__)
@@ -113,28 +116,15 @@ class TestRunner:
         args.firmware.setup()
 
         # _testrun.session_powercycle_tentacles()
+
         testrun_specs = TestRunSpecs(
             [
-                TestRunSpec(
-                    subprocess_args=["run-perfbench.py"],
-                    tentacles_required=1,
-                    tsvs_tbt=self.connected_tentacles.tsvs,
-                    testrun_class=TestRunPerfTest,
-                ),
-                TestRunSpec(
-                    subprocess_args=["run-tests.py", "--test-dirs=extmod_hardware"],
-                    tentacles_required=1,
-                    tsvs_tbt=self.connected_tentacles.tsvs,
-                    testrun_class=TestRunRunTests,
-                ),
-                TestRunSpec(
-                    subprocess_args=["run-tests.py", "--test-dirs=misc"],
-                    tentacles_required=1,
-                    tsvs_tbt=self.connected_tentacles.tsvs,
-                    testrun_class=TestRunRunTests,
-                ),
+                TESTRUNSPEC_PERFTEST,
+                TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+                TESTRUNSPEC_RUNTESTS_MISC,
             ]
         )
+        testrun_specs.assign_tsvs_tbd(self.connected_tentacles.tsvs)
         self.bartender = TestBartender(
             connected_tentacles=self.connected_tentacles,
             testrun_specs=testrun_specs,
@@ -230,8 +220,10 @@ class TestRunner:
 
                 try:
                     testrun.test(
-                        testresults_directory=testresults_directory,
-                        git_micropython_tests=self.git_micropython_tests,
+                        testargs=TestArgs(
+                            testresults_directory=testresults_directory,
+                            git_micropython_tests=self.git_micropython_tests,
+                        )
                     )
                     logger.warning("Test SUCCESS")
                 except SubprocessExitCodeException as e:
