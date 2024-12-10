@@ -16,6 +16,8 @@ import typer
 import typing_extensions
 
 from testbed.testrunner.util_testrunner import Args, run_tests
+from testbed.testrunner.utils_common import ArgsMpTest
+from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 # 'typer' does not work correctly with typing.Annotated
 # Required is: typing_extensions.Annotated
@@ -63,17 +65,21 @@ def run(
         Optional[list[str]], typer.Argument(help="Only run these tests")
     ] = None,  # noqa: UP007
 ) -> None:
-    print(f"{micropython_tests_git=}")
-    print(f"{micropython_tests=}")
-    print(f"{firmware_build_git=}")
-    print(f"{firmware_build=}")
-    print(f"{only_boards=}")
+    # print(f"{micropython_tests_git=}")
+    # print(f"{micropython_tests=}")
+    # print(f"{firmware_build_git=}")
+    # print(f"{firmware_build=}")
+    # print(f"{only_boards=}")
 
     args = Args(
-        micropython_tests_git=micropython_tests_git,
-        micropython_tests=micropython_tests,
-        firmware_build_git=firmware_build_git,
-        firmware_build=firmware_build,
+        mp_test=ArgsMpTest(
+            micropython_tests_git=micropython_tests_git,
+            micropython_tests=micropython_tests,
+        ),
+        firmware=ArgsFirmware(
+            firmware_build_git=firmware_build_git,
+            firmware_build=firmware_build,
+        ),
         only_boards=only_boards,
     )
     run_tests(args=args)

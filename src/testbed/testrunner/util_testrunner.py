@@ -11,12 +11,11 @@ import time
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.lib_testbed import Testbed
 from octoprobe.octoprobe import NTestRun
-from octoprobe.util_dut_programmers import FirmwareSpecBase
 from octoprobe.util_pytest import util_logging
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 from octoprobe.util_testbed_lock import TestbedLock
 from octoprobe.util_usb_serial import QueryResultTentacles
-from tests.micropython_repo.test_run import subprocess_run, un_monkey_patch
+from tests.micropython_repo.test_run import subprocess_run
 
 from testbed.constants import (
     DIRECTORY_GIT_CACHE,
@@ -43,8 +42,8 @@ from testbed.testcollection.baseclasses_spec import (
     ConnectedTentacles,
 )
 from testbed.testcollection.testrun_specs import TestRun, TestRunSpec
-from testbed.util_firmware_mpbuild import CachedGitRepo, collect_firmware_specs
-from testbed.util_github_micropython_org import PYTEST_OPT_DIR_MICROPYTHON_TESTS
+from testbed.testrunner.utils_common import ArgsMpTest
+from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 logger = logging.getLogger(__file__)
 
@@ -56,44 +55,9 @@ _TESTBED_LOCK = TestbedLock()
 
 @dataclasses.dataclass
 class Args:
-    micropython_tests_git: str | None
-    micropython_tests: str | None
-    firmware_build_git: str | None
-    firmware_build: str | None
+    mp_test: ArgsMpTest
+    firmware: ArgsFirmware
     only_boards: list[str] | None
-
-
-def clone_git_micropython_tests(args: Args) -> pathlib.Path:
-    """
-    We have to clone the micropython git repo and use the tests from the subfolder "test".
-    """
-    # directory = request.config.getoption(PYTEST_OPT_DIR_MICROPYTHON_TESTS)
-    if args.micropython_tests is not None:
-        _directory = pathlib.Path(args.micropython_tests).expanduser().resolve()
-        if not _directory.is_dir():
-            raise ValueError(
-                f"pytest parameter '{PYTEST_OPT_DIR_MICROPYTHON_TESTS}': Directory does not exist: {_directory}"
-            )
-        return _directory
-
-    # git_spec = request.config.getoption(PYTEST_OPT_GIT_MICROPYTHON_TESTS)
-    # if git_spec is None:
-    if args.micropython_tests_git is None:
-        raise ValueError(
-            "MicroPython repo not cloned - argument '{PYTEST_OPT_GIT_MICROPYTHON_TESTS}'not given to pytest !"
-        )
-
-    git_repo = CachedGitRepo(
-        directory_cache=DIRECTORY_GIT_CACHE,
-        git_spec=args.micropython_tests_git,
-        prefix="micropython_tests_",
-    )
-    git_repo.clone()
-
-    # Avoid hanger in run-perfbench.py/run-tests.py
-    un_monkey_patch()
-
-    return git_repo.directory
 
 
 def instantiate_tentacles(
@@ -127,7 +91,7 @@ def instantiate_tentacles(
     return tentacles
 
 
-def setup_tentacles(
+def run_single_test_parallel(
     ntest_run: NTestRun,
     required_futs: tuple[EnumFut],
     active_tentacles: list[Tentacle],
@@ -168,7 +132,7 @@ def setup_tentacles(
             logger.info(
                 f"TEST SETUP {duration_text(0.0)} {testresults_directory.test_nodeid}"
             )
-            ntest_run.function_build_firmwares(
+            args.firmware.build_firmwares(
                 active_tentacles=active_tentacles,
                 testresults_mpbuild=testresults_directory.directory_top / "mpbuild",
             )
@@ -260,10 +224,8 @@ def run_tests(args: Args):
         tentacles=connected_tentacles,
     )
 
-    _testrun = NTestRun(
-        testbed=_testbed,
-        firmware_git_url=args.firmware_build_git,
-    )
+    _testrun = NTestRun(testbed=_testbed)
+    args.firmware.setup()
 
     # _testrun.session_powercycle_tentacles()
     testrun_specs = TestRunSpecs(
@@ -280,7 +242,9 @@ def run_tests(args: Args):
         testrun_specs=testrun_specs,
     )
 
-    git_micropython_tests = clone_git_micropython_tests(args=args)
+    git_micropython_tests = args.mp_test.clone_git_micropython_tests(
+        directory_git_cache=DIRECTORY_GIT_CACHE
+    )
     while True:
         try:
             testrun = bartender.testrun_next()
@@ -299,42 +263,7 @@ def run_tests(args: Args):
 
         # Assign firmware_spec to each tentacle
         for tentacle in testrun.tentacles:
-
-            def get_firmware_spec(tentacle: Tentacle) -> FirmwareSpecBase:
-                """
-                Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
-                Now we create firmware specs.
-                In case of PYTEST_OPT_FIRMWARE:
-                The firmware has to be downloaded.
-                In case of PYTEST_OPT_FIRMWARE-TODO:
-                The firmware has to be compiled.
-                If nothing is specified, we do not flash any firmware: Return None
-                """
-                assert isinstance(tentacle, Tentacle)
-
-                if args.firmware_build_git is not None:
-                    #
-                    # Collect firmware specs by connected tentacles
-                    #
-                    specs = collect_firmware_specs(tentacles=[tentacle])
-                    return specs[0]
-
-                firmware_download_json = config.getoption(PYTEST_OPT_DOWNLOAD_FIRMWARE)
-                if firmware_download_json is not None:
-                    #
-                    # Donwnload firmware and return the spec
-                    #
-                    assert firmware_download_json is not None
-                    spec = FirmwareDownloadSpec.factory(filename=firmware_download_json)
-                    spec.download()
-                    return spec
-
-                #
-                # Nothing was specified: We do not flash any firmware
-                #
-                return FirmwareNoFlashingSpec.factory()
-
-            tentacle._firmware_spec = get_firmware_spec(tentacle=tentacle)
+            tentacle._firmware_spec = args.firmware.get_firmware_spec(tentacle=tentacle)
 
         print(testrun.testid)
 
@@ -344,7 +273,7 @@ def run_tests(args: Args):
             test_name=testrun.testid,
             test_nodeid=testrun.testid,
         )
-        setup_tentacles(
+        run_single_test_parallel(
             ntest_run=_testrun,
             required_futs=(EnumFut.FUT_MCU_ONLY,),
             active_tentacles=testrun.tentacles,
