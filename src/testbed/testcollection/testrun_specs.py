@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import abc
 import copy
 import dataclasses
 import itertools
+import pathlib
 from collections.abc import Iterator
+
+from testbed.testrunner.util_testrunner import ResultsDir
 
 from .baseclasses_spec import (
     Tentacle,
@@ -25,6 +29,10 @@ class TestRun:
         self.testrun_spec.done(test_run=self)
 
     def copy_tentacles(self) -> None:
+        """
+        We want to override tentacle.firmware_spec later on.
+        So we create a copy as we do not want to alter the origin.
+        """
         self.list_tentacle_variant = [
             TentacleVariant(
                 tentacle=copy.copy(tv.tentacle),
@@ -33,6 +41,13 @@ class TestRun:
             )
             for tv in self.list_tentacle_variant
         ]
+
+    @abc.abstractmethod
+    def test(
+        self,
+        testresults_directory: ResultsDir,
+        git_micropython_tests: pathlib.Path,
+    ) -> None: ...
 
     @property
     def tentacles(self) -> list[Tentacle]:
@@ -67,11 +82,14 @@ class TestRunSpec:
         subprocess_args: list[str],
         tentacles_required: int,
         tsvs_tbt: TentacleSpecVariants,
+        testrun_class: type[TestRun] = TestRun,
     ) -> None:
+        assert isinstance(testrun_class, type(TestRun))
         assert isinstance(subprocess_args, list)
         assert isinstance(tentacles_required, int)
         assert isinstance(tsvs_tbt, TentacleSpecVariants)
 
+        self.testrun_class = testrun_class
         self.tentacles_required = tentacles_required
         self.list_tsvs_tbt = [
             TentacleSpecVariants(tsvs_tbt) for _ in range(tentacles_required)
@@ -85,8 +103,6 @@ class TestRunSpec:
         return f"{self.__class__.__name__}({self.subprocess_args})"
 
     def done(self, test_run: TestRun) -> None:
-        from .testrun_specs import TestRun
-
         assert isinstance(test_run, TestRun)
 
         assert len(self.list_tsvs_tbt) == len(test_run.list_tentacle_variant)
@@ -124,8 +140,6 @@ class TestRunSpec:
                 if not tentacles_available():
                     continue
 
-                from .testrun_specs import TestRun
-
                 list_tentacle_variant = [
                     TentacleVariant(
                         tentacle=tentacle,
@@ -135,7 +149,7 @@ class TestRunSpec:
                     for variant, tentacle in zip(tsvs_combination, tentacles)
                 ]
 
-                yield TestRun(
+                yield self.testrun_class(
                     testrun_spec=self,
                     list_tentacle_variant=list_tentacle_variant,
                 )

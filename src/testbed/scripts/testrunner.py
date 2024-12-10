@@ -15,8 +15,8 @@ from typing import Optional
 import typer
 import typing_extensions
 
-from testbed.testrunner.util_testrunner import Args, run_tests
-from testbed.testrunner.utils_common import ArgsMpTest
+from testbed.testrunner.util_common import ArgsMpTest
+from testbed.testrunner.util_testrunner import Args, TestRunner
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 # 'typer' does not work correctly with typing.Annotated
@@ -82,7 +82,8 @@ def run(
         ),
         only_boards=only_boards,
     )
-    run_tests(args=args)
+    testrunner = TestRunner(args=args)
+    testrunner.run_all_in_sequence()
 
 
 if __name__ == "__main__":

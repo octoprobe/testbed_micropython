@@ -67,7 +67,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2W
 )
 
 
-tentacle_spec_mcu_rpi_pico2w = TentacleSpec(
+tentacle_spec_mcu_rpi_pico2 = TentacleSpec(
     doc="""
 See: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#raspberry-pi-pico-2-w24
 
@@ -88,7 +88,7 @@ Connections
   * Testpoint "extmod" <=> Board GPIO0
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag=EnumTentacleTag.RPI_PICO2W,
+    tentacle_tag=EnumTentacleTag.RPI_PICO2,
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
@@ -183,7 +183,7 @@ TENTACLES_SPECS: dict[str, TentacleSpec] = {
     for tentacle_spec in (
         tentacle_spec_mcu_pybv11,
         tentacle_spec_mcu_rpi_pico,
-        tentacle_spec_mcu_rpi_pico2w,
+        tentacle_spec_mcu_rpi_pico2,
         tentacle_spec_mcu_lolin_d1_mini,
         tentacle_spec_mcu_lolin_c3_mini,
     )
