@@ -11,7 +11,7 @@ from octoprobe.lib_tentacle import Tentacle
 from .testrun_specs import TestRun, TestRunSpec
 
 
-class RunSpecContainer(list[TestRunSpec]):
+class TestRunSpecs(list[TestRunSpec]):
     def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
         for testrun_spec in self:
             yield from testrun_spec.generate(available_tentacles=available_tentacles)

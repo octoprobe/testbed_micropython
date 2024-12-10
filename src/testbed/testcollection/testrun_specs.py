@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import dataclasses
 import itertools
 from collections.abc import Iterator
@@ -23,9 +24,33 @@ class TestRun:
     def done(self) -> None:
         self.testrun_spec.done(test_run=self)
 
+    def copy_tentacles(self) -> None:
+        self.list_tentacle_variant = [
+            TentacleVariant(
+                tentacle=copy.copy(tv.tentacle),
+                board=tv.board,
+                variant=tv.variant,
+            )
+            for tv in self.list_tentacle_variant
+        ]
+
     @property
     def tentacles(self) -> list[Tentacle]:
         return [x.tentacle for x in self.list_tentacle_variant]
+
+    @property
+    def testid(self) -> str:
+        """
+        For example: run-perfbench.py[2d2d-lolin_D1-ESP8266_GENERIC]
+        """
+        subprocess = "-".join(self.testrun_spec.subprocess_args)
+        tentacles = ",".join(
+            [
+                f"{tv.tentacle.label_short2}-{tv.label}"
+                for tv in self.list_tentacle_variant
+            ]
+        )
+        return f"{subprocess}[{tentacles}]"
 
 
 @dataclasses.dataclass
@@ -81,7 +106,7 @@ class TestRunSpec:
             for tsvs in self.list_tsvs_tbt[i]:
                 yield f"{tsvs!r} {tag}"
 
-    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRunBase]:
+    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
         tsvs_combinations = list(itertools.product(*self.list_tsvs_tbt))
 
         for tsvs_combination in tsvs_combinations:
@@ -104,6 +129,7 @@ class TestRunSpec:
                 list_tentacle_variant = [
                     TentacleVariant(
                         tentacle=tentacle,
+                        board=variant.board,
                         variant=variant.variant,
                     )
                     for variant, tentacle in zip(tsvs_combination, tentacles)

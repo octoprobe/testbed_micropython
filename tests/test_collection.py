@@ -14,7 +14,7 @@ from testbed.testcollection.bartender import (
     TestBartender,
     WaitForTestsToTerminateException,
 )
-from testbed.testcollection.baseclasses_run import RunSpecContainer
+from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import (
     ConnectedTentacles,
 )
@@ -47,7 +47,7 @@ def main() -> None:
             ),
         ]
     )
-    testrun_spec_container = RunSpecContainer(
+    testrun_specs = TestRunSpecs(
         [
             TestRunSpec(
                 subprocess_args=["run-perfbench.py"],
@@ -64,10 +64,10 @@ def main() -> None:
 
     bartender = TestBartender(
         connected_tentacles=connected_tentacles,
-        testrun_spec_container=testrun_spec_container,
+        testrun_specs=testrun_specs,
     )
     print(f"START: test_tbd={bartender.tests_tbd}")
-    for testrun_spec in bartender.testrun_spec_container:
+    for testrun_spec in bartender.testrun_spec:
         print(f"  {testrun_spec!r} tests_tbd={testrun_spec.tests_tbd}")
         for tsv in testrun_spec.iter_text_tsvs:
             print(f"    tsv={tsv}")
@@ -76,14 +76,14 @@ def main() -> None:
         # if i == 10:
         #     break
         try:
-            test_run_next = bartender.test_run_next()
+            test_run_next = bartender.testrun_next()
             print(f"{i} test_dbd:{bartender.tests_tbd} test_run_next:{test_run_next}")
             for test_run in bartender.actual_runs:
                 print("   ", test_run)
             if len(bartender.actual_runs) >= 3:
                 test_run_done = bartender.actual_runs[-1]
                 print("  test_run_done:", test_run_done)
-                bartender.test_run_done(test_run_done)
+                bartender.testrun_done(test_run_done)
             if test_run_next is None:
                 return
         except WaitForTestsToTerminateException:
@@ -92,7 +92,7 @@ def main() -> None:
                 print("DONE")
                 break
             test_run_done = bartender.actual_runs[-1]
-            bartender.test_run_done(test_run_done)
+            bartender.testrun_done(test_run_done)
             print("  test_run_done:", test_run_done)
 
         except AllTestsDoneException:
