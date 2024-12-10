@@ -9,7 +9,7 @@ import dataclasses
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.util_baseclasses import TentacleSpec
 
-from testbed.util_firmware_mpbuild import TAG_BOARDS, board_variants
+from testbed.util_constants import TAG_VARIANTS
 
 
 @dataclasses.dataclass(frozen=True, unsafe_hash=True)
@@ -26,10 +26,11 @@ class TentacleSpecVariant:
 
     @property
     def board(self) -> str:
-        boards = self.tentacle_spec.get_tag_mandatory(TAG_BOARDS)
-        for board_variant in board_variants(boards):
-            return board_variant.board
-        raise ValueError("Programming error")
+        return self.tentacle_spec.tentacle_tag.name
+        # boards = self.tentacle_spec.get_tag_mandatory(TAG_BOARDS)
+        # for board_variant in board_variants(boards):
+        #     return board_variant.board
+        # raise ValueError("Programming error")
 
 
 def tentacle_spec_2_tsvs(tentacle_spec: TentacleSpec) -> list[TentacleSpecVariant]:
@@ -40,19 +41,26 @@ def tentacle_spec_2_tsvs(tentacle_spec: TentacleSpec) -> list[TentacleSpecVarian
     # return [f"{self.board}-{v}" for v in self.variants]
     return [
         TentacleSpecVariant(tentacle_spec=tentacle_spec, variant=v)
-        for v in tentacle_spec_2_variant(tentacle_spec)
+        for v in tentacle_spec_2_variants(tentacle_spec)
     ]
 
 
-def tentacle_spec_2_variant(tentacle_spec: TentacleSpec) -> list[str]:
+def tentacle_spec_2_variants(tentacle_spec: TentacleSpec) -> list[str]:
     """
     Example for RP2_PICO: ["", "RISCV"]
     Example for ESP8266_GENERIC: [""]
     """
     assert isinstance(tentacle_spec, TentacleSpec)
 
-    boards = tentacle_spec.get_tag_mandatory(TAG_BOARDS)
-    return [i.variant for i in board_variants(boards=boards)]
+    assert isinstance(tentacle_spec, TentacleSpec)
+    variants = tentacle_spec.get_tag(TAG_VARIANTS)
+    if variants is None:
+        return [""]
+    return variants.split(":")
+
+    # return variants.split(":")
+    # boards = tentacle_spec.get_tag_mandatory(TAG_BOARDS)
+    # return [i.variant for i in board_variants(boards=boards)]
 
 
 @dataclasses.dataclass(frozen=True, repr=True, unsafe_hash=True)

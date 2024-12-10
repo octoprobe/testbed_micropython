@@ -6,11 +6,11 @@ from mpbuild.board_database import Database
 from mpbuild.build_api import build_by_variant_normalized
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.util_cached_git_repo import CachedGitRepo
-from octoprobe.util_constants import TAG_BOARDS
 from octoprobe.util_dut_programmers import FirmwareBuildSpec, FirmwareSpecBase
-from octoprobe.util_micropython_boards import BoardVariant, board_variants
+from octoprobe.util_micropython_boards import BoardVariant
 
 from testbed.constants import DIRECTORY_GIT_CACHE
+from testbed.testcollection.baseclasses_spec import tentacle_spec_2_variants
 
 logger = logging.getLogger(__file__)
 
@@ -125,9 +125,16 @@ def collect_firmware_specs(tentacles: list[Tentacle]) -> list[FirmwareSpecBase]:
     for tentacle in tentacles:
         if not tentacle.is_mcu:
             continue
-        boards = tentacle.get_tag_mandatory(TAG_BOARDS)
-        for variant in board_variants(boards):
-            set_variants.add(variant)
+        for variant in tentacle_spec_2_variants(tentacle.tentacle_spec):
+            set_variants.add(
+                BoardVariant(
+                    board=tentacle.tentacle_spec.tentacle_tag.name,
+                    variant=variant,
+                )
+            )
+        # boards = tentacle.get_tag_mandatory(TAG_BOARDS)
+        # for variant in board_variants(boards):
+        #     set_variants.add(variant)
     list_variants = sorted(set_variants, key=lambda v: v.name_normalized)
 
     return [
