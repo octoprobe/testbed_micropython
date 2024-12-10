@@ -13,7 +13,8 @@
             "args": [
                 // "--help",
                 "--micropython-tests-git=https://github.com/micropython/micropython.git@master",
-                "--firmware-build-git=https://github.com/micropython/micropython.git@master",
+                "--firmware-build-git=https://github.com/micropython/micropython.git@v1.24.1",
+                // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 "a",
                 "b",
             ],
