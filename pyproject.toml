@@ -28,7 +28,8 @@ classifiers = [
 ]
 dependencies = [
     "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
-    "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@hmaerki/introduce_mpbuild_api2",
+    # "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@hmaerki/introduce_mpbuild_api2",
+    "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
 ]
 
 [project.urls]
@@ -37,7 +38,7 @@ Documentation = "https://github.com/octoprobe/octoprobe"
 Repository = "https://github.com/octoprobe/octoprobe"
 
 [project.scripts]
-testrunner = "testbed.scripts.testrunner:app"
+mptest = "testbed.mptest.cli:app"
 
 [project.optional-dependencies]
 
@@ -68,6 +69,10 @@ includes = ["src/testbed"]
 [tool.mypy]
 # strict = true
 enable_incomplete_feature = ["NewGenericSyntax"]
+
+[[tool.mypy.overrides]]
+module = "pyudev.*"
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 pythonpath = "."
@@ -174,12 +179,16 @@ disable = '''
     too-many-arguments,
     too-many-branches,
     too-many-instance-attributes,
+    too-many-locals,
     too-many-return-statements,
+    too-many-statements,
+    unnecessary-lambda,
     unreachable,
     unused-argument,
     using-constant-test,
     wrong-import-order,
 '''
+# too-many-positional-arguments,
 
 [tool.pylint]
 max-line-length = 88

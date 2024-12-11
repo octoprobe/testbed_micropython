@@ -17,10 +17,6 @@
 		"python.testing.pytestArgs": [
 			"-v",
 			"-s",
-			"--git-micropython-tests=https://github.com/dpgeorge/micropython.git@tests-full-test-runner",
-			// "--firmware-json=${workspaceFolder}/pytest_args_firmware_RPI_PICO_v1.23.0.json",
-			// "--firmware-json=${workspaceFolder}/pytest_args_firmware_RPI_PICO2_v1.24.0.json",
-			"--firmware-build-url=https://github.com/micropython/micropython.git@v1.24.1",
 			"tests"
 		],
 		"python.testing.cwd": "${workspaceFolder}",

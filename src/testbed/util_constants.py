@@ -1,1 +1,0 @@
-TAG_VARIANTS = "variants"

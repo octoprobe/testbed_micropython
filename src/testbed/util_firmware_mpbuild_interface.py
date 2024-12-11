@@ -4,76 +4,71 @@ import dataclasses
 import pathlib
 import typing
 
-from testbed.util_firmware_mpbuild import BoardVariant, FirmwareBuildSpec
+from octoprobe.util_firmware_spec import MICROPYTHON_FULL_VERSION_TEXT_FORCE
 
 if typing.TYPE_CHECKING:
-    from testbed.constants import Tentacle
-    from testbed.util_firmware_mpbuild import FirmwareBuilder, FirmwareSpecBase
+    from testbed.constants import TentacleBase
+    from testbed.util_firmware_mpbuild import (
+        FirmwareBuilderBase,
+    )
 
 
-@dataclasses.dataclass(repr=True)
 class ArgsFirmware:
-    firmware_build_git: str | None
-    firmware_build: str | None
-    _builder: FirmwareBuilder | None = None
+    def __init__(
+        self,
+        firmware_build: str,
+        flash_skip: bool,
+        flash_force: bool,
+        git_clean: bool,
+    ) -> None:
+        assert isinstance(firmware_build, str)
+        assert isinstance(flash_skip, bool)
+        assert isinstance(flash_force, bool)
+        assert isinstance(git_clean, bool)
+        self.firmware_build = firmware_build
+        self.flash_skip = flash_skip
+        self.flash_force = flash_force
+        self.git_clean = git_clean
+        self._builder: FirmwareBuilderBase
 
     def setup(self) -> None:
         """
         This will clone the micropython git repo for the firmware to be build.
         Or verify, if the micropython repo exists.
         """
-        from testbed.util_firmware_mpbuild import FirmwareBuilder
+        from testbed.util_firmware_mpbuild import (
+            FirmwareBuilder,
+            FirmwareBuilderSkipFlash,
+        )
 
-        if self.firmware_build_git:
-            self._builder = FirmwareBuilder(firmware_git_url=self.firmware_build_git)
-
-    def get_firmware_spec(self, tentacle: Tentacle, variant: str) -> FirmwareSpecBase:
-        """
-        Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
-        Now we create firmware specs.
-        In case of PYTEST_OPT_FIRMWARE:
-        The firmware has to be downloaded.
-        In case of PYTEST_OPT_FIRMWARE-TODO:
-        The firmware has to be compiled.
-        If nothing is specified, we do not flash any firmware: Return None
-        """
-        assert tentacle.__class__.__name__ == "Tentacle"
-
-        if self.firmware_build_git is not None:
-            #
-            # Collect firmware specs by connected tentacles
-            #
-            return FirmwareBuildSpec(
-                board_variant=BoardVariant(
-                    board=tentacle.tentacle_spec.tentacle_tag.name,
-                    variant=variant,
-                ),
-                micropython_version_text=None,
+        if self.flash_skip:
+            self._builder = FirmwareBuilderSkipFlash()
+        else:
+            self._builder = FirmwareBuilder(
+                firmware_git=self.firmware_build, git_clean=self.git_clean
             )
 
-        #
-        # Nothing was specified: We do not flash any firmware
-        #
-        from testbed.util_firmware_specs import FirmwareNoFlashingSpec
+    @property
+    def repo_micropython_firmware(self) -> pathlib.Path:
+        return self._builder.repo_directory
 
-        return FirmwareNoFlashingSpec.factory()
-
-    def build_firmwares(
+    def build_firmware(
         self,
-        active_tentacles: list[Tentacle],
-        testresults_mpbuild: pathlib.Path,
+        tentacle: TentacleBase,
+        mpbuild_artifacts: pathlib.Path,
     ) -> None:
         """
-        Build the firmwares
+        Build the firmware and update 'tentacle.tentacle_state.firmware_spec'.
         """
-        if self._builder is None:
-            return
-
-        for tentacle in active_tentacles:
-            if tentacle.is_mcu:
-                spec = self._builder.build(
-                    firmware_spec=tentacle.firmware_spec,
-                    testresults_mpbuild=testresults_mpbuild,
+        if tentacle.is_mcu:
+            spec = self._builder.build(
+                firmware_spec=tentacle.tentacle_state.firmware_spec,
+                mpbuild_artifacts=mpbuild_artifacts,
+            )
+            # After building, the spec is more detailed: Reassign it!
+            if self.flash_force:
+                spec = dataclasses.replace(
+                    spec,
+                    micropython_full_version_text=MICROPYTHON_FULL_VERSION_TEXT_FORCE,
                 )
-                # After building, the spec is more detailed: Reassign it!
-                tentacle.firmware_spec = spec
+            tentacle.tentacle_state.firmware_spec = spec

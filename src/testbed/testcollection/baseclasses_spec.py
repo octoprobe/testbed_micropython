@@ -5,77 +5,75 @@ Classes required to define to specify the tests which have to run.
 from __future__ import annotations
 
 import dataclasses
+import logging
+import typing
 
-from octoprobe.lib_tentacle import Tentacle
-from octoprobe.util_baseclasses import TentacleSpec
+from ..constants import EnumFut
+from ..mpbuild import build_api
+from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 
-from testbed.util_constants import TAG_VARIANTS
+logger = logging.getLogger(__file__)
 
 
-@dataclasses.dataclass(frozen=True, unsafe_hash=True)
+@dataclasses.dataclass(frozen=True, unsafe_hash=True, order=True)
 class TentacleSpecVariant:
-    tentacle_spec: TentacleSpec
+    tentacle_spec: TentacleSpecMicropython
     variant: str
 
     def __post_init__(self) -> None:
-        assert isinstance(self.tentacle_spec, TentacleSpec)
+        assert isinstance(self.tentacle_spec, TentacleSpecMicropython)
         assert isinstance(self.variant, str)
 
     def __repr__(self) -> str:
-        return f"{self.board}-{self.variant}"
+        return self.board_variant
 
     @property
     def board(self) -> str:
-        return self.tentacle_spec.tentacle_tag.name
-        # boards = self.tentacle_spec.get_tag_mandatory(TAG_BOARDS)
-        # for board_variant in board_variants(boards):
-        #     return board_variant.board
-        # raise ValueError("Programming error")
+        tentacle_spec = self.tentacle_spec
+        assert isinstance(tentacle_spec, TentacleSpecMicropython)
+        return tentacle_spec.board
+
+    @property
+    def board_variant(self) -> str:
+        """
+        Returns:
+         'RPI_PICO2' for a default variant
+         'RPI_PICO2-RISCV' for a variant
+        #  'ESP8266_GENERIC' for a default variant
+        #  'ESP8266_GENERIC-FLASH_512K' for a variant
+        """
+        if self.variant == "":
+            return self.board
+        return f"{self.board}-{self.variant}"
 
 
-def tentacle_spec_2_tsvs(tentacle_spec: TentacleSpec) -> list[TentacleSpecVariant]:
+def tentacle_spec_2_tsvs(
+    tentacle_spec: TentacleSpecMicropython,
+) -> list[TentacleSpecVariant]:
     """
     ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
     """
-    assert isinstance(tentacle_spec, TentacleSpec)
-    # return [f"{self.board}-{v}" for v in self.variants]
+    assert isinstance(tentacle_spec, TentacleSpecMicropython)
+
+    variants = tentacle_spec.build_variants
     return [
-        TentacleSpecVariant(tentacle_spec=tentacle_spec, variant=v)
-        for v in tentacle_spec_2_variants(tentacle_spec)
+        TentacleSpecVariant(tentacle_spec=tentacle_spec, variant=v) for v in variants
     ]
-
-
-def tentacle_spec_2_variants(tentacle_spec: TentacleSpec) -> list[str]:
-    """
-    Example for RP2_PICO: ["", "RISCV"]
-    Example for ESP8266_GENERIC: [""]
-    """
-    assert isinstance(tentacle_spec, TentacleSpec)
-
-    assert isinstance(tentacle_spec, TentacleSpec)
-    variants = tentacle_spec.get_tag(TAG_VARIANTS)
-    if variants is None:
-        return [""]
-    return variants.split(":")
-
-    # return variants.split(":")
-    # boards = tentacle_spec.get_tag_mandatory(TAG_BOARDS)
-    # return [i.variant for i in board_variants(boards=boards)]
 
 
 @dataclasses.dataclass(frozen=True, repr=True, unsafe_hash=True)
 class TentacleVariant:
-    tentacle: Tentacle
+    tentacle: TentacleMicropython
     board: str
     variant: str
 
     def __post_init__(self) -> None:
-        assert isinstance(self.tentacle, Tentacle)
+        assert isinstance(self.tentacle, TentacleMicropython)
         assert isinstance(self.board, str)
         assert isinstance(self.variant, str)
 
     @property
-    def label(self) -> str:
+    def board_variant(self) -> str:
         """
         Example: RPI_PICO2-RISCV
         """
@@ -83,12 +81,29 @@ class TentacleVariant:
             return self.board
         return f"{self.board}-{self.variant}"
 
+    @property
+    def dash_variant(self) -> str:
+        """
+        Example for RPI_PICO2: '' or '-RISCV'
+        """
+        if self.variant == "":
+            return ""
+        return "-" + self.variant
+
     def __repr__(self) -> str:
         return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant}"
 
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
-    def remove_tentacle_variant(self, tentacle_variant: TentacleVariant) -> None:
+    def __repr__(self) -> str:
+        board_variants = [tsv.board_variant for tsv in self]
+        boards_variants_text = ", ".join(board_variants)
+        return f"TentacleSpecVariants({boards_variants_text})"
+
+    def remove_tentacle_variant(
+        self,
+        tentacle_variant: TentacleVariant,
+    ) -> None:
         assert isinstance(tentacle_variant, TentacleVariant)
         for tsv in self:
             if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
@@ -97,19 +112,92 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
                     self.remove(tsv)
                     return
 
+        logger.warning(
+            f"remove_tentacle_variant(): Could not remove as not found: {tentacle_variant.board_variant}"
+        )
 
-class ConnectedTentacles(list[Tentacle]):
+    def get_only_board_variants(
+        self,
+        only_board_variants: list[str] | None,
+    ) -> TentacleSpecVariants:
+        if only_board_variants is None:
+            return self
+        assert isinstance(only_board_variants, list)
+        return TentacleSpecVariants(
+            {x for x in self if x.board_variant in only_board_variants}
+        )
+
+    def filter_firmwares_built(self, firmwares_built: set) -> TentacleSpecVariants:
+        assert isinstance(firmwares_built, set)
+
+        return TentacleSpecVariants(
+            [tsv for tsv in self if tsv.board_variant in firmwares_built]
+        )
+
     @property
-    def tentacle_specs(self) -> set[TentacleSpec]:
-        specs: set[TentacleSpec] = set()
+    def sorted_text(self) -> list[str]:
+        return sorted([s.board_variant for s in self])
+
+
+class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
+    """
+    Assert: len(self) == required_tentacles_count
+    self[0]: Role WLAN-First
+    self[1]: Role WLAN-Second
+    """
+
+    def verify(self, required_tentacles_count: int) -> None:
+        assert len(self) == required_tentacles_count
+
+    @property
+    def tests_todo(self) -> int:
+        return sum([len(tsvs_todo) for tsvs_todo in self])
+
+    def filter_firmwares_built(
+        self,
+        firmwares_built: set[str] | None,
+    ) -> RolesTentacleSpecVariants:
+        assert isinstance(firmwares_built, set | None)
+
+        if firmwares_built is None:
+            return self
+
+        return RolesTentacleSpecVariants(
+            [
+                tsvs.filter_firmwares_built(firmwares_built=firmwares_built)
+                for tsvs in self
+            ]
+        )
+
+    def pytest_print(self, indent: int, file: typing.TextIO) -> None:
+        for i, tsvs in enumerate(self):
+            print(indent * "  " + f"[{i}]", file=file)
+            tsvs.pytest_print(indent + 1, file=file)
+
+
+class ConnectedTentacles(list[TentacleMicropython]):
+    @property
+    def tentacle_specs(self) -> set[TentacleSpecMicropython]:
+        specs: set[TentacleSpecMicropython] = set()
         for t in self:
             specs.add(t.tentacle_spec)
         return specs
 
-    @property
-    def tsvs(self) -> TentacleSpecVariants:
+    def get_tsvs(self) -> TentacleSpecVariants:
         s = TentacleSpecVariants()
         for tentacle_spec in self.tentacle_specs:
-            for tsv in tentacle_spec_2_tsvs(tentacle_spec):
+            for tsv in tentacle_spec_2_tsvs(tentacle_spec=tentacle_spec):
                 s.add(tsv)
         return s
+
+    def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
+        return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
+
+    def get_only(self, board_variants: list[str] | None) -> ConnectedTentacles:
+        assert isinstance(board_variants, list | None)
+
+        if board_variants is None:
+            return self
+
+        boards = [build_api.split_board_variant(bv)[0] for bv in board_variants]
+        return ConnectedTentacles([t for t in self if t.tentacle_spec.board in boards])

@@ -2,8 +2,7 @@ import logging
 import pathlib
 
 import pytest
-from octoprobe.lib_tentacle import Tentacle
-from octoprobe.util_dut_programmers import (
+from octoprobe.util_firmware_spec import (
     FirmwareBuildSpec,
     FirmwareDownloadSpec,
     FirmwareNoFlashingSpec,
@@ -11,6 +10,7 @@ from octoprobe.util_dut_programmers import (
 )
 from octoprobe.util_micropython_boards import BoardVariant
 
+from .tentacle_spec import TentacleMicropython
 from .util_firmware_mpbuild import collect_firmware_specs
 
 logger = logging.getLogger(__file__)
@@ -20,7 +20,7 @@ PYTEST_OPT_BUILD_FIRMWARE_MOCK = "MOCK"
 
 
 def get_firmware_specs(
-    config: pytest.Config, tentacles: list[Tentacle]
+    config: pytest.Config, tentacles: list[TentacleMicropython]
 ) -> list[FirmwareSpecBase]:
     """
     Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
@@ -45,17 +45,14 @@ def get_firmware_specs(
             return [
                 FirmwareBuildSpec(
                     BoardVariant.factory("RPI_PICO"),
-                    micropython_version_text="y",
                     _filename=pathlib.Path("/x/y"),
                 ),
                 FirmwareBuildSpec(
                     BoardVariant.factory("PYBV11"),
-                    micropython_version_text="y",
                     _filename=pathlib.Path("/x/y"),
                 ),
                 FirmwareBuildSpec(
                     BoardVariant.factory("PYBV11-DP"),
-                    micropython_version_text="y",
                     _filename=pathlib.Path("/x/y"),
                 ),
             ]

@@ -11,16 +11,26 @@ import typing
 from octoprobe.util_baseclasses import TENTACLE_TYPE_MCU
 
 if typing.TYPE_CHECKING:
-    from octoprobe.lib_tentacle import Tentacle
+    from octoprobe.lib_tentacle import TentacleBase
+
+    from .tentacle_spec import TentacleMicropython
+
+TAG_BUILD_VARIANTS = "build_variants"
+TAG_BOARD = "board"
+
+TESTBED_NAME = "testbed_micropython"
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
-print(DIRECTORY_REPO / "pytest.ini")
-assert (DIRECTORY_REPO / "pytest.ini").is_file()
+assert (DIRECTORY_REPO / "src" / "testbed").is_dir()
 DIRECTORY_DOWNLOADS = DIRECTORY_REPO / "downloads"
 DIRECTORY_TESTRESULTS = DIRECTORY_REPO / "results"
 DIRECTORY_GIT_CACHE = DIRECTORY_REPO / "git_cache"
 FILENAME_TESTBED_LOCK = DIRECTORY_REPO / "testbed.lock"
+DIRECTORY_MPBUILD_ARTIFACTS = DIRECTORY_REPO / "results" / "mpbuild"
+
+
+URL_FILENAME_DEFAULT = "."
 
 
 class EnumTentacleType(enum.StrEnum):
@@ -30,15 +40,15 @@ class EnumTentacleType(enum.StrEnum):
 
     def get_tentacles_for_type(
         self,
-        tentacles: list[Tentacle],
+        tentacles: list[TentacleMicropython],
         required_futs: list[EnumFut],
-    ) -> list[Tentacle]:
+    ) -> list[TentacleBase]:
         """
         Select all tentacles which correspond to this
         EnumTentacleType and list[EnumFut].
         """
 
-        def has_required_futs(t: Tentacle) -> bool:
+        def has_required_futs(t: TentacleMicropython) -> bool:
             if t.tentacle_spec.tentacle_type == self:
                 for required_fut in required_futs:
                     if required_fut in t.tentacle_spec.futs:
@@ -46,8 +56,6 @@ class EnumTentacleType(enum.StrEnum):
             return False
 
         return [t for t in tentacles if has_required_futs(t)]
-
-
 
 
 class EnumFut(enum.StrEnum):
@@ -61,3 +69,12 @@ class EnumFut(enum.StrEnum):
     """
     FUT_WLAN = enum.auto()
     FUT_BLE = enum.auto()
+
+
+def is_url(filename: str) -> bool:
+    assert isinstance(filename, str)
+
+    for prefix in ("http://", "https://"):
+        if filename.startswith(prefix):
+            return True
+    return False

@@ -1,0 +1,53 @@
+## testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=6
+    First ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+    Second ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+## 0: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=6
+    First ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+    Second ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+## 0: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+## 0: possible_testruns
+  TestRun(TESTWLAN, ESP8266_GENERIC, LOLIN_C3_MINI) / TESTWLAN[1c40-LOLIN_D1_MINI,1c41-LOLIN_C3_MINI]
+  TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K, LOLIN_C3_MINI) / TESTWLAN[1c40-LOLIN_D1_MINI-FLASH_512K,1c41-LOLIN_C3_MINI]
+  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI-FLASH_512K]
+  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC) / TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI]
+### 0: fake_start:4 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC, LOLIN_C3_MINI) / TESTWLAN[1c40-LOLIN_D1_MINI,1c41-LOLIN_C3_MINI]
+### actual_testruns
+      TESTWLAN[1c40-LOLIN_D1_MINI,1c41-LOLIN_C3_MINI]
+## 1: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=4
+    First ['ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+    Second ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K']
+## 1: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+## 1: possible_testruns
+###  testrun_done: TESTWLAN[1c40-LOLIN_D1_MINI,1c41-LOLIN_C3_MINI]
+## 2: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=4
+    First ['ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+    Second ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K']
+## 2: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+## 2: possible_testruns
+  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI-FLASH_512K]
+  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC) / TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI]
+### 2: fake_start:2 testrun_next: TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI-FLASH_512K]
+### actual_testruns
+      TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI-FLASH_512K]
+## 3: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+## 3: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+## 3: possible_testruns
+###  testrun_done: TESTWLAN[1c41-LOLIN_C3_MINI,1c40-LOLIN_D1_MINI-FLASH_512K]
+## 4: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+## 4: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+## 4: possible_testruns
