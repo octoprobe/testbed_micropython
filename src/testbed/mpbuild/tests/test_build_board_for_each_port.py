@@ -8,8 +8,9 @@ Goal is a high test coverage of the boards.
 import pathlib
 
 from mpbuild.build import MpbuildNotSupportedException
-from mpbuild.build_api import build
 from test_build_some_variants import RESULTS_DIRECTORY, get_db
+
+from testbed.mpbuild.build_api import build
 
 THIS_FILE = pathlib.Path(__file__)
 

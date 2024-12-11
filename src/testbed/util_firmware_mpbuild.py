@@ -3,13 +3,13 @@ import os
 import pathlib
 
 from mpbuild.board_database import Database
-from mpbuild.build_api import build_by_variant_normalized
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_dut_programmers import FirmwareBuildSpec, FirmwareSpecBase
 from octoprobe.util_micropython_boards import BoardVariant
 
 from testbed.constants import DIRECTORY_GIT_CACHE
+from testbed.mpbuild.build_api import build_by_variant_normalized
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_variants
 
 logger = logging.getLogger(__file__)
