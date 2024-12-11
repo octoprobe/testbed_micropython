@@ -15,13 +15,13 @@
                 "--micropython-tests-git=https://github.com/micropython/micropython.git@master",
                 "--firmware-build-git=https://github.com/micropython/micropython.git@v1.24.1",
                 // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
-                "a",
-                "b",
+                "RPI_PICO",
+                "ESP8266_GENERIC",
             ],
             "console": "integratedTerminal",
             "env": {
                 "TESTBED_MICROPYTHON_MICROPYTHON_TESTS_GIT": "blabla",
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
             },
             "justMyCode": false,
         },

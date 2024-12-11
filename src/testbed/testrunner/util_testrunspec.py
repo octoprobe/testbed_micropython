@@ -31,8 +31,9 @@ def mip_install(
         sys.executable,
         "-m",
         "mpremote",
+        "connect",
+        serial_port,
         "mip",
-        f"--target={serial_port}",
         "install",
         mip_package,
     ]
