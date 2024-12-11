@@ -7,7 +7,7 @@ from octoprobe.lib_tentacle import Tentacle
 from testbed.tentacles_spec import (
     tentacle_spec_mcu_lolin_c3_mini,
     tentacle_spec_mcu_lolin_d1_mini,
-    tentacle_spec_mcu_rpi_pico2w,
+    tentacle_spec_mcu_rpi_pico2,
 )
 from testbed.testcollection.bartender import (
     AllTestsDoneException,
@@ -26,12 +26,12 @@ def main() -> None:
     connected_tentacles = ConnectedTentacles(
         [
             Tentacle(
-                tentacle_spec=tentacle_spec_mcu_rpi_pico2w,
+                tentacle_spec=tentacle_spec_mcu_rpi_pico2,
                 tentacle_serial_number="1c4a",
                 hw_version="1.0",
             ),
             Tentacle(
-                tentacle_spec=tentacle_spec_mcu_rpi_pico2w,
+                tentacle_spec=tentacle_spec_mcu_rpi_pico2,
                 tentacle_serial_number="1c4b",
                 hw_version="1.0",
             ),
@@ -47,20 +47,20 @@ def main() -> None:
             ),
         ]
     )
+
     testrun_specs = TestRunSpecs(
         [
             TestRunSpec(
                 subprocess_args=["run-perfbench.py"],
                 tentacles_required=1,
-                tsvs_tbt=connected_tentacles.tsvs,
             ),
             TestRunSpec(
                 subprocess_args=["wlantest.py"],
                 tentacles_required=2,
-                tsvs_tbt=connected_tentacles.tsvs,
             ),
         ]
     )
+    testrun_specs.assign_tsvs_tbd(tsvs=connected_tentacles.tsvs)
 
     bartender = TestBartender(
         connected_tentacles=connected_tentacles,
