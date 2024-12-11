@@ -31,16 +31,16 @@ from testbed.testcollection.bartender import (
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
 from testbed.testcollection.testrun_specs import TestArgs, TestRun
-from testbed.testrunner.testrunspec_perftest import TESTRUNSPEC_PERFTEST
-from testbed.testrunner.testrunspec_runtests import (
-    TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
-    TESTRUNSPEC_RUNTESTS_MISC,
-)
-from testbed.testrunner.testrunspec_multinet import (
+from testbed.testrunner.util_common import ArgsMpTest
+from testbed.testrunspecs.multinet import (
     TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
     TESTRUNSPEC_RUNTESTS_MULTINET,
 )
-from testbed.testrunner.util_common import ArgsMpTest
+from testbed.testrunspecs.perftest import TESTRUNSPEC_PERFTEST
+from testbed.testrunspecs.runtests import (
+    TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+    TESTRUNSPEC_RUNTESTS_MISC,
+)
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 logger = logging.getLogger(__file__)

@@ -92,8 +92,6 @@ Connections
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN,
-        EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
     tags="variants=:RISCV,mcu=rp2,programmer=picotool",

@@ -57,14 +57,15 @@ def list_() -> None:
         variants = ",".join(
             f"{tsv!r}" for tsv in tentacle_spec_2_tsvs(tentacle.tentacle_spec)
         )
-        print(f"    variants {variants}")
+        print(f"    variants={variants}")
         futs = ",".join([fut.name for fut in tentacle.tentacle_spec.futs])
-        print(f"    futs {futs}")
+        print(f"    futs={futs}")
 
     print("")
     print("Tests")
     for testrun_spec in testrunner.bartender.testrun_specs:
         print(f"  {testrun_spec.label}")
+        print(f"    reqired_fut={testrun_spec.required_fut.name}")
         print(f"    tests_todo={testrun_spec.tests_todo}")
         print(f"    command={testrun_spec.command}")
         print(f"      args={testrun_spec.auxiliary_args}")

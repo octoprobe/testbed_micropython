@@ -7,6 +7,7 @@ import sys
 
 from octoprobe.util_subprocess import subprocess_run
 
+from testbed.constants import EnumFut
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 
 logger = logging.getLogger(__file__)
@@ -92,13 +93,15 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     label="RUN-MULTITESTS_MULTINET",
     command="run-multitests.py",
     auxiliary_args=["multi_net/*.py"],
-    tentacles_required=2,
+    required_fut=EnumFut.FUT_WLAN,
+    required_tentacles_count=2,
     testrun_class=TestRunMultitestMultinet,
 )
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     label="RUN-MULTITESTS_MULTIBLUETOOTH",
     command="run-multitests.py",
     auxiliary_args=["multi_bluetooth/*.py"],
-    tentacles_required=2,
+    required_fut=EnumFut.FUT_BLE,
+    required_tentacles_count=2,
     testrun_class=TestRunMultitestBluetooth,
 )

@@ -4,6 +4,7 @@ import itertools
 
 from octoprobe.lib_tentacle import Tentacle
 
+from testbed.constants import EnumFut
 from testbed.tentacles_spec import (
     tentacle_spec_mcu_lolin_c3_mini,
     tentacle_spec_mcu_lolin_d1_mini,
@@ -52,13 +53,17 @@ def main() -> None:
         [
             TestRunSpec(
                 label="TESTA",
+                command="testa.py",
                 auxiliary_args=["run-perfbench.py"],
-                tentacles_required=1,
+                required_fut=EnumFut.FUT_MCU_ONLY,
+                required_tentacles_count=1,
             ),
             TestRunSpec(
                 label="TESTWLAN",
+                command="testwlan.py",
                 auxiliary_args=["wlantest.py"],
-                tentacles_required=2,
+                required_fut=EnumFut.FUT_WLAN,
+                required_tentacles_count=2,
             ),
         ]
     )

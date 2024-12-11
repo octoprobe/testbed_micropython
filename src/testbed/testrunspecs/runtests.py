@@ -5,6 +5,7 @@ import sys
 
 from octoprobe.util_subprocess import subprocess_run
 
+from testbed.constants import EnumFut
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from testbed.testrunner.util_testrunspec import mip_install
@@ -64,7 +65,8 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE",
     command="run-tests.py",
     auxiliary_args=["--test-dirs=extmod_hardware"],
-    tentacles_required=1,
+    required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
+    required_tentacles_count=1,
     testrun_class=TestRunRunTests,
 )
 
@@ -73,6 +75,7 @@ TESTRUNSPEC_RUNTESTS_MISC = TestRunSpec(
     label="RUN-TESTS_MISC",
     command="run-tests.py",
     auxiliary_args=["--test-dirs=misc"],
-    tentacles_required=1,
+    required_fut=EnumFut.FUT_MCU_ONLY,
+    required_tentacles_count=1,
     testrun_class=TestRunRunTests,
 )

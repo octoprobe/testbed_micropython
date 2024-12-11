@@ -4,9 +4,10 @@ import sys
 
 from octoprobe.util_subprocess import subprocess_run
 
+from testbed.constants import EnumFut
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun
-from testbed.testrunner.testrunspec_runtests import TestRunSpec
+from testbed.testrunspecs.runtests import TestRunSpec
 
 
 class TestRunPerfTest(TestRun):
@@ -51,6 +52,7 @@ TESTRUNSPEC_PERFTEST = TestRunSpec(
     label="RUN-PERFBENCH",
     command="run-perfbench.py",
     auxiliary_args=[],
-    tentacles_required=1,
+    required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
+    required_tentacles_count=1,
     testrun_class=TestRunPerfTest,
 )

@@ -16,7 +16,12 @@ from .testrun_specs import TestRun, TestRunSpec
 class TestRunSpecs(list[TestRunSpec]):
     def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
         for testrun_spec in self:
-            yield from testrun_spec.generate(available_tentacles=available_tentacles)
+            applicable_tentacles = [
+                x
+                for x in available_tentacles
+                if testrun_spec.required_fut in x.tentacle_spec.futs
+            ]
+            yield from testrun_spec.generate(available_tentacles=applicable_tentacles)
 
     @property
     def tests_todo(self) -> int:

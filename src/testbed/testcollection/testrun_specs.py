@@ -10,6 +10,8 @@ from collections.abc import Iterator
 
 from octoprobe.lib_tentacle import Tentacle
 
+from testbed.constants import EnumFut
+
 from .baseclasses_spec import (
     TentacleSpecVariants,
     TentacleVariant,
@@ -86,19 +88,22 @@ class TestRunSpec:
         label: str,
         command: str,
         auxiliary_args: list[str],
-        tentacles_required: int,
+        required_fut: EnumFut,
+        required_tentacles_count: int,
         testrun_class: type[TestRun] = TestRun,
     ) -> None:
         assert isinstance(label, str)
         assert isinstance(command, str)
         assert isinstance(auxiliary_args, list)
-        assert isinstance(tentacles_required, int)
+        assert isinstance(required_fut, EnumFut)
+        assert isinstance(required_tentacles_count, int)
         assert isinstance(testrun_class, type(TestRun))
 
         self.command = command
         self.label = label
         self.testrun_class = testrun_class
-        self.tentacles_required = tentacles_required
+        self.required_fut = required_fut
+        self.tentacles_required = required_tentacles_count
         self.list_tsvs_tbt: list[TentacleSpecVariants] = []
         self.auxiliary_args = auxiliary_args
         """
