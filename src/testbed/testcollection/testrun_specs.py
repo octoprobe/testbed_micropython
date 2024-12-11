@@ -5,15 +5,18 @@ import copy
 import dataclasses
 import itertools
 import pathlib
+import typing
 from collections.abc import Iterator
 
-from testbed.testrunner.util_testrunner import ResultsDir
+from octoprobe.lib_tentacle import Tentacle
 
 from .baseclasses_spec import (
-    Tentacle,
     TentacleSpecVariants,
     TentacleVariant,
 )
+
+if typing.TYPE_CHECKING:
+    from testbed.testrunner.util_testrunner import ResultsDir
 
 
 @dataclasses.dataclass(repr=True)
