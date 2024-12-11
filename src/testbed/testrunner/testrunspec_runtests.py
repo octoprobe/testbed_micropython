@@ -41,7 +41,8 @@ class TestRunRunTests(TestRun):
         # Run tests
         args = [
             sys.executable,
-            *self.testrun_spec.subprocess_args,
+            "run-tests.py",
+            *self.testrun_spec.auxiliary_args,
             f"-t=port:{serial_port}",
             # f"--target={target}",
             "--jobs=1",
@@ -58,14 +59,16 @@ class TestRunRunTests(TestRun):
 
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
-    subprocess_args=["run-tests.py", "--test-dirs=extmod_hardware"],
+    label="RUN-TESTS_EXTMOD_HARDWARE",
+    auxiliary_args=["--test-dirs=extmod_hardware"],
     tentacles_required=1,
     testrun_class=TestRunRunTests,
 )
 
 
 TESTRUNSPEC_RUNTESTS_MISC = TestRunSpec(
-    subprocess_args=["run-tests.py", "--test-dirs=misc"],
+    label="RUN-TESTS_MISC",
+    auxiliary_args=["--test-dirs=misc"],
     tentacles_required=1,
     testrun_class=TestRunRunTests,
 )

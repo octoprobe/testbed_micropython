@@ -80,7 +80,8 @@ config = wlan.ifconfig()
 
 
 TESTRUNSPEC_RUNTESTS_WLAN = TestRunSpec(
-    subprocess_args=["NET"],
+    label="RUN-MULTITESTS-MULTI_NET",
+    auxiliary_args=[],
     tentacles_required=2,
     testrun_class=TestRunWlan,
 )

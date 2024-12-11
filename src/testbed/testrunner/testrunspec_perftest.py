@@ -31,7 +31,8 @@ class TestRunPerfTest(TestRun):
 
         args = [
             sys.executable,
-            *self.testrun_spec.subprocess_args,
+            "run-perfbench.py",
+            *self.testrun_spec.auxiliary_args,
             "--pyboard",
             f"--device={tentacle.dut.get_tty()}",
             *perftest_args,
@@ -45,7 +46,8 @@ class TestRunPerfTest(TestRun):
 
 
 TESTRUNSPEC_PERFTEST = TestRunSpec(
-    subprocess_args=["run-perfbench.py"],
+    label="RUN-PERFBENCH",
+    auxiliary_args=[],
     tentacles_required=1,
     testrun_class=TestRunPerfTest,
 )

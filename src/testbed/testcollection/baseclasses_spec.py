@@ -75,13 +75,22 @@ class TentacleVariant:
         assert isinstance(self.variant, str)
 
     @property
-    def label(self) -> str:
+    def board_variant(self) -> str:
         """
         Example: RPI_PICO2-RISCV
         """
         if self.variant == "":
             return self.board
         return f"{self.board}-{self.variant}"
+
+    @property
+    def dash_variant(self) -> str:
+        """
+        Example for RPI_PICO2: '' or '-RISCV'
+        """
+        if self.variant == "":
+            return ""
+        return "-" + self.variant
 
     def __repr__(self) -> str:
         return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant}"

@@ -51,11 +51,13 @@ def main() -> None:
     testrun_specs = TestRunSpecs(
         [
             TestRunSpec(
-                subprocess_args=["run-perfbench.py"],
+                label="TESTA",
+                auxiliary_args=["run-perfbench.py"],
                 tentacles_required=1,
             ),
             TestRunSpec(
-                subprocess_args=["wlantest.py"],
+                label="TESTWLAN",
+                auxiliary_args=["wlantest.py"],
                 tentacles_required=2,
             ),
         ]

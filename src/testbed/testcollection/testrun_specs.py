@@ -63,14 +63,13 @@ class TestRun:
         """
         For example: run-perfbench.py[2d2d-lolin_D1-ESP8266_GENERIC]
         """
-        subprocess = "-".join(self.testrun_spec.subprocess_args)
         tentacles = ",".join(
             [
-                f"{tv.tentacle.label_short2}-{tv.label}"
+                f"{tv.tentacle.label_short}{tv.dash_variant}"
                 for tv in self.list_tentacle_variant
             ]
         )
-        return f"{subprocess}[{tentacles}]"
+        return f"{self.testrun_spec.label}[{tentacles}]"
 
 
 @dataclasses.dataclass
@@ -84,18 +83,21 @@ class TestRunSpec:
 
     def __init__(
         self,
-        subprocess_args: list[str],
+        label: str,
+        auxiliary_args: list[str],
         tentacles_required: int,
         testrun_class: type[TestRun] = TestRun,
     ) -> None:
-        assert isinstance(testrun_class, type(TestRun))
-        assert isinstance(subprocess_args, list)
+        assert isinstance(label, str)
+        assert isinstance(auxiliary_args, list)
         assert isinstance(tentacles_required, int)
+        assert isinstance(testrun_class, type(TestRun))
 
+        self.label = label
         self.testrun_class = testrun_class
         self.tentacles_required = tentacles_required
         self.list_tsvs_tbt: list[TentacleSpecVariants] = []
-        self.subprocess_args = subprocess_args
+        self.auxiliary_args = auxiliary_args
         """
         wlantest.py
         """
@@ -107,7 +109,7 @@ class TestRunSpec:
         ]
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.subprocess_args})"
+        return f"{self.__class__.__name__}({self.auxiliary_args})"
 
     def done(self, test_run: TestRun) -> None:
         assert isinstance(test_run, TestRun)
