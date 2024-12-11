@@ -36,7 +36,10 @@ from testbed.testrunner.testrunspec_runtests import (
     TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
     TESTRUNSPEC_RUNTESTS_MISC,
 )
-from testbed.testrunner.testrunspec_wlan import TESTRUNSPEC_RUNTESTS_WLAN
+from testbed.testrunner.testrunspec_multinet import (
+    TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+    TESTRUNSPEC_RUNTESTS_MULTINET,
+)
 from testbed.testrunner.util_common import ArgsMpTest
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
@@ -106,14 +109,14 @@ class TestRunner:
 
         query_result_tentacles = NTestRun.session_powercycle_tentacles()
 
-        self.connected_tentacles = instantiate_tentacles(
+        connected_tentacles = instantiate_tentacles(
             query_result_tentacles=query_result_tentacles
         )
-        if len(self.connected_tentacles) == 0:
+        if len(connected_tentacles) == 0:
             logger.warning("No tentacles discovered!")
             raise SystemExit(0)
 
-        self.ntestrun = NTestRun(connected_tentacles=self.connected_tentacles)
+        self.ntestrun = NTestRun(connected_tentacles=connected_tentacles)
         args.firmware.setup()
 
         # _testrun.session_powercycle_tentacles()
@@ -123,20 +126,20 @@ class TestRunner:
                 TESTRUNSPEC_PERFTEST,
                 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
                 TESTRUNSPEC_RUNTESTS_MISC,
-                TESTRUNSPEC_RUNTESTS_WLAN,
+                TESTRUNSPEC_RUNTESTS_MULTINET,
+                TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
             ]
         )
-        testrun_specs.assign_tsvs_tbd(self.connected_tentacles.tsvs)
+        testrun_specs.assign_tsvs_todo(connected_tentacles.tsvs)
         self.bartender = TestBartender(
-            connected_tentacles=self.connected_tentacles,
+            connected_tentacles=connected_tentacles,
             testrun_specs=testrun_specs,
         )
 
-        self.git_micropython_tests = args.mp_test.clone_git_micropython_tests(
+    def run_all_in_sequence(self) -> None:
+        git_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
             directory_git_cache=DIRECTORY_GIT_CACHE
         )
-
-    def run_all_in_sequence(self) -> None:
         while True:
             try:
                 testrun = self.bartender.testrun_next()
@@ -154,13 +157,18 @@ class TestRunner:
             # Run test
             #
             try:
-                self.run_one_test(testrun=testrun)
+                self.run_one_test(
+                    testrun=testrun,
+                    git_micropython_tests=git_micropython_tests,
+                )
             finally:
                 self.bartender.testrun_done(test_run=testrun)
 
         self.ntestrun.session_teardown()
 
-    def run_one_test(self, testrun: TestRun) -> None:
+    def run_one_test(
+        self, testrun: TestRun, git_micropython_tests: pathlib.Path
+    ) -> None:
         """
         Runs setup and teardown for every single test:
 
@@ -226,7 +234,7 @@ class TestRunner:
                     testrun.test(
                         testargs=TestArgs(
                             testresults_directory=testresults_directory,
-                            git_micropython_tests=self.git_micropython_tests,
+                            git_micropython_tests=git_micropython_tests,
                         )
                     )
                     logger.warning("Test SUCCESS")

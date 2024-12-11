@@ -84,15 +84,18 @@ class TestRunSpec:
     def __init__(
         self,
         label: str,
+        command: str,
         auxiliary_args: list[str],
         tentacles_required: int,
         testrun_class: type[TestRun] = TestRun,
     ) -> None:
         assert isinstance(label, str)
+        assert isinstance(command, str)
         assert isinstance(auxiliary_args, list)
         assert isinstance(tentacles_required, int)
         assert isinstance(testrun_class, type(TestRun))
 
+        self.command = command
         self.label = label
         self.testrun_class = testrun_class
         self.tentacles_required = tentacles_required
@@ -102,14 +105,14 @@ class TestRunSpec:
         wlantest.py
         """
 
-    def assign_tsvs_tbd(self, tsvs_tbt: TentacleSpecVariants) -> None:
+    def assign_tsvs_todo(self, tsvs_tbt: TentacleSpecVariants) -> None:
         assert isinstance(tsvs_tbt, TentacleSpecVariants)
         self.list_tsvs_tbt = [
             TentacleSpecVariants(tsvs_tbt) for _ in range(self.tentacles_required)
         ]
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.auxiliary_args})"
+        return f"{self.__class__.__name__}({self.label} {self.auxiliary_args})"
 
     def done(self, test_run: TestRun) -> None:
         assert isinstance(test_run, TestRun)
@@ -122,7 +125,7 @@ class TestRunSpec:
             tsvs.remove_tentacle_variant(tentacle_variant)
 
     @property
-    def tests_tbd(self) -> int:
+    def tests_todo(self) -> int:
         return sum([len(tsvs_tbt) for tsvs_tbt in self.list_tsvs_tbt])
 
     @property

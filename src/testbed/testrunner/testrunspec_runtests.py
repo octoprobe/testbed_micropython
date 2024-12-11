@@ -41,7 +41,7 @@ class TestRunRunTests(TestRun):
         # Run tests
         args = [
             sys.executable,
-            "run-tests.py",
+            self.testrun_spec.command,
             *self.testrun_spec.auxiliary_args,
             f"-t=port:{serial_port}",
             # f"--target={target}",
@@ -53,13 +53,16 @@ class TestRunRunTests(TestRun):
             args=args,
             cwd=testargs.git_micropython_tests / "tests",
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=testargs.testresults_directory("run-tests.txt").filename,
+            logfile=testargs.testresults_directory(
+                "testresults_subprocess.txt"
+            ).filename,
             timeout_s=60.0,
         )
 
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE",
+    command="run-tests.py",
     auxiliary_args=["--test-dirs=extmod_hardware"],
     tentacles_required=1,
     testrun_class=TestRunRunTests,
@@ -68,6 +71,7 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_MISC = TestRunSpec(
     label="RUN-TESTS_MISC",
+    command="run-tests.py",
     auxiliary_args=["--test-dirs=misc"],
     tentacles_required=1,
     testrun_class=TestRunRunTests,

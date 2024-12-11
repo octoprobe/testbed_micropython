@@ -22,7 +22,9 @@ class TentacleSpecVariant:
         assert isinstance(self.variant, str)
 
     def __repr__(self) -> str:
-        return f"{self.board}-{self.variant}"
+        if self.variant == "":
+            return self.board
+        return self.board + "-" + self.variant
 
     @property
     def board(self) -> str:

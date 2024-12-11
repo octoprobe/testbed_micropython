@@ -19,9 +19,9 @@ class TestRunSpecs(list[TestRunSpec]):
             yield from testrun_spec.generate(available_tentacles=available_tentacles)
 
     @property
-    def tests_tbd(self) -> int:
-        return sum(testrun_spec.tests_tbd for testrun_spec in self)
+    def tests_todo(self) -> int:
+        return sum(testrun_spec.tests_todo for testrun_spec in self)
 
-    def assign_tsvs_tbd(self, tsvs: TentacleSpecVariants) -> None:
+    def assign_tsvs_todo(self, tsvs: TentacleSpecVariants) -> None:
         for testrun_spec in self:
-            testrun_spec.assign_tsvs_tbd(tsvs)
+            testrun_spec.assign_tsvs_todo(tsvs)

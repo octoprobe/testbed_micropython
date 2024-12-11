@@ -39,15 +39,15 @@ class TestBartender:
         self.available_tentacles = connected_tentacles.copy()
 
     @property
-    def tests_tbd(self) -> int:
-        return self.testrun_specs.tests_tbd
+    def tests_todo(self) -> int:
+        return self.testrun_specs.tests_todo
 
     def testrun_next(self) -> TestRun:
         possible_test_runs = list(
             self.testrun_specs.generate(available_tentacles=self.available_tentacles)
         )
         if len(possible_test_runs) == 0:
-            if self.tests_tbd == 0:
+            if self.tests_todo == 0:
                 raise AllTestsDoneException()
             raise WaitForTestsToTerminateException()
         # Calculate priorities

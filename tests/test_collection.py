@@ -62,15 +62,15 @@ def main() -> None:
             ),
         ]
     )
-    testrun_specs.assign_tsvs_tbd(tsvs=connected_tentacles.tsvs)
+    testrun_specs.assign_tsvs_todo(tsvs=connected_tentacles.tsvs)
 
     bartender = TestBartender(
         connected_tentacles=connected_tentacles,
         testrun_specs=testrun_specs,
     )
-    print(f"START: test_tbd={bartender.tests_tbd}")
+    print(f"START: test_todo={bartender.tests_todo}")
     for testrun_spec in bartender.testrun_specs:
-        print(f"  {testrun_spec!r} tests_tbd={testrun_spec.tests_tbd}")
+        print(f"  {testrun_spec!r} tests_todo={testrun_spec.tests_todo}")
         for tsv in testrun_spec.iter_text_tsvs:
             print(f"    tsv={tsv}")
 
@@ -79,7 +79,7 @@ def main() -> None:
         #     break
         try:
             test_run_next = bartender.testrun_next()
-            print(f"{i} test_dbd:{bartender.tests_tbd} test_run_next:{test_run_next}")
+            print(f"{i} test_dbd:{bartender.tests_todo} test_run_next:{test_run_next}")
             for test_run in bartender.actual_runs:
                 print("   ", test_run)
             if len(bartender.actual_runs) >= 3:
