@@ -36,6 +36,7 @@ from testbed.testrunner.testrunspec_runtests import (
     TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
     TESTRUNSPEC_RUNTESTS_MISC,
 )
+from testbed.testrunner.testrunspec_wlan import TESTRUNSPEC_RUNTESTS_WLAN
 from testbed.testrunner.util_common import ArgsMpTest
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
@@ -122,6 +123,7 @@ class TestRunner:
                 TESTRUNSPEC_PERFTEST,
                 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
                 TESTRUNSPEC_RUNTESTS_MISC,
+                TESTRUNSPEC_RUNTESTS_WLAN,
             ]
         )
         testrun_specs.assign_tsvs_tbd(self.connected_tentacles.tsvs)
@@ -140,6 +142,8 @@ class TestRunner:
                 testrun = self.bartender.testrun_next()
             except WaitForTestsToTerminateException:
                 print("WaitForTestsToTerminateException: Should never happen!")
+                time.sleep(10)
+                continue
 
             except AllTestsDoneException:
                 print("Done")
