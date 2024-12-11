@@ -67,7 +67,7 @@ def main() -> None:
         testrun_specs=testrun_specs,
     )
     print(f"START: test_tbd={bartender.tests_tbd}")
-    for testrun_spec in bartender.testrun_spec:
+    for testrun_spec in bartender.testrun_specs:
         print(f"  {testrun_spec!r} tests_tbd={testrun_spec.tests_tbd}")
         for tsv in testrun_spec.iter_text_tsvs:
             print(f"    tsv={tsv}")

@@ -114,7 +114,8 @@ class TestRunSpec:
 
         assert len(self.list_tsvs_tbt) == len(test_run.list_tentacle_variant)
         for tsvs, tentacle_variant in zip(
-            self.list_tsvs_tbt, test_run.list_tentacle_variant
+            self.list_tsvs_tbt,
+            test_run.list_tentacle_variant,
         ):
             tsvs.remove_tentacle_variant(tentacle_variant)
 
@@ -137,7 +138,7 @@ class TestRunSpec:
                 available_tentacles, self.tentacles_required
             ):
 
-                def tentacles_available():
+                def tentacles_available() -> bool:
                     assert len(tsvs_combination) == len(tentacles)
                     for tsv, tentacle in zip(tsvs_combination, tentacles):
                         if tsv.tentacle_spec is not tentacle.tentacle_spec:
