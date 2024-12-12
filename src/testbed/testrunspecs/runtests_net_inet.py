@@ -76,6 +76,7 @@ TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
 )
+
 TESTRUNSPEC_RUNTESTS_NET_HOSTED = TestRunSpec(
     label="RUN-TESTS_NET_HOSTED",
     command="run-tests.py",

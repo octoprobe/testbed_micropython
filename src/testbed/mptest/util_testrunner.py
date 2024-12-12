@@ -113,13 +113,13 @@ class TestRunner:
 
         testrun_specs = TestRunSpecs(
             [
-                # perftest.TESTRUNSPEC_PERFTEST,
-                # runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
-                # runtests.TESTRUNSPEC_RUNTESTS_MISC,
-                # multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
-                # multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
-                # runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
+                multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+                multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
+                perftest.TESTRUNSPEC_PERFTEST,
                 runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
+                runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
+                runtests.TESTRUNSPEC_RUNTESTS_BASICS,
+                runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
             ]
         )
         testrun_specs.assign_tsvs_todo(connected_tentacles.tsvs)

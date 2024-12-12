@@ -57,7 +57,7 @@ class TestRunRunTests(TestRun):
             logfile=testargs.testresults_directory(
                 "testresults_subprocess.txt"
             ).filename,
-            timeout_s=60.0,
+            timeout_s=300.0,
         )
 
 
@@ -71,10 +71,11 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
 )
 
 
-TESTRUNSPEC_RUNTESTS_MISC = TestRunSpec(
-    label="RUN-TESTS_MISC",
+TESTRUNSPEC_RUNTESTS_BASICS = TestRunSpec(
+    label="RUN-TESTS_BASICS",
     command="run-tests.py",
-    auxiliary_args=["--test-dirs=misc"],
+    # TODO: Allow overwrite by command line
+    auxiliary_args=[],
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
