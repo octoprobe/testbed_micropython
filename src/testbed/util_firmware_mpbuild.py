@@ -5,7 +5,10 @@ import pathlib
 from mpbuild.board_database import Database
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.util_cached_git_repo import CachedGitRepo
-from octoprobe.util_dut_programmers import FirmwareBuildSpec, FirmwareSpecBase
+from octoprobe.util_dut_programmers import (
+    FirmwareBuildSpec,
+    FirmwareSpecBase,
+)
 from octoprobe.util_micropython_boards import BoardVariant
 
 from testbed.constants import DIRECTORY_GIT_CACHE
@@ -114,7 +117,7 @@ def build(
             variant="" if firmware.variant is None else firmware.variant,
         ),
         _filename=firmware.filename,
-        micropython_version_text=firmware.micropython_version_text,
+        micropython_full_version_text=firmware.micropython_full_version_text,
     )
 
 
@@ -141,6 +144,6 @@ def collect_firmware_specs(tentacles: list[Tentacle]) -> list[FirmwareSpecBase]:
     list_variants = sorted(set_variants, key=lambda v: v.name_normalized)
 
     return [
-        FirmwareBuildSpec(board_variant=variant, micropython_version_text=None)
+        FirmwareBuildSpec(board_variant=variant)
         for variant in list_variants
     ]

@@ -10,8 +10,6 @@ Where to take the firmware from
 
 from __future__ import annotations
 
-from typing import Optional
-
 import typer
 import typing_extensions
 
@@ -81,35 +79,35 @@ def force_build_firmware() -> None:
 @app.command(help="run tests against the connected tentacles")
 def test(
     micropython_tests_git: TyperAnnotated[
-        Optional[str],
+        str | None,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_MICROPYTHON_TESTS_GIT",
             help="Url to a MicroPython-Repo with the tests. Example: https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = None,
     micropython_tests: TyperAnnotated[
-        Optional[str],
+        str | None,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_MICROPYTHON_TESTS",
             help="Directory of MicroPython-Repo with the tests. Example ~/micropython",
         ),
     ] = None,
     firmware_build_git: TyperAnnotated[
-        Optional[str],
+        str | None,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD_GIT",
             help="Url to a MicroPython-Repo to be cloned and build. Example: https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = None,
     firmware_build: TyperAnnotated[
-        Optional[str],
+        str | None,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD",
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython",
         ),
     ] = None,
     only_boards: TyperAnnotated[
-        Optional[list[str]], typer.Argument(help="Only run these tests")
+        list[str] | None, typer.Argument(help="Only run these tests")
     ] = None,  # noqa: UP007
 ) -> None:
     # print(f"{micropython_tests_git=}")

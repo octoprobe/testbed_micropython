@@ -47,8 +47,7 @@ class ArgsFirmware:
                 board_variant=BoardVariant(
                     board=tentacle.tentacle_spec.tentacle_tag.name,
                     variant=variant,
-                ),
-                micropython_version_text=None,
+                )
             )
 
         #

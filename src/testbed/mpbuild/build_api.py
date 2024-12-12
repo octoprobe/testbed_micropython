@@ -1,5 +1,20 @@
 """
 This is the api interface for mpbuild
+
+
+Topic: When may we skip firmware flashing?
+
+Goal:
+  * Flash a required firmware, if it has changed
+  * Skip flashing if the required firmware is already installed.
+
+Solutions:
+  * 'micropython_full_version_text' include the firmware variant!
+    Consequence: Firmware change is NOT detected.
+
+Problems:
+  * When the firmware source directory is touched, 'micropython_version_text' will contain '...dirty...'.
+    Consequence: Firmware change is NOT detected.
 """
 
 import re
@@ -7,10 +22,10 @@ import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from mpbuild.board_database import Board, Database
 from mpbuild.build import MpbuildNotSupportedException, docker_build_cmd
+from octoprobe.util_dut_programmers import MICROPYTHON_FULL_VERSION_TEXT_FORCE
 
 
 class MpbuildException(Exception):
@@ -32,7 +47,7 @@ class MpbuildDockerException(MpbuildException):
     """
 
     def __init__(
-        self, board: Board, variant: Optional[str], proc: subprocess.CompletedProcess
+        self, board: Board, variant: str | None, proc: subprocess.CompletedProcess
     ) -> None:
         super().__init__(f"Failed to build {board.name}-{variant}")
         self.proc = proc
@@ -64,25 +79,49 @@ class Firmware:
     This is used by octoprobe to find matching MCUs/boards.
     """
 
-    variant: Optional[str]
+    variant: str | None
     """
     None: Default variant
     """
 
-    micropython_version_text: str | None
+    micropython_sys_version_text: str | None
     """
     Example:
-    Calling '>>> micropython_version'
-    on firmware https://micropython.org/resources/firmware/PYBV11-20240602-v1.23.0.dfu
-    will return: '3.4.0; MicroPython v1.23.0 on 2024-06-02'
+    Calling '>>> sys.version'
+    on firmware https://micropython.org/resources/firmware/RPI_PICO2-RISCV-20241129-v1.24.1.uf2
+    will return: '3.4.0; MicroPython v1.24.1 on 2024-11-29'
 
     This string will be used by octoprobe to verify if the correct firmware is installed.
 
     Set to 'None' if the value is not known.
     """
 
+    micropython_sys_implementation_text: str | None
+    """
+    Example:
+    Calling '>>> sys.implementation[2]'
+    on firmware https://micropython.org/resources/firmware/RPI_PICO2-RISCV-20241129-v1.24.1.uf2
+    will return: 'Raspberry Pi Pico2 with RP2350-RISCV'
+
+    This string will be used by octoprobe to verify if the correct firmware is installed.
+
+    Set to 'MICROPYTHON_FULL_VERSION_TEXT_FORCE' if the value is not known.
+    """
+
+    @property
+    def micropython_full_version_text(self) -> str:
+        if self.micropython_sys_version_text is None:
+            return MICROPYTHON_FULL_VERSION_TEXT_FORCE
+        if self.micropython_sys_implementation_text is None:
+            return MICROPYTHON_FULL_VERSION_TEXT_FORCE
+        return (
+            self.micropython_sys_version_text
+            + ","
+            + self.micropython_sys_implementation_text
+        )
+
     def __str__(self) -> str:
-        return f"Firmware({self.variant_name_full}, {self.filename}, {self.micropython_version_text})"
+        return f"Firmware({self.variant_name_full}, {self.filename}, {self.micropython_sys_version_text})"
 
     @property
     def variant_name_full(self) -> str:
@@ -103,6 +142,15 @@ class Firmware:
             return self.board.name
         return f"{self.board.name}-{self.variant}"
 
+    @property
+    def requires_flashing(self) -> bool:
+        """
+        If sources files have been touched, 'dirty' is added.
+        """
+        if self.micropython_sys_version_text is None:
+            return True
+        return "dirty" in self.micropython_sys_version_text
+
 
 _FIRMWARE_FILENAMES = {
     "esp32": "firmware.bin",
@@ -121,22 +169,19 @@ class BuildFolder:
     * the micropython version text (e.g. '3.4.0; MicroPython v1.24.0 on 2024-10-25')
     """
 
-    _REGEX_MICROPY_GIT_TAG = re.compile(r'MICROPY_GIT_TAG\s+"(.*?)"')
+    _REGEX_MICOPY_SYS_VERSION2 = re.compile(r"mp_sys_version_obj.*?sizeof\((.+?)\)")
     """
-    Example input: #define MICROPY_GIT_TAG "v1.24.1"
-    """
-
-    _REGEX_MICROPY_BUILD_DATE = re.compile(r'MICROPY_BUILD_DATE\s+"(.*?)"')
-    """
-    Example input: #define MICROPY_BUILD_DATE "2024-12-05"
+    static const mp_obj_str_t mp_sys_version_obj = {{&mp_type_str}, 0, sizeof("3.4.0; " "MicroPython " "v1.24.1" " on " "2024-12-12") - 1, (const byte *)"3.4.0; " "MicroPython " "v1.24.1" " on " "2024-12-12"};
     """
 
-    _REGEX_MICROPY_SYS_VERSION = re.compile(r'mp_sys_version_obj, "(\d+\.\d+\.\d+); "')
+    _REGEX_MICROPY_MCU_NAME = re.compile(
+        r"mp_sys_implementation_machine_obj.*?sizeof\((.+?)\)"
+    )
     """
-    static const MP_DEFINE_STR_OBJ(mp_sys_version_obj, "3.4.0; " MICROPY_BANNER_NAME_AND_VERSION);
+    static const mp_obj_str_t mp_sys_implementation_machine_obj = {{&mp_type_str}, 0, sizeof("Raspberry Pi Pico2" " with " "RP2350-RISCV") - 1, (const byte *)"Raspberry Pi Pico2" " with " "RP2350-RISCV"};
     """
 
-    def __init__(self, board: Board, variant: Optional[str]) -> None:
+    def __init__(self, board: Board, variant: str | None) -> None:
         self.board = board
         self.variant = variant
 
@@ -155,6 +200,14 @@ class BuildFolder:
             return self.board.port.directory / build_directory
 
         self.build_folder = get_build_folder()
+
+        self.filename_qstr_i_last = self.build_folder / "genhdr" / "qstr.i.last"
+        try:
+            self.file_qstr_i_last = self.filename_qstr_i_last.read_text()
+        except FileNotFoundError as e:
+            raise MpbuildException(
+                f"Firmware for {self.board.name}-{self.variant}: Could not read: {self.filename_qstr_i_last}"
+            ) from e
 
     @property
     def firmware_filename(self) -> Path:
@@ -176,43 +229,45 @@ class BuildFolder:
         return _filename
 
     @property
-    def micro_version_text(self) -> str:
+    def micropython_version_text(self) -> str:
         """
+        As returned from 'sys.version'
         Example: '3.4.0; MicroPython v1.24.0 on 2024-10-25'
         """
-        filename_mpversion_h = self.build_folder / "genhdr" / "mpversion.h"
 
-        repo_folder = self.build_folder.parents[2]
-        filename_modsys_c = repo_folder / "py" / "modsys.c"
+        return self.get_regex(self._REGEX_MICOPY_SYS_VERSION2)
 
-        def get_regex(filename: Path, pattern: re.Pattern) -> str:
-            try:
-                text = filename.read_text()
-            except FileNotFoundError as e:
-                raise MpbuildException(
-                    f"Firmware for {self.board.name}-{self.variant}: Could not read: {filename}"
-                ) from e
+    @property
+    def sys_implementation_text(self) -> str:
+        """
+        As returned from 'sys.implementation'
+        Example: 'LOLIN_C3_MINI with ESP32-C3FH4'
+        """
+        return self.get_regex(self._REGEX_MICROPY_MCU_NAME)
 
-            match = pattern.search(text)
-            if match is None:
-                raise MpbuildException(
-                    f"Firmware for {self.board.name}-{self.variant}: Could not find '{pattern.pattern}' in: {filename}"
-                )
-            return match.group(1)
+    def get_regex(self, pattern: re.Pattern) -> str:
 
-        git_tag = get_regex(filename_mpversion_h, self._REGEX_MICROPY_GIT_TAG)
-        build_date = get_regex(filename_mpversion_h, self._REGEX_MICROPY_BUILD_DATE)
-        modsys = get_regex(filename_modsys_c, self._REGEX_MICROPY_SYS_VERSION)
-        return f"{modsys}; MicroPython {git_tag} on {build_date}"
+        match = pattern.search(self.file_qstr_i_last)
+        if match is None:
+            raise MpbuildException(
+                f"Firmware for {self.board.name}-{self.variant}: Could not find '{pattern.pattern}' in: {self.filename_qstr_i_last}"
+            )
+        text = match.group(1)
+        # Example 'mcu_name': "LOLIN_C3_MINI" " with " "ESP32-C3FH4"
+        text = eval(text)  # pylint: disable=eval-used
+        # Example 'mcu_name': LOLIN_C3_MINI with ESP32-C3FH4
+        return text
 
 
 def build(
     logfile: Path,
     board: Board,
-    variant: Optional[str] = None,
+    variant: str | None = None,
     do_clean: bool = False,
 ) -> Firmware:
-    """ """
+    """
+    Build the firmware and write the docker ouput to 'logfile'
+    """
 
     build_cmd = docker_build_cmd(
         board=board,
@@ -246,7 +301,8 @@ def build(
         filename=build_folder.firmware_filename,
         board=board,
         variant=variant,
-        micropython_version_text=build_folder.micro_version_text,
+        micropython_sys_version_text=build_folder.micropython_version_text,
+        micropython_sys_implementation_text=build_folder.sys_implementation_text,
     )
 
 
@@ -279,7 +335,7 @@ def build_by_variant_normalized(
         board = db.boards[board_str]
     except KeyError as e:
         raise MpbuildException(
-            f"Board '{board_str}' not found. Valid boards are {[b for b in db.boards]}"
+            f"Board '{board_str}' not found. Valid boards are {db.boards}"
         ) from e
 
     variant = None if variant_str == "" else variant_str

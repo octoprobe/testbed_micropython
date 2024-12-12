@@ -20,11 +20,11 @@ def mip_install(
     assert isinstance(tentacle, Tentacle)
     assert isinstance(serial_port, str)
     assert isinstance(mip_package, str)
-    if False:
+    # if False:
         # Using internal mp_remote connection
-        logger.info(f"{tentacle.dut.label}: mip install {mip_package}")
-        tentacle.dut.mp_remote.mip_install_package(mip_package)
-        return
+        # logger.info(f"{tentacle.dut.label}: mip install {mip_package}")
+        # tentacle.dut.mp_remote.mip_install_package(mip_package)
+        # return
 
     # Using external mpremote mip install
     args = [

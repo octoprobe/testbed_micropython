@@ -21,6 +21,7 @@ from testbed.constants import (
     EnumTentacleType,
     FILENAME_TESTBED_LOCK,
 )
+from testbed.mptest.util_common import ArgsMpTest
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
 from testbed.tentacles_spec import McuConfig
 from testbed.testcollection.bartender import (
@@ -31,7 +32,6 @@ from testbed.testcollection.bartender import (
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
 from testbed.testcollection.testrun_specs import TestArgs, TestRun
-from testbed.mptest.util_common import ArgsMpTest
 from testbed.testrunspecs.multinet import (
     TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
     TESTRUNSPEC_RUNTESTS_MULTINET,

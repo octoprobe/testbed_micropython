@@ -72,7 +72,7 @@ class TestRunMultitestMultinet(TestRunMultitestBase):
 import machine, network
 wlan = network.WLAN()
 wlan.active(1)
-wlan.config(txpower=5) 
+wlan.config(txpower=5)
 wlan.connect('{wlan_ssid}', '{wlan_key}')
 while not wlan.isconnected():
     machine.idle()

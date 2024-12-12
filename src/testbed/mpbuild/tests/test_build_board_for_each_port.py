@@ -5,17 +5,33 @@ Tests the wlanAP two variants.
 Goal is a high test coverage of the boards.
 """
 
+import os
 import pathlib
 
+from mpbuild import Database
 from mpbuild.build import MpbuildNotSupportedException
-from test_build_some_variants import RESULTS_DIRECTORY, get_db
 
 from testbed.mpbuild.build_api import build
 
 THIS_FILE = pathlib.Path(__file__)
+RESULTS_DIRECTORY = THIS_FILE.parent / "results"
+RESULTS_DIRECTORY.mkdir(parents=True, exist_ok=True)
+
+
+MICROPY_DIR = "MICROPY_DIR"
 
 NUMBER_BOARDS = 1
 NUMBER_VARIANTS = 2
+
+
+def get_db() -> Database:
+    try:
+        mpy_root_directory = pathlib.Path(os.environ[MICROPY_DIR])
+        return Database(mpy_root_directory=mpy_root_directory)
+    except KeyError as e:
+        raise SystemExit(
+            f"The environment variable '{MICROPY_DIR}' is not defined!"
+        ) from e
 
 
 def main():

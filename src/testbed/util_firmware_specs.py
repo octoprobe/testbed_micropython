@@ -45,17 +45,14 @@ def get_firmware_specs(
             return [
                 FirmwareBuildSpec(
                     BoardVariant.factory("RPI_PICO"),
-                    micropython_version_text="y",
                     _filename=pathlib.Path("/x/y"),
                 ),
                 FirmwareBuildSpec(
                     BoardVariant.factory("PYBV11"),
-                    micropython_version_text="y",
                     _filename=pathlib.Path("/x/y"),
                 ),
                 FirmwareBuildSpec(
                     BoardVariant.factory("PYBV11-DP"),
-                    micropython_version_text="y",
                     _filename=pathlib.Path("/x/y"),
                 ),
             ]
