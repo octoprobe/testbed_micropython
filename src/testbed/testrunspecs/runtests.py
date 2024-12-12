@@ -6,7 +6,7 @@ import sys
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
-from testbed.mptest.util_testrunspec import mip_install
+from testbed.mptest.util_common import mip_install
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 
@@ -42,8 +42,7 @@ class TestRunRunTests(TestRun):
         # Run tests
         args = [
             sys.executable,
-            self.testrun_spec.command,
-            *self.testrun_spec.auxiliary_args,
+            *self.testrun_spec.command,
             f"-t=port:{serial_port}",
             # f"--target={target}",
             "--jobs=1",
@@ -63,8 +62,7 @@ class TestRunRunTests(TestRun):
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE",
-    command="run-tests.py",
-    auxiliary_args=["--test-dirs=extmod_hardware"],
+    command=["run-tests.py", "--test-dirs=extmod_hardware"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
@@ -73,9 +71,8 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_BASICS = TestRunSpec(
     label="RUN-TESTS_BASICS",
-    command="run-tests.py",
     # TODO: Allow overwrite by command line
-    auxiliary_args=[],
+    command=["run-tests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,

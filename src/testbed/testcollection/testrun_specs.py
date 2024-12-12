@@ -13,6 +13,7 @@ from octoprobe.lib_tentacle import Tentacle
 from testbed.constants import EnumFut
 
 from .baseclasses_spec import (
+    ConnectedTentacles,
     TentacleSpecVariants,
     TentacleVariant,
 )
@@ -86,15 +87,13 @@ class TestRunSpec:
     def __init__(
         self,
         label: str,
-        command: str,
-        auxiliary_args: list[str],
+        command: list[str],
         required_fut: EnumFut,
         required_tentacles_count: int,
         testrun_class: type[TestRun] = TestRun,
     ) -> None:
         assert isinstance(label, str)
-        assert isinstance(command, str)
-        assert isinstance(auxiliary_args, list)
+        assert isinstance(command, list)
         assert isinstance(required_fut, EnumFut)
         assert isinstance(required_tentacles_count, int)
         assert isinstance(testrun_class, type(TestRun))
@@ -104,44 +103,51 @@ class TestRunSpec:
         self.testrun_class = testrun_class
         self.required_fut = required_fut
         self.tentacles_required = required_tentacles_count
-        self.list_tsvs_tbt: list[TentacleSpecVariants] = []
-        self.auxiliary_args = auxiliary_args
-        """
-        wlantest.py
-        """
+        self.list_tsvs_todo: list[TentacleSpecVariants] = []
 
-    def assign_tsvs_todo(self, tsvs_tbt: TentacleSpecVariants) -> None:
-        assert isinstance(tsvs_tbt, TentacleSpecVariants)
-        self.list_tsvs_tbt = [
-            TentacleSpecVariants(tsvs_tbt) for _ in range(self.tentacles_required)
+    @property
+    def command_executable(self) -> str:
+        return self.command[0]
+
+    @property
+    def command_args(self) -> list[str]:
+        return self.command[1:]
+
+    def assign_tentacles(self, tentacles: ConnectedTentacles) -> None:
+        assert isinstance(tentacles, ConnectedTentacles)
+        selected_tentacles = tentacles.get_by_fut(self.required_fut)
+        tsvs_todo = selected_tentacles.tsvs
+        self.list_tsvs_todo = [
+            TentacleSpecVariants(tsvs_todo) for _ in range(self.tentacles_required)
         ]
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.label} {self.auxiliary_args})"
+        return f"{self.__class__.__name__}({self.label} {self.command_args})"
 
     def done(self, test_run: TestRun) -> None:
         assert isinstance(test_run, TestRun)
 
-        assert len(self.list_tsvs_tbt) == len(test_run.list_tentacle_variant)
+        assert len(self.list_tsvs_todo) == len(test_run.list_tentacle_variant)
         for tsvs, tentacle_variant in zip(
-            self.list_tsvs_tbt,
-            test_run.list_tentacle_variant, strict=False,
+            self.list_tsvs_todo,
+            test_run.list_tentacle_variant,
+            strict=False,
         ):
             tsvs.remove_tentacle_variant(tentacle_variant)
 
     @property
     def tests_todo(self) -> int:
-        return sum([len(tsvs_tbt) for tsvs_tbt in self.list_tsvs_tbt])
+        return sum([len(tsvs_todo) for tsvs_todo in self.list_tsvs_todo])
 
     @property
     def iter_text_tsvs(self) -> Iterator[str]:
         for i in range(self.tentacles_required):
             tag = ["first", "second", "third"][i]
-            for tsvs in self.list_tsvs_tbt[i]:
+            for tsvs in self.list_tsvs_todo[i]:
                 yield f"{tsvs!r} {tag}"
 
     def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
-        tsvs_combinations = list(itertools.product(*self.list_tsvs_tbt))
+        tsvs_combinations = list(itertools.product(*self.list_tsvs_todo))
 
         for tsvs_combination in tsvs_combinations:
             for tentacles in itertools.combinations(
@@ -164,7 +170,9 @@ class TestRunSpec:
                         board=variant.board,
                         variant=variant.variant,
                     )
-                    for variant, tentacle in zip(tsvs_combination, tentacles, strict=False)
+                    for variant, tentacle in zip(
+                        tsvs_combination, tentacles, strict=False
+                    )
                 ]
 
                 yield self.testrun_class(

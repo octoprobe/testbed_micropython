@@ -8,7 +8,9 @@ from collections.abc import Iterator
 
 from octoprobe.lib_tentacle import Tentacle
 
-from testbed.testcollection.baseclasses_spec import TentacleSpecVariants
+from testbed.testcollection.baseclasses_spec import (
+    ConnectedTentacles,
+)
 
 from .testrun_specs import TestRun, TestRunSpec
 
@@ -27,6 +29,6 @@ class TestRunSpecs(list[TestRunSpec]):
     def tests_todo(self) -> int:
         return sum(testrun_spec.tests_todo for testrun_spec in self)
 
-    def assign_tsvs_todo(self, tsvs: TentacleSpecVariants) -> None:
+    def assign_tentacles(self, tentacles: ConnectedTentacles) -> None:
         for testrun_spec in self:
-            testrun_spec.assign_tsvs_todo(tsvs)
+            testrun_spec.assign_tentacles(tentacles)

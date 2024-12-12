@@ -122,7 +122,7 @@ class TestRunner:
                 runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
             ]
         )
-        testrun_specs.assign_tsvs_todo(connected_tentacles.tsvs)
+        testrun_specs.assign_tentacles(connected_tentacles)
         self.bartender = TestBartender(
             connected_tentacles=connected_tentacles,
             testrun_specs=testrun_specs,
@@ -184,9 +184,6 @@ class TestRunner:
 
         logger.info(testrun.testid)
 
-        # TODO: remove hardcoded EnumFut.FUT_MCU_ONLY
-        required_futs = (EnumFut.FUT_MCU_ONLY,)
-
         self.assign_firmware_specs(testrun=testrun)
 
         testresults_directory = ResultsDir(
@@ -216,7 +213,8 @@ class TestRunner:
                 self.ntestrun.function_setup_dut(active_tentacles=testrun.tentacles)
 
                 self.ntestrun.setup_relays(
-                    futs=required_futs, tentacles=testrun.tentacles
+                    futs=(testrun.testrun_spec.required_fut,),
+                    tentacles=testrun.tentacles,
                 )
                 logger.info(
                     f"TEST BEGIN {duration_text()} {testresults_directory.test_nodeid}"

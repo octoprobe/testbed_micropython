@@ -49,21 +49,19 @@ def main() -> None:
         [
             TestRunSpec(
                 label="TESTA",
-                command="testa.py",
-                auxiliary_args=["run-perfbench.py"],
+                command=["testa.py","run-perfbench.py"],
                 required_fut=EnumFut.FUT_MCU_ONLY,
                 required_tentacles_count=1,
             ),
             TestRunSpec(
                 label="TESTWLAN",
-                command="testwlan.py",
-                auxiliary_args=["wlantest.py"],
+                command=["testwlan.py", "wlantest.py"],
                 required_fut=EnumFut.FUT_WLAN,
                 required_tentacles_count=2,
             ),
         ]
     )
-    testrun_specs.assign_tsvs_todo(tsvs=connected_tentacles.tsvs)
+    testrun_specs.assign_tentacles(tentacles=connected_tentacles)
 
     bartender = TestBartender(
         connected_tentacles=connected_tentacles,

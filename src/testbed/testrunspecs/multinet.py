@@ -6,11 +6,10 @@ import os
 import pathlib
 import sys
 
+from octoprobe.lib_tentacle_dut import TentacleDut
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
-from octoprobe.lib_tentacle_dut import TentacleDut
-
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 
 logger = logging.getLogger(__file__)
@@ -26,7 +25,7 @@ class TestRunMultitestBase(TestRun):
         tentacle_variant_first = self.list_tentacle_variant[0]
         tentacle_variant_second = self.list_tentacle_variant[1]
 
-        file_pattern = self.testrun_spec.auxiliary_args[0]
+        file_pattern = self.testrun_spec.command[1]
         assert isinstance(file_pattern, str)
         assert file_pattern != ""
 
@@ -39,7 +38,7 @@ class TestRunMultitestBase(TestRun):
         list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
         args = [
             sys.executable,
-            self.testrun_spec.command,
+            *self.testrun_spec.command,
             f"--instance=pyb:{serial_port_first}",
             f"--instance=pyb:{serial_port_second}",
             *list_tests,
@@ -106,16 +105,15 @@ class TestRunMultitestBluetooth(TestRunMultitestBase):
 
 TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     label="RUN-MULTITESTS_MULTINET",
-    command="run-multitests.py",
-    auxiliary_args=["multi_net/*.py"],
+    command=["run-multitests.py", "multi_net/*.py"],
     required_fut=EnumFut.FUT_WLAN,
     required_tentacles_count=2,
     testrun_class=TestRunMultitestMultinet,
 )
+
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     label="RUN-MULTITESTS_MULTIBLUETOOTH",
-    command="run-multitests.py",
-    auxiliary_args=["multi_bluetooth/*.py"],
+    command=["run-multitests.py", "multi_bluetooth/*.py"],
     required_fut=EnumFut.FUT_BLE,
     required_tentacles_count=2,
     testrun_class=TestRunMultitestBluetooth,

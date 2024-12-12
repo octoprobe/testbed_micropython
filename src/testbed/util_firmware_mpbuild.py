@@ -107,11 +107,10 @@ def build(
     )
 
     # Store build results
-    (testresults_build / firmware.filename.name).write_bytes(
-        firmware.filename.read_bytes()
-    )
+    filename = testresults_build / firmware.filename.name
+    filename.write_bytes(firmware.filename.read_bytes())
 
-    return FirmwareBuildSpec(
+    spec = FirmwareBuildSpec(
         board_variant=BoardVariant(
             board=firmware.board.name,
             variant="" if firmware.variant is None else firmware.variant,
@@ -119,6 +118,10 @@ def build(
         _filename=firmware.filename,
         micropython_full_version_text=firmware.micropython_full_version_text,
     )
+
+    filename.with_suffix(".spec").write_text(spec.text)
+
+    return spec
 
 
 def collect_firmware_specs(tentacles: list[Tentacle]) -> list[FirmwareSpecBase]:

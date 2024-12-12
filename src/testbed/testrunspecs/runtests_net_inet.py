@@ -6,7 +6,7 @@ import sys
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
-from testbed.mptest.util_testrunspec import mip_install
+from testbed.mptest.util_common import mip_install
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from testbed.testrunspecs.multinet import copy_certificates, init_wlan
@@ -50,8 +50,7 @@ class TestRunRunTests(TestRun):
         # Run tests
         args = [
             sys.executable,
-            self.testrun_spec.command,
-            *self.testrun_spec.auxiliary_args,
+            *self.testrun_spec.command,
             f"-t=port:{serial_port}",
             "--jobs=1",
             f"--result-dir={testargs.testresults_directory.directory_test}",
@@ -69,9 +68,7 @@ class TestRunRunTests(TestRun):
 
 TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
     label="RUN-TESTS_NET_INET",
-    # TODO: refactor as list
-    command="run-tests.py",
-    auxiliary_args=["--test-dirs=net_inet"],
+    command=["run-tests.py", "--test-dirs=net_inet"],
     required_fut=EnumFut.FUT_WLAN,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
@@ -79,8 +76,7 @@ TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_NET_HOSTED = TestRunSpec(
     label="RUN-TESTS_NET_HOSTED",
-    command="run-tests.py",
-    auxiliary_args=["--test-dirs=net_hosted"],
+    command=["run-tests.py", "--test-dirs=net_hosted"],
     required_fut=EnumFut.FUT_WLAN,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,

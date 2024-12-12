@@ -32,8 +32,7 @@ class TestRunPerfTest(TestRun):
 
         args = [
             sys.executable,
-            self.testrun_spec.command,
-            *self.testrun_spec.auxiliary_args,
+            *self.testrun_spec.command,
             "--pyboard",
             f"--device={tentacle.dut.get_tty()}",
             *perftest_args,
@@ -50,8 +49,7 @@ class TestRunPerfTest(TestRun):
 
 TESTRUNSPEC_PERFTEST = TestRunSpec(
     label="RUN-PERFBENCH",
-    command="run-perfbench.py",
-    auxiliary_args=[],
+    command=["run-perfbench.py"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,
     testrun_class=TestRunPerfTest,

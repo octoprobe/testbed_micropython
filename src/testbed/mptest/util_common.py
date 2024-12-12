@@ -21,25 +21,26 @@ if typing.TYPE_CHECKING:
 
 
 def mip_install(
-    testargs: TestArgs, tentacle: Tentacle, port: str, mip_package: str
+    testargs: TestArgs, tentacle: Tentacle, serial_port: str, mip_package: str
 ) -> None:
     assert testargs.__class__.__name__ == "TestArgs"
     assert isinstance(tentacle, Tentacle)
-    assert isinstance(port, str)
+    assert isinstance(serial_port, str)
     assert isinstance(mip_package, str)
     # if False:
-        # # Using internal mp_remote connection
-        # logger.info(f"{tentacle.dut.label}: mip install {mip_package}")
-        # tentacle.dut.mp_remote.mip_install_package(mip_package)
-        # return
+    # Using internal mp_remote connection
+    # logger.info(f"{tentacle.dut.label}: mip install {mip_package}")
+    # tentacle.dut.mp_remote.mip_install_package(mip_package)
+    # return
 
     # Using external mpremote mip install
     args = [
         sys.executable,
         "-m",
         "mpremote",
+        "connect",
+        serial_port,
         "mip",
-        f"--target={tentacle.dut.get_tty()}",
         "install",
         mip_package,
     ]
@@ -47,7 +48,7 @@ def mip_install(
         args=args,
         cwd=testargs.git_micropython_tests / "tests",
         logfile=testargs.testresults_directory(
-            f"mip_insall_{mip_package}.txt"
+            f"mip_install_{mip_package}.txt"
         ).filename,
         timeout_s=60.0,
     )

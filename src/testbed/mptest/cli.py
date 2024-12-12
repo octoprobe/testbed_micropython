@@ -64,10 +64,10 @@ def list_() -> None:
         print(f"  {testrun_spec.label}")
         print(f"    reqired_fut={testrun_spec.required_fut.name}")
         print(f"    tests_todo={testrun_spec.tests_todo}")
-        print(f"    command={testrun_spec.command}")
-        print(f"      args={testrun_spec.auxiliary_args}")
+        print(f"    executable={testrun_spec.command_executable}")
+        print(f"      args={testrun_spec.command_args}")
         print("    tests")
-        for tsvs in testrun_spec.list_tsvs_tbt:
+        for tsvs in testrun_spec.list_tsvs_todo:
             print(f"      {tsvs}")
 
 

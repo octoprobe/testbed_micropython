@@ -9,6 +9,7 @@ import dataclasses
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.util_baseclasses import TentacleSpec
 
+from testbed.constants import EnumFut
 from testbed.util_constants import TAG_VARIANTS
 
 
@@ -124,3 +125,6 @@ class ConnectedTentacles(list[Tentacle]):
             for tsv in tentacle_spec_2_tsvs(tentacle_spec):
                 s.add(tsv)
         return s
+
+    def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
+        return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
