@@ -43,25 +43,34 @@ DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 _TESTBED_LOCK = TestbedLock()
 
 
-def get_testrun_specs() -> TestRunSpecs:
-    return TestRunSpecs(
-        [
-            multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
-            multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
-            perftest.TESTRUNSPEC_PERFTEST,
-            runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
-            runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
-            runtests.TESTRUNSPEC_RUNTESTS_BASICS,
-            runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
-        ]
-    )
+def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
+    specs = [
+        multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+        multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
+        perftest.TESTRUNSPEC_PERFTEST,
+        runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
+        runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
+        runtests.TESTRUNSPEC_RUNTESTS_BASICS,
+        runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+    ]
+
+    if only_test is not None:
+        err_msg = f"Test '{only_test}' not found. Valid tests are {','.join([s.label for s in specs])}"
+        for spec in specs:
+            if spec.label == only_test:
+                return TestRunSpecs([spec])
+
+        raise ValueError(err_msg)
+
+    return TestRunSpecs(specs)
 
 
 @dataclasses.dataclass
 class Args:
     mp_test: ArgsMpTest
     firmware: ArgsFirmware
-    only_boards: list[str] | None
+    only_board: str | None
+    only_test: str | None
 
 
 def instantiate_tentacles(
@@ -125,7 +134,7 @@ class TestRunner:
 
         # _testrun.session_powercycle_tentacles()
 
-        testrun_specs = get_testrun_specs()
+        testrun_specs = get_testrun_specs(only_test=args.only_test)
         testrun_specs.assign_tentacles(connected_tentacles)
         self.bartender = TestBartender(
             connected_tentacles=connected_tentacles,

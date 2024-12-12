@@ -13,11 +13,9 @@ from __future__ import annotations
 import typer
 import typing_extensions
 
+from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
-from testbed.mptest.util_testrunner import Args, TestRunner
-from testbed.testcollection.baseclasses_spec import (
-    tentacle_spec_2_tsvs,
-)
+from testbed.testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 # 'typer' does not work correctly with typing.Annotated
@@ -32,9 +30,14 @@ TyperAnnotated = typing_extensions.Annotated
 app = typer.Typer()
 
 
+def complete_only_test():
+    testrun_specs = util_testrunner.get_testrun_specs()
+    return sorted([x.label for x in testrun_specs])
+
+
 @app.command(name="list", help="List tests and connected tentacles")
 def list_() -> None:
-    args = Args(
+    args = util_testrunner.Args(
         mp_test=ArgsMpTest(
             micropython_tests_git=None,
             micropython_tests=None,
@@ -43,9 +46,9 @@ def list_() -> None:
             firmware_build_git=None,
             firmware_build=None,
         ),
-        only_boards=[],
+        only_board=None,
     )
-    testrunner = TestRunner(args=args)
+    testrunner = util_testrunner.TestRunner(args=args)
 
     print("")
     print("Connected")
@@ -69,11 +72,6 @@ def list_() -> None:
         print("    tests")
         for tsvs in testrun_spec.list_tsvs_todo:
             print(f"      {tsvs}")
-
-
-@app.command(help="Will flash all firmare when running the tests next time")
-def force_build_firmware() -> None:
-    pass
 
 
 @app.command(help="run tests against the connected tentacles")
@@ -106,8 +104,15 @@ def test(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython",
         ),
     ] = None,
-    only_boards: TyperAnnotated[
-        list[str] | None, typer.Argument(help="Only run these tests")
+    only_board: TyperAnnotated[
+        str | None, typer.Option(help="Only run these on this boards")
+    ] = None,  # noqa: UP007
+    only_test: TyperAnnotated[
+        str | None,
+        typer.Option(help="Only run this test", autocompletion=complete_only_test),
+    ] = None,  # noqa: UP007
+    force_flash: TyperAnnotated[
+        bool | None, typer.Argument(help="Will flash all firmare")
     ] = None,  # noqa: UP007
 ) -> None:
     # print(f"{micropython_tests_git=}")
@@ -116,7 +121,7 @@ def test(
     # print(f"{firmware_build=}")
     # print(f"{only_boards=}")
 
-    args = Args(
+    args = util_testrunner.Args(
         mp_test=ArgsMpTest(
             micropython_tests_git=micropython_tests_git,
             micropython_tests=micropython_tests,
@@ -125,9 +130,10 @@ def test(
             firmware_build_git=firmware_build_git,
             firmware_build=firmware_build,
         ),
-        only_boards=only_boards,
+        only_board=only_board,
+        only_test=only_test,
     )
-    testrunner = TestRunner(args=args)
+    testrunner = util_testrunner.TestRunner(args=args)
     testrunner.run_all_in_sequence()
 
 
