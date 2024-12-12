@@ -6,10 +6,10 @@ import sys
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
+from testbed.mptest import util_common
 from testbed.mptest.util_common import mip_install
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
-from testbed.testrunspecs.multinet import copy_certificates, init_wlan
 
 logger = logging.getLogger(__file__)
 
@@ -31,12 +31,12 @@ class TestRunRunTests(TestRun):
         assert tentacle_spec.mcu_config is not None
 
         # for tests 'net_hosted', this call is irrelevant
-        copy_certificates(
+        util_common.copy_certificates(
             dut=tentacle.dut,
             src=testargs.git_micropython_tests / "tests" / "net_inet",
         )
 
-        init_wlan(dut=tentacle.dut)
+        util_common.init_wlan(dut=tentacle.dut)
 
         serial_port = tentacle.dut.get_tty()
 
