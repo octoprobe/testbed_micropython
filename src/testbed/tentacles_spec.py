@@ -1,22 +1,11 @@
 from __future__ import annotations
 
 import dataclasses
-import enum
 
 from octoprobe import util_mcu_esp32C3, util_mcu_esp8266, util_mcu_pyboard, util_mcu_rp2
 from octoprobe.util_baseclasses import TentacleSpec
 
 from testbed.constants import EnumFut, EnumTentacleType
-
-
-class EnumTentacleTag(enum.StrEnum):
-    LOLIN_C3_MINI = enum.auto()
-    ESP8266_GENERIC = enum.auto()
-    "LOLIN_D1_MINI"
-    PYBV11 = enum.auto()
-    RPI_PICO = enum.auto()
-    RPI_PICO2 = enum.auto()
-    RPI_PICO2W = enum.auto()
 
 
 @dataclasses.dataclass
@@ -38,7 +27,7 @@ See: https://github.com/octoprobe/testbed_tutorial/tree/main/docs/tentacle_MCU_P
 TODO: Connections
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag=EnumTentacleTag.PYBV11,
+    tentacle_tag="PYBV11",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
@@ -49,14 +38,14 @@ TODO: Connections
 )
 
 
-tentacle_spec_mcu_rpi_pico = TentacleSpec(
+RPI_PICO = TentacleSpec(
     doc="""
 See: https://github.com/octoprobe/testbed_tutorial/tree/main/docs/tentacle_MCU_RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2W
+Connections: The same as "MCU_RPI_PICO2W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag=EnumTentacleTag.RPI_PICO,
+    tentacle_tag="RPI_PICO",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
@@ -88,7 +77,7 @@ Connections
   * Testpoint "extmod" <=> Board GPIO0
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag=EnumTentacleTag.RPI_PICO2,
+    tentacle_tag="RPI_PICO2",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
@@ -116,12 +105,11 @@ Connections
   * Testpoint "extmod" <=> Board D1/5/rx
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag=EnumTentacleTag.ESP8266_GENERIC,
+    tentacle_tag="ESP8266_GENERIC",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
-        EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp8266.LOLIN_D1_MINI_USB_ID,
     tags="mcu=esp8266,programmer=esptool",
@@ -155,7 +143,7 @@ Connections
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag=EnumTentacleTag.LOLIN_C3_MINI,
+    tentacle_tag="LOLIN_C3_MINI",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,

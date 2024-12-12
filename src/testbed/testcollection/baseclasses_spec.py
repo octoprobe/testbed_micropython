@@ -28,7 +28,7 @@ class TentacleSpecVariant:
 
     @property
     def board(self) -> str:
-        return self.tentacle_spec.tentacle_tag.name
+        return self.tentacle_spec.tentacle_tag
         # boards = self.tentacle_spec.get_tag_mandatory(TAG_BOARDS)
         # for board_variant in board_variants(boards):
         #     return board_variant.board

@@ -134,7 +134,7 @@ def collect_firmware_specs(tentacles: list[Tentacle]) -> list[FirmwareSpecBase]:
         for variant in tentacle_spec_2_variants(tentacle.tentacle_spec):
             set_variants.add(
                 BoardVariant(
-                    board=tentacle.tentacle_spec.tentacle_tag.name,
+                    board=tentacle.tentacle_spec.tentacle_tag,
                     variant=variant,
                 )
             )
@@ -143,7 +143,4 @@ def collect_firmware_specs(tentacles: list[Tentacle]) -> list[FirmwareSpecBase]:
         #     set_variants.add(variant)
     list_variants = sorted(set_variants, key=lambda v: v.name_normalized)
 
-    return [
-        FirmwareBuildSpec(board_variant=variant)
-        for variant in list_variants
-    ]
+    return [FirmwareBuildSpec(board_variant=variant) for variant in list_variants]

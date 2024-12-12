@@ -45,7 +45,7 @@ class ArgsFirmware:
             #
             return FirmwareBuildSpec(
                 board_variant=BoardVariant(
-                    board=tentacle.tentacle_spec.tentacle_tag.name,
+                    board=tentacle.tentacle_spec.tentacle_tag,
                     variant=variant,
                 )
             )
