@@ -31,7 +31,7 @@ class McuConfig:
         assert isinstance(self.micropython_perftest_args, list | None)
 
 
-tentacle_spec_mcu_pybv11 = TentacleSpec(
+PYBV11 = TentacleSpec(
     doc="""
 See: https://github.com/octoprobe/testbed_tutorial/tree/main/docs/tentacle_MCU_PYBV11
 
@@ -67,7 +67,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2W
 )
 
 
-tentacle_spec_mcu_rpi_pico2 = TentacleSpec(
+RPI_PICO2 = TentacleSpec(
     doc="""
 See: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#raspberry-pi-pico-2-w24
 
@@ -98,7 +98,7 @@ Connections
     mcu_config=McuConfig(),
 )
 
-tentacle_spec_mcu_lolin_d1_mini = TentacleSpec(
+ESP8266_GENERIC = TentacleSpec(
     doc="""
 See: https://www.wemos.cc/en/latest/d1/d1_mini.html
 See: https://www.wemos.cc/en/latest/tutorials/d1/get_started_with_micropython_d1.html
@@ -138,7 +138,7 @@ Connections
 )
 
 
-tentacle_spec_mcu_lolin_c3_mini = TentacleSpec(
+LOLIN_C3_MINI = TentacleSpec(
     doc="""
 See: https://www.wemos.cc/en/latest/c3/c3_mini.html
 
@@ -175,14 +175,3 @@ Connections
     ],
     mcu_config=McuConfig(),
 )
-
-TENTACLES_SPECS: dict[str, TentacleSpec] = {
-    tentacle_spec.tentacle_tag: tentacle_spec
-    for tentacle_spec in (
-        tentacle_spec_mcu_pybv11,
-        tentacle_spec_mcu_rpi_pico,
-        tentacle_spec_mcu_rpi_pico2,
-        tentacle_spec_mcu_lolin_d1_mini,
-        tentacle_spec_mcu_lolin_c3_mini,
-    )
-}

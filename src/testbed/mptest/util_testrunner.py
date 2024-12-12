@@ -22,7 +22,7 @@ from testbed.constants import (
     FILENAME_TESTBED_LOCK,
 )
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
-from testbed.tentacles_spec import McuConfig, TENTACLES_SPECS
+from testbed.tentacles_spec import McuConfig
 from testbed.testcollection.bartender import (
     AllTestsDoneException,
     TestBartender,
@@ -66,14 +66,12 @@ def instantiate_tentacles(
         serial = query_result_tentacle.rp2_serial_number
         assert serial is not None
         try:
-            hw_version, enum_tag = TENTACLES_INVENTORY[serial]
+            hw_version, tentacle_spec = TENTACLES_INVENTORY[serial]
         except KeyError:
             logger.warning(
                 f"Tentacle with serial {serial} is not specified in TENTACLES_INVENTORY."
             )
             continue
-
-        tentacle_spec = TENTACLES_SPECS[enum_tag]
 
         tentacle = Tentacle[McuConfig, EnumTentacleType, EnumFut](
             tentacle_serial_number=serial,
