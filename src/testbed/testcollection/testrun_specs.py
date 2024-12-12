@@ -18,7 +18,7 @@ from .baseclasses_spec import (
 )
 
 if typing.TYPE_CHECKING:
-    from testbed.testrunner.util_testrunner import ResultsDir
+    from testbed.mptest.util_testrunner import ResultsDir
 
 
 @dataclasses.dataclass(repr=True)

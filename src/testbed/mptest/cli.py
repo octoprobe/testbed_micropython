@@ -15,12 +15,11 @@ from typing import Optional
 import typer
 import typing_extensions
 
+from testbed.mptest.util_common import ArgsMpTest
+from testbed.mptest.util_testrunner import Args, TestRunner
 from testbed.testcollection.baseclasses_spec import (
     tentacle_spec_2_tsvs,
-    tentacle_spec_2_variants,
 )
-from testbed.testrunner.util_common import ArgsMpTest
-from testbed.testrunner.util_testrunner import Args, TestRunner
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 # 'typer' does not work correctly with typing.Annotated

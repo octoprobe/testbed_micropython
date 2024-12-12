@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "testrunner list",
+            "name": "mptest list",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed.testrunner.cli",
+            "module": "testbed.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
                 // "--help",
@@ -21,10 +21,10 @@
             "justMyCode": false,
         },
         {
-            "name": "testrunner test",
+            "name": "mptest test",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed.testrunner.cli",
+            "module": "testbed.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
                 // "--help",

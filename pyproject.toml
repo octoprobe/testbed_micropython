@@ -37,7 +37,7 @@ Documentation = "https://github.com/octoprobe/octoprobe"
 Repository = "https://github.com/octoprobe/octoprobe"
 
 [project.scripts]
-testrunner = "testbed.testrunner.cli:app"
+mptest = "testbed.mptest.cli:app"
 
 [project.optional-dependencies]
 

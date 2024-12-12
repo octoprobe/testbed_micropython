@@ -15,8 +15,7 @@ if typing.TYPE_CHECKING:
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
-print(DIRECTORY_REPO / "pytest.ini")
-assert (DIRECTORY_REPO / "pytest.ini").is_file()
+assert (DIRECTORY_REPO / "src" / "testbed").is_dir()
 DIRECTORY_DOWNLOADS = DIRECTORY_REPO / "downloads"
 DIRECTORY_TESTRESULTS = DIRECTORY_REPO / "results"
 DIRECTORY_GIT_CACHE = DIRECTORY_REPO / "git_cache"
@@ -46,8 +45,6 @@ class EnumTentacleType(enum.StrEnum):
             return False
 
         return [t for t in tentacles if has_required_futs(t)]
-
-
 
 
 class EnumFut(enum.StrEnum):

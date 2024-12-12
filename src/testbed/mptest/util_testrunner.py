@@ -31,7 +31,7 @@ from testbed.testcollection.bartender import (
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
 from testbed.testcollection.testrun_specs import TestArgs, TestRun
-from testbed.testrunner.util_common import ArgsMpTest
+from testbed.mptest.util_common import ArgsMpTest
 from testbed.testrunspecs.multinet import (
     TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
     TESTRUNSPEC_RUNTESTS_MULTINET,

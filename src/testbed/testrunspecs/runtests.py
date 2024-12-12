@@ -8,7 +8,7 @@ from octoprobe.util_subprocess import subprocess_run
 from testbed.constants import EnumFut
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
-from testbed.testrunner.util_testrunspec import mip_install
+from testbed.mptest.util_testrunspec import mip_install
 
 logger = logging.getLogger(__file__)
 
