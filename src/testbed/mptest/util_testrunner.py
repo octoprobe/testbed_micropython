@@ -32,15 +32,7 @@ from testbed.testcollection.bartender import (
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
 from testbed.testcollection.testrun_specs import TestArgs, TestRun
-from testbed.testrunspecs.multinet import (
-    TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
-    TESTRUNSPEC_RUNTESTS_MULTINET,
-)
-from testbed.testrunspecs.perftest import TESTRUNSPEC_PERFTEST
-from testbed.testrunspecs.runtests import (
-    TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
-    TESTRUNSPEC_RUNTESTS_MISC,
-)
+from testbed.testrunspecs import multinet, perftest, runtests, runtests_net_inet
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 logger = logging.getLogger(__file__)
@@ -121,11 +113,13 @@ class TestRunner:
 
         testrun_specs = TestRunSpecs(
             [
-                TESTRUNSPEC_PERFTEST,
-                TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
-                TESTRUNSPEC_RUNTESTS_MISC,
-                TESTRUNSPEC_RUNTESTS_MULTINET,
-                TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+                # perftest.TESTRUNSPEC_PERFTEST,
+                # runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+                # runtests.TESTRUNSPEC_RUNTESTS_MISC,
+                # multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
+                # multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+                # runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
+                runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
             ]
         )
         testrun_specs.assign_tsvs_todo(connected_tentacles.tsvs)

@@ -3,11 +3,14 @@ from __future__ import annotations
 import abc
 import logging
 import os
+import pathlib
 import sys
 
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
+from octoprobe.lib_tentacle_dut import TentacleDut
+
 from testbed.testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 
 logger = logging.getLogger(__file__)
@@ -52,23 +55,22 @@ class TestRunMultitestBase(TestRun):
         )
 
 
-class TestRunMultitestMultinet(TestRunMultitestBase):
-    def setup(self, testargs: TestArgs) -> None:
+# TODO: Move to a better location
+def copy_certificates(dut: TentacleDut, src: pathlib.Path) -> None:
+    assert isinstance(dut, TentacleDut)
+    assert isinstance(src, pathlib.Path)
 
-        for tentacle_variant in self.list_tentacle_variant:
-            dut = tentacle_variant.tentacle.dut
+    dut.mp_remote.set_rtc()
 
-            dut.mp_remote.set_rtc()
+    for certificate in src.glob("*.der"):
+        dut.mp_remote.cp(certificate, ":")
 
-            for certificate in (
-                testargs.git_micropython_tests / "tests" / "multi_net"
-            ).glob("*.der"):
-                dut.mp_remote.cp(certificate, ":")
 
-            wlan_ssid = os.environ["WLAN_SSID"]
-            wlan_key = os.environ["WLAN_PASS"]
-            logger.info(f"{dut.label}: Try to connect to WLAN_SSID '{wlan_ssid}'")
-            cmd = f"""
+def init_wlan(dut: TentacleDut) -> None:
+    wlan_ssid = os.environ["WLAN_SSID"]
+    wlan_key = os.environ["WLAN_PASS"]
+    logger.info(f"{dut.label}: Try to connect to WLAN_SSID '{wlan_ssid}'")
+    cmd = f"""
 import machine, network
 wlan = network.WLAN()
 wlan.active(1)
@@ -79,9 +81,22 @@ while not wlan.isconnected():
 
 config = wlan.ifconfig()
 """
-            dut.mp_remote.exec_raw(cmd, timeout=10)
-            config = dut.mp_remote.read_str("config")
-            logger.info(f"WLAN {config=}")
+    dut.mp_remote.exec_raw(cmd, timeout=10)
+    config = dut.mp_remote.read_str("config")
+    logger.info(f"WLAN {config=}")
+
+
+class TestRunMultitestMultinet(TestRunMultitestBase):
+    def setup(self, testargs: TestArgs) -> None:
+
+        for tentacle_variant in self.list_tentacle_variant:
+            dut = tentacle_variant.tentacle.dut
+            copy_certificates(
+                dut=dut,
+                src=testargs.git_micropython_tests / "tests" / "multi_net",
+            )
+
+            init_wlan(dut=dut)
 
 
 class TestRunMultitestBluetooth(TestRunMultitestBase):
