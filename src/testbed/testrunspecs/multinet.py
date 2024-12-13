@@ -34,6 +34,8 @@ class TestRunMultitestBase(TestRun):
         # Run tests
         cwd = testargs.git_micropython_tests / "tests"
         list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
+        # This test will make the board disappear and therefore has to be skipped.
+        list_tests.remove("multi_bluetooth/stress_deepsleep_reconnect.py")
         args = [
             sys.executable,
             self.testrun_spec.command_executable,
@@ -72,6 +74,7 @@ class TestRunMultitestBluetooth(TestRunMultitestBase):
 
 TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     label="RUN-MULTITESTS_MULTINET",
+    helptext="TODO helptext MULTINET",
     command=["run-multitests.py", "multi_net/*.py"],
     required_fut=EnumFut.FUT_WLAN,
     required_tentacles_count=2,
@@ -80,6 +83,7 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     label="RUN-MULTITESTS_MULTIBLUETOOTH",
+    helptext="One board connects to another using bluetoot",
     command=["run-multitests.py", "multi_bluetooth/*.py"],
     required_fut=EnumFut.FUT_BLE,
     required_tentacles_count=2,

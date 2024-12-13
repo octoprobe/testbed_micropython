@@ -47,6 +47,7 @@ def list_() -> None:
             firmware_build=None,
         ),
         only_board=None,
+        only_test=None,
     )
     testrunner = util_testrunner.TestRunner(args=args)
 
@@ -65,6 +66,7 @@ def list_() -> None:
     print("Tests")
     for testrun_spec in testrunner.bartender.testrun_specs:
         print(f"  {testrun_spec.label}")
+        print(f"    help={testrun_spec.helptext}")
         print(f"    reqired_fut={testrun_spec.required_fut.name}")
         print(f"    tests_todo={testrun_spec.tests_todo}")
         print(f"    executable={testrun_spec.command_executable}")
@@ -111,9 +113,14 @@ def test(
         str | None,
         typer.Option(help="Only run this test", autocompletion=complete_only_test),
     ] = None,  # noqa: UP007
-    force_flash: TyperAnnotated[
-        bool | None, typer.Argument(help="Will flash all firmare")
-    ] = None,  # noqa: UP007
+    flash_force: TyperAnnotated[
+        bool | None,
+        typer.Option(help="Will flash all firmare"),
+    ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
+    flash_skip: TyperAnnotated[
+        bool | None,
+        typer.Option(help="Will not flash and use the firmware already on the boards"),
+    ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
 ) -> None:
     # print(f"{micropython_tests_git=}")
     # print(f"{micropython_tests=}")

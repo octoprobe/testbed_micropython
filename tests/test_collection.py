@@ -49,12 +49,14 @@ def main() -> None:
         [
             TestRunSpec(
                 label="TESTA",
+                helptext="Run perftest on each board.",
                 command=["testa.py","run-perfbench.py"],
                 required_fut=EnumFut.FUT_MCU_ONLY,
                 required_tentacles_count=1,
             ),
             TestRunSpec(
                 label="TESTWLAN",
+                helptext="Two boards have to access a AP",
                 command=["testwlan.py", "wlantest.py"],
                 required_fut=EnumFut.FUT_WLAN,
                 required_tentacles_count=2,

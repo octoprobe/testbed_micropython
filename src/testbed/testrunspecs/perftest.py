@@ -49,6 +49,7 @@ class TestRunPerfTest(TestRun):
 
 TESTRUNSPEC_PERFTEST = TestRunSpec(
     label="RUN-PERFBENCH",
+    helptext="Run pertest on each board",
     command=["run-perfbench.py"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,

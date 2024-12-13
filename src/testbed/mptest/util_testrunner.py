@@ -32,7 +32,7 @@ from testbed.testcollection.bartender import (
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
 from testbed.testcollection.testrun_specs import TestArgs, TestRun
-from testbed.testrunspecs import multinet, perftest, runtests, runtests_net_inet
+from testbed.testrunspecs import multinet, none, perftest, runtests, runtests_net_inet
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
 logger = logging.getLogger(__file__)
@@ -52,6 +52,7 @@ def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
         runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
         runtests.TESTRUNSPEC_RUNTESTS_BASICS,
         runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+        none.TESTRUNSPEC_RUNTESTS_NONE,
     ]
 
     if only_test is not None:

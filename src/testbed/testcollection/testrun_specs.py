@@ -87,22 +87,25 @@ class TestRunSpec:
     def __init__(
         self,
         label: str,
+        helptext: str,
         command: list[str],
         required_fut: EnumFut,
         required_tentacles_count: int,
         testrun_class: type[TestRun] = TestRun,
     ) -> None:
         assert isinstance(label, str)
+        assert isinstance(helptext, str)
         assert isinstance(command, list)
         assert isinstance(required_fut, EnumFut)
         assert isinstance(required_tentacles_count, int)
         assert isinstance(testrun_class, type(TestRun))
 
-        self.command = command
-        self.label = label
-        self.testrun_class = testrun_class
-        self.required_fut = required_fut
-        self.tentacles_required = required_tentacles_count
+        self.command: list[str] = command
+        self.label: str = label
+        self.helptext: str = helptext
+        self.testrun_class: type[TestRun] = testrun_class
+        self.required_fut: EnumFut = required_fut
+        self.tentacles_required: int = required_tentacles_count
         self.list_tsvs_todo: list[TentacleSpecVariants] = []
 
     @property

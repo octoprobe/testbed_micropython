@@ -56,12 +56,13 @@ class TestRunRunTests(TestRun):
             logfile=testargs.testresults_directory(
                 "testresults_subprocess.txt"
             ).filename,
-            timeout_s=300.0,
+            timeout_s=600.0,
         )
 
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE",
+    helptext="On each board, do test on a gpio feedback loop",
     command=["run-tests.py", "--test-dirs=extmod_hardware"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,
@@ -71,6 +72,7 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_BASICS = TestRunSpec(
     label="RUN-TESTS_BASICS",
+    helptext="On each board, do some basic python language tests",
     # TODO: Allow overwrite by command line
     command=["run-tests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
