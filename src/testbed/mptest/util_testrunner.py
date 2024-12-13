@@ -70,7 +70,7 @@ def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
 class Args:
     mp_test: ArgsMpTest
     firmware: ArgsFirmware
-    only_board: str | None
+    only_variant: str | None
     only_test: str | None
 
 

@@ -11,7 +11,7 @@ from octoprobe.util_dut_programmers import (
 )
 from octoprobe.util_micropython_boards import BoardVariant
 
-from testbed.constants import DIRECTORY_GIT_CACHE
+from testbed.constants import DIRECTORY_GIT_CACHE, is_url
 from testbed.mpbuild.build_api import build_by_variant_normalized
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_variants
 
@@ -29,18 +29,27 @@ class FirmwareBuilder:
     many tests might require it.
     """
 
-    def __init__(self, firmware_git_url: str) -> None:
+    def __init__(self, firmware_git: str) -> None:
         self._already_build_firmwares: dict[str, FirmwareBuildSpec] = {}
         """
         Key: board_variant.name_normalized
         """
-        self.firmware_git_url = firmware_git_url
-        self.git_repo = CachedGitRepo(
-            directory_cache=DIRECTORY_GIT_CACHE,
-            git_spec=firmware_git_url,
-            prefix="micropython_firmware_",
-        )
-        self.git_repo.clone()
+
+        if is_url(firmware_git):
+            self.firmware_git = firmware_git
+            self.git_repo = CachedGitRepo(
+                directory_cache=DIRECTORY_GIT_CACHE,
+                git_spec=firmware_git,
+                prefix="micropython_firmware_",
+            )
+            self.git_repo.clone()
+            self.repo_directory = self.git_repo.directory
+
+        else:
+
+            self.repo_directory = pathlib.Path(firmware_git).expanduser().resolve()
+
+        Database.assert_mpy_root_direcory(self.repo_directory)
 
     def build(
         self,
@@ -56,7 +65,7 @@ class FirmwareBuilder:
         )
         if firmware_build_spec is None:
             firmware_build_spec = build(
-                micropython_directory=self.git_repo.directory,
+                micropython_directory=self.repo_directory,
                 variant=variant,
                 testresults_mpbuild=testresults_mpbuild,
             )

@@ -13,6 +13,7 @@ from __future__ import annotations
 import typer
 import typing_extensions
 
+from testbed.constants import URL_FILENAME_DEFAULT
 from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_tsvs
@@ -39,14 +40,14 @@ def complete_only_test():
 def list_() -> None:
     args = util_testrunner.Args(
         mp_test=ArgsMpTest(
-            micropython_tests_git=None,
-            micropython_tests=None,
+            micropython_tests=URL_FILENAME_DEFAULT,
         ),
         firmware=ArgsFirmware(
-            firmware_build_git=None,
-            firmware_build=None,
+            firmware_build=URL_FILENAME_DEFAULT,
+            flash_skip=True,
+            flash_force=False,
         ),
-        only_board=None,
+        only_variant=None,
         only_test=None,
     )
     testrunner = util_testrunner.TestRunner(args=args)
@@ -78,37 +79,23 @@ def list_() -> None:
 
 @app.command(help="run tests against the connected tentacles")
 def test(
-    micropython_tests_git: TyperAnnotated[
-        str | None,
-        typer.Option(
-            envvar="TESTBED_MICROPYTHON_MICROPYTHON_TESTS_GIT",
-            help="Url to a MicroPython-Repo with the tests. Example: https://github.com/micropython/micropython.git@v1.24.1",
-        ),
-    ] = None,
     micropython_tests: TyperAnnotated[
-        str | None,
+        str,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_MICROPYTHON_TESTS",
-            help="Directory of MicroPython-Repo with the tests. Example ~/micropython",
+            help="Directory of MicroPython-Repo with the tests. Example ~/micropython or https://github.com/micropython/micropython.git@v1.24.1",
         ),
-    ] = None,
-    firmware_build_git: TyperAnnotated[
-        str | None,
-        typer.Option(
-            envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD_GIT",
-            help="Url to a MicroPython-Repo to be cloned and build. Example: https://github.com/micropython/micropython.git@v1.24.1",
-        ),
-    ] = None,
+    ] = URL_FILENAME_DEFAULT,
     firmware_build: TyperAnnotated[
-        str | None,
+        str,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD",
-            help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython",
+            help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
-    ] = None,
-    only_board: TyperAnnotated[
+    ] = URL_FILENAME_DEFAULT,
+    only_variant: TyperAnnotated[
         str | None, typer.Option(help="Only run these on this boards")
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UNoneP007
     only_test: TyperAnnotated[
         str | None,
         typer.Option(help="Only run this test", autocompletion=complete_only_test),
@@ -130,14 +117,14 @@ def test(
 
     args = util_testrunner.Args(
         mp_test=ArgsMpTest(
-            micropython_tests_git=micropython_tests_git,
             micropython_tests=micropython_tests,
         ),
         firmware=ArgsFirmware(
-            firmware_build_git=firmware_build_git,
             firmware_build=firmware_build,
+            flash_skip=flash_skip,
+            flash_force=flash_force,
         ),
-        only_board=only_board,
+        only_variant=only_variant,
         only_test=only_test,
     )
     testrunner = util_testrunner.TestRunner(args=args)

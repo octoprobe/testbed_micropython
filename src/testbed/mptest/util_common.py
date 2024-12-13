@@ -17,6 +17,7 @@ from octoprobe.lib_tentacle_dut import TentacleDut
 from octoprobe.util_subprocess import subprocess_run
 from octoprobe.util_vscode_un_monkey_patch import un_monkey_patch
 
+from testbed.constants import is_url
 from testbed.util_firmware_mpbuild import CachedGitRepo
 
 if typing.TYPE_CHECKING:
@@ -27,8 +28,7 @@ logger = logging.getLogger(__file__)
 
 @dataclasses.dataclass
 class ArgsMpTest:
-    micropython_tests_git: str | None
-    micropython_tests: str | None
+    micropython_tests: str
 
     def clone_git_micropython_tests(
         self, directory_git_cache: pathlib.Path
@@ -36,30 +36,28 @@ class ArgsMpTest:
         """
         We have to clone the micropython git repo and use the tests from the subfolder "test".
         """
-        if self.micropython_tests is not None:
+        if is_url(self.micropython_tests):
+            # 'self.micropython_tests' is a url pointing to a git rep
+            git_repo = CachedGitRepo(
+                directory_cache=directory_git_cache,
+                git_spec=self.micropython_tests,
+                prefix="micropython_tests_",
+            )
+            git_repo.clone()
+
+            _directory = git_repo.directory
+        else:
+            # 'self.micropython_tests' is a filename.
             _directory = pathlib.Path(self.micropython_tests).expanduser().resolve()
             if not _directory.is_dir():
                 raise ValueError(
                     f"parameter '{self.micropython_tests}': Directory does not exist: {_directory}"
                 )
-            return _directory
-
-        if self.micropython_tests_git is None:
-            raise ValueError(
-                "MicroPython repo not cloned - argument '{PYTEST_OPT_GIT_MICROPYTHON_TESTS}'not given to pytest !"
-            )
-
-        git_repo = CachedGitRepo(
-            directory_cache=directory_git_cache,
-            git_spec=self.micropython_tests_git,
-            prefix="micropython_tests_",
-        )
-        git_repo.clone()
 
         # Avoid hanger in run-perfbench.py/run-tests.py
         un_monkey_patch()
 
-        return git_repo.directory
+        return _directory
 
 
 def mip_install(

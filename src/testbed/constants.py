@@ -21,6 +21,8 @@ DIRECTORY_TESTRESULTS = DIRECTORY_REPO / "results"
 DIRECTORY_GIT_CACHE = DIRECTORY_REPO / "git_cache"
 FILENAME_TESTBED_LOCK = DIRECTORY_REPO / "testbed.lock"
 
+URL_FILENAME_DEFAULT = "."
+
 
 class EnumTentacleType(enum.StrEnum):
     TENTACLE_MCU = TENTACLE_TYPE_MCU
@@ -58,3 +60,12 @@ class EnumFut(enum.StrEnum):
     """
     FUT_WLAN = enum.auto()
     FUT_BLE = enum.auto()
+
+
+def is_url(filename: str) -> bool:
+    assert isinstance(filename, str)
+
+    for prefix in ("http://", "https://"):
+        if filename.startswith(prefix):
+            return True
+    return False

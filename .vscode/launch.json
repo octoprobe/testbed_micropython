@@ -29,9 +29,43 @@
             "args": [
                 // "--help",
                     "test",
-                    "--micropython-tests-git=https://github.com/micropython/micropython.git@master",
-                    "--firmware-build-git=https://github.com/micropython/micropython.git@v1.24.1",
-                // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
+
+                    "--micropython-tests=https://github.com/micropython/micropython.git@master",
+                    "--firmware-build=https://github.com/micropython/micropython.git@v1.24.1",
+             
+                    "--flash-skip",
+
+                    // "-/only-test", "RUN-NONE",
+                    "--only-test", "RUN-TESTS_BASICS",
+
+                    // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
+                // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
+                // "RPI_PICO",
+                // "ESP8266_GENERIC",
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "justMyCode": false,
+        },
+        {
+            "name": "mptest test from cwd",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed.mptest.cli",
+            // "cwd": "${workspaceFolder}/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8",
+            "cwd": "${workspaceFolder}/git_cache/micropython_tests_e8452d67a60e9613af4e0de0bafed1b8/",
+            "args": [
+                // "--help",
+                    "test",
+
+                    "--flash-skip",
+
+                    // "-/only-test", "RUN-NONE",
+                    "--only-test", "RUN-TESTS_BASICS",
+
+                    // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
                 // "RPI_PICO",
                 // "ESP8266_GENERIC",

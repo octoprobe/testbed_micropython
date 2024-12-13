@@ -4,6 +4,8 @@ import dataclasses
 import pathlib
 import typing
 
+from octoprobe.util_dut_programmers import MICROPYTHON_FULL_VERSION_TEXT_FORCE
+
 from testbed.util_firmware_mpbuild import BoardVariant, FirmwareBuildSpec
 
 if typing.TYPE_CHECKING:
@@ -13,8 +15,9 @@ if typing.TYPE_CHECKING:
 
 @dataclasses.dataclass(repr=True)
 class ArgsFirmware:
-    firmware_build_git: str | None
-    firmware_build: str | None
+    firmware_build: str
+    flash_skip: bool
+    flash_force: bool
     _builder: FirmwareBuilder | None = None
 
     def setup(self) -> None:
@@ -24,8 +27,10 @@ class ArgsFirmware:
         """
         from testbed.util_firmware_mpbuild import FirmwareBuilder
 
-        if self.firmware_build_git:
-            self._builder = FirmwareBuilder(firmware_git_url=self.firmware_build_git)
+        if self.flash_skip:
+            return
+
+        self._builder = FirmwareBuilder(firmware_git=self.firmware_build)
 
     def get_firmware_spec(self, tentacle: Tentacle, variant: str) -> FirmwareSpecBase:
         """
@@ -39,23 +44,23 @@ class ArgsFirmware:
         """
         assert tentacle.__class__.__name__ == "Tentacle"
 
-        if self.firmware_build_git is not None:
+        if self.flash_skip:
             #
-            # Collect firmware specs by connected tentacles
+            # Nothing was specified: We do not flash any firmware
             #
-            return FirmwareBuildSpec(
-                board_variant=BoardVariant(
-                    board=tentacle.tentacle_spec.tentacle_tag,
-                    variant=variant,
-                )
+            from testbed.util_firmware_specs import FirmwareNoFlashingSpec
+
+            return FirmwareNoFlashingSpec.factory()
+
+        #
+        # Collect firmware specs by connected tentacles
+        #
+        return FirmwareBuildSpec(
+            board_variant=BoardVariant(
+                board=tentacle.tentacle_spec.tentacle_tag,
+                variant=variant,
             )
-
-        #
-        # Nothing was specified: We do not flash any firmware
-        #
-        from testbed.util_firmware_specs import FirmwareNoFlashingSpec
-
-        return FirmwareNoFlashingSpec.factory()
+        )
 
     def build_firmwares(
         self,
@@ -75,4 +80,9 @@ class ArgsFirmware:
                     testresults_mpbuild=testresults_mpbuild,
                 )
                 # After building, the spec is more detailed: Reassign it!
+                if self.flash_force:
+                    spec = dataclasses.replace(
+                        spec,
+                        micropython_full_version_text=MICROPYTHON_FULL_VERSION_TEXT_FORCE,
+                    )
                 tentacle.firmware_spec = spec
