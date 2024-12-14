@@ -1,5 +1,8 @@
 # Current state 2024-12-15
 
+* testbed_showcase (ex. tutorial). Uses octobus.
+* testbed_micropython. NO octobus.
+
 ## Used case Damien
 
 ```bash

@@ -32,7 +32,7 @@ TyperAnnotated = typing_extensions.Annotated
 #   op.py:58: error: Variable "octoprobe.scripts.op.TyperAnnotated" is not valid as a type  [valid-type]
 #   op.py:58: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
 
-app = typer.Typer()
+app = typer.Typer(pretty_exceptions_enable=False)
 
 
 def complete_only_test():
@@ -71,7 +71,7 @@ def list_() -> None:
         print(f"    help={testrun_spec.helptext}")
         print(f"    executable={testrun_spec.command_executable}")
         print(f"      args={testrun_spec.command_args}")
-        print(f"    reqired_fut={testrun_spec.required_fut.name}")
+        print(f"    required_fut={testrun_spec.required_fut.name}")
         print(f"    tests_todo={testrun_spec.tests_todo}")
         print("    tests")
         for tsvs in testrun_spec.list_tsvs_todo:

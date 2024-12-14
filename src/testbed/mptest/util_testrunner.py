@@ -254,7 +254,10 @@ class TestRunner:
                 )
                 self.ntestrun.function_prepare_dut()
                 self.ntestrun.function_setup_infra()
-                self.ntestrun.function_setup_dut(active_tentacles=testrun.tentacles)
+                self.ntestrun.function_setup_dut(
+                    active_tentacles=testrun.tentacles,
+                    flash_skip=self.args.firmware.flash_skip,
+                )
 
                 self.ntestrun.setup_relays(
                     futs=(testrun.testrun_spec.required_fut,),
