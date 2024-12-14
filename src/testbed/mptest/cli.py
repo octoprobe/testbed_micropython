@@ -9,6 +9,7 @@ Where to take the firmware from
 """
 
 from __future__ import annotations
+import logging
 
 import typer
 import typing_extensions
@@ -18,6 +19,9 @@ from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
+from mpbuild.board_database import MpbuildMpyDirectoryException
+
+logger = logging.getLogger(__file__)
 
 # 'typer' does not work correctly with typing.Annotated
 # Required is: typing_extensions.Annotated
@@ -103,7 +107,11 @@ def test(
     ] = None,  # noqa: UP007
     flash_force: TyperAnnotated[
         bool | None,
-        typer.Option(help="Will flash all firmare"),
+        typer.Option(help="Will flash all firmare and run tests."),
+    ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
+    flash_only: TyperAnnotated[
+        bool | None,
+        typer.Option(help="Will flash all firmare and NOT run any tests."),
     ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
     flash_skip: TyperAnnotated[
         bool | None,
@@ -116,6 +124,8 @@ def test(
     # print(f"{firmware_build=}")
     # print(f"{only_boards=}")
 
+    only_variants = None if only_variant is None else [only_variant]
+
     args = util_testrunner.Args(
         mp_test=ArgsMpTest(
             micropython_tests=micropython_tests,
@@ -125,10 +135,20 @@ def test(
             flash_skip=flash_skip,
             flash_force=flash_force,
         ),
-        only_variants=[only_variant],
+        only_variants=only_variants,
         only_test=only_test,
     )
-    testrunner = util_testrunner.TestRunner(args=args)
+    try:
+        testrunner = util_testrunner.TestRunner(args=args)
+    except MpbuildMpyDirectoryException as e:
+        logger.warning(e)
+        return
+
+    if flash_only:
+        args.firmware.flash_force = True
+        testrunner.flash_only()
+        return
+
     testrunner.run_all_in_sequence()
 
 

@@ -155,11 +155,24 @@ class TestRunner:
 
         testrun_specs = get_testrun_specs(only_test=args.only_test)
         testrun_specs.assign_tentacles(
-            tentacles=connected_tentacles, only_board_variants=args.only_variants
+            tentacles=connected_tentacles,
+            only_board_variants=args.only_variants,
         )
         self.bartender = TestBartender(
             connected_tentacles=connected_tentacles,
             testrun_specs=testrun_specs,
+        )
+
+    def flash_only(self) -> None:
+        self.assign_firmware_specs_default()
+        self.args.firmware.build_firmwares(
+            active_tentacles=self.bartender.connected_tentacles,
+            testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
+        )
+        self.ntestrun.function_prepare_dut()
+        self.ntestrun.function_setup_infra()
+        self.ntestrun.function_setup_dut(
+            active_tentacles=self.bartender.connected_tentacles
         )
 
     def run_all_in_sequence(self) -> None:
@@ -240,7 +253,7 @@ class TestRunner:
                 )
                 self.args.firmware.build_firmwares(
                     active_tentacles=testrun.tentacles,
-                    testresults_mpbuild=testresults_directory.directory_top / "mpbuild",
+                    testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
                 )
                 self.ntestrun.function_prepare_dut()
                 self.ntestrun.function_setup_infra()
@@ -282,6 +295,15 @@ class TestRunner:
                 logger.info(
                     f"TEST END {duration_text()} {testresults_directory.test_nodeid}"
                 )
+
+    def assign_firmware_specs_default(self) -> None:
+        # We should copy the tentacles. But as we are not going to reuse them, we skip it.
+        # Assign firmware_spec to each tentacle
+        for tentacle in self.bartender.connected_tentacles:
+            tentacle._firmware_spec = self.args.firmware.get_firmware_spec(
+                tentacle=tentacle,
+                variant="",
+            )
 
     def assign_firmware_specs(self, testrun: TestRun) -> None:
         """

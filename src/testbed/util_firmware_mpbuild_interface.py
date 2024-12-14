@@ -43,6 +43,7 @@ class ArgsFirmware:
         If nothing is specified, we do not flash any firmware: Return None
         """
         assert tentacle.__class__.__name__ == "Tentacle"
+        assert isinstance(variant, str)
 
         if self.flash_skip:
             #
