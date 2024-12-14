@@ -50,7 +50,7 @@ def main() -> None:
             TestRunSpec(
                 label="TESTA",
                 helptext="Run perftest on each board.",
-                command=["testa.py","run-perfbench.py"],
+                command=["testa.py", "run-perfbench.py"],
                 required_fut=EnumFut.FUT_MCU_ONLY,
                 required_tentacles_count=1,
             ),
@@ -63,7 +63,10 @@ def main() -> None:
             ),
         ]
     )
-    testrun_specs.assign_tentacles(tentacles=connected_tentacles)
+    testrun_specs.assign_tentacles(
+        tentacles=connected_tentacles,
+        only_board_variants=None,
+    )
 
     bartender = TestBartender(
         connected_tentacles=connected_tentacles,

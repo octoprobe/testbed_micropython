@@ -36,5 +36,6 @@ class TestRunSpecs(list[TestRunSpec]):
     ) -> None:
         for testrun_spec in self:
             testrun_spec.assign_tentacles(
-                tentacles=tentacles, only_board_variants=only_board_variants
+                tentacles=tentacles,
+                only_board_variants=only_board_variants,
             )
