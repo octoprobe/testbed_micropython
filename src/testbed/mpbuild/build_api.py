@@ -27,6 +27,8 @@ from mpbuild.board_database import Board, Database
 from mpbuild.build import MpbuildNotSupportedException, docker_build_cmd
 from octoprobe.util_dut_programmers import MICROPYTHON_FULL_VERSION_TEXT_FORCE
 
+BOARD_VARIANT_SEPARATOR = "-"
+
 
 class MpbuildException(Exception):
     """
@@ -140,7 +142,7 @@ class Firmware:
         """
         if self.variant is None:
             return self.board.name
-        return f"{self.board.name}-{self.variant}"
+        return f"{self.board.name}{BOARD_VARIANT_SEPARATOR}{self.variant}"
 
     @property
     def requires_flashing(self) -> bool:
@@ -190,13 +192,13 @@ class BuildFolder:
                 # Example: board_name == 'stm32'
                 build_directory = f"build-{self.board.name}"
                 if variant is not None:
-                    build_directory += f"-{variant}"
+                    build_directory += f"{BOARD_VARIANT_SEPARATOR}{variant}"
                 return self.board.port.directory / build_directory
 
             # Example: board_name == 'unix'
             build_directory = "build"
             if variant is not None:
-                build_directory += f"-{variant}"
+                build_directory += f"{BOARD_VARIANT_SEPARATOR}{variant}"
             return self.board.port.directory / build_directory
 
         self.build_folder = get_build_folder()
@@ -206,7 +208,7 @@ class BuildFolder:
             self.file_qstr_i_last = self.filename_qstr_i_last.read_text()
         except FileNotFoundError as e:
             raise MpbuildException(
-                f"Firmware for {self.board.name}-{self.variant}: Could not read: {self.filename_qstr_i_last}"
+                f"Firmware for {self.board.name}{BOARD_VARIANT_SEPARATOR}{self.variant}: Could not read: {self.filename_qstr_i_last}"
             ) from e
 
     @property
@@ -223,7 +225,7 @@ class BuildFolder:
         _filename = self.build_folder / filename
         if not _filename.is_file():
             raise MpbuildException(
-                f"The firmware for {self.board.name}-{self.variant} was not found: {_filename}"
+                f"The firmware for {self.board.name}{BOARD_VARIANT_SEPARATOR}{self.variant} was not found: {_filename}"
             )
 
         return _filename
@@ -250,7 +252,7 @@ class BuildFolder:
         match = pattern.search(self.file_qstr_i_last)
         if match is None:
             raise MpbuildException(
-                f"Firmware for {self.board.name}-{self.variant}: Could not find '{pattern.pattern}' in: {self.filename_qstr_i_last}"
+                f"Firmware for {self.board.name}{BOARD_VARIANT_SEPARATOR}{self.variant}: Could not find '{pattern.pattern}' in: {self.filename_qstr_i_last}"
             )
         text = match.group(1)
         # Example 'mcu_name': "LOLIN_C3_MINI" " with " "ESP32-C3FH4"
@@ -326,7 +328,7 @@ def build_by_variant_normalized(
     * captured output with the error message is written to stdout/strerr (it would be better to write it to a logfile)
     """
 
-    board_str, _, variant_str = variant_normalized.partition("-")
+    board_str, variant_str = split_board_variant(variant_normalized)
     # Example variant_str:
     #  "": for the default variant
     #  "THREAD": for variant "THREAD"
@@ -341,3 +343,12 @@ def build_by_variant_normalized(
     variant = None if variant_str == "" else variant_str
 
     return build(logfile=logfile, board=board, variant=variant, do_clean=do_clean)
+
+
+def split_board_variant(board_variant: str) -> tuple[str, str]:
+    """
+    Example: "RPI_PICO2-RISCV" -> "RPI_PICO2", "RISCV"
+    Example: "RPI_PICO2" -> "RPI_PICO", ""
+    """
+    board_str, _, variant_str = board_variant.partition(BOARD_VARIANT_SEPARATOR)
+    return (board_str, variant_str)

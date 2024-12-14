@@ -36,20 +36,17 @@ def complete_only_test():
     return sorted([x.label for x in testrun_specs])
 
 
+def complete_only_variant():
+    args = util_testrunner.Args.get_default_args()
+    testrunner = util_testrunner.TestRunner(args=args)
+
+    tsvs = testrunner.bartender.connected_tentacles.tsvs
+    return sorted([t.board_variant for t in tsvs])
+
+
 @app.command(name="list", help="List tests and connected tentacles")
 def list_() -> None:
-    args = util_testrunner.Args(
-        mp_test=ArgsMpTest(
-            micropython_tests=URL_FILENAME_DEFAULT,
-        ),
-        firmware=ArgsFirmware(
-            firmware_build=URL_FILENAME_DEFAULT,
-            flash_skip=True,
-            flash_force=False,
-        ),
-        only_variant=None,
-        only_test=None,
-    )
+    args = util_testrunner.Args.get_default_args()
     testrunner = util_testrunner.TestRunner(args=args)
 
     print("")
@@ -68,10 +65,10 @@ def list_() -> None:
     for testrun_spec in testrunner.bartender.testrun_specs:
         print(f"  {testrun_spec.label}")
         print(f"    help={testrun_spec.helptext}")
-        print(f"    reqired_fut={testrun_spec.required_fut.name}")
-        print(f"    tests_todo={testrun_spec.tests_todo}")
         print(f"    executable={testrun_spec.command_executable}")
         print(f"      args={testrun_spec.command_args}")
+        print(f"    reqired_fut={testrun_spec.required_fut.name}")
+        print(f"    tests_todo={testrun_spec.tests_todo}")
         print("    tests")
         for tsvs in testrun_spec.list_tsvs_todo:
             print(f"      {tsvs}")
@@ -94,7 +91,11 @@ def test(
         ),
     ] = URL_FILENAME_DEFAULT,
     only_variant: TyperAnnotated[
-        str | None, typer.Option(help="Only run these on this boards")
+        str | None,
+        typer.Option(
+            help="Only run these on this board variants",
+            autocompletion=complete_only_variant,
+        ),
     ] = None,  # noqa: UNoneP007
     only_test: TyperAnnotated[
         str | None,
@@ -124,7 +125,7 @@ def test(
             flash_skip=flash_skip,
             flash_force=flash_force,
         ),
-        only_variant=only_variant,
+        only_variants=[only_variant],
         only_test=only_test,
     )
     testrunner = util_testrunner.TestRunner(args=args)

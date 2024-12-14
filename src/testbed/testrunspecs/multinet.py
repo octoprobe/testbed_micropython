@@ -83,7 +83,7 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     label="RUN-MULTITESTS_MULTIBLUETOOTH",
-    helptext="One board connects to another using bluetoot",
+    helptext="One board connects to another using bluetooth",
     command=["run-multitests.py", "multi_bluetooth/*.py"],
     required_fut=EnumFut.FUT_BLE,
     required_tentacles_count=2,

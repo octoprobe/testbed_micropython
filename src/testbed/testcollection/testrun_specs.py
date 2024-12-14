@@ -116,10 +116,19 @@ class TestRunSpec:
     def command_args(self) -> list[str]:
         return self.command[1:]
 
-    def assign_tentacles(self, tentacles: ConnectedTentacles) -> None:
+    def assign_tentacles(
+        self,
+        tentacles: ConnectedTentacles,
+        only_board_variants: list[str] | None,
+    ) -> None:
         assert isinstance(tentacles, ConnectedTentacles)
+        assert isinstance(only_board_variants, list | None)
+
         selected_tentacles = tentacles.get_by_fut(self.required_fut)
         tsvs_todo = selected_tentacles.tsvs
+        tsvs_todo = tsvs_todo.get_only_board_variants(
+            only_board_variants=only_board_variants
+        )
         self.list_tsvs_todo = [
             TentacleSpecVariants(tsvs_todo) for _ in range(self.tentacles_required)
         ]
@@ -136,7 +145,7 @@ class TestRunSpec:
             test_run.list_tentacle_variant,
             strict=False,
         ):
-            tsvs.remove_tentacle_variant(tentacle_variant)
+            tsvs.remove_tentacle_variant(tentacle_variant=tentacle_variant)
 
     @property
     def tests_todo(self) -> int:

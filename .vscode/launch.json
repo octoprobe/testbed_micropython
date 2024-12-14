@@ -65,6 +65,8 @@
                     // "-/only-test", "RUN-NONE",
                     "--only-test", "RUN-TESTS_BASICS",
 
+                    "--only-variant", "RPI_PICO2-RISCV",
+
                     // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
                 // "RPI_PICO",

@@ -6,6 +6,8 @@ import pathlib
 import shutil
 import time
 
+from testbed.mpbuild import build_api
+
 from octoprobe.lib_tentacle import Tentacle
 from octoprobe.octoprobe import NTestRun
 from octoprobe.util_pytest import util_logging
@@ -14,13 +16,7 @@ from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 from octoprobe.util_usb_serial import QueryResultTentacles
 
-from testbed.constants import (
-    DIRECTORY_GIT_CACHE,
-    DIRECTORY_TESTRESULTS,
-    EnumFut,
-    EnumTentacleType,
-    FILENAME_TESTBED_LOCK,
-)
+from testbed import constants
 from testbed.mptest.util_common import ArgsMpTest
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
 from testbed.tentacles_spec import McuConfig
@@ -70,13 +66,30 @@ def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
 class Args:
     mp_test: ArgsMpTest
     firmware: ArgsFirmware
-    only_variant: str | None
+    only_variants: list[str] | None
     only_test: str | None
+
+    @staticmethod
+    def get_default_args() -> Args:
+        return Args(
+            mp_test=ArgsMpTest(
+                micropython_tests=constants.URL_FILENAME_DEFAULT,
+            ),
+            firmware=ArgsFirmware(
+                firmware_build=constants.URL_FILENAME_DEFAULT,
+                flash_skip=True,
+                flash_force=False,
+            ),
+            only_variants=None,
+            only_test=None,
+        )
 
 
 def instantiate_tentacles(
     query_result_tentacles: QueryResultTentacles,
 ) -> ConnectedTentacles:
+    assert isinstance(query_result_tentacles, QueryResultTentacles)
+
     tentacles = ConnectedTentacles()
     for query_result_tentacle in query_result_tentacles:
         serial = query_result_tentacle.rp2_serial_number
@@ -89,11 +102,12 @@ def instantiate_tentacles(
             )
             continue
 
-        tentacle = Tentacle[McuConfig, EnumTentacleType, EnumFut](
+        tentacle = Tentacle[McuConfig, constants.EnumTentacleType, constants.EnumFut](
             tentacle_serial_number=serial,
             tentacle_spec=tentacle_spec,
             hw_version=hw_version,
         )
+
         tentacle.assign_connected_hub(query_result_tentacle=query_result_tentacle)
         tentacles.append(tentacle)
 
@@ -112,14 +126,14 @@ class TestRunner:
         """
         assert isinstance(args, Args)
         self.args = args
-        _TESTBED_LOCK.acquire(FILENAME_TESTBED_LOCK)
+        _TESTBED_LOCK.acquire(constants.FILENAME_TESTBED_LOCK)
 
-        if DIRECTORY_TESTRESULTS.exists():
-            shutil.rmtree(DIRECTORY_TESTRESULTS, ignore_errors=False)
-        DIRECTORY_TESTRESULTS.mkdir(parents=True, exist_ok=True)
+        if constants.DIRECTORY_TESTRESULTS.exists():
+            shutil.rmtree(constants.DIRECTORY_TESTRESULTS, ignore_errors=False)
+        constants.DIRECTORY_TESTRESULTS.mkdir(parents=True, exist_ok=True)
 
         util_logging.init_logging()
-        util_logging.Logs(DIRECTORY_TESTRESULTS)
+        util_logging.Logs(constants.DIRECTORY_TESTRESULTS)
 
         query_result_tentacles = NTestRun.session_powercycle_tentacles()
 
@@ -130,13 +144,19 @@ class TestRunner:
             logger.warning("No tentacles discovered!")
             raise SystemExit(0)
 
+        connected_tentacles = connected_tentacles.get_only(
+            board_variants=args.only_variants
+        )
+
         self.ntestrun = NTestRun(connected_tentacles=connected_tentacles)
         args.firmware.setup()
 
         # _testrun.session_powercycle_tentacles()
 
         testrun_specs = get_testrun_specs(only_test=args.only_test)
-        testrun_specs.assign_tentacles(connected_tentacles)
+        testrun_specs.assign_tentacles(
+            tentacles=connected_tentacles, only_board_variants=args.only_variants
+        )
         self.bartender = TestBartender(
             connected_tentacles=connected_tentacles,
             testrun_specs=testrun_specs,
@@ -144,7 +164,7 @@ class TestRunner:
 
     def run_all_in_sequence(self) -> None:
         git_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
-            directory_git_cache=DIRECTORY_GIT_CACHE
+            directory_git_cache=constants.DIRECTORY_GIT_CACHE
         )
         while True:
             try:
@@ -201,7 +221,7 @@ class TestRunner:
         self.assign_firmware_specs(testrun=testrun)
 
         testresults_directory = ResultsDir(
-            directory_top=DIRECTORY_TESTRESULTS,
+            directory_top=constants.DIRECTORY_TESTRESULTS,
             test_name=testrun.testid,
             test_nodeid=testrun.testid,
         )

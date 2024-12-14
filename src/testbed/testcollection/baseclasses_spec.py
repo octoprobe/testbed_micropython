@@ -10,6 +10,7 @@ from octoprobe.lib_tentacle import Tentacle
 from octoprobe.util_baseclasses import TentacleSpec
 
 from testbed.constants import EnumFut
+from testbed.mpbuild import build_api
 from testbed.util_constants import TAG_VARIANTS
 
 
@@ -23,9 +24,7 @@ class TentacleSpecVariant:
         assert isinstance(self.variant, str)
 
     def __repr__(self) -> str:
-        if self.variant == "":
-            return self.board
-        return self.board + "-" + self.variant
+        return self.board_variant
 
     @property
     def board(self) -> str:
@@ -34,6 +33,12 @@ class TentacleSpecVariant:
         # for board_variant in board_variants(boards):
         #     return board_variant.board
         # raise ValueError("Programming error")
+
+    @property
+    def board_variant(self) -> str:
+        if self.variant == "":
+            return self.board
+        return f"{self.board}-{self.variant}"
 
 
 def tentacle_spec_2_tsvs(tentacle_spec: TentacleSpec) -> list[TentacleSpecVariant]:
@@ -100,7 +105,10 @@ class TentacleVariant:
 
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
-    def remove_tentacle_variant(self, tentacle_variant: TentacleVariant) -> None:
+    def remove_tentacle_variant(
+        self,
+        tentacle_variant: TentacleVariant,
+    ) -> None:
         assert isinstance(tentacle_variant, TentacleVariant)
         for tsv in self:
             if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
@@ -108,6 +116,17 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
                     assert tsv in self
                     self.remove(tsv)
                     return
+
+    def get_only_board_variants(
+        self,
+        only_board_variants: list[str] | None,
+    ) -> TentacleSpecVariants:
+        if only_board_variants is None:
+            return self
+        assert isinstance(only_board_variants, list)
+        return TentacleSpecVariants(
+            {x for x in self if x.board_variant in only_board_variants}
+        )
 
 
 class ConnectedTentacles(list[Tentacle]):
@@ -128,3 +147,14 @@ class ConnectedTentacles(list[Tentacle]):
 
     def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
         return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
+
+    def get_only(self, board_variants: list[str] | None) -> ConnectedTentacles:
+        assert isinstance(board_variants, list | None)
+
+        if board_variants is None:
+            return self
+
+        boards = [build_api.split_board_variant(bv)[0] for bv in board_variants]
+        return ConnectedTentacles(
+            [t for t in self if t.tentacle_spec.tentacle_tag in boards]
+        )
