@@ -34,6 +34,7 @@
                     "--firmware-build=https://github.com/micropython/micropython.git@v1.24.1",
              
                     // "--flash-skip",
+                    "--flash-only",
 
                     // "--only-test", "RUN-NONE",
                     // "--only-test", "RUN-TESTS_BASICS",

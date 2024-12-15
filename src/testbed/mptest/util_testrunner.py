@@ -169,7 +169,8 @@ class TestRunner:
         self.ntestrun.function_prepare_dut()
         self.ntestrun.function_setup_infra()
         self.ntestrun.function_setup_dut(
-            active_tentacles=self.bartender.connected_tentacles
+            active_tentacles=self.bartender.connected_tentacles,
+            flash_skip=False,
         )
 
     def run_all_in_sequence(self) -> None:
@@ -300,7 +301,7 @@ class TestRunner:
         # We should copy the tentacles. But as we are not going to reuse them, we skip it.
         # Assign firmware_spec to each tentacle
         for tentacle in self.bartender.connected_tentacles:
-            tentacle.tentacle_state._firmware_spec = (
+            tentacle.tentacle_state.firmware_spec = (
                 self.args.firmware.get_firmware_spec(
                     tentacle=tentacle,
                     variant="",
