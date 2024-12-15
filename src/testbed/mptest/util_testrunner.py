@@ -87,6 +87,9 @@ def instantiate_tentacles(
 ) -> ConnectedTentacles:
     assert isinstance(query_result_tentacles, QueryResultTentacles)
 
+    if len(query_result_tentacles) == 0:
+        raise ValueError("No tentacles are connected!")
+
     tentacles = ConnectedTentacles()
     for query_result_tentacle in query_result_tentacles:
         serial = query_result_tentacle.rp2_serial_number
@@ -103,13 +106,10 @@ def instantiate_tentacles(
             tentacle_serial_number=serial,
             tentacle_spec=tentacle_spec,
             hw_version=hw_version,
+            hub=query_result_tentacle,
         )
 
-        tentacle.assign_connected_hub(query_result_tentacle=query_result_tentacle)
         tentacles.append(tentacle)
-
-        if len(tentacles) == 0:
-            raise ValueError("No tentacles are connected!")
 
     return tentacles
 
@@ -300,9 +300,11 @@ class TestRunner:
         # We should copy the tentacles. But as we are not going to reuse them, we skip it.
         # Assign firmware_spec to each tentacle
         for tentacle in self.bartender.connected_tentacles:
-            tentacle.dut._firmware_spec = self.args.firmware.get_firmware_spec(
-                tentacle=tentacle,
-                variant="",
+            tentacle.tentacle_state._firmware_spec = (
+                self.args.firmware.get_firmware_spec(
+                    tentacle=tentacle,
+                    variant="",
+                )
             )
 
     def assign_firmware_specs(self, testrun: TestRun) -> None:
@@ -313,7 +315,7 @@ class TestRunner:
         testrun.copy_tentacles()
         # Assign firmware_spec to each tentacle
         for tentacle_variant in testrun.list_tentacle_variant:
-            tentacle_variant.tentacle.dut._firmware_spec = (
+            tentacle_variant.tentacle.tentacle_state._firmware_spec = (
                 self.args.firmware.get_firmware_spec(
                     tentacle=tentacle_variant.tentacle,
                     variant=tentacle_variant.variant,

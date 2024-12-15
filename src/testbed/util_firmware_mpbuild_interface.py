@@ -77,7 +77,7 @@ class ArgsFirmware:
         for tentacle in active_tentacles:
             if tentacle.is_mcu:
                 spec = self._builder.build(
-                    firmware_spec=tentacle.dut.firmware_spec,
+                    firmware_spec=tentacle.tentacle_state.firmware_spec,
                     testresults_mpbuild=testresults_mpbuild,
                 )
                 # After building, the spec is more detailed: Reassign it!
@@ -86,4 +86,4 @@ class ArgsFirmware:
                         spec,
                         micropython_full_version_text=MICROPYTHON_FULL_VERSION_TEXT_FORCE,
                     )
-                tentacle.dut.firmware_spec = spec
+                tentacle.tentacle_state.firmware_spec = spec
