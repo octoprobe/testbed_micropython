@@ -300,7 +300,7 @@ class TestRunner:
         # We should copy the tentacles. But as we are not going to reuse them, we skip it.
         # Assign firmware_spec to each tentacle
         for tentacle in self.bartender.connected_tentacles:
-            tentacle._firmware_spec = self.args.firmware.get_firmware_spec(
+            tentacle.dut._firmware_spec = self.args.firmware.get_firmware_spec(
                 tentacle=tentacle,
                 variant="",
             )
@@ -313,7 +313,7 @@ class TestRunner:
         testrun.copy_tentacles()
         # Assign firmware_spec to each tentacle
         for tentacle_variant in testrun.list_tentacle_variant:
-            tentacle_variant.tentacle._firmware_spec = (
+            tentacle_variant.tentacle.dut._firmware_spec = (
                 self.args.firmware.get_firmware_spec(
                     tentacle=tentacle_variant.tentacle,
                     variant=tentacle_variant.variant,

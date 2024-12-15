@@ -40,6 +40,7 @@ class TestRun:
     def done(self) -> None:
         self.testrun_spec.done(test_run=self)
 
+    # TODO: Trash
     def copy_tentacles(self) -> None:
         """
         We want to override tentacle.firmware_spec later on.
