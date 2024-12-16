@@ -172,7 +172,8 @@ class TestRunner:
                 tentacle=tentacle,
                 testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
             )
-            self.ntestrun.function_setup_all(tentacle=tentacle)
+
+            self.ntestrun.function_setup_infa_and_dut(tentacle=tentacle)
 
     def run_all_in_sequence(self) -> None:
         git_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
@@ -205,7 +206,9 @@ class TestRunner:
         self.ntestrun.session_teardown()
 
     def run_one_test(
-        self, testrun: TestRun, git_micropython_tests: pathlib.Path
+        self,
+        testrun: TestRun,
+        git_micropython_tests: pathlib.Path,
     ) -> None:
         """
         Runs setup and teardown for every single test:
@@ -230,7 +233,7 @@ class TestRunner:
 
         logger.info(testrun.testid)
 
-        self.assign_firmware_specs(testrun=testrun)
+        self._assign_firmware_specs(testrun=testrun)
 
         testresults_directory = ResultsDir(
             directory_top=constants.DIRECTORY_TESTRESULTS,
@@ -250,6 +253,7 @@ class TestRunner:
                 logger.info(
                     f"TEST SETUP {duration_text(0.0)} {testresults_directory.test_nodeid}"
                 )
+
                 for tentacle in testrun.tentacles:
                     self.args.firmware.build_firmware(
                         tentacle=tentacle,
@@ -261,7 +265,6 @@ class TestRunner:
                         tentacle=tentacle,
                         flash_skip=self.args.firmware.flash_skip,
                     )
-                    self.ntestrun.function_activate_dut(tentacle=tentacle)
 
                 self.ntestrun.setup_relays(
                     futs=(testrun.testrun_spec.required_fut,),
@@ -300,11 +303,7 @@ class TestRunner:
                     f"TEST END {duration_text()} {testresults_directory.test_nodeid}"
                 )
 
-    def assign_firmware_specs(self, testrun: TestRun) -> None:
-        """
-        For a test, the firmwarespec is assigned to each tentacle (which is a bit hacky).
-        For not changing the pool of connected_tentacles, each tentacle will be cloned.
-        """
+    def _assign_firmware_specs(self, testrun: TestRun) -> None:
         # Assign firmware_spec to each tentacle
         for tentacle_variant in testrun.list_tentacle_variant:
             tentacle = tentacle_variant.tentacle
