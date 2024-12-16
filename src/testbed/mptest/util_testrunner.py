@@ -257,7 +257,7 @@ class TestRunner:
                     )
                     self.ntestrun.function_prepare_dut(tentacle=tentacle)
                     self.ntestrun.function_setup_infra(tentacle=tentacle)
-                    self.ntestrun.function_setup_dut(
+                    self.ntestrun.function_setup_dut_flash(
                         tentacle=tentacle,
                         flash_skip=self.args.firmware.flash_skip,
                     )
