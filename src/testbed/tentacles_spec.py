@@ -32,7 +32,7 @@ TODO: Connections
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
-    mcu_usb_id=util_mcu_pyboard.PYBOARD_USB_ID,
+    # mcu_usb_id=util_mcu_pyboard.PYBOARD_USB_ID,
     tags="variants=:DP:THREAD:DP_THREAD,mcu=stm32,programmer=dfu-util",
     mcu_config=McuConfig(),
 )
@@ -111,7 +111,7 @@ Connections
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
     ],
-    mcu_usb_id=util_mcu_esp8266.LOLIN_D1_MINI_USB_ID,
+    # mcu_usb_id=util_mcu_esp8266.LOLIN_D1_MINI_USB_ID,
     tags="mcu=esp8266,programmer=esptool",
     programmer_args=[
         "--baud=1000000",
@@ -150,7 +150,7 @@ Connections
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
-    mcu_usb_id=util_mcu_esp32C3.LOLIN_C3_MINI_USB_ID,
+    # mcu_usb_id=util_mcu_esp32C3.LOLIN_C3_MINI_USB_ID,
     tags="mcu=esp32,programmer=esptool",
     programmer_args=[
         "--chip=esp32c3",

@@ -40,9 +40,7 @@ class TestRunPerfTest(TestRun):
         subprocess_run(
             args=args,
             cwd=testargs.git_micropython_tests / "tests",
-            logfile=testargs.testresults_directory(
-                "testresults_subprocess.txt"
-            ).filename,
+            logfile=testargs.testresults_directory("testresults.txt").filename,
             timeout_s=300.0,
         )
 
