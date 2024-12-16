@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-import copy
 import dataclasses
 import itertools
 import pathlib
@@ -39,21 +38,6 @@ class TestRun:
 
     def done(self) -> None:
         self.testrun_spec.done(test_run=self)
-
-    # TODO: Trash
-    def copy_tentacles(self) -> None:
-        """
-        We want to override tentacle.firmware_spec later on.
-        So we create a copy as we do not want to alter the origin.
-        """
-        self.list_tentacle_variant = [
-            TentacleVariant(
-                tentacle=copy.copy(tv.tentacle),
-                board=tv.board,
-                variant=tv.variant,
-            )
-            for tv in self.list_tentacle_variant
-        ]
 
     @abc.abstractmethod
     def test(self, testargs: TestArgs) -> None: ...

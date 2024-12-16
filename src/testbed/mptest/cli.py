@@ -9,17 +9,18 @@ Where to take the firmware from
 """
 
 from __future__ import annotations
+
 import logging
 
 import typer
 import typing_extensions
+from mpbuild.board_database import MpbuildMpyDirectoryException
 
 from testbed.constants import URL_FILENAME_DEFAULT
 from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
-from mpbuild.board_database import MpbuildMpyDirectoryException
 
 logger = logging.getLogger(__file__)
 

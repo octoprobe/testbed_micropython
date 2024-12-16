@@ -161,17 +161,18 @@ class TestRunner:
         )
 
     def flash_only(self) -> None:
-        self.assign_firmware_specs_default()
-        self.args.firmware.build_firmwares(
-            active_tentacles=self.bartender.connected_tentacles,
-            testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
-        )
-        self.ntestrun.function_prepare_dut()
-        self.ntestrun.function_setup_infra()
-        self.ntestrun.function_setup_dut(
-            active_tentacles=self.bartender.connected_tentacles,
-            flash_skip=False,
-        )
+        for tentacle in self.bartender.connected_tentacles:
+            tentacle.tentacle_state.firmware_spec = (
+                self.args.firmware.get_firmware_spec(
+                    board=tentacle.tentacle_spec.tentacle_tag,
+                    variant="",
+                )
+            )
+            self.args.firmware.build_firmware(
+                tentacle=tentacle,
+                testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
+            )
+            self.ntestrun.function_setup_all(tentacle=tentacle)
 
     def run_all_in_sequence(self) -> None:
         git_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
@@ -249,16 +250,18 @@ class TestRunner:
                 logger.info(
                     f"TEST SETUP {duration_text(0.0)} {testresults_directory.test_nodeid}"
                 )
-                self.args.firmware.build_firmwares(
-                    active_tentacles=testrun.tentacles,
-                    testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
-                )
-                self.ntestrun.function_prepare_dut()
-                self.ntestrun.function_setup_infra()
-                self.ntestrun.function_setup_dut(
-                    active_tentacles=testrun.tentacles,
-                    flash_skip=self.args.firmware.flash_skip,
-                )
+                for tentacle in testrun.tentacles:
+                    self.args.firmware.build_firmware(
+                        tentacle=tentacle,
+                        testresults_mpbuild=constants.DIRECTORY_TESTRESULTS_MPBUILD,
+                    )
+                    self.ntestrun.function_prepare_dut(tentacle=tentacle)
+                    self.ntestrun.function_setup_infra(tentacle=tentacle)
+                    self.ntestrun.function_setup_dut(
+                        tentacle=tentacle,
+                        flash_skip=self.args.firmware.flash_skip,
+                    )
+                    self.ntestrun.function_activate_dut(tentacle=tentacle)
 
                 self.ntestrun.setup_relays(
                     futs=(testrun.testrun_spec.required_fut,),
@@ -297,28 +300,17 @@ class TestRunner:
                     f"TEST END {duration_text()} {testresults_directory.test_nodeid}"
                 )
 
-    def assign_firmware_specs_default(self) -> None:
-        # We should copy the tentacles. But as we are not going to reuse them, we skip it.
-        # Assign firmware_spec to each tentacle
-        for tentacle in self.bartender.connected_tentacles:
-            tentacle.tentacle_state.firmware_spec = (
-                self.args.firmware.get_firmware_spec(
-                    tentacle=tentacle,
-                    variant="",
-                )
-            )
-
     def assign_firmware_specs(self, testrun: TestRun) -> None:
         """
         For a test, the firmwarespec is assigned to each tentacle (which is a bit hacky).
         For not changing the pool of connected_tentacles, each tentacle will be cloned.
         """
-        testrun.copy_tentacles()
         # Assign firmware_spec to each tentacle
         for tentacle_variant in testrun.list_tentacle_variant:
-            tentacle_variant.tentacle.tentacle_state._firmware_spec = (
+            tentacle = tentacle_variant.tentacle
+            tentacle.tentacle_state.firmware_spec = (
                 self.args.firmware.get_firmware_spec(
-                    tentacle=tentacle_variant.tentacle,
+                    board=tentacle.tentacle_spec.tentacle_tag,
                     variant=tentacle_variant.variant,
                 )
             )

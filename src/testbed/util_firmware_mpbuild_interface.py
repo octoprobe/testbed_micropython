@@ -32,7 +32,7 @@ class ArgsFirmware:
 
         self._builder = FirmwareBuilder(firmware_git=self.firmware_build)
 
-    def get_firmware_spec(self, tentacle: Tentacle, variant: str) -> FirmwareSpecBase:
+    def get_firmware_spec(self, board: str, variant: str) -> FirmwareSpecBase:
         """
         Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
         Now we create firmware specs.
@@ -42,7 +42,7 @@ class ArgsFirmware:
         The firmware has to be compiled.
         If nothing is specified, we do not flash any firmware: Return None
         """
-        assert tentacle.__class__.__name__ == "Tentacle"
+        assert isinstance(board, str)
         assert isinstance(variant, str)
 
         if self.flash_skip:
@@ -57,33 +57,29 @@ class ArgsFirmware:
         # Collect firmware specs by connected tentacles
         #
         return FirmwareBuildSpec(
-            board_variant=BoardVariant(
-                board=tentacle.tentacle_spec.tentacle_tag,
-                variant=variant,
-            )
+            board_variant=BoardVariant(board=board, variant=variant)
         )
 
-    def build_firmwares(
+    def build_firmware(
         self,
-        active_tentacles: list[Tentacle],
+        tentacle: Tentacle,
         testresults_mpbuild: pathlib.Path,
     ) -> None:
         """
-        Build the firmwares
+        Build the firmware and update 'tentacle.tentacle_state.firmware_spec'.
         """
         if self._builder is None:
             return
 
-        for tentacle in active_tentacles:
-            if tentacle.is_mcu:
-                spec = self._builder.build(
-                    firmware_spec=tentacle.tentacle_state.firmware_spec,
-                    testresults_mpbuild=testresults_mpbuild,
+        if tentacle.is_mcu:
+            spec = self._builder.build(
+                firmware_spec=tentacle.tentacle_state.firmware_spec,
+                testresults_mpbuild=testresults_mpbuild,
+            )
+            # After building, the spec is more detailed: Reassign it!
+            if self.flash_force:
+                spec = dataclasses.replace(
+                    spec,
+                    micropython_full_version_text=MICROPYTHON_FULL_VERSION_TEXT_FORCE,
                 )
-                # After building, the spec is more detailed: Reassign it!
-                if self.flash_force:
-                    spec = dataclasses.replace(
-                        spec,
-                        micropython_full_version_text=MICROPYTHON_FULL_VERSION_TEXT_FORCE,
-                    )
-                tentacle.tentacle_state.firmware_spec = spec
+            tentacle.tentacle_state.firmware_spec = spec
