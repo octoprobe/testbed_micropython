@@ -17,8 +17,8 @@ from octoprobe.util_usb_serial import QueryResultTentacles
 
 from testbed import constants
 from testbed.mptest.util_common import ArgsMpTest
+from testbed.tentacle_spec import McuConfig, TentacleSpecMicropython
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
-from testbed.tentacles_spec import McuConfig
 from testbed.testcollection.bartender import (
     AllTestsDoneException,
     TestBartender,
@@ -276,12 +276,13 @@ class TestRunner:
                 )
 
                 try:
-                    testrun.test(
-                        testargs=TestArgs(
-                            testresults_directory=testresults_directory,
-                            git_micropython_tests=git_micropython_tests,
+                    with testrun.active_led_on:
+                        testrun.test(
+                            testargs=TestArgs(
+                                testresults_directory=testresults_directory,
+                                git_micropython_tests=git_micropython_tests,
+                            )
                         )
-                    )
                     logger.warning("Test SUCCESS")
 
                 except SubprocessExitCodeException as e:
@@ -313,9 +314,11 @@ class TestRunner:
         # Assign firmware_spec to each tentacle
         for tentacle_variant in testrun.list_tentacle_variant:
             tentacle = tentacle_variant.tentacle
+            tentacle_spec = tentacle.tentacle_spec
+            assert isinstance(tentacle_spec, TentacleSpecMicropython)
             tentacle.tentacle_state.firmware_spec = (
                 self.args.firmware.get_firmware_spec(
-                    board=tentacle.tentacle_spec.tentacle_tag,
+                    board=tentacle_spec.micropython_board,
                     variant=tentacle_variant.variant,
                 )
             )

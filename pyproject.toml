@@ -68,7 +68,7 @@ includes = ["src/testbed"]
 
 [tool.mypy]
 # strict = true
-enable_incomplete_feature = ["NewGenericSyntax"]
+# enable_incomplete_feature = ["NewGenericSyntax"]
 
 [[tool.mypy.overrides]]
 module = "pyudev.*"

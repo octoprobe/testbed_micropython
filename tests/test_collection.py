@@ -5,7 +5,7 @@ import itertools
 from octoprobe.lib_tentacle import Tentacle
 
 from testbed.constants import EnumFut
-from testbed.tentacles_spec import ESP8266_GENERIC, LOLIN_C3_MINI, RPI_PICO2
+from testbed.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO2
 from testbed.testcollection.bartender import (
     AllTestsDoneException,
     TestBartender,
@@ -33,7 +33,7 @@ def main() -> None:
                 hw_version="1.0",
             ),
             Tentacle(
-                tentacle_spec=ESP8266_GENERIC,
+                tentacle_spec=LOLIN_D1_MINI,
                 tentacle_serial_number="1c4c",
                 hw_version="1.0",
             ),

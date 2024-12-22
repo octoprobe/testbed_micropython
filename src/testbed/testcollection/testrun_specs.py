@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import abc
+import contextlib
 import dataclasses
 import itertools
 import pathlib
@@ -58,6 +59,20 @@ class TestRun:
             ]
         )
         return f"{self.testrun_spec.label}[{tentacles}]"
+
+    @property
+    @contextlib.contextmanager
+    def active_led_on(self) -> typing.Generator[typing.Any, None, None]:
+        """
+        Turn active leds on during the test
+        """
+        try:
+            for t in self.tentacles:
+                t.infra.mcu_infra.active_led(on=True)
+            yield
+        finally:
+            for t in self.tentacles:
+                t.infra.mcu_infra.active_led(on=False)
 
 
 @dataclasses.dataclass

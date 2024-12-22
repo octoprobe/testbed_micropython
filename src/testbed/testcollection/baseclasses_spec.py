@@ -11,7 +11,7 @@ from octoprobe.util_baseclasses import TentacleSpec
 
 from testbed.constants import EnumFut
 from testbed.mpbuild import build_api
-from testbed.util_constants import TAG_VARIANTS
+from testbed.tentacle_spec import TentacleSpecMicropython
 
 
 @dataclasses.dataclass(frozen=True, unsafe_hash=True)
@@ -47,28 +47,11 @@ def tentacle_spec_2_tsvs(tentacle_spec: TentacleSpec) -> list[TentacleSpecVarian
     """
     assert isinstance(tentacle_spec, TentacleSpec)
     # return [f"{self.board}-{v}" for v in self.variants]
+    assert isinstance(tentacle_spec, TentacleSpecMicropython)
     return [
         TentacleSpecVariant(tentacle_spec=tentacle_spec, variant=v)
-        for v in tentacle_spec_2_variants(tentacle_spec)
+        for v in tentacle_spec.build_variants
     ]
-
-
-def tentacle_spec_2_variants(tentacle_spec: TentacleSpec) -> list[str]:
-    """
-    Example for RP2_PICO: ["", "RISCV"]
-    Example for ESP8266_GENERIC: [""]
-    """
-    assert isinstance(tentacle_spec, TentacleSpec)
-
-    assert isinstance(tentacle_spec, TentacleSpec)
-    variants = tentacle_spec.get_tag(TAG_VARIANTS)
-    if variants is None:
-        return [""]
-    return variants.split(":")
-
-    # return variants.split(":")
-    # boards = tentacle_spec.get_tag_mandatory(TAG_BOARDS)
-    # return [i.variant for i in board_variants(boards=boards)]
 
 
 @dataclasses.dataclass(frozen=True, repr=True, unsafe_hash=True)

@@ -171,16 +171,18 @@ class BuildFolder:
     * the micropython version text (e.g. '3.4.0; MicroPython v1.24.0 on 2024-10-25')
     """
 
-    _REGEX_MICOPY_SYS_VERSION2 = re.compile(r"mp_sys_version_obj.*?sizeof\((.+?)\)")
+    _REGEX_MICOPY_SYS_VERSION2 = re.compile(r"mp_sys_version_obj.*?sizeof\((\".+?\")\)")
     """
     static const mp_obj_str_t mp_sys_version_obj = {{&mp_type_str}, 0, sizeof("3.4.0; " "MicroPython " "v1.24.1" " on " "2024-12-12") - 1, (const byte *)"3.4.0; " "MicroPython " "v1.24.1" " on " "2024-12-12"};
+    static const mp_obj_str_t mp_sys_version_obj = {{&mp_type_str}, 0, sizeof("3.4.0; " "MicroPython " "v1.25.0-preview.147.g136058496" " on " "2024-12-22") - 1, (const byte *)"3.4.0; " "MicroPython " "v1.25.0-preview.147.g136058496" " on " "2024-12-22"};
     """
 
     _REGEX_MICROPY_MCU_NAME = re.compile(
-        r"mp_sys_implementation_machine_obj.*?sizeof\((.+?)\)"
+        r"mp_sys_implementation_machine_obj.*?sizeof\((\".+?\")\)"
     )
     """
     static const mp_obj_str_t mp_sys_implementation_machine_obj = {{&mp_type_str}, 0, sizeof("Raspberry Pi Pico2" " with " "RP2350-RISCV") - 1, (const byte *)"Raspberry Pi Pico2" " with " "RP2350-RISCV"};
+    static const mp_obj_str_t mp_sys_implementation_machine_obj = {{&mp_type_str}, 0, sizeof("ESP module (512K)" " with " "ESP8266") - 1, (const byte *)"ESP module (512K)" " with " "ESP8266"};
     """
 
     def __init__(self, board: Board, variant: str | None) -> None:

@@ -13,7 +13,7 @@ from octoprobe.util_micropython_boards import BoardVariant
 
 from testbed.constants import DIRECTORY_GIT_CACHE, is_url
 from testbed.mpbuild.build_api import build_by_variant_normalized
-from testbed.testcollection.baseclasses_spec import tentacle_spec_2_variants
+from testbed.tentacle_spec import TentacleSpecMicropython
 
 logger = logging.getLogger(__file__)
 
@@ -143,7 +143,9 @@ def collect_firmware_specs(tentacles: list[Tentacle]) -> list[FirmwareSpecBase]:
     for tentacle in tentacles:
         if not tentacle.is_mcu:
             continue
-        for variant in tentacle_spec_2_variants(tentacle.tentacle_spec):
+        tentacle_spec = tentacle.tentacle_spec
+        assert isinstance(tentacle_spec, TentacleSpecMicropython)
+        for variant in tentacle_spec.build_variants:
             set_variants.add(
                 BoardVariant(
                     board=tentacle.tentacle_spec.tentacle_tag,
