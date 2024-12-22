@@ -15,10 +15,12 @@ import logging
 import typer
 import typing_extensions
 from mpbuild.board_database import MpbuildMpyDirectoryException
+from octoprobe.util_tentacle_label import label_renderer
 
-from testbed.constants import URL_FILENAME_DEFAULT
+from testbed.constants import DIRECTORY_DOWNLOADS, URL_FILENAME_DEFAULT
 from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
+from testbed.tentacles_inventory import TENTACLES_INVENTORY
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
 
@@ -47,6 +49,17 @@ def complete_only_variant():
 
     tsvs = testrunner.bartender.connected_tentacles.tsvs
     return sorted([t.board_variant for t in tsvs])
+
+
+@app.command(help="Create a pdf with lables for the bolzone_due")
+def labels() -> None:
+    filename = DIRECTORY_DOWNLOADS / "testbed_labels.pdf"
+    label_renderer.create_report(
+        filename=filename,
+        layout=label_renderer.RendererLabelBolzoneDuo(),
+        labels=TENTACLES_INVENTORY.labels_data,
+    )
+    print(f"Created: {filename}")
 
 
 @app.command(name="list", help="List tests and connected tentacles")

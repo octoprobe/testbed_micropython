@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 
-from octoprobe import util_mcu_esp32C3, util_mcu_esp8266, util_mcu_pyboard, util_mcu_rp2
+from octoprobe import util_mcu_rp2
 from octoprobe.util_baseclasses import TentacleSpec
 
 from testbed.constants import EnumFut, EnumTentacleType

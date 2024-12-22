@@ -96,7 +96,7 @@ def instantiate_tentacles(
         serial = query_result_tentacle.rp2_serial_number
         assert serial is not None
         try:
-            hw_version, tentacle_spec = TENTACLES_INVENTORY[serial]
+            tentacle_instance = TENTACLES_INVENTORY[serial]
         except KeyError:
             logger.warning(
                 f"Tentacle with serial {serial} is not specified in TENTACLES_INVENTORY."
@@ -105,8 +105,8 @@ def instantiate_tentacles(
 
         tentacle = Tentacle[McuConfig, constants.EnumTentacleType, constants.EnumFut](
             tentacle_serial_number=serial,
-            tentacle_spec=tentacle_spec,
-            hw_version=hw_version,
+            tentacle_spec=tentacle_instance.tentacle_spec,
+            hw_version=tentacle_instance.hw_version,
             hub=query_result_tentacle,
         )
 

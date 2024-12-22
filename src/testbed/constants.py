@@ -13,6 +13,7 @@ from octoprobe.util_baseclasses import TENTACLE_TYPE_MCU
 if typing.TYPE_CHECKING:
     from octoprobe.lib_tentacle import Tentacle
 
+TESTBED_NAME = "testbed_micropython"
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
 assert (DIRECTORY_REPO / "src" / "testbed").is_dir()
