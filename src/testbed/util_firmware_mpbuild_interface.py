@@ -4,7 +4,7 @@ import dataclasses
 import pathlib
 import typing
 
-from octoprobe.util_dut_programmers import MICROPYTHON_FULL_VERSION_TEXT_FORCE
+from octoprobe.util_firmware_spec import MICROPYTHON_FULL_VERSION_TEXT_FORCE
 
 from testbed.util_firmware_mpbuild import BoardVariant, FirmwareBuildSpec
 
@@ -31,6 +31,11 @@ class ArgsFirmware:
             return
 
         self._builder = FirmwareBuilder(firmware_git=self.firmware_build)
+
+    @property
+    def repo_micropython_firmware(self) -> pathlib.Path:
+        assert self._builder is not None
+        return self._builder.repo_directory
 
     def get_firmware_spec(self, board: str, variant: str) -> FirmwareSpecBase:
         """
@@ -63,7 +68,7 @@ class ArgsFirmware:
     def build_firmware(
         self,
         tentacle: Tentacle,
-        testresults_mpbuild: pathlib.Path,
+        mpbuild_artifacts: pathlib.Path,
     ) -> None:
         """
         Build the firmware and update 'tentacle.tentacle_state.firmware_spec'.
@@ -74,7 +79,7 @@ class ArgsFirmware:
         if tentacle.is_mcu:
             spec = self._builder.build(
                 firmware_spec=tentacle.tentacle_state.firmware_spec,
-                testresults_mpbuild=testresults_mpbuild,
+                mpbuild_artifacts=mpbuild_artifacts,
             )
             # After building, the spec is more detailed: Reassign it!
             if self.flash_force:

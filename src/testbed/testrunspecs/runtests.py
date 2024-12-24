@@ -51,7 +51,7 @@ class TestRunRunTests(TestRun):
         ]
         subprocess_run(
             args=args,
-            cwd=testargs.git_micropython_tests / "tests",
+            cwd=testargs.repo_micropython_tests / "tests",
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=testargs.testresults_directory("testresults.txt").filename,
             timeout_s=600.0,

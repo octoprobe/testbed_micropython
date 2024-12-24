@@ -3,7 +3,7 @@ import pathlib
 
 import pytest
 from octoprobe.lib_tentacle import Tentacle
-from octoprobe.util_dut_programmers import (
+from octoprobe.util_firmware_spec import (
     FirmwareBuildSpec,
     FirmwareDownloadSpec,
     FirmwareNoFlashingSpec,

@@ -25,7 +25,7 @@ from pathlib import Path
 
 from mpbuild.board_database import Board, Database
 from mpbuild.build import MpbuildNotSupportedException, docker_build_cmd
-from octoprobe.util_dut_programmers import MICROPYTHON_FULL_VERSION_TEXT_FORCE
+from octoprobe.util_firmware_spec import MICROPYTHON_FULL_VERSION_TEXT_FORCE
 
 BOARD_VARIANT_SEPARATOR = "-"
 

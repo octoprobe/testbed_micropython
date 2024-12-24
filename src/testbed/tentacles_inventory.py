@@ -23,4 +23,10 @@ TENTACLES_INVENTORY = (
             ("e46340474b583521", "v0.1", tentacle_specs.LOLIN_C3_MINI),
         ],
     )
+    .add_testbed_instance(
+        testbed_instance="ch_greenliff_1",
+        tentacles=[
+            ("e46340474b551722", "v1.0", tentacle_specs.RPI_PICO),
+        ],
+    )
 ).inventory

@@ -20,6 +20,7 @@ from octoprobe.util_tentacle_label import label_renderer
 from testbed.constants import DIRECTORY_DOWNLOADS, URL_FILENAME_DEFAULT
 from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
+from testbed.multiprocessing import util_multiprocessing
 from testbed.tentacles_inventory import TENTACLES_INVENTORY
 from testbed.testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from testbed.util_firmware_mpbuild_interface import ArgsFirmware
@@ -44,10 +45,15 @@ def complete_only_test():
 
 
 def complete_only_variant():
-    args = util_testrunner.Args.get_default_args()
-    testrunner = util_testrunner.TestRunner(args=args)
+    if False:
+        args = util_testrunner.Args.get_default_args()
+        testrunner = util_testrunner.TestRunner(args=args)
 
-    tsvs = testrunner.bartender.connected_tentacles.tsvs
+        connected_tentacles = testrunner.bartender.connected_tentacles
+    else:
+        connected_tentacles = util_testrunner.query_connected_tentacles_fast()
+
+    tsvs = connected_tentacles.get_tsvs(flash_skip=False)
     return sorted([t.board_variant for t in tsvs])
 
 
@@ -64,12 +70,13 @@ def labels() -> None:
 
 @app.command(name="list", help="List tests and connected tentacles")
 def list_() -> None:
-    args = util_testrunner.Args.get_default_args()
-    testrunner = util_testrunner.TestRunner(args=args)
+    # args = util_testrunner.Args.get_default_args()
+    # testrunner = util_testrunner.TestRunner(args=args)
+    connected_tentacles = util_testrunner.query_connected_tentacles_fast()
 
     print("")
     print("Connected")
-    for tentacle in testrunner.bartender.connected_tentacles:
+    for tentacle in connected_tentacles:
         print(f"  {tentacle.label}")
         variants = ",".join(
             f"{tsv!r}" for tsv in tentacle_spec_2_tsvs(tentacle.tentacle_spec)
@@ -80,7 +87,7 @@ def list_() -> None:
 
     print("")
     print("Tests")
-    for testrun_spec in testrunner.bartender.testrun_specs:
+    for testrun_spec in util_testrunner.get_testrun_specs():
         print(f"  {testrun_spec.label}")
         print(f"    help={testrun_spec.helptext}")
         print(f"    executable={testrun_spec.command_executable}")
@@ -90,6 +97,45 @@ def list_() -> None:
         print("    tests")
         for tsvs in testrun_spec.list_tsvs_todo:
             print(f"      {tsvs}")
+
+
+@app.command(help="Flashes all tentacles without running any tests")
+def flash(
+    last_variant: TyperAnnotated[
+        bool,
+        typer.Option(
+            help="Build LAST variant if a tentacle supports multiple variants. Not using this option will build the FIRST variant.",
+        ),
+    ] = False,  # noqa: UP007    force_flash: TyperAnnotated[
+    firmware_build: TyperAnnotated[
+        str,
+        typer.Option(
+            envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD",
+            help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
+        ),
+    ] = URL_FILENAME_DEFAULT,
+) -> None:
+
+    args = util_testrunner.Args(
+        mp_test=None,
+        firmware=ArgsFirmware(
+            firmware_build=firmware_build,
+            flash_skip=False,
+            flash_force=True,
+        ),
+        only_variants=None,
+        only_test=None,
+        force_multiprocessing=False,
+    )
+    try:
+        testrunner = util_testrunner.TestRunner(args=args)
+    except MpbuildMpyDirectoryException as e:
+        logger.warning(e)
+        return
+
+    args.firmware.flash_force = True
+    testrunner.flash(last_variant=last_variant)
+    return
 
 
 @app.command(help="run tests against the connected tentacles")
@@ -111,33 +157,35 @@ def test(
     only_variant: TyperAnnotated[
         str | None,
         typer.Option(
-            help="Only run these on this board variants",
+            help="Only run these on this board variants.",
             autocompletion=complete_only_variant,
         ),
     ] = None,  # noqa: UNoneP007
     only_test: TyperAnnotated[
         str | None,
-        typer.Option(help="Only run this test", autocompletion=complete_only_test),
+        typer.Option(help="Only run this test.", autocompletion=complete_only_test),
     ] = None,  # noqa: UP007
     flash_force: TyperAnnotated[
         bool | None,
         typer.Option(help="Will flash all firmare and run tests."),
-    ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
-    flash_only: TyperAnnotated[
-        bool | None,
-        typer.Option(help="Will flash all firmare and NOT run any tests."),
-    ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
+    ] = None,  # noqa: UP007
+    multiprocessing: TyperAnnotated[
+        bool,
+        typer.Option(
+            help="Use python module 'multiprocessing'. This allows parallel processing. Disable to ease debugging.",
+        ),
+    ] = True,  # noqa: UP007
+    force_multiprocessing: TyperAnnotated[
+        bool,
+        typer.Option(
+            help="Run tests in sequence. However forces use of python module 'multiprocessing'.",
+        ),
+    ] = False,  # noqa: UP007
     flash_skip: TyperAnnotated[
         bool | None,
         typer.Option(help="Will not flash and use the firmware already on the boards"),
-    ] = None,  # noqa: UP007    force_flash: TyperAnnotated[
+    ] = False,  # noqa: UP007
 ) -> None:
-    # print(f"{micropython_tests_git=}")
-    # print(f"{micropython_tests=}")
-    # print(f"{firmware_build_git=}")
-    # print(f"{firmware_build=}")
-    # print(f"{only_boards=}")
-
     only_variants = None if only_variant is None else [only_variant]
 
     args = util_testrunner.Args(
@@ -151,19 +199,25 @@ def test(
         ),
         only_variants=only_variants,
         only_test=only_test,
+        force_multiprocessing=force_multiprocessing,
     )
     try:
         testrunner = util_testrunner.TestRunner(args=args)
+
     except MpbuildMpyDirectoryException as e:
         logger.warning(e)
         return
 
-    if flash_only:
-        args.firmware.flash_force = True
-        testrunner.flash_only()
-        return
-
-    testrunner.run_all_in_sequence()
+    cls_process_pool = (
+        util_multiprocessing.ProcessPoolAsync
+        if multiprocessing
+        else util_multiprocessing.ProcessPoolSync
+    )
+    with cls_process_pool(
+        processes=len(testrunner.test_bartender.connected_tentacles) + 1,
+        initializer=util_multiprocessing.init_logging,
+    ) as process_pool:
+        testrunner.run_all_in_sequence(process_pool=process_pool)
 
 
 if __name__ == "__main__":

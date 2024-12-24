@@ -3,14 +3,15 @@ from __future__ import annotations
 import itertools
 
 from octoprobe.lib_tentacle import Tentacle
+from octoprobe.util_firmware_spec import FirmwaresBuilt
 
 from testbed.constants import EnumFut
-from testbed.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO2
-from testbed.testcollection.bartender import (
+from testbed.multiprocessing.test_bartender import (
     AllTestsDoneException,
+    CurrentlyNoTestsException,
     TestBartender,
-    WaitForTestsToTerminateException,
 )
+from testbed.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO2
 from testbed.testcollection.baseclasses_run import TestRunSpecs
 from testbed.testcollection.baseclasses_spec import (
     ConnectedTentacles,
@@ -66,6 +67,7 @@ def main() -> None:
     testrun_specs.assign_tentacles(
         tentacles=connected_tentacles,
         only_board_variants=None,
+        flash_skip=False,
     )
 
     bartender = TestBartender(
@@ -82,28 +84,30 @@ def main() -> None:
         # if i == 10:
         #     break
         try:
-            test_run_next = bartender.testrun_next()
+            test_run_next = bartender.testrun_next(
+                firmwares_built=set(FirmwaresBuilt())
+            )
             print(f"{i} test_dbd:{bartender.tests_todo} test_run_next:{test_run_next}")
-            for test_run in bartender.actual_runs:
+            for test_run in bartender.actual_testruns:
                 print("   ", test_run)
-            if len(bartender.actual_runs) >= 3:
-                test_run_done = bartender.actual_runs[-1]
+            if len(bartender.actual_testruns) >= 3:
+                test_run_done = bartender.actual_testruns[-1]
                 print("  test_run_done:", test_run_done)
                 bartender.testrun_done(test_run_done)
             if test_run_next is None:
                 return
-        except WaitForTestsToTerminateException:
-            print(i, "WaitForTestsToTerminateException")
-            if len(bartender.actual_runs) == 0:
+        except CurrentlyNoTestsException:
+            print(i, "CurrentlyNoTestsException")
+            if len(bartender.actual_testruns) == 0:
                 print("DONE")
                 break
-            test_run_done = bartender.actual_runs[-1]
+            test_run_done = bartender.actual_testruns[-1]
             bartender.testrun_done(test_run_done)
             print("  test_run_done:", test_run_done)
 
         except AllTestsDoneException:
             print("Done")
-            for test_run in bartender.actual_runs:
+            for test_run in bartender.actual_testruns:
                 print("   ", test_run)
             break
 

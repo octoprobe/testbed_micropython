@@ -32,7 +32,7 @@ class TestRunMultitestBase(TestRun):
         serial_port_first = tentacle_variant_first.tentacle.dut.get_tty()
         serial_port_second = tentacle_variant_second.tentacle.dut.get_tty()
         # Run tests
-        cwd = testargs.git_micropython_tests / "tests"
+        cwd = testargs.repo_micropython_tests / "tests"
         list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
         # This test will make the board disappear and therefore has to be skipped.
         list_tests.remove("multi_bluetooth/stress_deepsleep_reconnect.py")
@@ -59,7 +59,7 @@ class TestRunMultitestMultinet(TestRunMultitestBase):
             dut = tentacle_variant.tentacle.dut
             util_common.copy_certificates(
                 dut=dut,
-                src=testargs.git_micropython_tests / "tests" / "multi_net",
+                src=testargs.repo_micropython_tests / "tests" / "multi_net",
             )
 
             util_common.init_wlan(dut=dut)

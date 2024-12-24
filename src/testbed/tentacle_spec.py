@@ -10,8 +10,10 @@ from testbed.constants import TAG_BOARD, TAG_BUILD_VARIANTS
 
 class TentacleSpecMicropython(TentacleSpec):
     @property
-    def micropython_board(self) -> str:
+    def board(self) -> str:
         """
+        The micropython board.
+
         If
           tags="board=ESP8266_GENERIC, ..."
         is defined, it will be used.
@@ -26,8 +28,8 @@ class TentacleSpecMicropython(TentacleSpec):
     def description(self) -> str:
         mcu = self.get_tag(TAG_MCU)
         if mcu is None:
-            return self.micropython_board
-        return mcu + "/" + self.micropython_board
+            return self.board
+        return mcu + "/" + self.board
 
     @property
     def build_variants(self) -> list[str]:
@@ -39,6 +41,13 @@ class TentacleSpecMicropython(TentacleSpec):
         if variants is None:
             return [""]
         return variants.split(":")
+
+    def get_first_last_variant(self, last: bool) -> str:
+        """
+        Return "" for the first (default) variant.
+        Return "RISCV" for the 'last_variant' of the RP_PICO2.
+        """
+        return self.build_variants[-1 if last else 0]
 
 
 @dataclasses.dataclass

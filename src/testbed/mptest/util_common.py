@@ -86,7 +86,7 @@ def mip_install(
     ]
     subprocess_run(
         args=args,
-        cwd=testargs.git_micropython_tests / "tests",
+        cwd=testargs.repo_micropython_tests / "tests",
         logfile=testargs.testresults_directory(
             f"mip_install_{mip_package}.txt"
         ).filename,

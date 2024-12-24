@@ -16,14 +16,23 @@ from .testrun_specs import TestRun, TestRunSpec
 
 
 class TestRunSpecs(list[TestRunSpec]):
-    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
+    def generate(
+        self,
+        available_tentacles: list[Tentacle],
+        firmwares_built: set[str],
+    ) -> Iterator[TestRun]:
+        assert isinstance(available_tentacles, list)
+
         for testrun_spec in self:
             applicable_tentacles = [
                 x
                 for x in available_tentacles
                 if testrun_spec.required_fut in x.tentacle_spec.futs
             ]
-            yield from testrun_spec.generate(available_tentacles=applicable_tentacles)
+            yield from testrun_spec.generate(
+                available_tentacles=applicable_tentacles,
+                firmwares_built=firmwares_built,
+            )
 
     @property
     def tests_todo(self) -> int:
@@ -33,9 +42,11 @@ class TestRunSpecs(list[TestRunSpec]):
         self,
         tentacles: ConnectedTentacles,
         only_board_variants: list[str] | None,
+        flash_skip: bool,
     ) -> None:
         for testrun_spec in self:
             testrun_spec.assign_tentacles(
                 tentacles=tentacles,
                 only_board_variants=only_board_variants,
+                flash_skip=flash_skip,
             )

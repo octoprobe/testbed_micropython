@@ -14,6 +14,7 @@ from testbed.constants import EnumFut
 
 from .baseclasses_spec import (
     ConnectedTentacles,
+    ListTentacleSpecVariants,
     TentacleSpecVariants,
     TentacleVariant,
 )
@@ -25,7 +26,7 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(repr=True)
 class TestArgs:
     testresults_directory: ResultsDir
-    git_micropython_tests: pathlib.Path
+    repo_micropython_tests: pathlib.Path
 
 
 @dataclasses.dataclass(repr=True)
@@ -106,7 +107,7 @@ class TestRunSpec:
         self.testrun_class: type[TestRun] = testrun_class
         self.required_fut: EnumFut = required_fut
         self.tentacles_required: int = required_tentacles_count
-        self.list_tsvs_todo: list[TentacleSpecVariants] = []
+        self.list_tsvs_todo = ListTentacleSpecVariants()
 
     @property
     def command_executable(self) -> str:
@@ -120,18 +121,23 @@ class TestRunSpec:
         self,
         tentacles: ConnectedTentacles,
         only_board_variants: list[str] | None,
+        flash_skip: bool,
     ) -> None:
+        """
+        Assign tentacle-variants (board-variants) to be tested.
+        """
         assert isinstance(tentacles, ConnectedTentacles)
         assert isinstance(only_board_variants, list | None)
+        assert isinstance(flash_skip, bool)
 
         selected_tentacles = tentacles.get_by_fut(self.required_fut)
-        tsvs_todo = selected_tentacles.tsvs
+        tsvs_todo = selected_tentacles.get_tsvs(flash_skip=flash_skip)
         tsvs_todo = tsvs_todo.get_only_board_variants(
             only_board_variants=only_board_variants
         )
-        self.list_tsvs_todo = [
-            TentacleSpecVariants(tsvs_todo) for _ in range(self.tentacles_required)
-        ]
+        self.list_tsvs_todo = ListTentacleSpecVariants(
+            [TentacleSpecVariants(tsvs_todo) for _ in range(self.tentacles_required)]
+        )
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.label} {self.command_args})"
@@ -149,7 +155,7 @@ class TestRunSpec:
 
     @property
     def tests_todo(self) -> int:
-        return sum([len(tsvs_todo) for tsvs_todo in self.list_tsvs_todo])
+        return self.list_tsvs_todo.tests_todo
 
     @property
     def iter_text_tsvs(self) -> Iterator[str]:
@@ -158,8 +164,18 @@ class TestRunSpec:
             for tsvs in self.list_tsvs_todo[i]:
                 yield f"{tsvs!r} {tag}"
 
-    def generate(self, available_tentacles: list[Tentacle]) -> Iterator[TestRun]:
-        tsvs_combinations = list(itertools.product(*self.list_tsvs_todo))
+    def generate(
+        self,
+        available_tentacles: list[Tentacle],
+        firmwares_built: set[str],
+    ) -> Iterator[TestRun]:
+        assert isinstance(available_tentacles, list)
+        assert isinstance(firmwares_built, set)
+
+        list_tsvs_todo = self.list_tsvs_todo.filter_firmwares_built(
+            firmwares_built=firmwares_built
+        )
+        tsvs_combinations = list(itertools.product(*list_tsvs_todo))
 
         for tsvs_combination in tsvs_combinations:
             for tentacles in itertools.combinations(

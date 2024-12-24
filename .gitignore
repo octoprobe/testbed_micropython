@@ -7,6 +7,7 @@ git_cache/**
 downloads/**
 *.log
 testbed.lock
-src/testbed/mpbuild/tests/results/*.txt
 **/*\ copy.py
 **/*\ copy\ [0-9]*.py
+src/testbed/mpbuild/tests/results/*.txt
+src/testbed/experiments/*
