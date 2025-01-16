@@ -15,12 +15,11 @@ from __future__ import annotations
 
 import logging
 import pathlib
-import sys
 import time
 from dataclasses import dataclass
 
 from testbed.multiprocessing import util_multiprocessing as mp
-from testbed.reports.util_report_renderer import RendererAscii, RendererMarkdown
+from testbed.reports.util_report_renderer import RendererMarkdown
 from testbed.reports.util_report_tasks import TaskReport, Tasks
 
 logger = logging.getLogger(__file__)
@@ -140,17 +139,16 @@ def submain(multiprocessing: bool) -> None:
                     return
 
     doit()
-    report = TaskReport(tasks=report_tasks)
-
-    report.report(renderer=RendererMarkdown(f=sys.stdout))
-    report.report(renderer=RendererAscii(f=sys.stdout))
+    report = TaskReport(tasks=report_tasks, align_time=True)
+    renderer = RendererMarkdown()
+    report.report(renderer=renderer)
+    print(renderer.getvalue())
 
     filename = __file__
     if multiprocessing:
         filename = filename.replace(".py", "_multiprocessing.py")
     filename_report = pathlib.Path(filename).with_suffix(".md")
-    with filename_report.open("w", encoding="ascii") as f:
-        report.report(renderer=RendererMarkdown(f=f))
+    filename_report.write_text(renderer.getvalue())
 
 
 def main() -> None:

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import pathlib
-import sys
 
-from testbed.reports.util_report_renderer import RendererAscii, RendererMarkdown
+from testbed.reports import util_report_renderer
 from testbed.reports.util_report_tasks import ReportTentacle, Task, TaskReport, Tasks
 
 
@@ -35,14 +34,20 @@ def main():
             ),
         ]
     )
-    report = TaskReport(tasks=tasks)
+    report = TaskReport(tasks=tasks, align_time=True)
 
-    report.report(renderer=RendererMarkdown(f=sys.stdout))
-    report.report(renderer=RendererAscii(f=sys.stdout))
+    renderer = util_report_renderer.RendererAscii()
+    report.report(renderer=renderer)
+    print(renderer.getvalue())
 
-    filename_report = pathlib.Path(__file__).with_suffix(".md")
-    with filename_report.open("w", encoding="ascii") as f:
-        report.report(renderer=RendererMarkdown(f=f))
+    for suffix, renderer in (
+        (".txt", util_report_renderer.RendererAscii()),
+        (".md", util_report_renderer.RendererMarkdown()),
+        (".html", util_report_renderer.RendererHtml()),
+    ):
+        report.report(renderer=renderer)
+        filename_report = pathlib.Path(__file__).with_suffix(suffix)
+        filename_report.write_text(renderer.getvalue())
 
 
 if __name__ == "__main__":

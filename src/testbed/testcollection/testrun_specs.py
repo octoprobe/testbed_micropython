@@ -230,6 +230,8 @@ class TestRunSpec:
         roles_tsvs_todo = self.roles_tsvs_todo.filter_firmwares_built(
             firmwares_built=firmwares_built
         )
+        if len(roles_tsvs_todo) == 0:
+            return []
         tsvs_combinations = list(itertools.product(*roles_tsvs_todo))
         for tsvs_combination in tsvs_combinations:
             assert len(tsvs_combination) == self.tentacles_required

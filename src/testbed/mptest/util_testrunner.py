@@ -251,16 +251,19 @@ class TestRunner:
 
         report_tasks = util_report_tasks.Tasks()
 
-        def generate_task_report(align: bool = False) -> None:
-            filename_report = constants.DIRECTORY_TESTRESULTS / "task_report.md"
-            report = util_report_tasks.TaskReport(tasks=report_tasks)
-            with filename_report.open("w", encoding="ascii") as f:
-                report.report(
-                    renderer=util_report_renderer.RendererMarkdown(
-                        f=f,
-                        align=align,
-                    ),
-                )
+        def generate_task_report(align_time: bool = False) -> None:
+            report = util_report_tasks.TaskReport(tasks=report_tasks, align_time=align_time)
+            for suffix, renderer in (
+                (".txt", util_report_renderer.RendererAscii()),
+                (".md", util_report_renderer.RendererMarkdown()),
+                (".html", util_report_renderer.RendererHtml()),
+            ):
+                report.report(renderer=renderer)
+                filename_report = (
+                    constants.DIRECTORY_TESTRESULTS / "task_report"
+                ).with_suffix(suffix)
+                with filename_report.open("w", encoding="ascii") as f:
+                    f.write(renderer.getvalue())
 
         def run_all():
             while True:
@@ -351,7 +354,7 @@ class TestRunner:
         self.ntestrun.session_teardown()
         UDEV_POLLER_LAZY.close()
 
-        generate_task_report(align=True)
+        generate_task_report(align_time=True)
 
     def run_one_test(
         self,
@@ -529,7 +532,6 @@ def target_run_one_test_async(
                 testid_patch=testid_patch,
             )
     finally:
-
         # We have to send a exit event before returing!
         arg1.queue_put(
             EventExitRunOneTest(

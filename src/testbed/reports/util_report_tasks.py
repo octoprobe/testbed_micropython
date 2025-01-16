@@ -176,7 +176,6 @@ class ReportRow:
         legend_tentacles: LegendTentacles,
         legend_tasks: LegendTasks,
     ) -> list[str]:
-
         def get_column(legend_tentacle: LegendTentacle) -> str:
             legend_task = self.get_legendtask(legend_tentacle.tentacle)
             if legend_task is None:
@@ -338,12 +337,12 @@ class LegendTasks:
 
 
 class TaskReport:
-    def __init__(self, tasks: Tasks, align: bool = False) -> None:
+    def __init__(self, tasks: Tasks, align_time: bool = False) -> None:
         self.tasks = tasks
-        if align:
+        if align_time:
             tasks.quantize_times()
         tasks.sort_by_start_s()
-        if align:
+        if align_time:
             tasks.align_start_s()
 
         self.legend_tasks = LegendTasks()
@@ -379,7 +378,7 @@ class TaskReport:
         rows.finalize()
         return rows
 
-    def report(self, renderer: RendererBase):
+    def report(self, renderer: RendererBase) -> RendererBase:
         renderer.h1("Timing report")
         renderer.table(
             self.rows.as_table(
@@ -392,3 +391,4 @@ class TaskReport:
         renderer.table(self.legend_tasks.as_table())
         renderer.h2("Report input data")
         renderer.table(self.tasks.as_table())
+        return renderer

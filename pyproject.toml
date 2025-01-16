@@ -30,6 +30,7 @@ dependencies = [
     "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
     # "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@hmaerki/introduce_mpbuild_api2",
     "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
+    "markdown2",
 ]
 
 [project.urls]
@@ -60,7 +61,7 @@ distribution = true
 
 [tool.pdm.build]
 package-dir = "src"
-includes = ["src/testbed"]
+source-includes = ["src/testbed"]
 # source-includes = [
 #     "octoprobe/",
 #     "requirements*.txt",
@@ -72,6 +73,10 @@ enable_incomplete_feature = ["NewGenericSyntax"]
 
 [[tool.mypy.overrides]]
 module = "pyudev.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "markdown2.*"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

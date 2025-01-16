@@ -7,7 +7,10 @@ from __future__ import annotations
 import abc
 import dataclasses
 import enum
+import io
 import typing
+
+import markdown2
 
 
 @dataclasses.dataclass
@@ -37,8 +40,8 @@ class TableHeaderCol:
 
 
 class RendererBase(abc.ABC):
-    def __init__(self, f: typing.TextIO, align: bool) -> None:
-        self.f = f
+    def __init__(self) -> None:
+        self.f = io.StringIO()
 
     @abc.abstractmethod
     def h1(self, title: str): ...
@@ -49,6 +52,9 @@ class RendererBase(abc.ABC):
     @abc.abstractmethod
     def table(self, table: Table) -> None: ...
 
+    def getvalue(self) -> str:
+        return self.f.getvalue()
+
 
 class RendererAscii(RendererBase):
     COLUMN_SPACER = "  "
@@ -56,12 +62,12 @@ class RendererAscii(RendererBase):
     @typing.override
     def h1(self, title: str):
         self.f.write(f"{title}\n")
-        self.f.write(f"{'='*len(title)}\n\n")
+        self.f.write(f"{'=' * len(title)}\n\n")
 
     @typing.override
     def h2(self, title: str):
         self.f.write(f"\n{title}\n")
-        self.f.write(f"{'-'*len(title)}\n\n")
+        self.f.write(f"{'-' * len(title)}\n\n")
 
     @typing.override
     def table(self, table: Table) -> None:
@@ -110,3 +116,35 @@ class RendererMarkdown(RendererBase):
         for row in table.rows:
             cols = " | ".join(row)
             self.f.write(f"| {cols} |\n")
+
+
+class RendererHtml(RendererMarkdown):
+    HTML_START = """
+    <!DOCTYPE HTML>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="refresh" content="5" />
+        <title>Report</title>
+    </head>
+    <body>
+    """.strip()
+    HTML_END = """
+    </body>
+    </html>
+    """.strip()
+
+    @typing.override
+    def getvalue(self) -> str:
+        """
+        Convert md to html
+        """
+        self.f.write(self.HTML_END)
+        html = markdown2.markdown(
+            super().getvalue(),
+            extras=[
+                "tables",
+            ],
+        )
+
+        return f"{self.HTML_START}\n{html}\n{self.HTML_END}"

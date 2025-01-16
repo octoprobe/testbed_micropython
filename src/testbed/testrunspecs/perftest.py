@@ -30,8 +30,8 @@ class TestRunPerfTest(TestRun):
         if perftest_args is None:
             perftest_args = ["100", "100"]
         assert len(perftest_args) == 2
-        assert isinstance(perftest_args[0], int)
-        assert isinstance(perftest_args[1], int)
+        assert isinstance(perftest_args[0], str)
+        assert isinstance(perftest_args[1], str)
 
         args = [
             sys.executable,
