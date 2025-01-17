@@ -1,252 +1,279 @@
 <!DOCTYPE HTML>
-    <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Report</title>
-    </head>
-    <body>
-<h1>Timing report</h1>
-
-<table>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Report</title>
+    <style>
+        table {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid gray;
+            padding: 8px;
+        }
+        thead th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <label>
+        <input type="checkbox" id="refreshCheckbox" onclick="toggleRefresh()">auto refresh
+    </label><h1>Timing report</h1><table>
 <thead>
+  <tr>
+    <th style="text-align:right;">start</th>
+    <th style="text-align:right;">duration</th>
+    <th style="text-align:right;">mpbuild</th>
+    <th style="text-align:right;">A</th>
+    <th style="text-align:right;">B</th>
+    <th style="text-align:right;">C</th>
+  </tr>
+</thead>
 <tr>
-  <th style="text-align:right;">start</th>
-  <th style="text-align:right;">duration</th>
+  <th style="text-align:right;">0.0s</th>
+  <th style="text-align:right;">+3.5s</th>
+  <th style="text-align:right;">a</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+</tr>
+<tr>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:right;">+7.5s</th>
+  <th style="text-align:right;">b</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">1(a)</th>
+  <th style="text-align:right;">.</th>
+</tr>
+<tr>
+  <th style="text-align:right;">11.0s</th>
+  <th style="text-align:right;">+1.0s</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">2(b,c)</th>
+  <th style="text-align:right;">1(a)</th>
+  <th style="text-align:right;">2(b,c)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">12.0s</th>
+  <th style="text-align:right;">+0.5s</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">2(b,c)</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">2(b,c)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">12.5s</th>
+  <th style="text-align:right;">+2.0s</th>
+  <th style="text-align:right;">c</th>
+  <th style="text-align:right;">2(b,c)</th>
+  <th style="text-align:right;">3(b)</th>
+  <th style="text-align:right;">2(b,c)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">14.5s</th>
+  <th style="text-align:right;">+0.5s</th>
+  <th style="text-align:right;">c</th>
+  <th style="text-align:right;">4(b,c)</th>
+  <th style="text-align:right;">3(b)</th>
+  <th style="text-align:right;">4(b,c)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">15.0s</th>
+  <th style="text-align:right;">+3.0s</th>
+  <th style="text-align:right;">c</th>
+  <th style="text-align:right;">4(b,c)</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">4(b,c)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">18.0s</th>
+  <th style="text-align:right;">+1.0s</th>
+  <th style="text-align:right;">c</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+</tr>
+<tr>
+  <th style="text-align:right;">19.0s</th>
+  <th style="text-align:right;"></th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+</tr>
+</table>
+<h2>Legend: Tentacles</h2><table>
+<thead>
+  <tr>
+    <th style="text-align:right;">Tentacle-ID</th>
+    <th style="text-align:left;">Tentacles</th>
+  </tr>
+</thead>
+<tr>
   <th style="text-align:right;">mpbuild</th>
+  <th style="text-align:left;">mpbuild</th>
+</tr>
+<tr>
   <th style="text-align:right;">A</th>
+  <th style="text-align:left;">Lolin</th>
+</tr>
+<tr>
   <th style="text-align:right;">B</th>
+  <th style="text-align:left;">PICO</th>
+</tr>
+<tr>
   <th style="text-align:right;">C</th>
+  <th style="text-align:left;">PICO2</th>
 </tr>
-</thead>
-<tbody>
-<tr>
-  <td style="text-align:right;">0.0s</td>
-  <td style="text-align:right;">+3.5s</td>
-  <td style="text-align:right;">a</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-</tr>
-<tr>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:right;">+7.5s</td>
-  <td style="text-align:right;">b</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">1(a)</td>
-  <td style="text-align:right;">.</td>
-</tr>
-<tr>
-  <td style="text-align:right;">11.0s</td>
-  <td style="text-align:right;">+1.0s</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">2(b,c)</td>
-  <td style="text-align:right;">1(a)</td>
-  <td style="text-align:right;">2(b,c)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">12.0s</td>
-  <td style="text-align:right;">+0.5s</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">2(b,c)</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">2(b,c)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">12.5s</td>
-  <td style="text-align:right;">+2.0s</td>
-  <td style="text-align:right;">c</td>
-  <td style="text-align:right;">2(b,c)</td>
-  <td style="text-align:right;">3(b)</td>
-  <td style="text-align:right;">2(b,c)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">14.5s</td>
-  <td style="text-align:right;">+0.5s</td>
-  <td style="text-align:right;">c</td>
-  <td style="text-align:right;">4(b,c)</td>
-  <td style="text-align:right;">3(b)</td>
-  <td style="text-align:right;">4(b,c)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">15.0s</td>
-  <td style="text-align:right;">+3.0s</td>
-  <td style="text-align:right;">c</td>
-  <td style="text-align:right;">4(b,c)</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">4(b,c)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">18.0s</td>
-  <td style="text-align:right;">+1.0s</td>
-  <td style="text-align:right;">c</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-</tr>
-<tr>
-  <td style="text-align:right;">19.0s</td>
-  <td style="text-align:right;"></td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-  <td style="text-align:right;">.</td>
-</tr>
-</tbody>
 </table>
-
-<h2>Legend: Tentacles</h2>
-
-<table>
+<h2>Legend: Tasks</h2><table>
 <thead>
-<tr>
-  <th style="text-align:right;">Tentacle-ID</th>
-  <th style="text-align:left;">Tentacles</th>
-</tr>
+  <tr>
+    <th style="text-align:right;">Task-ID</th>
+    <th style="text-align:left;">Task</th>
+    <th style="text-align:left;">Tentacle</th>
+    <th style="text-align:right;">Duration</th>
+  </tr>
 </thead>
-<tbody>
 <tr>
-  <td style="text-align:right;">mpbuild</td>
-  <td style="text-align:left;">mpbuild</td>
+  <th style="text-align:right;">a</th>
+  <th style="text-align:left;">Build PICO2</th>
+  <th style="text-align:left;"></th>
+  <th style="text-align:right;">3.5s</th>
 </tr>
 <tr>
-  <td style="text-align:right;">A</td>
-  <td style="text-align:left;">Lolin</td>
+  <th style="text-align:right;">b</th>
+  <th style="text-align:left;">Build PICO2-RISCV</th>
+  <th style="text-align:left;"></th>
+  <th style="text-align:right;">7.5s</th>
 </tr>
 <tr>
-  <td style="text-align:right;">B</td>
-  <td style="text-align:left;">PICO</td>
+  <th style="text-align:right;">c</th>
+  <th style="text-align:left;">Build ESP8266</th>
+  <th style="text-align:left;"></th>
+  <th style="text-align:right;">6.5s</th>
 </tr>
 <tr>
-  <td style="text-align:right;">C</td>
-  <td style="text-align:left;">PICO2</td>
+  <th style="text-align:right;">1</th>
+  <th style="text-align:left;">Test X</th>
+  <th style="text-align:left;">PICO(PICO2)</th>
+  <th style="text-align:right;">8.5s</th>
 </tr>
-</tbody>
+<tr>
+  <th style="text-align:right;">2</th>
+  <th style="text-align:left;">Test Test X</th>
+  <th style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</th>
+  <th style="text-align:right;">3.5s</th>
+</tr>
+<tr>
+  <th style="text-align:right;">3</th>
+  <th style="text-align:left;">Test Y</th>
+  <th style="text-align:left;">PICO(PICO2-RISCV)</th>
+  <th style="text-align:right;">2.5s</th>
+</tr>
+<tr>
+  <th style="text-align:right;">4</th>
+  <th style="text-align:left;">Test Test Y</th>
+  <th style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</th>
+  <th style="text-align:right;">3.5s</th>
+</tr>
 </table>
-
-<h2>Legend: Tasks</h2>
-
-<table>
+<h2>Report input data</h2><table>
 <thead>
-<tr>
-  <th style="text-align:right;">Task-ID</th>
-  <th style="text-align:left;">Task</th>
-  <th style="text-align:left;">Tentacle</th>
-  <th style="text-align:right;">Duration</th>
-</tr>
+  <tr>
+    <th style="text-align:right;">Start</th>
+    <th style="text-align:right;">End</th>
+    <th style="text-align:right;">Duration</th>
+    <th style="text-align:left;">Task</th>
+    <th style="text-align:left;">Tentacles</th>
+  </tr>
 </thead>
-<tbody>
 <tr>
-  <td style="text-align:right;">a</td>
-  <td style="text-align:left;">Build PICO2</td>
-  <td style="text-align:left;"></td>
-  <td style="text-align:right;">3.5s</td>
+  <th style="text-align:right;">0.0s</th>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:left;">Build PICO2</th>
+  <th style="text-align:left;"></th>
 </tr>
 <tr>
-  <td style="text-align:right;">b</td>
-  <td style="text-align:left;">Build PICO2-RISCV</td>
-  <td style="text-align:left;"></td>
-  <td style="text-align:right;">7.5s</td>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:right;">11.0s</th>
+  <th style="text-align:right;">7.5s</th>
+  <th style="text-align:left;">Build PICO2-RISCV</th>
+  <th style="text-align:left;"></th>
 </tr>
 <tr>
-  <td style="text-align:right;">c</td>
-  <td style="text-align:left;">Build ESP8266</td>
-  <td style="text-align:left;"></td>
-  <td style="text-align:right;">6.5s</td>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:right;">12.0s</th>
+  <th style="text-align:right;">8.5s</th>
+  <th style="text-align:left;">Test X</th>
+  <th style="text-align:left;">PICO(PICO2)</th>
 </tr>
 <tr>
-  <td style="text-align:right;">1</td>
-  <td style="text-align:left;">Test X</td>
-  <td style="text-align:left;">PICO(PICO2)</td>
-  <td style="text-align:right;">8.5s</td>
+  <th style="text-align:right;">11.0s</th>
+  <th style="text-align:right;">14.5s</th>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:left;">Test Test X</th>
+  <th style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</th>
 </tr>
 <tr>
-  <td style="text-align:right;">2</td>
-  <td style="text-align:left;">Test Test X</td>
-  <td style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</td>
-  <td style="text-align:right;">3.5s</td>
+  <th style="text-align:right;">12.5s</th>
+  <th style="text-align:right;">15.0s</th>
+  <th style="text-align:right;">2.5s</th>
+  <th style="text-align:left;">Test Y</th>
+  <th style="text-align:left;">PICO(PICO2-RISCV)</th>
 </tr>
 <tr>
-  <td style="text-align:right;">3</td>
-  <td style="text-align:left;">Test Y</td>
-  <td style="text-align:left;">PICO(PICO2-RISCV)</td>
-  <td style="text-align:right;">2.5s</td>
+  <th style="text-align:right;">12.5s</th>
+  <th style="text-align:right;">19.0s</th>
+  <th style="text-align:right;">6.5s</th>
+  <th style="text-align:left;">Build ESP8266</th>
+  <th style="text-align:left;"></th>
 </tr>
 <tr>
-  <td style="text-align:right;">4</td>
-  <td style="text-align:left;">Test Test Y</td>
-  <td style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</td>
-  <td style="text-align:right;">3.5s</td>
+  <th style="text-align:right;">14.5s</th>
+  <th style="text-align:right;">18.0s</th>
+  <th style="text-align:right;">3.5s</th>
+  <th style="text-align:left;">Test Test Y</th>
+  <th style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</th>
 </tr>
-</tbody>
 </table>
+<script>
+        let refreshInterval;
 
-<h2>Report input data</h2>
+        function toggleRefresh() {
+            const checkbox = document.getElementById('refreshCheckbox');
+            if (checkbox.checked) {
+                const interval = 5000;
+                refreshInterval = setInterval(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('refresh', interval);
+                    window.location.href = url.toString();
+                }, interval);
+            } else {
+                clearInterval(refreshInterval);
+                const url = new URL(window.location);
+                url.searchParams.delete('refresh');
+                window.history.replaceState({}, '', url.toString());
+            }
+        }
 
-<table>
-<thead>
-<tr>
-  <th style="text-align:right;">Start</th>
-  <th style="text-align:right;">End</th>
-  <th style="text-align:right;">Duration</th>
-  <th style="text-align:left;">Task</th>
-  <th style="text-align:left;">Tentacles</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td style="text-align:right;">0.0s</td>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:left;">Build PICO2</td>
-  <td style="text-align:left;"></td>
-</tr>
-<tr>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:right;">11.0s</td>
-  <td style="text-align:right;">7.5s</td>
-  <td style="text-align:left;">Build PICO2-RISCV</td>
-  <td style="text-align:left;"></td>
-</tr>
-<tr>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:right;">12.0s</td>
-  <td style="text-align:right;">8.5s</td>
-  <td style="text-align:left;">Test X</td>
-  <td style="text-align:left;">PICO(PICO2)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">11.0s</td>
-  <td style="text-align:right;">14.5s</td>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:left;">Test Test X</td>
-  <td style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">12.5s</td>
-  <td style="text-align:right;">15.0s</td>
-  <td style="text-align:right;">2.5s</td>
-  <td style="text-align:left;">Test Y</td>
-  <td style="text-align:left;">PICO(PICO2-RISCV)</td>
-</tr>
-<tr>
-  <td style="text-align:right;">12.5s</td>
-  <td style="text-align:right;">19.0s</td>
-  <td style="text-align:right;">6.5s</td>
-  <td style="text-align:left;">Build ESP8266</td>
-  <td style="text-align:left;"></td>
-</tr>
-<tr>
-  <td style="text-align:right;">14.5s</td>
-  <td style="text-align:right;">18.0s</td>
-  <td style="text-align:right;">3.5s</td>
-  <td style="text-align:left;">Test Test Y</td>
-  <td style="text-align:left;">PICO2(PICO2-RISCV), Lolin(ESP8266)</td>
-</tr>
-</tbody>
-</table>
+        function getRefreshIntervalFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('refresh');
+        }
 
-<p></body>
-    </html></p>
-
+        window.onload = function() {
+            const interval = getRefreshIntervalFromURL();
+            if (interval) {
+                document.getElementById('refreshCheckbox').checked = true;
+                refreshInterval = setInterval(() => {
+                    window.location.reload();
+                }, interval);
+            }
+        }
+    </script>
 </body>
-    </html>
+</html>

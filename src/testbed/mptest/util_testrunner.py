@@ -252,18 +252,17 @@ class TestRunner:
         report_tasks = util_report_tasks.Tasks()
 
         def generate_task_report(align_time: bool = False) -> None:
-            report = util_report_tasks.TaskReport(tasks=report_tasks, align_time=align_time)
-            for suffix, renderer in (
-                (".txt", util_report_renderer.RendererAscii()),
-                (".md", util_report_renderer.RendererMarkdown()),
-                (".html", util_report_renderer.RendererHtml()),
+            report = util_report_tasks.TaskReport(tasks=report_tasks)
+            for suffix, cls_renderer in (
+                (".txt", util_report_renderer.RendererAscii),
+                (".md", util_report_renderer.RendererMarkdown),
+                (".html", util_report_renderer.RendererHtml),
             ):
-                report.report(renderer=renderer)
                 filename_report = (
                     constants.DIRECTORY_TESTRESULTS / "task_report"
                 ).with_suffix(suffix)
                 with filename_report.open("w", encoding="ascii") as f:
-                    f.write(renderer.getvalue())
+                    report.report(renderer=cls_renderer(f))
 
         def run_all():
             while True:

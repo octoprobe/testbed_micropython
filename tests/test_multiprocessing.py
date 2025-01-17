@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import logging
 import pathlib
+import sys
 import time
 from dataclasses import dataclass
 
@@ -139,16 +140,14 @@ def submain(multiprocessing: bool) -> None:
                     return
 
     doit()
-    report = TaskReport(tasks=report_tasks, align_time=True)
-    renderer = RendererMarkdown()
-    report.report(renderer=renderer)
-    print(renderer.getvalue())
+    report = TaskReport(tasks=report_tasks)
+    report.report(renderer=RendererMarkdown(sys.stdout))
 
     filename = __file__
     if multiprocessing:
         filename = filename.replace(".py", "_multiprocessing.py")
-    filename_report = pathlib.Path(filename).with_suffix(".md")
-    filename_report.write_text(renderer.getvalue())
+    with pathlib.Path(filename).with_suffix(".md").open("w") as f:
+        report.report(renderer=RendererMarkdown(f))
 
 
 def main() -> None:

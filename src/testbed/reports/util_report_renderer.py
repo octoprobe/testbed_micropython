@@ -7,10 +7,8 @@ from __future__ import annotations
 import abc
 import dataclasses
 import enum
-import io
+import html
 import typing
-
-import markdown2
 
 
 @dataclasses.dataclass
@@ -32,6 +30,10 @@ class Align(enum.IntEnum):
     def fstring(self) -> str:
         return {self.LEFT: "<", self.CENTER: "^", self.RIGHT: ">"}[self]
 
+    @property
+    def html(self) -> str:
+        return f"text-align:{self.name.lower()};"
+
 
 @dataclasses.dataclass
 class TableHeaderCol:
@@ -40,20 +42,20 @@ class TableHeaderCol:
 
 
 class RendererBase(abc.ABC):
-    def __init__(self) -> None:
-        self.f = io.StringIO()
+    def __init__(self, f: typing.TextIO) -> None:
+        self.f = f
 
     @abc.abstractmethod
-    def h1(self, title: str): ...
+    def h1(self, title: str) -> None: ...
 
     @abc.abstractmethod
-    def h2(self, title: str): ...
+    def h2(self, title: str) -> None: ...
 
     @abc.abstractmethod
     def table(self, table: Table) -> None: ...
 
-    def getvalue(self) -> str:
-        return self.f.getvalue()
+    def close(self) -> None:
+        pass
 
 
 class RendererAscii(RendererBase):
@@ -118,33 +120,106 @@ class RendererMarkdown(RendererBase):
             self.f.write(f"| {cols} |\n")
 
 
-class RendererHtml(RendererMarkdown):
+class RendererHtml(RendererBase):
     HTML_START = """
-    <!DOCTYPE HTML>
-    <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="refresh" content="5" />
-        <title>Report</title>
-    </head>
-    <body>
-    """.strip()
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Report</title>
+    <style>
+        table {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid gray;
+            padding: 8px;
+        }
+        thead th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <label>
+        <input type="checkbox" id="refreshCheckbox" onclick="toggleRefresh()">auto refresh
+    </label>
+""".strip()
+
     HTML_END = """
-    </body>
-    </html>
-    """.strip()
+    <script>
+        let refreshInterval;
+
+        function toggleRefresh() {
+            const checkbox = document.getElementById('refreshCheckbox');
+            if (checkbox.checked) {
+                const interval = 5000;
+                refreshInterval = setInterval(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('refresh', interval);
+                    window.location.href = url.toString();
+                }, interval);
+            } else {
+                clearInterval(refreshInterval);
+                const url = new URL(window.location);
+                url.searchParams.delete('refresh');
+                window.history.replaceState({}, '', url.toString());
+            }
+        }
+
+        function getRefreshIntervalFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('refresh');
+        }
+
+        window.onload = function() {
+            const interval = getRefreshIntervalFromURL();
+            if (interval) {
+                document.getElementById('refreshCheckbox').checked = true;
+                refreshInterval = setInterval(() => {
+                    window.location.reload();
+                }, interval);
+            }
+        }
+    </script>
+</body>
+</html>
+""".strip()
+
+    def __init__(self, f: typing.TextIO) -> None:
+        super().__init__(f=f)
+        self.f.write(self.HTML_START)
 
     @typing.override
-    def getvalue(self) -> str:
-        """
-        Convert md to html
-        """
-        self.f.write(self.HTML_END)
-        html = markdown2.markdown(
-            super().getvalue(),
-            extras=[
-                "tables",
-            ],
-        )
+    def h1(self, title: str):
+        self.f.write(f"<h1>{html.escape(title)}</h1>")
 
-        return f"{self.HTML_START}\n{html}\n{self.HTML_END}"
+    @typing.override
+    def h2(self, title: str):
+        self.f.write(f"<h2>{html.escape(title)}</h2>")
+
+    @typing.override
+    def table(self, table: Table) -> None:
+        self.f.write("<table>\n")
+        self.f.write("<thead>\n")
+        self.f.write("  <tr>\n")
+        for col_header in table.header:
+            self.f.write(
+                f'    <th style="{col_header.align.html}">{html.escape(col_header.text)}</th>\n'
+            )
+        self.f.write("  </tr>\n")
+        self.f.write("</thead>\n")
+
+        for row in table.rows:
+            self.f.write("<tr>\n")
+            for col_header, col in zip(table.header, row, strict=True):
+                self.f.write(
+                    f'  <th style="{col_header.align.html}">{html.escape(col)}</th>\n'
+                )
+            self.f.write("</tr>\n")
+        self.f.write("</table>\n")
+
+    @typing.override
+    def close(self) -> None:
+        self.f.write(self.HTML_END)

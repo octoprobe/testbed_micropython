@@ -30,7 +30,6 @@ dependencies = [
     "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
     # "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@hmaerki/introduce_mpbuild_api2",
     "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
-    "markdown2",
 ]
 
 [project.urls]
@@ -148,6 +147,7 @@ ignore = [
     "C901",  # too complex
     # "W191",  # indentation contains tabs
     "D",     # enable docstring checks
+    "B027",  #  empty method in an abstract base class
 ]
 
 [tool.ruff.lint.per-file-ignores]

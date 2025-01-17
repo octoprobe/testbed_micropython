@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import dataclasses
 import typing
 
@@ -337,20 +338,18 @@ class LegendTasks:
 
 
 class TaskReport:
-    def __init__(self, tasks: Tasks, align_time: bool = False) -> None:
-        self.tasks = tasks
-        if align_time:
-            tasks.quantize_times()
-        tasks.sort_by_start_s()
-        if align_time:
-            tasks.align_start_s()
+    def __init__(self, tasks: Tasks) -> None:
+        self.tasks = copy.deepcopy(tasks)
+        self.tasks.quantize_times()
+        self.tasks.sort_by_start_s()
+        self.tasks.align_start_s()
 
         self.legend_tasks = LegendTasks()
-        for task in tasks:
+        for task in self.tasks:
             self.legend_tasks.add(task=task)
 
         self.legend_tentacles = LegendTentacles()
-        for tentacle in tasks.all_tentacles_sorted:
+        for tentacle in self.tasks.all_tentacles_sorted:
             self.legend_tentacles.add(tentacle=tentacle)
 
         self.rows = self._append_rows()
@@ -391,4 +390,5 @@ class TaskReport:
         renderer.table(self.legend_tasks.as_table())
         renderer.h2("Report input data")
         renderer.table(self.tasks.as_table())
+        renderer.close()
         return renderer
