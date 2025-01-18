@@ -34,11 +34,52 @@ from ..tentacle_spec import TentacleMicropython
 logger = logging.getLogger(__file__)
 
 
-def init_empty() -> None:
-    pass
+class EventLogCallback:
+    def __init__(self) -> None:
+        self._arg1: TargetArg1 | None = None
+        self._callback: typing.Callable = self._callback_empty
+
+    def init(self, arg1: TargetArg1) -> None:
+        assert isinstance(arg1, TargetArg1)
+        self._arg1 = arg1
+        self._callback = self._callback_event
+
+    def log(self, msg: str, target_unique_name: str | None = None) -> None:
+        self._callback(msg=msg, target_unique_name=target_unique_name)
+
+    def _callback_empty(self, msg: str, target_unique_name: str | None) -> None:
+        """
+        This callback will be used if running in one process
+        """
+        assert self._arg1 is None
+
+        logger.info(f"[COLOR_INFO]{msg}")
+
+    def _callback_event(self, msg: str, target_unique_name: str | None) -> None:
+        """
+        This callback will be used if running in a subprocess
+        """
+        assert self._arg1 is not None
+
+        if target_unique_name is None:
+            target_unique_name = self._arg1.target_unique_name
+        logger.info(f"{target_unique_name}: {msg}")
+        self._arg1.queue_put(
+            EventLog(
+                target_unique_name=target_unique_name,
+                msg=msg,
+            )
+        )
 
 
-def init_logging() -> None:
+EVENTLOGCALLBACK = EventLogCallback()
+
+
+def init_empty(arg1: TargetArg1) -> None:
+    assert isinstance(arg1, TargetArg1)
+
+
+def init_logging(arg1: TargetArg1) -> None:
     """
     This method will be used to initialize a multiprocessing subprocess.
     """
@@ -50,6 +91,9 @@ def init_logging() -> None:
         "root": {"level": "DEBUG", "handlers": []},
     }
     config.dictConfig(log_config)
+
+    assert isinstance(arg1, TargetArg1)
+    EVENTLOGCALLBACK.init(arg1=arg1)
 
 
 def assert_pickable(obj: typing.Any) -> None:
@@ -194,6 +238,14 @@ class TargetArg1:
         assert isinstance(msg, str)
         self.queue_put(EventLog(self.target_unique_name, msg))
 
+    @staticmethod
+    def dummy_factory() -> TargetArg1:
+        return TargetArg1(
+            target_unique_name="dummy",
+            queue=mp.Queue(),
+            initfunc=lambda f: f,
+        )
+
 
 class Target:
     """
@@ -280,7 +332,7 @@ class Target:
     @property
     def livetime_text_full(self) -> str:
         livetime_s = self.livetime_s
-        return f"{livetime_s:0.1f}s ({100.0*livetime_s/self.timeout_s:0.0f}% of {self.timeout_s:0.1f}s)"
+        return f"{livetime_s:0.1f}s ({100.0 * livetime_s / self.timeout_s:0.0f}% of {self.timeout_s:0.1f}s)"
 
     @property
     def timeout_text(self) -> str:

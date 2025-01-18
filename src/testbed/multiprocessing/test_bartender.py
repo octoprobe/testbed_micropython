@@ -104,9 +104,10 @@ class TestBartender:
         self._release(async_target=async_target)
 
         log = logger.info if event.success else logger.warning
+        color = "[COLOR_SUCCESS]" if event.success else "[COLOR_FAILED]"
 
         log(
-            f"{async_target.target_unique_name}: Terminated in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {event.logfile_relative}"
+            f"{color}{async_target.target_unique_name}: Terminated in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {event.logfile_relative}"
         )
 
         return async_target

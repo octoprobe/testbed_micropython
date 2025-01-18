@@ -3,11 +3,13 @@ from __future__ import annotations
 import logging
 import sys
 
+from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
 from testbed.mptest import util_common
 from testbed.mptest.util_common import mip_install
+from testbed.multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import (
     TIMEOUT_FLASH_S,
@@ -53,6 +55,8 @@ class TestRunRunTests(TestRun):
         )
 
         # Run tests
+        logfile = testargs.testresults_directory("testresults.txt").filename
+        EVENTLOGCALLBACK.log(msg=f"Logfile: {relative_cwd(logfile)}")
         args = [
             sys.executable,
             *self.testrun_spec.command,
@@ -64,7 +68,7 @@ class TestRunRunTests(TestRun):
             args=args,
             cwd=testargs.repo_micropython_tests / "tests",
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=testargs.testresults_directory("testresults.txt").filename,
+            logfile=logfile,
             timeout_s=self.timeout_s,
         )
 

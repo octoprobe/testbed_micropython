@@ -271,7 +271,7 @@ def main():
         while True:
             for _target, event in ps.iter_queue():
                 if isinstance(event, EventLog):
-                    logger.info(f"{event.process_name}: Logging {event.msg}")
+                    logger.info(f"{event.process_name}: {event.msg}")
 
             if ps.done:
                 logger.info("Done")

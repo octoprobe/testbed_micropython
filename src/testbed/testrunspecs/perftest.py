@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import sys
 
+from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
+from testbed.multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from testbed.testcollection.baseclasses_spec import TentacleVariant
 from testbed.testcollection.testrun_specs import TIMEOUT_FLASH_S, TestArgs, TestRun
 from testbed.testrunspecs.runtests import TestRunSpec
@@ -33,6 +35,8 @@ class TestRunPerfTest(TestRun):
         assert isinstance(perftest_args[0], str)
         assert isinstance(perftest_args[1], str)
 
+        logfile = testargs.testresults_directory("testresults.txt").filename
+        EVENTLOGCALLBACK.log(msg=f"Logfile: {relative_cwd(logfile)}")
         args = [
             sys.executable,
             *self.testrun_spec.command,
@@ -43,7 +47,7 @@ class TestRunPerfTest(TestRun):
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / "tests",
-            logfile=testargs.testresults_directory("testresults.txt").filename,
+            logfile=logfile,
             timeout_s=self.timeout_s,
         )
 

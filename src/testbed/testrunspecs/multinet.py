@@ -4,10 +4,12 @@ import abc
 import logging
 import sys
 
+from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed.constants import EnumFut
 from testbed.mptest import util_common
+from testbed.multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from testbed.testcollection.testrun_specs import (
     TIMEOUT_FLASH_S,
     TestArgs,
@@ -43,6 +45,8 @@ class TestRunMultitestBase(TestRun):
             list_tests.remove("multi_bluetooth/stress_deepsleep_reconnect.py")
         except ValueError:
             pass
+        logfile = testargs.testresults_directory("testresults.txt").filename
+        EVENTLOGCALLBACK.log(msg=f"Logfile: {relative_cwd(logfile)}")
         args = [
             sys.executable,
             self.testrun_spec.command_executable,
@@ -54,7 +58,7 @@ class TestRunMultitestBase(TestRun):
             args=args,
             cwd=cwd,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=testargs.testresults_directory("testresults.txt").filename,
+            logfile=logfile,
             timeout_s=self.timeout_s,
         )
 

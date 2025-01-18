@@ -30,7 +30,7 @@ def target_showcase(arg1: mp.TargetArg1, duration_s: float, time_s: int) -> None
     logfile = pathlib.Path("/here_is_the_logfile")
     success = False
     try:
-        arg1.initfunc()
+        arg1.initfunc(arg1=arg1)
         assert isinstance(duration_s, float)
         assert isinstance(time_s, int)
         time.sleep(time_s)
@@ -70,11 +70,13 @@ class AsyncTargetShowcase(mp.AsyncTarget):
     pass
 
 
-def init_empty() -> None:
-    pass
+def init_empty(arg1: mp.TargetArg1) -> None:
+    assert isinstance(arg1, mp.TargetArg1)
 
 
-def init_logging() -> None:
+def init_logging(arg1: mp.TargetArg1) -> None:
+    assert isinstance(arg1, mp.TargetArg1)
+
     start_s = time.time()
 
     logging.basicConfig(level=logging.DEBUG)
@@ -128,7 +130,7 @@ def submain(multiprocessing: bool) -> None:
                         report_tasks.append(async_target2.report_task)
 
                     if isinstance(event, mp.EventLog):
-                        logger.info(f"{event.target_unique_name}: Logging {event.msg}")
+                        logger.info(f"{event.target_unique_name}: {event.msg}")
 
                 for async_target3 in target_ctx.cleanup(async_targets=async_targets):
                     assert async_target3.target.end_s is not None
@@ -154,7 +156,7 @@ def main() -> None:
     # init_logging()
     # submain(multiprocessing=False)
 
-    init_logging()
+    init_logging(arg1=mp.TargetArg1.dummy_factory())
     submain(multiprocessing=True)
 
 

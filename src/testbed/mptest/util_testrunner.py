@@ -277,7 +277,9 @@ class TestRunner:
                     #
                     # Run test
                     #
-                    logger.info(f"{async_target.target_unique_name}: Started")
+                    logger.info(
+                        f"[COLOR_INFO]{async_target.target_unique_name}: Started"
+                    )
                     self.run_one_test(
                         async_target=async_target,
                         target_ctx=target_ctx,
@@ -309,7 +311,9 @@ class TestRunner:
                     generate_task_report()
 
                     if isinstance(event, util_multiprocessing.EventLog):
-                        logger.info(f"{event.target_unique_name}: Logging {event.msg}")
+                        logger.info(
+                            f"[COLOR_INFO]{event.target_unique_name}: {event.msg}"
+                        )
                     elif isinstance(event, EventExitRunOneTest):
                         async_target_test = self.test_bartender.testrun_done(
                             event=event
@@ -318,7 +322,7 @@ class TestRunner:
 
                     elif isinstance(event, firmware_bartender.EventFirmwareSpec):
                         logger.info(
-                            f"{event.target_unique_name}: Firmware build took {event.duration_text}. Logfile: {relative_cwd(event.logfile)}"
+                            f"[COLOR_SUCCESS]{event.target_unique_name}: Firmware build took {event.duration_text}. Logfile: {relative_cwd(event.logfile)}"
                         )
                         self.firmware_bartender.firmware_built(event.firmware_spec)
                         report_tasks.append(
@@ -334,7 +338,9 @@ class TestRunner:
                         target_ctx.close_and_join(self.firmware_bartender.async_targets)
                         if not event.success:
                             msg = f"Firmware build failed: {event.logfile_relative}"
-                            logger.error(msg)
+                            logger.error(
+                                f"[COLOR_ERROR]{event.target_unique_name}: {msg}"
+                            )
                             raise OctoprobeAppExitException(msg)
                     else:
                         raise ValueError("Programming error!")
@@ -477,13 +483,6 @@ def _target_run_one_test_async_a(
     except (OctoprobeTestException, UdevFailException) as e:
         logger.warning(f"{testid_patch}: Terminating test due to: {e!r}")
         return False
-    #     msg = f"Test failed: {e}"
-    #     logger.error(msg)
-    #     logger.debug(msg, exc_info=True)
-    #     raise e
-    # except SubprocessExitCodeException as e:
-    #     logger.warning(f"Test returned exit code: {e!r}")
-    #     raise e
     except SubprocessExitCodeException as e:
         logger.warning(f"{testid_patch}: Terminating test due to: {e!r}")
         return False
@@ -511,7 +510,7 @@ def target_run_one_test_async(
     success = False
     testid_patch = testrun.testid_patch(flash_skip=args.firmware.flash_skip)
     try:
-        arg1.initfunc()
+        arg1.initfunc(arg1=arg1)
 
         testresults_directory = ResultsDir(
             directory_top=constants.DIRECTORY_TESTRESULTS,

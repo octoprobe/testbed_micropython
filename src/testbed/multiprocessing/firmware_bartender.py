@@ -8,6 +8,7 @@ import typing
 from collections import defaultdict
 
 from octoprobe.util_baseclasses import OctoprobeAppExitException
+from octoprobe.util_constants import relative_cwd
 from octoprobe.util_firmware_spec import FirmwareBuildSpec, FirmwaresBuilt
 from octoprobe.util_micropython_boards import BoardVariant
 from octoprobe.util_pytest import util_logging
@@ -53,8 +54,9 @@ def target_build_firmware_async(
 
     success = False
     logfile = pathlib.Path("/dummy_path")
+    target_unique_name = arg1.target_unique_name
     try:
-        arg1.initfunc()
+        arg1.initfunc(arg1=arg1)
         for firmware in firmwares:
             builder = util_firmware_mpbuild.Builder(
                 variant=firmware.firmware_build_spec.board_variant,
@@ -62,6 +64,14 @@ def target_build_firmware_async(
             )
             with util_logging.Logs(builder.mpbuild_artifacts) as logs:
                 logfile = logs.filename
+                target_unique_name = (
+                    firmware.firmware_build_spec.board_variant.name_normalized
+                )
+                util_multiprocessing.EVENTLOGCALLBACK.log(
+                    msg=f"Firmware build start. Logfile: {relative_cwd(builder.docker_logfile)}",
+                    target_unique_name=target_unique_name,
+                )
+
                 start_s = time.monotonic()
                 try:
                     spec = builder.build(
@@ -95,7 +105,7 @@ def target_build_firmware_async(
 
     arg1.queue_put(
         EventExitFirmware(
-            target_unique_name=arg1.target_unique_name,
+            target_unique_name=target_unique_name,
             success=success,
             logfile=logfile,
         )
