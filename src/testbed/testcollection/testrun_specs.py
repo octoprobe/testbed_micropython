@@ -262,7 +262,6 @@ class TestRunSpec:
             for tentacles in itertools.combinations(
                 available_tentacles, self.tentacles_required
             ):
-
                 if not tentacles_suitable(tentacles=tentacles):
                     continue
 

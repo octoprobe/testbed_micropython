@@ -42,7 +42,6 @@
 ### actual_testruns
       TESTPERF[1c40-RPI_PICO]
       TESTWLAN[1c42-LOLIN_D1_MINI,1c43-LOLIN_C3_MINI]
-###  testrun_done: TESTPERF[1c40-RPI_PICO]
 ## 2: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=4
     First ['ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
@@ -53,7 +52,7 @@
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 2: possible_testruns
-###  testrun_done: TESTWLAN[1c42-LOLIN_D1_MINI,1c43-LOLIN_C3_MINI]
+###  testrun_done: TESTPERF[1c40-RPI_PICO]
 ## 3: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=4
     First ['ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
@@ -64,25 +63,25 @@
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 3: possible_testruns
-  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
-  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC) / TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI]
-  TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
-  TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
-  TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
-### 3: fake_start:5 testrun_next: TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
-### actual_testruns
-      TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
+###  testrun_done: TESTWLAN[1c42-LOLIN_D1_MINI,1c43-LOLIN_C3_MINI]
 ## 4: testrun_specs
-  testrunspec['TESTWLAN'] tests_todo=2
-    First ['ESP8266_GENERIC-FLASH_512K']
-    Second ['ESP8266_GENERIC']
+  testrunspec['TESTWLAN'] tests_todo=4
+    First ['ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+    Second ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K']
   testrunspec['TESTPERF'] tests_todo=3
     First ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
 ## 4: tsvs_combinations
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 4: possible_testruns
-###  testrun_done: TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
+  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
+  TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC) / TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI]
+  TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
+  TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
+  TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
+### 4: fake_start:5 testrun_next: TestRun(TESTWLAN, LOLIN_C3_MINI, ESP8266_GENERIC-FLASH_512K) / TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
+### actual_testruns
+      TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
 ## 5: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=2
     First ['ESP8266_GENERIC-FLASH_512K']
@@ -93,39 +92,38 @@
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 5: possible_testruns
+###  testrun_done: TESTWLAN[1c43-LOLIN_C3_MINI,1c42-LOLIN_D1_MINI-FLASH_512K]
+## 6: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=3
+    First ['ESP8266_GENERIC', 'ESP8266_GENERIC-FLASH_512K', 'LOLIN_C3_MINI']
+## 6: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 6: possible_testruns
   TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
   TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
   TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
-### 5: fake_start:4 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
+### 6: fake_start:4 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
 ### actual_testruns
       TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
-## 6: testrun_specs
+## 7: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=2
     First ['ESP8266_GENERIC-FLASH_512K']
     Second ['ESP8266_GENERIC']
   testrunspec['TESTPERF'] tests_todo=2
     First ['ESP8266_GENERIC', 'LOLIN_C3_MINI']
-## 6: tsvs_combinations
-  TestRunSpec[TESTWLAN]
-  TestRunSpec[TESTPERF]
-## 6: possible_testruns
-  TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
-### 6: fake_start:3 testrun_next: TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
-### actual_testruns
-      TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
-      TESTPERF[1c43-LOLIN_C3_MINI]
-###  testrun_done: TESTPERF[1c43-LOLIN_C3_MINI]
-## 7: testrun_specs
-  testrunspec['TESTWLAN'] tests_todo=2
-    First ['ESP8266_GENERIC-FLASH_512K']
-    Second ['ESP8266_GENERIC']
-  testrunspec['TESTPERF'] tests_todo=1
-    First ['ESP8266_GENERIC']
 ## 7: tsvs_combinations
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 7: possible_testruns
-###  testrun_done: TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
+  TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
+### 7: fake_start:3 testrun_next: TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF[1c43-LOLIN_C3_MINI]
+### actual_testruns
+      TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
+      TESTPERF[1c43-LOLIN_C3_MINI]
 ## 8: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=2
     First ['ESP8266_GENERIC-FLASH_512K']
@@ -136,28 +134,221 @@
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 8: possible_testruns
-  TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
-### 8: fake_start:2 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
-### actual_testruns
-      TESTPERF[1c42-LOLIN_D1_MINI]
+###  testrun_done: TESTPERF[1c43-LOLIN_C3_MINI]
 ## 9: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=2
     First ['ESP8266_GENERIC-FLASH_512K']
     Second ['ESP8266_GENERIC']
-  testrunspec['TESTPERF'] tests_todo=0
-    First []
+  testrunspec['TESTPERF'] tests_todo=1
+    First ['ESP8266_GENERIC']
 ## 9: tsvs_combinations
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
 ## 9: possible_testruns
-###  testrun_done: TESTPERF[1c42-LOLIN_D1_MINI]
+###  testrun_done: TESTPERF[1c42-LOLIN_D1_MINI-FLASH_512K]
 ## 10: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=1
+    First ['ESP8266_GENERIC']
+## 10: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 10: possible_testruns
+  TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
+### 10: fake_start:2 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF[1c42-LOLIN_D1_MINI]
+### actual_testruns
+      TESTPERF[1c42-LOLIN_D1_MINI]
+## 11: testrun_specs
   testrunspec['TESTWLAN'] tests_todo=2
     First ['ESP8266_GENERIC-FLASH_512K']
     Second ['ESP8266_GENERIC']
   testrunspec['TESTPERF'] tests_todo=0
     First []
-## 10: tsvs_combinations
+## 11: tsvs_combinations
   TestRunSpec[TESTWLAN]
   TestRunSpec[TESTPERF]
-## 10: possible_testruns
+## 11: possible_testruns
+###  testrun_done: TESTPERF[1c42-LOLIN_D1_MINI]
+## 12: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 12: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 12: possible_testruns
+## 13: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 13: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 13: possible_testruns
+## 14: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 14: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 14: possible_testruns
+## 15: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 15: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 15: possible_testruns
+## 16: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 16: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 16: possible_testruns
+## 17: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 17: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 17: possible_testruns
+## 18: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 18: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 18: possible_testruns
+## 19: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 19: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 19: possible_testruns
+## 20: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 20: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 20: possible_testruns
+## 21: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 21: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 21: possible_testruns
+## 22: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 22: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 22: possible_testruns
+## 23: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 23: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 23: possible_testruns
+## 24: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 24: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 24: possible_testruns
+## 25: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 25: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 25: possible_testruns
+## 26: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 26: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 26: possible_testruns
+## 27: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 27: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 27: possible_testruns
+## 28: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 28: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 28: possible_testruns
+## 29: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    First ['ESP8266_GENERIC-FLASH_512K']
+    Second ['ESP8266_GENERIC']
+  testrunspec['TESTPERF'] tests_todo=0
+    First []
+## 29: tsvs_combinations
+  TestRunSpec[TESTWLAN]
+  TestRunSpec[TESTPERF]
+## 29: possible_testruns
+ERROR: should never get here!

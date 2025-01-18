@@ -12,15 +12,11 @@ from usbhubctl import Location
 
 from testbed.constants import EnumFut
 from testbed.mptest import util_testrunner
-from testbed.multiprocessing.test_bartender import (
-    CurrentlyNoTestsException,
-    TestBartender,
-)
+from testbed.multiprocessing import test_bartender
 from testbed.tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 from testbed.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO
-from testbed.testcollection.baseclasses_run import TestRun, TestRunSpecs
+from testbed.testcollection import baseclasses_run, testrun_specs
 from testbed.testcollection.baseclasses_spec import ConnectedTentacles
-from testbed.testcollection.testrun_specs import TestRunSpec
 from testbed.util_pytest_git import assert_git_unchanged
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
@@ -47,7 +43,7 @@ class ForkTextIO(typing.TextIO):  # pylint: disable=abstract-method
 class Ttestparam:
     label: str
     specs: list[TentacleSpecMicropython]
-    testrun_specs: TestRunSpecs
+    testrun_specs: baseclasses_run.TestRunSpecs
 
     @property
     def pytest_id(self) -> str:
@@ -66,7 +62,6 @@ def _test_collection(testparam: Ttestparam) -> None:
 
 
 def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
-
     specs = testparam.specs
     testrun_specs = testparam.testrun_specs
 
@@ -89,10 +84,10 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
     print("## testrun_specs", file=file)
     testrun_specs.pytest_print(indent=1, file=file)
 
-    bartender = TestBartender(
+    bartender = test_bartender.TestBartender(
         connected_tentacles=connected_tentacles,
         testrun_specs=testrun_specs,
-        priority_sorter=TestRun.priority_sorter,
+        priority_sorter=baseclasses_run.TestRun.priority_sorter,
     )
     print(f"## START: test_todo={bartender.tests_todo}")
 
@@ -111,9 +106,9 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         We set a testrun to done if the len
         """
         actual_testruns = bartender.actual_testruns
-        if len(actual_testruns) < len_actual_testruns_at_least:
+        if len(actual_testruns) <= len_actual_testruns_at_least:
             return
-        testrun_done = bartender.actual_testruns[-1]
+        testrun_done = actual_testruns[-1]
         print(f"###  testrun_done: {testrun_done.testrun.testid}", file=file)
 
         event = util_testrunner.EventExitRunOneTest(
@@ -126,8 +121,10 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         testrun_done.fake_join()
 
     for i in itertools.count():
-        if i == 30:
+        if i >= 30:
+            print("ERROR: should never get here!", file=file)
             break
+
         try:
             print(f"## {i}: testrun_specs", file=file)
             testrun_specs.pytest_print(indent=1, file=file)
@@ -164,7 +161,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                 title="### actual_testruns", indent=2, file=file
             )
             testrun_done(len_actual_testruns_at_least=2)
-        except CurrentlyNoTestsException:
+        except test_bartender.CurrentlyNoTestsException:
             print(i, "CurrentlyNoTestsException")
             testrun_done(len_actual_testruns_at_least=0)
 
@@ -175,7 +172,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             break
 
 
-_TESTRUNSPEC_PERFBENCH = TestRunSpec(
+_TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
     label="TESTPERF",
     helptext="Run perftest on each board.",
     command=["perfbench.py", "run-perfbench.py"],
@@ -183,7 +180,7 @@ _TESTRUNSPEC_PERFBENCH = TestRunSpec(
     required_tentacles_count=1,
     timeout_s=60.0,
 )
-_TESTRUNSPEC_WLAN = TestRunSpec(
+_TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     label="TESTWLAN",
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
@@ -196,18 +193,20 @@ _TESTRUNSPEC_WLAN = TestRunSpec(
 _TESTPARAM_WLAN_ASYMMETRICAL = Ttestparam(
     label="wlan_asymmetrical",
     specs=[LOLIN_D1_MINI, LOLIN_C3_MINI],
-    testrun_specs=TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
 
 _TESTPARAM_WLAN_SYMMETRICAL = Ttestparam(
     label="wlan_symmetrical",
     specs=[LOLIN_C3_MINI, LOLIN_C3_MINI],
-    testrun_specs=TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
 _TESTPARAM_POTPOURRY = Ttestparam(
     label="potpourry",
     specs=[RPI_PICO, RPI_PICO, LOLIN_D1_MINI, LOLIN_C3_MINI],
-    testrun_specs=TestRunSpecs([_TESTRUNSPEC_WLAN, _TESTRUNSPEC_PERFBENCH]),
+    testrun_specs=baseclasses_run.TestRunSpecs(
+        [_TESTRUNSPEC_WLAN, _TESTRUNSPEC_PERFBENCH]
+    ),
 )
 _TESTPARAMS = [
     _TESTPARAM_WLAN_ASYMMETRICAL,

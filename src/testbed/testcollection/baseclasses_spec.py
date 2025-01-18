@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import dataclasses
 import logging
-import typing
 
 from ..constants import EnumFut
 from ..mpbuild import build_api
@@ -168,11 +167,6 @@ class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
                 for tsvs in self
             ]
         )
-
-    def pytest_print(self, indent: int, file: typing.TextIO) -> None:
-        for i, tsvs in enumerate(self):
-            print(indent * "  " + f"[{i}]", file=file)
-            tsvs.pytest_print(indent + 1, file=file)
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
