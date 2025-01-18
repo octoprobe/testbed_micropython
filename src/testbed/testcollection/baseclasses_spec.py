@@ -175,10 +175,10 @@ class ConnectedTentacles(list[TentacleMicropython]):
     def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
         return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
 
-    def get_only(self, tentacles: list[str] | None) -> ConnectedTentacles:
-        assert isinstance(tentacles, list | None)
+    def get_boards_only(self, boards: list[str] | None) -> ConnectedTentacles:
+        assert isinstance(boards, list | None)
 
-        if tentacles is None:
+        if boards is None:
             return self
 
-        return ConnectedTentacles([t for t in self if t.label_short in tentacles])
+        return ConnectedTentacles([t for t in self if t.tentacle_spec.board in boards])

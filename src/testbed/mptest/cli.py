@@ -47,7 +47,7 @@ def complete_only_test():
     return sorted([x.label for x in testrun_specs])
 
 
-def complete_only_tentacle():
+def complete_only_board():
     if False:
         args = util_testrunner.Args.get_default_args()
         testrunner = util_testrunner.TestRunner(args=args)
@@ -56,7 +56,7 @@ def complete_only_tentacle():
     else:
         connected_tentacles = util_testrunner.query_connected_tentacles_fast()
 
-    return sorted([t.label_short for t in connected_tentacles])
+    return sorted({t.tentacle_spec.board for t in connected_tentacles})
 
     tsvs = connected_tentacles.get_tsvs()
     return sorted([t.board_variant for t in tsvs])
@@ -142,7 +142,7 @@ def flash(
             flash_force=True,
             git_clean=False,
         ),
-        only_tentacles=None,
+        only_boards=None,
         only_test=None,
         force_multiprocessing=False,
     )
@@ -178,11 +178,11 @@ def test(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = URL_FILENAME_DEFAULT,
-    only_tentacle: TyperAnnotated[
+    only_board: TyperAnnotated[
         str | None,
         typer.Option(
             help="Only run these on this tentacle.",
-            autocompletion=complete_only_tentacle,
+            autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UNoneP007
     only_test: TyperAnnotated[
@@ -217,7 +217,7 @@ def test(
     ] = False,  # noqa: UP007
 ) -> None:
     try:
-        only_tentacles = None if only_tentacle is None else [only_tentacle]
+        only_boards = None if only_board is None else [only_board]
 
         args = util_testrunner.Args(
             mp_test=ArgsMpTest(
@@ -229,7 +229,7 @@ def test(
                 flash_force=flash_force,
                 git_clean=git_clean,
             ),
-            only_tentacles=only_tentacles,
+            only_boards=only_boards,
             only_test=only_test,
             force_multiprocessing=force_multiprocessing,
         )
