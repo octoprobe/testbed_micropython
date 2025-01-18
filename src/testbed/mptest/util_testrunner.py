@@ -82,14 +82,14 @@ def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
 class Args:
     mp_test: ArgsMpTest | None
     firmware: ArgsFirmware
-    only_variants: list[str] | None
+    only_tentacles: list[str] | None
     only_test: str | None
     force_multiprocessing: bool
 
     def __post_init__(self) -> None:
         assert isinstance(self.mp_test, ArgsMpTest | None)
         assert isinstance(self.firmware, ArgsFirmware)
-        assert isinstance(self.only_variants, list | None)
+        assert isinstance(self.only_tentacles, list | None)
         assert isinstance(self.only_test, str | None)
         assert isinstance(self.force_multiprocessing, bool)
 
@@ -105,7 +105,7 @@ class Args:
                 flash_force=False,
                 git_clean=False,
             ),
-            only_variants=None,
+            only_tentacles=None,
             only_test=None,
             force_multiprocessing=False,
         )
@@ -182,7 +182,7 @@ class TestRunner:
             raise SystemExit(0)
 
         connected_tentacles = connected_tentacles.get_only(
-            board_variants=self.args.only_variants
+            tentacles=self.args.only_tentacles
         )
 
         self.ntestrun = NTestRun(connected_tentacles=connected_tentacles)
@@ -192,8 +192,7 @@ class TestRunner:
 
         testrun_specs = get_testrun_specs(only_test=self.args.only_test)
         testrun_specs.assign_tentacles(
-            tentacles=connected_tentacles,
-            only_board_variants=self.args.only_variants,
+            tentacles=connected_tentacles.get_only(tentacles=self.args.only_tentacles)
         )
         self.test_bartender = TestBartender(
             connected_tentacles=connected_tentacles,

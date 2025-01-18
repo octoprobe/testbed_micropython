@@ -47,7 +47,7 @@ def complete_only_test():
     return sorted([x.label for x in testrun_specs])
 
 
-def complete_only_variant():
+def complete_only_tentacle():
     if False:
         args = util_testrunner.Args.get_default_args()
         testrunner = util_testrunner.TestRunner(args=args)
@@ -55,6 +55,8 @@ def complete_only_variant():
         connected_tentacles = testrunner.bartender.connected_tentacles
     else:
         connected_tentacles = util_testrunner.query_connected_tentacles_fast()
+
+    return sorted([t.label_short for t in connected_tentacles])
 
     tsvs = connected_tentacles.get_tsvs()
     return sorted([t.board_variant for t in tsvs])
@@ -132,7 +134,6 @@ def flash(
         ),
     ] = URL_FILENAME_DEFAULT,
 ) -> None:
-
     args = util_testrunner.Args(
         mp_test=None,
         firmware=ArgsFirmware(
@@ -141,7 +142,7 @@ def flash(
             flash_force=True,
             git_clean=False,
         ),
-        only_variants=None,
+        only_tentacles=None,
         only_test=None,
         force_multiprocessing=False,
     )
@@ -177,11 +178,11 @@ def test(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = URL_FILENAME_DEFAULT,
-    only_variant: TyperAnnotated[
+    only_tentacle: TyperAnnotated[
         str | None,
         typer.Option(
-            help="Only run these on this board variants.",
-            autocompletion=complete_only_variant,
+            help="Only run these on this tentacle.",
+            autocompletion=complete_only_tentacle,
         ),
     ] = None,  # noqa: UNoneP007
     only_test: TyperAnnotated[
@@ -216,7 +217,7 @@ def test(
     ] = False,  # noqa: UP007
 ) -> None:
     try:
-        only_variants = None if only_variant is None else [only_variant]
+        only_tentacles = None if only_tentacle is None else [only_tentacle]
 
         args = util_testrunner.Args(
             mp_test=ArgsMpTest(
@@ -228,7 +229,7 @@ def test(
                 flash_force=flash_force,
                 git_clean=git_clean,
             ),
-            only_variants=only_variants,
+            only_tentacles=only_tentacles,
             only_test=only_test,
             force_multiprocessing=force_multiprocessing,
         )

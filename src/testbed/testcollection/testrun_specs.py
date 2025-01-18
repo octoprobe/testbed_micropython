@@ -179,16 +179,11 @@ class TestRunSpec:
     def command_args(self) -> list[str]:
         return self.command[1:]
 
-    def assign_tentacles(
-        self,
-        tentacles: ConnectedTentacles,
-        only_board_variants: list[str] | None,
-    ) -> None:
+    def assign_tentacles(self, tentacles: ConnectedTentacles) -> None:
         """
         Assign tentacle-variants (board-variants) to be tested.
         """
         assert isinstance(tentacles, ConnectedTentacles)
-        assert isinstance(only_board_variants, list | None)
 
         selected_tentacles = tentacles.get_by_fut(self.required_fut)
         if len(selected_tentacles) < self.tentacles_required:
@@ -196,9 +191,6 @@ class TestRunSpec:
             # But there is no other FUT_WLAN we could test against!
             return
         tsvs_todo = selected_tentacles.get_tsvs()
-        tsvs_todo = tsvs_todo.get_only_board_variants(
-            only_board_variants=only_board_variants
-        )
         self.roles_tsvs_todo = RolesTentacleSpecVariants(
             [TentacleSpecVariants(tsvs_todo) for _ in range(self.tentacles_required)]
         )

@@ -76,10 +76,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     connected_tentacles = ConnectedTentacles(factory())
 
-    testrun_specs.assign_tentacles(
-        tentacles=connected_tentacles,
-        only_board_variants=None,
-    )
+    testrun_specs.assign_tentacles(tentacles=connected_tentacles)
 
     print("## testrun_specs", file=file)
     testrun_specs.pytest_print(indent=1, file=file)
@@ -143,7 +140,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             print(f"## {i}: possible_testruns", file=file)
             for possible_testrun in possible_testruns:
                 possible_testrun.pytest_print(indent=1, file=file)
-                pass
 
             async_target = bartender.testrun_next(
                 firmwares_built=firmwares_built,

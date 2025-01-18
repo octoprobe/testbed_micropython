@@ -39,15 +39,9 @@ class TestRunSpecs(list[TestRunSpec]):
     def tests_todo(self) -> int:
         return sum(testrun_spec.tests_todo for testrun_spec in self)
 
-    def assign_tentacles(
-        self,
-        tentacles: ConnectedTentacles,
-        only_board_variants: list[str] | None,
-    ) -> None:
+    def assign_tentacles(self, tentacles: ConnectedTentacles) -> None:
         for testrun_spec in self:
-            testrun_spec.assign_tentacles(
-                tentacles=tentacles, only_board_variants=only_board_variants
-            )
+            testrun_spec.assign_tentacles(tentacles=tentacles)
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
         for testrunspec in self:
