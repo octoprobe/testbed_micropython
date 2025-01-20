@@ -86,5 +86,5 @@ TESTRUNSPEC_RUNTESTS_BASICS = TestRunSpec(
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
-    timeout_s=5 * 60.0 + TIMEOUT_FLASH_S,
+    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
 )

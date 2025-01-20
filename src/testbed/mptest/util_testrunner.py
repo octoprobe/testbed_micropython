@@ -11,6 +11,7 @@ from octoprobe.octoprobe import NTestRun
 from octoprobe.util_baseclasses import OctoprobeTestException
 from octoprobe.util_constants import relative_cwd
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
+from octoprobe.util_journalctl import JournalctlObserver
 from octoprobe.util_micropython_boards import BoardVariant
 from octoprobe.util_pytest import util_logging
 from octoprobe.util_pytest.util_resultdir import ResultsDir
@@ -172,6 +173,10 @@ class TestRunner:
         util_logging.Logs(constants.DIRECTORY_TESTRESULTS)
 
     def init(self) -> None:
+        journalctl = JournalctlObserver(
+            logfile=constants.DIRECTORY_TESTRESULTS / "journalctl.txt"
+        )
+        journalctl.start_observer_thread()
         query_result_tentacles = NTestRun.session_powercycle_tentacles()
 
         connected_tentacles = instantiate_tentacles(
