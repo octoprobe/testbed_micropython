@@ -271,7 +271,7 @@ class AsyncTargetFirmware(util_multiprocessing.AsyncTarget):
             tentacles=[],
             func=target_build_firmware_async,
             func_args=[firmwares_build, repo_micropython_firmware],
-            timeout_s=15 * 60.0,
+            timeout_s=25 * 60.0,
         )
 
         assert isinstance(firmwares_build, FirmwaresTobeBuilt)
