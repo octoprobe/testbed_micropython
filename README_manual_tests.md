@@ -1,5 +1,7 @@
 # Manual tests
 
+These manual tests allow to verify the functionality of `testbed_micropython`.
+
 ## Group: Flash
 
 ### repl blocks

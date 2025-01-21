@@ -79,6 +79,7 @@
                 // "--help",
                 "test",
                 "--micropython-tests=https://github.com/micropython/micropython.git@master",
+                // "--micropython-tests=https://github.com/micropython/micropython.git@tests-full-test-runner",
                 // v1.24.1: PYBV11 fails
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.24.1",
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.24.0",

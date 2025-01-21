@@ -191,7 +191,7 @@ def test(
     ] = None,  # noqa: UP007
     flash_force: TyperAnnotated[
         bool | None,
-        typer.Option(help="Will flash all firmare and run tests."),
+        typer.Option(help="Will flash all firmware and run tests."),
     ] = False,  # noqa: UP007
     multiprocessing: TyperAnnotated[
         bool,

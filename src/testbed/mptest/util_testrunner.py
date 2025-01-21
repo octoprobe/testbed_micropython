@@ -453,7 +453,7 @@ def _target_run_one_test_async_b(
                 repo_micropython_tests=repo_micropython_tests,
             )
         )
-        logger.warning("Test SUCCESS")
+        logger.info("Test SUCCESS")
 
 
 def _target_run_one_test_async_a(
