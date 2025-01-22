@@ -83,6 +83,7 @@ def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
 class Args:
     mp_test: ArgsMpTest | None
     firmware: ArgsFirmware
+    directory_results: pathlib.Path
     only_boards: list[str] | None
     only_test: str | None
     force_multiprocessing: bool
@@ -90,6 +91,7 @@ class Args:
     def __post_init__(self) -> None:
         assert isinstance(self.mp_test, ArgsMpTest | None)
         assert isinstance(self.firmware, ArgsFirmware)
+        assert isinstance(self.directory_results, pathlib.Path)
         assert isinstance(self.only_boards, list | None)
         assert isinstance(self.only_test, str | None)
         assert isinstance(self.force_multiprocessing, bool)
@@ -106,6 +108,7 @@ class Args:
                 flash_force=False,
                 git_clean=False,
             ),
+            directory_results=constants.DIRECTORY_TESTRESULTS_DEFAULT,
             only_boards=None,
             only_test=None,
             force_multiprocessing=False,
@@ -165,16 +168,16 @@ class TestRunner:
         self.args = args
         _TESTBED_LOCK.acquire(constants.FILENAME_TESTBED_LOCK)
 
-        if constants.DIRECTORY_TESTRESULTS.exists():
-            shutil.rmtree(constants.DIRECTORY_TESTRESULTS, ignore_errors=False)
-        constants.DIRECTORY_TESTRESULTS.mkdir(parents=True, exist_ok=True)
+        if args.directory_results.exists():
+            shutil.rmtree(args.directory_results, ignore_errors=False)
+        args.directory_results.mkdir(parents=True, exist_ok=True)
 
         util_logging.init_logging()
-        util_logging.Logs(constants.DIRECTORY_TESTRESULTS)
+        util_logging.Logs(args.directory_results)
 
     def init(self) -> None:
         journalctl = JournalctlObserver(
-            logfile=constants.DIRECTORY_TESTRESULTS / "journalctl.txt"
+            logfile=self.args.directory_results / "journalctl.txt"
         )
         journalctl.start_observer_thread()
         query_result_tentacles = NTestRun.session_powercycle_tentacles()
@@ -248,7 +251,8 @@ class TestRunner:
         )
 
         async_target = self.firmware_bartender.build_firmwares(
-            repo_micropython_firmware=self.args.firmware.repo_micropython_firmware
+            directory_mpbuild_artifacts=self.args.directory_results / "mpbuild",
+            repo_micropython_firmware=self.args.firmware.repo_micropython_firmware,
         )
         if async_target is not None:
             target_ctx.start2(async_target=async_target)
@@ -263,7 +267,7 @@ class TestRunner:
                 (".html", util_report_renderer.RendererHtml),
             ):
                 filename_report = (
-                    constants.DIRECTORY_TESTRESULTS / "task_report"
+                    self.args.directory_results / "task_report"
                 ).with_suffix(suffix)
                 with filename_report.open("w", encoding="ascii") as f:
                     report.report(renderer=cls_renderer(f))
@@ -517,7 +521,7 @@ def target_run_one_test_async(
         arg1.initfunc(arg1=arg1)
 
         testresults_directory = ResultsDir(
-            directory_top=constants.DIRECTORY_TESTRESULTS,
+            directory_top=args.directory_results,
             test_name=testid_patch,
             test_nodeid=testid_patch,
         )

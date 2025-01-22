@@ -45,10 +45,12 @@ class EventExitFirmware(util_multiprocessing.EventExit):
 
 def target_build_firmware_async(
     arg1: util_multiprocessing.TargetArg1,
+    directory_mpbuild_artifacts: pathlib.Path,
     firmwares: FirmwaresTobeBuilt,
     repo_micropython_firmware: pathlib.Path,
 ) -> None:
     assert isinstance(arg1, util_multiprocessing.TargetArg1)
+    assert isinstance(directory_mpbuild_artifacts, pathlib.Path)
     assert isinstance(firmwares, FirmwaresTobeBuilt)
     assert isinstance(repo_micropython_firmware, pathlib.Path)
 
@@ -60,7 +62,7 @@ def target_build_firmware_async(
         for firmware in firmwares:
             builder = util_firmware_mpbuild.Builder(
                 variant=firmware.firmware_build_spec.board_variant,
-                mpbuild_artifacts=constants.DIRECTORY_MPBUILD_ARTIFACTS,
+                mpbuild_artifacts=directory_mpbuild_artifacts,
             )
             with util_logging.Logs(builder.mpbuild_artifacts) as logs:
                 logfile = logs.filename
@@ -175,7 +177,9 @@ class FirmwareBartenderSkipFlash:
         pass
 
     def build_firmwares(
-        self, repo_micropython_firmware: pathlib.Path
+        self,
+        directory_mpbuild_artifacts: pathlib.Path,
+        repo_micropython_firmware: pathlib.Path,
     ) -> AsyncTargetFirmware | None:
         return None
 
@@ -217,9 +221,12 @@ class FirmwareBartender(FirmwareBartenderSkipFlash):
 
     @typing.override
     def build_firmwares(
-        self, repo_micropython_firmware: pathlib.Path
+        self,
+        directory_mpbuild_artifacts: pathlib.Path,
+        repo_micropython_firmware: pathlib.Path,
     ) -> AsyncTargetFirmware | None:
         async_target = AsyncTargetFirmware(
+            directory_mpbuild_artifacts=directory_mpbuild_artifacts,
             firmwares_build=FirmwaresTobeBuilt.factory(self._testrun_specs),
             repo_micropython_firmware=repo_micropython_firmware,
         )
@@ -263,19 +270,25 @@ FirmwareBartenderBase = FirmwareBartenderSkipFlash
 class AsyncTargetFirmware(util_multiprocessing.AsyncTarget):
     def __init__(
         self,
+        directory_mpbuild_artifacts: pathlib.Path,
         firmwares_build: FirmwaresTobeBuilt,
         repo_micropython_firmware: pathlib.Path,
     ) -> None:
+        assert isinstance(directory_mpbuild_artifacts, pathlib.Path)
+        assert isinstance(firmwares_build, FirmwaresTobeBuilt)
+        assert isinstance(repo_micropython_firmware, pathlib.Path)
+
         super().__init__(
             target_unique_name="Firmware",
             tentacles=[],
             func=target_build_firmware_async,
-            func_args=[firmwares_build, repo_micropython_firmware],
+            func_args=[
+                directory_mpbuild_artifacts,
+                firmwares_build,
+                repo_micropython_firmware,
+            ],
             timeout_s=25 * 60.0,
         )
-
-        assert isinstance(firmwares_build, FirmwaresTobeBuilt)
-        assert isinstance(repo_micropython_firmware, pathlib.Path)
 
         self.firmwares_build = firmwares_build
         self.repo_micropython_firmware = repo_micropython_firmware

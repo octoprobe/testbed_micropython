@@ -11,6 +11,7 @@ Where to take the firmware from
 from __future__ import annotations
 
 import logging
+import pathlib
 
 import typer
 import typing_extensions
@@ -18,7 +19,11 @@ from mpbuild.board_database import MpbuildMpyDirectoryException
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
-from testbed.constants import DIRECTORY_TESTRESULTS, URL_FILENAME_DEFAULT
+from testbed.constants import (
+    DIRECTORY_DOWNLOADS,
+    DIRECTORY_TESTRESULTS_DEFAULT,
+    URL_FILENAME_DEFAULT,
+)
 from testbed.mptest import util_testrunner
 from testbed.mptest.util_common import ArgsMpTest
 from testbed.multiprocessing import util_multiprocessing
@@ -64,7 +69,7 @@ def complete_only_board():
 
 @app.command(help="Create a pdf with lables for the bolzone_due")
 def labels() -> None:
-    filename = DIRECTORY_TESTRESULTS / "testbed_labels.pdf"
+    filename = DIRECTORY_DOWNLOADS / "testbed_labels.pdf"
     label_renderer.create_report(
         filename=filename,
         layout=label_renderer.RendererLabelBolzoneDuo(),
@@ -133,6 +138,13 @@ def flash(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = URL_FILENAME_DEFAULT,
+    results: TyperAnnotated[
+        str,
+        typer.Option(
+            envvar="TESTBED_MICROPYTHON_RESULTS",
+            help="Directory for the testresults",
+        ),
+    ] = DIRECTORY_TESTRESULTS_DEFAULT,
 ) -> None:
     args = util_testrunner.Args(
         mp_test=None,
@@ -142,6 +154,7 @@ def flash(
             flash_force=True,
             git_clean=False,
         ),
+        directory_results=pathlib.Path(results),
         only_boards=None,
         only_test=None,
         force_multiprocessing=False,
@@ -178,6 +191,13 @@ def test(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = URL_FILENAME_DEFAULT,
+    results: TyperAnnotated[
+        str,
+        typer.Option(
+            envvar="TESTBED_MICROPYTHON_RESULTS",
+            help="Directory for the testresults",
+        ),
+    ] = DIRECTORY_TESTRESULTS_DEFAULT,
     only_board: TyperAnnotated[
         str | None,
         typer.Option(
@@ -229,6 +249,7 @@ def test(
                 flash_force=flash_force,
                 git_clean=git_clean,
             ),
+            directory_results=pathlib.Path(results),
             only_boards=only_boards,
             only_test=only_test,
             force_multiprocessing=force_multiprocessing,
