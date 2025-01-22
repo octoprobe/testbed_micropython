@@ -256,6 +256,7 @@ def test(
         )
         testrunner = util_testrunner.TestRunner(args=args)
         logger.info(f"{multiprocessing=}")
+        logger.info(f"directory_results={args.directory_results}")
         try:
             testrunner.init()
         except MpbuildMpyDirectoryException as e:
