@@ -114,13 +114,6 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
             f"remove_tentacle_variant(): Could not remove as not found: {tentacle_variant.board_variant}"
         )
 
-    def filter_firmwares_built(self, firmwares_built: set) -> TentacleSpecVariants:
-        assert isinstance(firmwares_built, set)
-
-        return TentacleSpecVariants(
-            [tsv for tsv in self if tsv.board_variant in firmwares_built]
-        )
-
     @property
     def sorted_text(self) -> list[str]:
         return sorted([s.board_variant for s in self])
@@ -139,22 +132,6 @@ class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
     @property
     def tests_todo(self) -> int:
         return sum([len(tsvs_todo) for tsvs_todo in self])
-
-    def filter_firmwares_built(
-        self,
-        firmwares_built: set[str] | None,
-    ) -> RolesTentacleSpecVariants:
-        assert isinstance(firmwares_built, set | None)
-
-        if firmwares_built is None:
-            return self
-
-        return RolesTentacleSpecVariants(
-            [
-                tsvs.filter_firmwares_built(firmwares_built=firmwares_built)
-                for tsvs in self
-            ]
-        )
 
 
 class ConnectedTentacles(list[TentacleMicropython]):

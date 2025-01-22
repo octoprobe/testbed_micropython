@@ -126,14 +126,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             print(f"## {i}: testrun_specs", file=file)
             testrun_specs.pytest_print(indent=1, file=file)
 
-            print(f"## {i}: tsvs_combinations", file=file)
-            for testrun_spec in bartender.testrun_specs:
-                print(f"  TestRunSpec[{testrun_spec.label}]", file=file)
-                for tsvs_combination in sorted(
-                    testrun_spec.tsvs_combinations(firmwares_built=firmwares_built)
-                ):
-                    print(f"    {tsvs_combination!r}")
-
             possible_testruns = bartender.possible_testruns(
                 firmwares_built=firmwares_built
             )
@@ -191,10 +183,14 @@ _TESTPARAM_WLAN_ASYMMETRICAL = Ttestparam(
     specs=[LOLIN_D1_MINI, LOLIN_C3_MINI],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
-
-_TESTPARAM_WLAN_SYMMETRICAL = Ttestparam(
-    label="wlan_symmetrical",
+_TESTPARAM_WLAN_SYMMETRICAL2 = Ttestparam(
+    label="wlan_symmetrical2",
     specs=[LOLIN_C3_MINI, LOLIN_C3_MINI],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+)
+_TESTPARAM_WLAN_SYMMETRICAL3 = Ttestparam(
+    label="wlan_symmetrical3",
+    specs=[LOLIN_C3_MINI, LOLIN_C3_MINI, LOLIN_C3_MINI],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
 _TESTPARAM_POTPOURRY = Ttestparam(
@@ -206,7 +202,8 @@ _TESTPARAM_POTPOURRY = Ttestparam(
 )
 _TESTPARAMS = [
     _TESTPARAM_WLAN_ASYMMETRICAL,
-    _TESTPARAM_WLAN_SYMMETRICAL,
+    _TESTPARAM_WLAN_SYMMETRICAL2,
+    _TESTPARAM_WLAN_SYMMETRICAL3,
     _TESTPARAM_POTPOURRY,
 ]
 

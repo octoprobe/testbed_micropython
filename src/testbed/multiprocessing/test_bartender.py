@@ -1,5 +1,7 @@
 """
 Important Terms (abbreviations)
+* ts: TentacleSpec
+* tss: TentacleSpecs
 * tsv: TentacleSpecVariant
 * tsvs: TentacleSpecVariants
 * tbt: ToBeTested

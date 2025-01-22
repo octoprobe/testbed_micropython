@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 import contextlib
 import dataclasses
-import itertools
 import pathlib
 import typing
 from collections.abc import Iterator
@@ -14,7 +13,6 @@ from .baseclasses_spec import (
     ConnectedTentacles,
     RolesTentacleSpecVariants,
     TentacleMicropython,
-    TentacleSpecVariant,
     TentacleSpecVariants,
     TentacleVariant,
 )
@@ -214,63 +212,64 @@ class TestRunSpec:
     def tests_todo(self) -> int:
         return self.roles_tsvs_todo.tests_todo
 
-    def tsvs_combinations(
-        self,
-        firmwares_built: set[str] | None,
-    ) -> list[tuple[TentacleSpecVariant]]:
-        assert isinstance(firmwares_built, set | None)
-        roles_tsvs_todo = self.roles_tsvs_todo.filter_firmwares_built(
-            firmwares_built=firmwares_built
-        )
-        if len(roles_tsvs_todo) == 0:
-            return []
-        tsvs_combinations = list(itertools.product(*roles_tsvs_todo))
-        for tsvs_combination in tsvs_combinations:
-            assert len(tsvs_combination) == self.tentacles_required
-        return tsvs_combinations
-
     def generate(
         self,
         available_tentacles: list[TentacleMicropython],
         firmwares_built: set[str] | None,
     ) -> Iterator[TestRun]:
-        assert isinstance(available_tentacles, list)
-
-        tsvs_combinations = self.tsvs_combinations(firmwares_built=firmwares_built)
-
-        def tentacles_suitable(
-            tentacles: typing.Sequence[TentacleMicropython],
-        ) -> bool:
-            """
-            True if all tentacle matches the tentacle_specs
-            """
-            assert len(tsvs_combination) == len(tentacles)
-            for tsv, tentacle in zip(tsvs_combination, tentacles, strict=False):
-                if tsv.tentacle_spec is not tentacle.tentacle_spec:
-                    return False
-            return True
-
-        for tsvs_combination in tsvs_combinations:
-            for tentacles in itertools.combinations(
-                available_tentacles, self.tentacles_required
-            ):
-                if not tentacles_suitable(tentacles=tentacles):
-                    continue
-
-                list_tentacle_variant = [
-                    TentacleVariant(
-                        tentacle=tentacle,
-                        board=variant.board,
-                        variant=variant.variant,
-                    )
-                    for variant, tentacle in zip(
-                        tsvs_combination, tentacles, strict=False
-                    )
-                ]
-
-                yield self.testrun_class(
-                    testrun_spec=self, list_tentacle_variant=list_tentacle_variant
+        def iter_tvs(tentacle: TentacleMicropython) -> typing.Iterator[TentacleVariant]:
+            for variant in tentacle.tentacle_spec.build_variants:
+                tv = TentacleVariant(
+                    tentacle=tentacle,
+                    board=tentacle.tentacle_spec.board,
+                    variant=variant,
                 )
+                if firmwares_built is not None:
+                    if tv.board_variant not in firmwares_built:
+                        continue
+                yield tv
+
+        if self.tentacles_required == 1:
+            for tentacle in available_tentacles:
+                for tv in iter_tvs(tentacle):
+                    first_second = [tv]
+                    if self._matches(first_second):
+                        yield self.testrun_class(
+                            testrun_spec=self,
+                            list_tentacle_variant=first_second,
+                        )
+            return
+
+        if self.tentacles_required == 2:
+            for tentacle1 in available_tentacles:
+                for tentacle2 in available_tentacles:
+                    if tentacle1 is tentacle2:
+                        continue
+                    for tv1 in iter_tvs(tentacle1):
+                        for tv2 in iter_tvs(tentacle2):
+                            first_second = [tv1, tv2]
+                            if self._matches(first_second):
+                                yield self.testrun_class(
+                                    testrun_spec=self,
+                                    list_tentacle_variant=first_second,
+                                )
+            return
+
+        raise ValueError(f"Not supported: {self.tentacles_required=}")
+
+    def _matches(self, tvs: list[TentacleVariant]) -> bool:
+        """
+        Return True if at lease 1 role matches.
+        Example tvs: Tentacle A is WLAN-First <-> Tentacle B is WLAN-Second.
+        """
+        assert len(tvs) == len(self.roles_tsvs_todo)
+        for tentacle_variant, tsvs in zip(tvs, self.roles_tsvs_todo, strict=False):
+            assert isinstance(tentacle_variant, TentacleVariant)
+            assert isinstance(tsvs, TentacleSpecVariants)
+            for tsv in tsvs:
+                if tentacle_variant.board_variant == tsv.board_variant:
+                    return True
+        return False
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
         for idx0_role, role_tsvs_todo in enumerate(self.roles_tsvs_todo):

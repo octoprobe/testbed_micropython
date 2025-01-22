@@ -29,11 +29,6 @@ class TestRunSpecs(list[TestRunSpec]):
                 available_tentacles=applicable_tentacles,
                 firmwares_built=firmwares_built,
             )
-            if testrun_spec.tentacles_required > 1:
-                yield from testrun_spec.generate(
-                    available_tentacles=applicable_tentacles[::-1],
-                    firmwares_built=firmwares_built,
-                )
 
     @property
     def tests_todo(self) -> int:
