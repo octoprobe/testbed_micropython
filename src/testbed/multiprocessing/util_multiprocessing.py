@@ -369,7 +369,7 @@ class TargetCtx:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-    def start2(self, async_target: AsyncTarget) -> None:
+    def start(self, async_target: AsyncTarget) -> None:
         assert isinstance(async_target, AsyncTarget)
 
         assert callable(async_target.target_func)

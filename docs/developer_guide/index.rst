@@ -1,5 +1,5 @@
-Installation and Debugging
-==========================
+Developer Guide - Debugging/Enhancements
+=========================================
 
 .. toctree::
    :glob:

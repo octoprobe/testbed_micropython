@@ -272,7 +272,6 @@ class BuildFolder:
         return self.get_regex(self._REGEX_MICROPY_MCU_NAME)
 
     def get_regex(self, pattern: re.Pattern) -> str:
-
         match = pattern.search(self.file_qstr_i_last)
         if match is None:
             raise MpbuildException(
@@ -303,6 +302,7 @@ def build(
         do_clean=do_clean,
         extra_args=[],
         docker_interactive=False,
+        privileged=False,
     )
 
     with logfile.open("w") as f:

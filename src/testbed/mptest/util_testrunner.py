@@ -255,7 +255,7 @@ class TestRunner:
             repo_micropython_firmware=self.args.firmware.repo_micropython_firmware,
         )
         if async_target is not None:
-            target_ctx.start2(async_target=async_target)
+            target_ctx.start(async_target=async_target)
 
         report_tasks = util_report_tasks.Tasks()
 
@@ -402,7 +402,7 @@ class TestRunner:
 
         self._assign_firmware_specs(testrun=async_target.testrun)
 
-        target_ctx.start2(async_target=async_target)
+        target_ctx.start(async_target=async_target)
 
     def _assign_firmware_specs(self, testrun: TestRun) -> None:
         """

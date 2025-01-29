@@ -27,9 +27,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
-    # "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@hmaerki/introduce_mpbuild_api2",
-    "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
+    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@v0.1-release",
+    "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@run_docker_unprivileged",
+    # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
 ]
 
 [project.urls]

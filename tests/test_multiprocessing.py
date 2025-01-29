@@ -119,7 +119,7 @@ def submain(multiprocessing: bool) -> None:
                     tentacles=[],
                 )
                 async_targets.append(async_target)
-                target_ctx.start2(async_target=async_target)
+                target_ctx.start(async_target=async_target)
 
             while True:
                 for event in target_ctx.iter_queue():
