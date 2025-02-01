@@ -45,7 +45,8 @@ class ArgsFirmware:
             self._builder = FirmwareBuilderSkipFlash()
         else:
             self._builder = FirmwareBuilder(
-                firmware_git=self.firmware_build, git_clean=self.git_clean
+                firmware_git=self.firmware_build,
+                git_clean=self.git_clean,
             )
 
     @property

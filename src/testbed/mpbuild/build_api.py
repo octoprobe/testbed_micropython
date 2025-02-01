@@ -40,7 +40,8 @@ BOARD_VARIANT_SEPARATOR = "-"
 
 # Overwrite mpbuild default containers
 # This should eventually be pushed upstream into mpbuild.
-BUILD_CONTAINERS["esp32"] = "hmaerki/build-micropython-esp32"
+# BUILD_CONTAINERS["esp32"] = "hmaerki/build-micropython-esp32"
+BUILD_CONTAINERS["dummyarch"] = "dummycontainer"
 
 
 class MpbuildException(Exception):

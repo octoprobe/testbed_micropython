@@ -6,7 +6,7 @@ build-backend = "pdm.backend"
 name = "octoprobe_testbed_micropython"
 dynamic = ["version"]
 description = "Octoprobe HIL Testenvironment for MicroPython release tesing"
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
@@ -27,7 +27,8 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@v0.1-release",
+    "pyusb",
+    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
     "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@run_docker_unprivileged",
     # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
 ]

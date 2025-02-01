@@ -8,6 +8,7 @@ import time
 import typing
 
 from octoprobe.octoprobe import NTestRun
+from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
 from octoprobe.util_baseclasses import OctoprobeTestException
 from octoprobe.util_constants import relative_cwd
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
@@ -18,7 +19,6 @@ from octoprobe.util_pytest.util_resultdir import ResultsDir
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY, UdevFailException, UdevPoller
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
-from octoprobe.util_usb_serial import QueryResultTentacle, QueryResultTentacles
 
 from testbed.reports import util_report_renderer, util_report_tasks
 
@@ -116,23 +116,25 @@ class Args:
 
 
 def query_connected_tentacles_fast() -> ConnectedTentacles:
-    query_result_tentacles = QueryResultTentacle.query_fast()
+    usb_tentacles = UsbTentacles.query(require_serial=True)
 
-    return instantiate_tentacles(query_result_tentacles)
+    return instantiate_tentacles(usb_tentacles)
 
 
-def instantiate_tentacles(
-    query_result_tentacles: QueryResultTentacles,
-) -> ConnectedTentacles:
-    assert isinstance(query_result_tentacles, QueryResultTentacles)
+def instantiate_tentacles(usb_tentacles: UsbTentacles) -> ConnectedTentacles:
+    assert isinstance(usb_tentacles, UsbTentacles)
 
-    if len(query_result_tentacles) == 0:
+    if len(usb_tentacles) == 0:
         raise OctoprobeAppExitException("No tentacles are connected!")
 
     tentacles = ConnectedTentacles()
-    for query_result_tentacle in query_result_tentacles:
-        serial = query_result_tentacle.rp2_serial_number
-        assert serial is not None
+    for usb_tentacle in usb_tentacles:
+        rp2_infra = usb_tentacle.rp2_infra
+        if rp2_infra is None:
+            continue
+        serial = rp2_infra.serial
+        if serial is None:
+            continue
         try:
             tentacle_instance = TENTACLES_INVENTORY[serial]
         except KeyError:
@@ -145,7 +147,7 @@ def instantiate_tentacles(
             tentacle_serial_number=serial,
             tentacle_spec_base=tentacle_instance.tentacle_spec,
             hw_version=tentacle_instance.hw_version,
-            hub=query_result_tentacle,
+            usb_tentacle=usb_tentacle,
         )
 
         tentacles.append(tentacle)
@@ -183,7 +185,7 @@ class TestRunner:
         query_result_tentacles = NTestRun.session_powercycle_tentacles()
 
         connected_tentacles = instantiate_tentacles(
-            query_result_tentacles=query_result_tentacles
+            usb_tentacles=query_result_tentacles
         )
         if len(connected_tentacles) == 0:
             logger.warning("No tentacles discovered!")
@@ -231,13 +233,14 @@ class TestRunner:
 
             self.args.firmware.build_firmware(
                 tentacle=tentacle,
-                mpbuild_artifacts=constants.DIRECTORY_MPBUILD_ARTIFACTS,
+                mpbuild_artifacts=self.args.directory_results
+                / constants.SUBDIR_MPBUILD,
             )
 
             self.ntestrun.function_setup_infa_and_dut(
                 udev_poller=udev_poller,
                 tentacle=tentacle,
-                directory_logs=constants.DIRECTORY_MPBUILD_ARTIFACTS
+                directory_logs=self.args.directory_results
                 / tentacle.tentacle_state.firmware_spec.board_variant.name_normalized,
             )
 
@@ -251,7 +254,8 @@ class TestRunner:
         )
 
         async_target = self.firmware_bartender.build_firmwares(
-            directory_mpbuild_artifacts=self.args.directory_results / "mpbuild",
+            directory_mpbuild_artifacts=self.args.directory_results
+            / constants.SUBDIR_MPBUILD,
             repo_micropython_firmware=self.args.firmware.repo_micropython_firmware,
         )
         if async_target is not None:
@@ -436,7 +440,8 @@ def _target_run_one_test_async_b(
     for tentacle in testrun.tentacles:
         ntestrun.function_prepare_dut(tentacle=tentacle)
         ntestrun.function_setup_infra(
-            udev_poller=UDEV_POLLER_LAZY.udev_poller, tentacle=tentacle
+            udev_poller=UDEV_POLLER_LAZY.udev_poller,
+            tentacle=tentacle,
         )
         ntestrun.function_setup_dut_flash(
             udev_poller=UDEV_POLLER_LAZY.udev_poller,

@@ -3,7 +3,7 @@ import logging
 import pathlib
 
 import typer
-from octoprobe import util_usb_serial
+from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
 from octoprobe.util_dut_programmers import get_dict_programmers
 from octoprobe.util_pyudev import UdevPoller
 
@@ -25,12 +25,14 @@ def get_programmer_labels() -> str:
 
 
 def do_debugbootmode(programmer: str) -> None:
-    query = util_usb_serial.QueryResultTentacle.query(verbose=True)
+    usb_tentacles = UsbTentacles.query(require_serial=True)
     init_logging()
-    if len(query) != 1:
-        print(f"Expect exactly one tentacle to be connected but found {len(query)}!")
+    if len(usb_tentacles) != 1:
+        print(
+            f"Expect exactly one tentacle to be connected but found {len(usb_tentacles)}!"
+        )
         raise typer.Exit(code=1)
-    tentacle = instantiate_tentacles(query)[0]
+    tentacle = instantiate_tentacles(usb_tentacles)[0]
     tentacle.infra.connect_mpremote_if_needed()
     try:
         programmer_cls = get_dict_programmers()[programmer]

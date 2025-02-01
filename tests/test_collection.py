@@ -7,8 +7,8 @@ import sys
 import typing
 
 import pytest
-from octoprobe.util_usb_serial import QueryResultTentacle
-from usbhubctl import Location
+from octoprobe.usb_tentacle.usb_baseclasses import Location
+from octoprobe.usb_tentacle.usb_tentacle import UsbTentacle
 
 from testbed.constants import EnumFut
 from testbed.mptest import util_testrunner
@@ -71,7 +71,10 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                 tentacle_spec_base=spec,
                 tentacle_serial_number=f"1c4{i}",
                 hw_version="1.0",
-                hub=QueryResultTentacle(hub_location=Location(3, [1, i])),
+                usb_tentacle=UsbTentacle(
+                    hub4_location=Location(3, [1, i]),
+                    rp2_infra=None,
+                ),
             )
 
     connected_tentacles = ConnectedTentacles(factory())
