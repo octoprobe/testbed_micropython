@@ -3,8 +3,13 @@ from __future__ import annotations
 import pathlib
 import sys
 
-from testbed.reports import util_report_renderer
-from testbed.reports.util_report_tasks import ReportTentacle, Task, TaskReport, Tasks
+from testbed_micropython.reports import util_report_renderer
+from testbed_micropython.reports.util_report_tasks import (
+    ReportTentacle,
+    Task,
+    TaskReport,
+    Tasks,
+)
 
 
 def main():

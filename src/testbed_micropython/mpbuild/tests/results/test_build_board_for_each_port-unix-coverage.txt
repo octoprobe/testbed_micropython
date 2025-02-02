@@ -1,0 +1,387 @@
+docker run --rm -v /sys/bus:/sys/bus -v /dev:/dev --net=host --privileged -v /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8:/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8 -w /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8 --user 1000:1000 -v /home/maerki:/home/maerki -e HOME=/home/maerki gcc:12-bookworm bash -c "git config --global --add safe.directory '*' 2> /dev/null;make -C mpy-cross && make -C ports/unix submodules BOARD=unix VARIANT=coverage && make -j 8 -C ports/unix BOARD=unix VARIANT=coverage "
+
+
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/mpy-cross'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/mpy-cross'
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/unix'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+Including User C Module from ../../examples/usercmodule/cexample
+Including User C Module from ../../examples/usercmodule/cppexample
+Including User C Module from ../../examples/usercmodule/subpackage
+Updating submodules: lib/mbedtls lib/berkeley-db-1.xx lib/micropython-lib
+Synchronizing submodule url for 'lib/berkeley-db-1.xx'
+Synchronizing submodule url for 'lib/mbedtls'
+Synchronizing submodule url for 'lib/micropython-lib'
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/unix'
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/unix'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+Including User C Module from ../../examples/usercmodule/cexample
+Including User C Module from ../../examples/usercmodule/cppexample
+Including User C Module from ../../examples/usercmodule/subpackage
+mkdir -p build-coverage/genhdr
+mkdir -p build-coverage/
+mkdir -p build-coverage/cexample/
+mkdir -p build-coverage/cppexample/
+mkdir -p build-coverage/extmod/
+mkdir -p build-coverage/extmod/mbedtls/
+mkdir -p build-coverage/lib/berkeley-db-1.xx/btree/
+mkdir -p build-coverage/lib/berkeley-db-1.xx/mpool/
+mkdir -p build-coverage/lib/littlefs/
+mkdir -p build-coverage/lib/mbedtls/library/
+mkdir -p build-coverage/lib/mbedtls_errors/
+mkdir -p build-coverage/lib/oofatfs/
+mkdir -p build-coverage/py/
+mkdir -p build-coverage/shared/libc/
+mkdir -p build-coverage/shared/readline/
+mkdir -p build-coverage/shared/runtime/
+mkdir -p build-coverage/shared/timeutils/
+mkdir -p build-coverage/subpackage/
+GEN build-coverage/genhdr/mpversion.h
+GEN build-coverage/genhdr/qstr.i.last
+GEN build-coverage/genhdr/qstr.split
+GEN build-coverage/genhdr/moduledefs.split
+GEN build-coverage/genhdr/root_pointers.split
+GEN build-coverage/genhdr/compressed.split
+GEN build-coverage/genhdr/compressed.collected
+GEN build-coverage/genhdr/root_pointers.collected
+GEN build-coverage/genhdr/moduledefs.collected
+Compressed data updated
+Root pointer registrations updated
+GEN build-coverage/genhdr/qstrdefs.collected.h
+GEN build-coverage/genhdr/compressed.data.h
+GEN build-coverage/genhdr/root_pointers.h
+Module registrations updated
+GEN build-coverage/genhdr/moduledefs.h
+QSTR updated
+GEN build-coverage/genhdr/qstrdefs.generated.h
+CC ../../examples/usercmodule/cexample/examplemodule.c
+CC ../../examples/usercmodule/cppexample/examplemodule.c
+CC ../../examples/usercmodule/subpackage/modexamplepackage.c
+CXX ../../examples/usercmodule/cppexample/example.cpp
+CC ../../py/mpstate.c
+CC ../../py/nlr.c
+CC ../../py/nlrx86.c
+CC ../../py/nlrx64.c
+CC ../../py/nlrthumb.c
+CC ../../py/nlraarch64.c
+CC ../../py/nlrmips.c
+CC ../../py/nlrpowerpc.c
+CC ../../py/nlrxtensa.c
+CC ../../py/nlrrv32.c
+CC ../../py/nlrrv64.c
+CC ../../py/nlrsetjmp.c
+CC ../../py/malloc.c
+CC ../../py/gc.c
+CC ../../py/pystack.c
+CC ../../py/qstr.c
+CC ../../py/vstr.c
+CC ../../py/mpprint.c
+CC ../../py/unicode.c
+CC ../../py/mpz.c
+CC ../../py/reader.c
+CC ../../py/lexer.c
+CC ../../py/parse.c
+CC ../../py/scope.c
+CC ../../py/compile.c
+CC ../../py/emitcommon.c
+CC ../../py/emitbc.c
+CC ../../py/asmbase.c
+CC ../../py/asmx64.c
+CC ../../py/emitnx64.c
+CC ../../py/asmx86.c
+CC ../../py/emitnx86.c
+CC ../../py/asmthumb.c
+CC ../../py/emitnthumb.c
+CC ../../py/emitinlinethumb.c
+CC ../../py/asmarm.c
+CC ../../py/emitnarm.c
+CC ../../py/asmxtensa.c
+CC ../../py/emitnxtensa.c
+CC ../../py/emitinlinextensa.c
+CC ../../py/emitnxtensawin.c
+CC ../../py/asmrv32.c
+CC ../../py/emitnrv32.c
+CC ../../py/emitndebug.c
+CC ../../py/formatfloat.c
+CC ../../py/parsenumbase.c
+CC ../../py/parsenum.c
+CC ../../py/emitglue.c
+CC ../../py/persistentcode.c
+CC ../../py/runtime.c
+CC ../../py/runtime_utils.c
+CC ../../py/scheduler.c
+CC ../../py/nativeglue.c
+CC ../../py/pairheap.c
+CC ../../py/ringbuf.c
+CC ../../py/cstack.c
+CC ../../py/stackctrl.c
+CC ../../py/argcheck.c
+CC ../../py/warning.c
+CC ../../py/profile.c
+CC ../../py/map.c
+CC ../../py/obj.c
+CC ../../py/objarray.c
+CC ../../py/objattrtuple.c
+CC ../../py/objbool.c
+CC ../../py/objboundmeth.c
+CC ../../py/objcell.c
+CC ../../py/objclosure.c
+CC ../../py/objcomplex.c
+CC ../../py/objdeque.c
+CC ../../py/objdict.c
+CC ../../py/objenumerate.c
+CC ../../py/objexcept.c
+CC ../../py/objfilter.c
+CC ../../py/objfloat.c
+CC ../../py/objfun.c
+CC ../../py/objgenerator.c
+CC ../../py/objgetitemiter.c
+CC ../../py/objint.c
+CC ../../py/objint_longlong.c
+CC ../../py/objint_mpz.c
+CC ../../py/objlist.c
+CC ../../py/objmap.c
+CC ../../py/objmodule.c
+CC ../../py/objobject.c
+CC ../../py/objpolyiter.c
+CC ../../py/objproperty.c
+CC ../../py/objnamedtuple.c
+CC ../../py/objnone.c
+CC ../../py/objreversed.c
+CC ../../py/objrange.c
+CC ../../py/objringio.c
+CC ../../py/objset.c
+CC ../../py/objsingleton.c
+CC ../../py/objslice.c
+CC ../../py/objstr.c
+CC ../../py/objstrunicode.c
+CC ../../py/objstringio.c
+CC ../../py/objtuple.c
+CC ../../py/objtype.c
+CC ../../py/objzip.c
+CC ../../py/opmethods.c
+CC ../../py/sequence.c
+CC ../../py/stream.c
+CC ../../py/binary.c
+CC ../../py/builtinimport.c
+CC ../../py/builtinevex.c
+CC ../../py/builtinhelp.c
+CC ../../py/modarray.c
+CC ../../py/modbuiltins.c
+CC ../../py/modcollections.c
+CC ../../py/modgc.c
+CC ../../py/modio.c
+CC ../../py/modmath.c
+CC ../../py/modcmath.c
+CC ../../py/modmicropython.c
+CC ../../py/modstruct.c
+CC ../../py/modsys.c
+CC ../../py/moderrno.c
+CC ../../py/modthread.c
+CC ../../py/vm.c
+CC ../../py/bc.c
+CC ../../py/showbc.c
+CC ../../py/repl.c
+CC ../../py/smallint.c
+CC ../../py/frozenmod.c
+CC ../../extmod/machine_adc.c
+CC ../../extmod/machine_adc_block.c
+CC ../../extmod/machine_bitstream.c
+CC ../../extmod/machine_i2c.c
+CC ../../extmod/machine_i2s.c
+CC ../../extmod/machine_mem.c
+CC ../../extmod/machine_pinbase.c
+MPY frzqstr.py
+MPY frzmpy2.py
+MPY frzmpy3.py
+MPY frzmpy4.py
+MPY frzmpy1.py
+MPY frzmpy_pkg1/__init__.py
+MPY frzmpy_pkg2/mod.py
+MPY ssl.py
+STR frzstr1.py
+STR frzstr_pkg2/mod.py
+STR frzstr_pkg1/__init__.py
+GEN build-coverage/frozen_content.c
+CC ../../extmod/machine_pulse.c
+CC ../../extmod/machine_pwm.c
+CC ../../extmod/machine_signal.c
+CC ../../extmod/machine_spi.c
+CC ../../extmod/machine_timer.c
+CC ../../extmod/machine_uart.c
+CC ../../extmod/machine_wdt.c
+CC ../../extmod/machine_usb_device.c
+CC ../../extmod/modasyncio.c
+CC ../../extmod/modbinascii.c
+CC ../../extmod/modbluetooth.c
+CC ../../extmod/modbtree.c
+CC ../../extmod/modcryptolib.c
+CC ../../extmod/moddeflate.c
+CC ../../extmod/modframebuf.c
+CC ../../extmod/modhashlib.c
+CC ../../extmod/modheapq.c
+CC ../../extmod/modjson.c
+CC ../../extmod/modlwip.c
+CC ../../extmod/modmachine.c
+CC ../../extmod/modnetwork.c
+CC ../../extmod/modonewire.c
+CC ../../extmod/modopenamp.c
+CC ../../extmod/modopenamp_remoteproc.c
+CC ../../extmod/modopenamp_remoteproc_store.c
+CC ../../extmod/modos.c
+CC ../../extmod/modplatform.c
+CC ../../extmod/modrandom.c
+CC ../../extmod/modre.c
+CC ../../extmod/modselect.c
+CC ../../extmod/modsocket.c
+CC ../../extmod/modtls_axtls.c
+CC ../../extmod/modtls_mbedtls.c
+CC ../../extmod/mbedtls/mbedtls_alt.c
+CC ../../extmod/modtime.c
+CC ../../extmod/moductypes.c
+CC ../../extmod/modvfs.c
+CC ../../extmod/modwebrepl.c
+CC ../../extmod/modwebsocket.c
+CC ../../extmod/network_cyw43.c
+CC ../../extmod/network_esp_hosted.c
+CC ../../extmod/network_lwip.c
+CC ../../extmod/network_ninaw10.c
+CC ../../extmod/network_ppp_lwip.c
+CC ../../extmod/network_wiznet5k.c
+CC ../../extmod/os_dupterm.c
+CC ../../extmod/vfs.c
+CC ../../extmod/vfs_blockdev.c
+CC ../../extmod/vfs_fat.c
+CC ../../extmod/vfs_fat_diskio.c
+CC ../../extmod/vfs_fat_file.c
+CC ../../extmod/vfs_lfs.c
+CC ../../extmod/vfs_posix.c
+CC ../../extmod/vfs_posix_file.c
+CC ../../extmod/vfs_reader.c
+CC ../../extmod/virtpin.c
+CC ../../shared/libc/abort_.c
+CC ../../shared/libc/printf.c
+CC ../../lib/oofatfs/ff.c
+CC ../../lib/oofatfs/ffunicode.c
+CC ../../lib/littlefs/lfs1.c
+CC ../../lib/littlefs/lfs1_util.c
+CC ../../lib/littlefs/lfs2.c
+CC ../../lib/littlefs/lfs2_util.c
+CC ../../lib/mbedtls_errors/mp_mbedtls_errors.c
+CC ../../lib/mbedtls/library/aes.c
+CC ../../lib/mbedtls/library/aesni.c
+CC ../../lib/mbedtls/library/asn1parse.c
+CC ../../lib/mbedtls/library/asn1write.c
+CC ../../lib/mbedtls/library/base64.c
+CC ../../lib/mbedtls/library/bignum_core.c
+CC ../../lib/mbedtls/library/bignum_mod.c
+CC ../../lib/mbedtls/library/bignum_mod_raw.c
+CC ../../lib/mbedtls/library/bignum.c
+CC ../../lib/mbedtls/library/camellia.c
+CC ../../lib/mbedtls/library/ccm.c
+CC ../../lib/mbedtls/library/chacha20.c
+CC ../../lib/mbedtls/library/chachapoly.c
+CC ../../lib/mbedtls/library/cipher.c
+CC ../../lib/mbedtls/library/cipher_wrap.c
+CC ../../lib/mbedtls/library/nist_kw.c
+CC ../../lib/mbedtls/library/aria.c
+CC ../../lib/mbedtls/library/cmac.c
+CC ../../lib/mbedtls/library/constant_time.c
+CC ../../lib/mbedtls/library/mps_reader.c
+CC ../../lib/mbedtls/library/mps_trace.c
+CC ../../lib/mbedtls/library/ctr_drbg.c
+CC ../../lib/mbedtls/library/debug.c
+CC ../../lib/mbedtls/library/des.c
+CC ../../lib/mbedtls/library/dhm.c
+CC ../../lib/mbedtls/library/ecdh.c
+CC ../../lib/mbedtls/library/ecdsa.c
+CC ../../lib/mbedtls/library/ecjpake.c
+CC ../../lib/mbedtls/library/ecp.c
+CC ../../lib/mbedtls/library/ecp_curves.c
+CC ../../lib/mbedtls/library/entropy.c
+CC ../../lib/mbedtls/library/entropy_poll.c
+CC ../../lib/mbedtls/library/gcm.c
+CC ../../lib/mbedtls/library/hmac_drbg.c
+CC ../../lib/mbedtls/library/md5.c
+CC ../../lib/mbedtls/library/md.c
+CC ../../lib/mbedtls/library/oid.c
+CC ../../lib/mbedtls/library/padlock.c
+CC ../../lib/mbedtls/library/pem.c
+CC ../../lib/mbedtls/library/pk.c
+CC ../../lib/mbedtls/library/pkcs12.c
+CC ../../lib/mbedtls/library/pkcs5.c
+CC ../../lib/mbedtls/library/pkparse.c
+CC ../../lib/mbedtls/library/pk_wrap.c
+CC ../../lib/mbedtls/library/pkwrite.c
+CC ../../lib/mbedtls/library/platform.c
+CC ../../lib/mbedtls/library/platform_util.c
+CC ../../lib/mbedtls/library/poly1305.c
+CC ../../lib/mbedtls/library/ripemd160.c
+CC ../../lib/mbedtls/library/rsa.c
+CC ../../lib/mbedtls/library/rsa_alt_helpers.c
+CC ../../lib/mbedtls/library/sha1.c
+CC ../../lib/mbedtls/library/sha256.c
+CC ../../lib/mbedtls/library/sha512.c
+CC ../../lib/mbedtls/library/ssl_cache.c
+CC ../../lib/mbedtls/library/ssl_ciphersuites.c
+CC ../../lib/mbedtls/library/ssl_client.c
+CC ../../lib/mbedtls/library/ssl_cookie.c
+CC ../../lib/mbedtls/library/ssl_debug_helpers_generated.c
+CC ../../lib/mbedtls/library/ssl_msg.c
+CC ../../lib/mbedtls/library/ssl_ticket.c
+CC ../../lib/mbedtls/library/ssl_tls.c
+CC ../../lib/mbedtls/library/ssl_tls12_client.c
+CC ../../lib/mbedtls/library/ssl_tls12_server.c
+CC ../../lib/mbedtls/library/timing.c
+CC ../../lib/mbedtls/library/x509.c
+CC ../../lib/mbedtls/library/x509_create.c
+CC ../../lib/mbedtls/library/x509_crl.c
+CC ../../lib/mbedtls/library/x509_crt.c
+CC ../../lib/mbedtls/library/x509_csr.c
+CC ../../lib/mbedtls/library/x509write_crt.c
+CC ../../lib/mbedtls/library/x509write_csr.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_close.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_conv.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_debug.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_delete.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_get.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_open.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_overflow.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_page.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_put.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_search.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_seq.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_split.c
+CC ../../lib/berkeley-db-1.xx/btree/bt_utils.c
+CC ../../lib/berkeley-db-1.xx/mpool/mpool.c
+CC coverage.c
+CC main.c
+CC gccollect.c
+CC unix_mphal.c
+CC mpthreadport.c
+CC input.c
+CC alloc.c
+CC fatfs_port.c
+CC mpbthciport.c
+CC mpbtstackport_common.c
+CC mpbtstackport_h4.c
+CC mpbtstackport_usb.c
+CC mpnimbleport.c
+CC modtermios.c
+CC modsocket.c
+CC modffi.c
+CC modjni.c
+CXX coveragecpp.cpp
+CC ../../shared/runtime/gchelper_generic.c
+CC ../../shared/timeutils/timeutils.c
+CC ../../shared/readline/readline.c
+CC build-coverage/frozen_content.c
+LINK build-coverage/micropython
+   text	   data	    bss	    dec	    hex	filename
+1359046	 263112	 243488	1865646	 1c77ae	build-coverage/micropython
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/unix'
+
+
+returncode=0
+duration=9.415s

@@ -1,0 +1,367 @@
+docker run --rm -v /sys/bus:/sys/bus -v /dev:/dev --net=host --privileged -v /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8:/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8 -w /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8 --user 1000:1000 -v /home/maerki:/home/maerki -e HOME=/home/maerki micropython/build-micropython-arm bash -c "git config --global --add safe.directory '*' 2> /dev/null;make -C mpy-cross && make -C ports/nrf submodules BOARD=ACTINIUS_ICARUS && make -j 8 -C ports/nrf BOARD=ACTINIUS_ICARUS "
+
+
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/mpy-cross'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/mpy-cross'
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/nrf'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+Updating submodules: lib/nrfx lib/tinyusb lib/micropython-lib
+Synchronizing submodule url for 'lib/micropython-lib'
+Synchronizing submodule url for 'lib/nrfx'
+Synchronizing submodule url for 'lib/tinyusb'
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/nrf'
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/nrf'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+mkdir -p build-ACTINIUS_ICARUS/genhdr
+mkdir -p build-ACTINIUS_ICARUS/device/
+mkdir -p build-ACTINIUS_ICARUS/drivers/
+mkdir -p build-ACTINIUS_ICARUS/drivers/bluetooth/
+mkdir -p build-ACTINIUS_ICARUS/extmod/
+mkdir -p build-ACTINIUS_ICARUS/extmod/mbedtls/
+mkdir -p build-ACTINIUS_ICARUS/lib/libm/
+mkdir -p build-ACTINIUS_ICARUS/lib/littlefs/
+mkdir -p build-ACTINIUS_ICARUS/lib/nrfx/drivers/src/
+mkdir -p build-ACTINIUS_ICARUS/lib/nrfx/drivers/src/prs/
+mkdir -p build-ACTINIUS_ICARUS/lib/nrfx/mdk/
+mkdir -p build-ACTINIUS_ICARUS/modules/ble/
+mkdir -p build-ACTINIUS_ICARUS/modules/board/
+mkdir -p build-ACTINIUS_ICARUS/modules/machine/
+mkdir -p build-ACTINIUS_ICARUS/modules/music/
+mkdir -p build-ACTINIUS_ICARUS/modules/nrf/
+mkdir -p build-ACTINIUS_ICARUS/modules/os/
+mkdir -p build-ACTINIUS_ICARUS/modules/ubluepy/
+mkdir -p build-ACTINIUS_ICARUS/py/
+mkdir -p build-ACTINIUS_ICARUS/shared/libc/
+mkdir -p build-ACTINIUS_ICARUS/shared/readline/
+mkdir -p build-ACTINIUS_ICARUS/shared/runtime/
+mkdir -p build-ACTINIUS_ICARUS/shared/timeutils/
+mkdir -p build-ACTINIUS_ICARUS/shared/tinyusb/
+arm-none-eabi-size build-ACTINIUS_ICARUS/secureboot.elf
+   text	   data	    bss	    dec	    hex	filename
+   2960	      4	      0	   2964	    b94	build-ACTINIUS_ICARUS/secureboot.elf
+Create build-ACTINIUS_ICARUS/genhdr/pins.h
+arm-none-eabi-objcopy -O ihex build-ACTINIUS_ICARUS/secureboot.elf build-ACTINIUS_ICARUS/secureboot.hex
+Secure boot
+GEN build-ACTINIUS_ICARUS/genhdr/mpversion.h
+GEN build-ACTINIUS_ICARUS/genhdr/qstr.i.last
+GEN build-ACTINIUS_ICARUS/genhdr/qstr.split
+GEN build-ACTINIUS_ICARUS/genhdr/moduledefs.split
+GEN build-ACTINIUS_ICARUS/genhdr/root_pointers.split
+GEN build-ACTINIUS_ICARUS/genhdr/moduledefs.collected
+GEN build-ACTINIUS_ICARUS/genhdr/qstrdefs.collected.h
+GEN build-ACTINIUS_ICARUS/genhdr/root_pointers.collected
+Module registrations updated
+GEN build-ACTINIUS_ICARUS/genhdr/moduledefs.h
+QSTR updated
+Root pointer registrations updated
+GEN build-ACTINIUS_ICARUS/genhdr/qstrdefs.generated.h
+GEN build-ACTINIUS_ICARUS/genhdr/root_pointers.h
+CC ../../py/mpstate.c
+CC ../../py/nlr.c
+CC ../../py/nlrx86.c
+CC ../../py/nlrx64.c
+CC ../../py/nlrthumb.c
+CC ../../py/nlraarch64.c
+CC ../../py/nlrmips.c
+CC ../../py/nlrpowerpc.c
+CC ../../py/nlrxtensa.c
+CC ../../py/nlrrv32.c
+CC ../../py/nlrrv64.c
+CC ../../py/nlrsetjmp.c
+CC ../../py/malloc.c
+CC ../../py/gc.c
+CC ../../py/pystack.c
+CC ../../py/qstr.c
+CC ../../py/vstr.c
+CC ../../py/mpprint.c
+CC ../../py/unicode.c
+CC ../../py/mpz.c
+CC ../../py/reader.c
+CC ../../py/lexer.c
+CC ../../py/parse.c
+CC ../../py/scope.c
+CC ../../py/compile.c
+CC ../../py/emitcommon.c
+CC ../../py/emitbc.c
+CC ../../py/asmbase.c
+CC ../../py/asmx64.c
+CC ../../py/emitnx64.c
+CC ../../py/asmx86.c
+CC ../../py/emitnx86.c
+CC ../../py/asmthumb.c
+CC ../../py/emitnthumb.c
+CC ../../py/emitinlinethumb.c
+CC ../../py/asmarm.c
+CC ../../py/emitnarm.c
+CC ../../py/asmxtensa.c
+CC ../../py/emitnxtensa.c
+CC ../../py/emitinlinextensa.c
+CC ../../py/emitnxtensawin.c
+CC ../../py/asmrv32.c
+CC ../../py/emitnrv32.c
+CC ../../py/emitndebug.c
+CC ../../py/formatfloat.c
+CC ../../py/parsenumbase.c
+CC ../../py/parsenum.c
+CC ../../py/emitglue.c
+CC ../../py/persistentcode.c
+CC ../../py/runtime.c
+CC ../../py/runtime_utils.c
+CC ../../py/scheduler.c
+CC ../../py/nativeglue.c
+CC ../../py/pairheap.c
+CC ../../py/ringbuf.c
+CC ../../py/cstack.c
+CC ../../py/stackctrl.c
+CC ../../py/argcheck.c
+CC ../../py/warning.c
+CC ../../py/profile.c
+CC ../../py/map.c
+CC ../../py/obj.c
+CC ../../py/objarray.c
+CC ../../py/objattrtuple.c
+CC ../../py/objbool.c
+CC ../../py/objboundmeth.c
+CC ../../py/objcell.c
+CC ../../py/objclosure.c
+CC ../../py/objcomplex.c
+CC ../../py/objdeque.c
+CC ../../py/objdict.c
+CC ../../py/objenumerate.c
+CC ../../py/objexcept.c
+CC ../../py/objfilter.c
+CC ../../py/objfloat.c
+CC ../../py/objfun.c
+CC ../../py/objgenerator.c
+CC ../../py/objgetitemiter.c
+CC ../../py/objint.c
+CC ../../py/objint_longlong.c
+CC ../../py/objint_mpz.c
+CC ../../py/objlist.c
+CC ../../py/objmap.c
+CC ../../py/objmodule.c
+CC ../../py/objobject.c
+CC ../../py/objpolyiter.c
+CC ../../py/objproperty.c
+CC ../../py/objnone.c
+CC ../../py/objnamedtuple.c
+CC ../../py/objrange.c
+CC ../../py/objreversed.c
+CC ../../py/objringio.c
+CC ../../py/objset.c
+CC ../../py/objsingleton.c
+CC ../../py/objslice.c
+CC ../../py/objstr.c
+CC ../../py/objstrunicode.c
+CC ../../py/objstringio.c
+CC ../../py/objtuple.c
+CC ../../py/objtype.c
+CC ../../py/objzip.c
+CC ../../py/opmethods.c
+CC ../../py/sequence.c
+CC ../../py/stream.c
+CC ../../py/binary.c
+CC ../../py/builtinimport.c
+CC ../../py/builtinevex.c
+CC ../../py/builtinhelp.c
+CC ../../py/modarray.c
+CC ../../py/modbuiltins.c
+CC ../../py/modcollections.c
+CC ../../py/modgc.c
+CC ../../py/modio.c
+CC ../../py/modmath.c
+CC ../../py/modcmath.c
+CC ../../py/modmicropython.c
+CC ../../py/modstruct.c
+CC ../../py/modsys.c
+CC ../../py/moderrno.c
+CC ../../py/modthread.c
+CC ../../py/vm.c
+CC ../../py/bc.c
+CC ../../py/showbc.c
+CC ../../py/repl.c
+CC ../../py/smallint.c
+CC ../../py/frozenmod.c
+CC ../../extmod/machine_adc.c
+CC ../../extmod/machine_adc_block.c
+CC ../../extmod/machine_bitstream.c
+CC ../../extmod/machine_i2c.c
+CC ../../extmod/machine_i2s.c
+CC ../../extmod/machine_mem.c
+CC ../../extmod/machine_pinbase.c
+CC ../../extmod/machine_pulse.c
+CC ../../extmod/machine_pwm.c
+MPY _mkfs.py
+MPY asyncio/__init__.py
+MPY asyncio/core.py
+MPY asyncio/event.py
+MPY asyncio/funcs.py
+MPY asyncio/lock.py
+MPY asyncio/stream.py
+MPY uasyncio.py
+GEN build-ACTINIUS_ICARUS/frozen_content.c
+CC ../../extmod/machine_signal.c
+CC ../../extmod/machine_spi.c
+CC ../../extmod/machine_timer.c
+CC ../../extmod/machine_uart.c
+CC ../../extmod/machine_usb_device.c
+CC ../../extmod/machine_wdt.c
+CC ../../extmod/modasyncio.c
+CC ../../extmod/modbinascii.c
+CC ../../extmod/modbluetooth.c
+CC ../../extmod/modbtree.c
+CC ../../extmod/modcryptolib.c
+CC ../../extmod/moddeflate.c
+CC ../../extmod/modframebuf.c
+CC ../../extmod/modhashlib.c
+CC ../../extmod/modheapq.c
+CC ../../extmod/modjson.c
+CC ../../extmod/modlwip.c
+CC ../../extmod/modmachine.c
+CC ../../extmod/modnetwork.c
+CC ../../extmod/modonewire.c
+CC ../../extmod/modopenamp.c
+CC ../../extmod/modopenamp_remoteproc.c
+CC ../../extmod/modopenamp_remoteproc_store.c
+CC ../../extmod/modos.c
+CC ../../extmod/modplatform.c
+CC ../../extmod/modrandom.c
+CC ../../extmod/modre.c
+CC ../../extmod/modselect.c
+CC ../../extmod/modsocket.c
+CC ../../extmod/modtls_axtls.c
+CC ../../extmod/modtls_mbedtls.c
+CC ../../extmod/mbedtls/mbedtls_alt.c
+CC ../../extmod/modtime.c
+CC ../../extmod/moductypes.c
+CC ../../extmod/modvfs.c
+CC ../../extmod/modwebrepl.c
+CC ../../extmod/modwebsocket.c
+CC ../../extmod/network_cyw43.c
+CC ../../extmod/network_esp_hosted.c
+CC ../../extmod/network_lwip.c
+CC ../../extmod/network_ninaw10.c
+CC ../../extmod/network_ppp_lwip.c
+CC ../../extmod/network_wiznet5k.c
+CC ../../extmod/os_dupterm.c
+CC ../../extmod/vfs.c
+CC ../../extmod/vfs_blockdev.c
+CC ../../extmod/vfs_fat.c
+CC ../../extmod/vfs_fat_diskio.c
+CC ../../extmod/vfs_fat_file.c
+CC ../../extmod/vfs_lfs.c
+CC ../../extmod/vfs_posix.c
+CC ../../extmod/vfs_posix_file.c
+CC ../../extmod/vfs_reader.c
+CC ../../extmod/virtpin.c
+CC ../../shared/libc/abort_.c
+CC ../../shared/libc/printf.c
+CC ../../lib/littlefs/lfs2.c
+CC ../../lib/littlefs/lfs2_util.c
+CC main.c
+CC mphalport.c
+CC help.c
+CC gccollect.c
+CC pin_named_pins.c
+CC fatfs_port.c
+CC drivers/flash.c
+CC drivers/rng.c
+CC drivers/softpwm.c
+CC drivers/ticker.c
+CC drivers/bluetooth/ble_drv.c
+CC drivers/bluetooth/ble_uart.c
+CC device/startup_nrf9160.c
+CC ../../lib/nrfx/drivers/src/prs/nrfx_prs.c
+CC ../../lib/nrfx/drivers/src/nrfx_uart.c
+CC ../../lib/nrfx/drivers/src/nrfx_uarte.c
+CC ../../lib/nrfx/drivers/src/nrfx_adc.c
+CC ../../lib/nrfx/drivers/src/nrfx_saadc.c
+CC ../../lib/nrfx/drivers/src/nrfx_temp.c
+CC ../../lib/nrfx/drivers/src/nrfx_rng.c
+CC ../../lib/nrfx/drivers/src/nrfx_twi.c
+CC ../../lib/nrfx/drivers/src/nrfx_twim.c
+CC ../../lib/nrfx/drivers/src/nrfx_spi.c
+CC ../../lib/nrfx/drivers/src/nrfx_spim.c
+CC ../../lib/nrfx/drivers/src/nrfx_rtc.c
+CC ../../lib/nrfx/drivers/src/nrfx_timer.c
+CC ../../lib/nrfx/drivers/src/nrfx_pwm.c
+CC ../../lib/nrfx/drivers/src/nrfx_gpiote.c
+CC ../../lib/nrfx/drivers/src/nrfx_nvmc.c
+CC ../../lib/nrfx/drivers/src/nrfx_power.c
+CC ../../lib/nrfx/drivers/src/nrfx_clock.c
+CC modules/machine/spi.c
+CC modules/machine/i2c.c
+CC modules/machine/pin.c
+CC modules/machine/timer.c
+CC modules/machine/rtcounter.c
+CC modules/machine/temp.c
+CC modules/os/microbitfs.c
+CC modules/board/modboard.c
+CC modules/board/led.c
+CC modules/ubluepy/modubluepy.c
+CC modules/ubluepy/ubluepy_peripheral.c
+CC modules/ubluepy/ubluepy_service.c
+CC modules/ubluepy/ubluepy_characteristic.c
+CC modules/ubluepy/ubluepy_uuid.c
+CC modules/ubluepy/ubluepy_delegate.c
+CC modules/ubluepy/ubluepy_constants.c
+CC modules/ubluepy/ubluepy_descriptor.c
+CC modules/ubluepy/ubluepy_scanner.c
+CC modules/ubluepy/ubluepy_scan_entry.c
+CC modules/music/modmusic.c
+CC modules/music/musictunes.c
+CC modules/ble/modble.c
+CC modules/nrf/modnrf.c
+CC modules/nrf/flashbdev.c
+CC ../../lib/nrfx/mdk/system_nrf9160.c
+CC ../../lib/libm/acoshf.c
+CC ../../lib/libm/asinfacosf.c
+CC ../../lib/libm/asinhf.c
+CC ../../lib/libm/atan2f.c
+CC ../../lib/libm/atanf.c
+CC ../../lib/libm/atanhf.c
+CC ../../lib/libm/ef_rem_pio2.c
+CC ../../lib/libm/erf_lgamma.c
+CC ../../lib/libm/fmodf.c
+CC ../../lib/libm/kf_cos.c
+CC ../../lib/libm/kf_rem_pio2.c
+CC ../../lib/libm/kf_sin.c
+CC ../../lib/libm/kf_tan.c
+CC ../../lib/libm/log1pf.c
+CC ../../lib/libm/math.c
+CC ../../lib/libm/nearbyintf.c
+CC ../../lib/libm/roundf.c
+CC ../../lib/libm/sf_cos.c
+CC ../../lib/libm/sf_erf.c
+CC ../../lib/libm/sf_frexp.c
+CC ../../lib/libm/sf_ldexp.c
+CC ../../lib/libm/sf_modf.c
+CC ../../lib/libm/sf_sin.c
+CC ../../lib/libm/sf_tan.c
+CC ../../lib/libm/wf_lgamma.c
+CC ../../lib/libm/wf_tgamma.c
+CC ../../lib/libm/ef_sqrt.c
+CC ../../shared/libc/string0.c
+CC ../../shared/readline/readline.c
+CC ../../shared/runtime/mpirq.c
+CC ../../shared/runtime/pyexec.c
+CC ../../shared/runtime/stdout_helpers.c
+CC ../../shared/runtime/sys_stdio_mphal.c
+CC ../../shared/runtime/interrupt_char.c
+CC ../../shared/tinyusb/mp_usbd.c
+CC ../../shared/tinyusb/mp_usbd_cdc.c
+CC ../../shared/tinyusb/mp_usbd_descriptor.c
+CC ../../shared/timeutils/timeutils.c
+CC build-ACTINIUS_ICARUS/pins_gen.c
+CC build-ACTINIUS_ICARUS/frozen_content.c
+LINK build-ACTINIUS_ICARUS/firmware.elf
+   text	   data	    bss	    dec	    hex	filename
+ 234496	    148	   1912	 236556	  39c0c	build-ACTINIUS_ICARUS/firmware.elf
+arm-none-eabi-objcopy -O binary build-ACTINIUS_ICARUS/firmware.elf build-ACTINIUS_ICARUS/firmware.bin
+arm-none-eabi-objcopy -O ihex build-ACTINIUS_ICARUS/firmware.elf build-ACTINIUS_ICARUS/firmware.hex
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/nrf'
+
+
+returncode=0
+duration=8.410s

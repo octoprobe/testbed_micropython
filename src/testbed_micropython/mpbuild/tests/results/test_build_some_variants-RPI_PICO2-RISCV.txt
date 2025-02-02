@@ -1,0 +1,643 @@
+docker run --rm -v /sys/bus:/sys/bus -v /dev:/dev --net=host --privileged -v /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8:/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8 -w /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8 --user 1000:1000 -v /home/maerki:/home/maerki -e HOME=/home/maerki micropython/build-micropython-rp2350riscv bash -c "git config --global --add safe.directory '*' 2> /dev/null;make -C mpy-cross && make -C ports/rp2 submodules BOARD=RPI_PICO2 BOARD_VARIANT=RISCV && make -j 8 -C ports/rp2 BOARD=RPI_PICO2 BOARD_VARIANT=RISCV "
+
+
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/mpy-cross'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/mpy-cross'
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+make -f ../../py/mkrules.mk GIT_SUBMODULES="lib/pico-sdk" submodules
+make[1]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+Updating submodules: lib/pico-sdk
+Synchronizing submodule url for 'lib/pico-sdk'
+make[1]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+make[1]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
+Updating submodules: lib/mbedtls lib/tinyusb lib/micropython-lib
+Synchronizing submodule url for 'lib/mbedtls'
+Synchronizing submodule url for 'lib/micropython-lib'
+Synchronizing submodule url for 'lib/tinyusb'
+make[1]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+make: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'
+[ -e build-RPI_PICO2-RISCV/Makefile ] || cmake -S . -B build-RPI_PICO2-RISCV -DPICO_BUILD_DOCS=0 -DMICROPY_BOARD=RPI_PICO2 -DMICROPY_BOARD_DIR="/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/boards/RPI_PICO2" -DMICROPY_BOARD_VARIANT=RISCV
+PICO_SDK_PATH is /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk
+Target board (PICO_BOARD) is 'pico2'.
+Using board configuration from /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/boards/include/boards/pico2.h
+Pico Platform (PICO_PLATFORM) is 'rp2350-riscv'.
+Defaulting compiler (PICO_COMPILER) to 'pico_riscv_gcc' since not specified.
+Configuring toolchain based on PICO_COMPILER 'pico_riscv_gcc'
+Defaulting PICO_GCC_TRIPLE to 'riscv32-unknown-elf;riscv32-corev-elf'
+-- The C compiler identification is GNU 14.2.1
+-- The CXX compiler identification is GNU 14.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/riscv/bin/riscv32-unknown-elf-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/riscv/bin/riscv32-unknown-elf-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The ASM compiler identification is GNU
+-- Found assembler: /opt/riscv/bin/riscv32-unknown-elf-gcc
+Build type is MinSizeRel
+CMake Warning at /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/tools/Findpicotool.cmake:28 (message):
+  No installed picotool with version 2.0.0 found - building from source
+
+  It is recommended to build and install picotool separately, or to set
+  PICOTOOL_FETCH_FROM_GIT_PATH to a common directory for all your SDK
+  projects
+Call Stack (most recent call first):
+  /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/tools/CMakeLists.txt:138 (find_package)
+  /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/cmake/on_device.cmake:33 (pico_init_picotool)
+  /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2350/boot_stage2/CMakeLists.txt:57 (pico_add_dis_output)
+  /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2350/boot_stage2/CMakeLists.txt:100 (pico_define_boot_stage2)
+
+
+Downloading Picotool
+-- Found Python3: /usr/bin/python3 (found version "3.11.2") found components: Interpreter 
+TinyUSB available at /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/portable/raspberrypi/rp2040; enabling build support for USB.
+CMake Warning at /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_btstack/CMakeLists.txt:14 (message):
+  PICO_BTSTACK_PATH specified but content not present.
+
+
+CMake Warning at /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_lwip/CMakeLists.txt:14 (message):
+  PICO_LWIP_PATH specified but content not present.
+
+
+Found User C Module(s): 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV
+make -s -C build-RPI_PICO2-RISCV || (echo -e "See \033[1;31mhttps://github.com/micropython/micropython/wiki/Build-Troubleshooting\033[0m"; false)
+make[1]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[2]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  0%] Built target picotoolForceReconfigure
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  0%] Creating directories for 'picotoolBuild'
+[  0%] No download step for 'picotoolBuild'
+GEN /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/genhdr/mpversion.h
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  1%] No update step for 'picotoolBuild'
+[  1%] Built target BUILD_VERSION_HEADER
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  1%] Generating genhdr/pins.h, pins_RPI_PICO2.c
+[  1%] No patch step for 'picotoolBuild'
+[  1%] Performing configure step for 'picotoolBuild'
+Not searching for unused variables given on the command line.
+[  2%] Generating genhdr/qstr.i.last
+-- The C compiler identification is GNU 12.2.0
+-- The CXX compiler identification is GNU 12.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+.//home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool/
+-- Using the single-header code from /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-src/lib/nlohmann_json/single_include/
+lib/mbedtls submodule needs to be initialized for bintool hashing/signing
+mbedtls not found - no signing/hashing support will be built
+libUSB is not found - no USB support will be built
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build
+[  2%] Performing build step for 'picotoolBuild'
+make[4]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[5]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 14%] Built target errors
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[  2%] Generating genhdr/qstr.split
+[  2%] Generating genhdr/root_pointers.split
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 28%] Built target elf
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[  3%] Generating genhdr/root_pointers.collected
+[  3%] Generating genhdr/qstrdefs.collected.h
+Root pointer registrations updated
+[  3%] Generating genhdr/root_pointers.h
+QSTR updated
+[  3%] Generating genhdr/qstrdefs.preprocessed.h
+[  3%] Generating genhdr/qstrdefs.generated.h
+MPY _boot_fat.py
+MPY rp2.py
+MPY _boot.py
+MPY asyncio/__init__.py
+MPY asyncio/core.py
+MPY asyncio/event.py
+MPY asyncio/funcs.py
+MPY asyncio/lock.py
+MPY asyncio/stream.py
+MPY uasyncio.py
+MPY onewire.py
+MPY ds18x20.py
+MPY dht.py
+MPY neopixel.py
+GEN /home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/frozen_content.c
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  3%] Built target BUILD_FROZEN_CONTENT
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 42%] Built target elf2uf2
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 57%] Built target bintool
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[100%] Built target picotool
+make[5]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[4]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[  4%] Performing install step for 'picotoolBuild'
+make[4]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[5]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 14%] Built target errors
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 28%] Built target elf
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[ 42%] Built target bintool
+[ 57%] Built target elf2uf2
+make[6]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+make[6]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[100%] Built target picotool
+make[5]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+Install the project...
+-- Install configuration: "Release"
+make[4]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/_deps/picotool-build'
+[  4%] Performing test step for 'picotoolBuild'
+picotool v2.0.0 (Linux, GNU-12.2.0, Release)
+[  5%] Completed 'picotoolBuild'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  5%] Built target picotoolBuild
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  5%] Building ASM object pico-sdk/src/rp2350/boot_stage2/CMakeFiles/bs2_default.dir/compile_time_choice.S.obj
+[  5%] Linking ASM executable bs2_default.elf
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  5%] Built target bs2_default
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  5%] Generating bs2_default.bin
+[  6%] Generating bs2_default_padded_checksummed.S
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  6%] Built target bs2_default_padded_checksummed_asm
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  6%] Generating genhdr/moduledefs.split
+[  6%] Generating genhdr/moduledefs.collected
+Module registrations updated
+[  7%] Generating genhdr/moduledefs.h
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[3]: Entering directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[  7%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmrv32.c.obj
+[  7%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmarm.c.obj
+[  7%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmbase.c.obj
+[  7%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/argcheck.c.obj
+[  7%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmx64.c.obj
+[  8%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmthumb.c.obj
+[  8%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmx86.c.obj
+[  8%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/asmxtensa.c.obj
+[  9%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/bc.c.obj
+[  9%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/binary.c.obj
+[  9%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/builtinevex.c.obj
+[  9%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/builtinhelp.c.obj
+[  9%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/builtinimport.c.obj
+[ 10%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/compile.c.obj
+[ 10%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/cstack.c.obj
+[ 10%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitbc.c.obj
+[ 10%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitcommon.c.obj
+[ 11%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitglue.c.obj
+[ 11%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitinlinethumb.c.obj
+[ 11%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitinlinextensa.c.obj
+[ 11%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnarm.c.obj
+[ 11%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitndebug.c.obj
+[ 12%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnrv32.c.obj
+[ 12%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnthumb.c.obj
+[ 12%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnx64.c.obj
+[ 12%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnx86.c.obj
+[ 13%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnxtensa.c.obj
+[ 13%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/emitnxtensawin.c.obj
+[ 13%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/formatfloat.c.obj
+[ 13%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/frozenmod.c.obj
+[ 13%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/gc.c.obj
+[ 14%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/lexer.c.obj
+[ 14%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/malloc.c.obj
+[ 14%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/map.c.obj
+[ 14%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modarray.c.obj
+[ 15%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modbuiltins.c.obj
+[ 15%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modcmath.c.obj
+[ 15%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modcollections.c.obj
+[ 15%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modgc.c.obj
+[ 15%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modio.c.obj
+[ 16%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modmath.c.obj
+[ 16%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modmicropython.c.obj
+[ 16%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modstruct.c.obj
+[ 16%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modsys.c.obj
+[ 17%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/modthread.c.obj
+[ 17%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/moderrno.c.obj
+[ 17%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/mpprint.c.obj
+[ 17%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/mpstate.c.obj
+[ 18%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/mpz.c.obj
+[ 18%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nativeglue.c.obj
+[ 18%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlr.c.obj
+[ 18%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrmips.c.obj
+[ 18%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrpowerpc.c.obj
+[ 19%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrrv32.c.obj
+[ 19%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrrv64.c.obj
+[ 19%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrsetjmp.c.obj
+[ 19%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrthumb.c.obj
+[ 20%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrx64.c.obj
+[ 20%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrx86.c.obj
+[ 20%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/nlrxtensa.c.obj
+[ 20%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/obj.c.obj
+[ 20%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objarray.c.obj
+[ 21%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objbool.c.obj
+[ 21%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objattrtuple.c.obj
+[ 21%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objboundmeth.c.obj
+[ 21%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objcell.c.obj
+[ 22%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objclosure.c.obj
+[ 22%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objdeque.c.obj
+[ 22%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objdict.c.obj
+[ 22%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objcomplex.c.obj
+[ 22%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objenumerate.c.obj
+[ 23%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objexcept.c.obj
+[ 23%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objfilter.c.obj
+[ 23%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objfloat.c.obj
+[ 23%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objfun.c.obj
+[ 24%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objgenerator.c.obj
+[ 24%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objgetitemiter.c.obj
+[ 24%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objint.c.obj
+[ 24%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objint_longlong.c.obj
+[ 24%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objint_mpz.c.obj
+[ 25%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objlist.c.obj
+[ 25%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objmap.c.obj
+[ 25%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objmodule.c.obj
+[ 25%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objnamedtuple.c.obj
+[ 26%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objnone.c.obj
+[ 26%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objobject.c.obj
+[ 26%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objpolyiter.c.obj
+[ 26%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objrange.c.obj
+[ 26%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objproperty.c.obj
+[ 27%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objreversed.c.obj
+[ 27%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objset.c.obj
+[ 27%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objringio.c.obj
+[ 27%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objsingleton.c.obj
+[ 28%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objslice.c.obj
+[ 28%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objstr.c.obj
+[ 28%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objstringio.c.obj
+[ 28%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objstrunicode.c.obj
+[ 28%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objtuple.c.obj
+[ 29%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objtype.c.obj
+[ 29%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/objzip.c.obj
+[ 29%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/opmethods.c.obj
+[ 29%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/pairheap.c.obj
+[ 30%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/parse.c.obj
+[ 30%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/parsenum.c.obj
+[ 30%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/parsenumbase.c.obj
+[ 30%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/persistentcode.c.obj
+[ 30%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/profile.c.obj
+[ 31%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/pystack.c.obj
+[ 31%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/qstr.c.obj
+[ 31%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/reader.c.obj
+[ 31%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/repl.c.obj
+[ 32%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/ringbuf.c.obj
+[ 32%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/runtime.c.obj
+[ 32%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/runtime_utils.c.obj
+[ 32%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/scheduler.c.obj
+[ 32%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/scope.c.obj
+[ 33%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/sequence.c.obj
+[ 33%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/showbc.c.obj
+[ 33%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/smallint.c.obj
+[ 33%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/stackctrl.c.obj
+[ 34%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/stream.c.obj
+[ 34%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/unicode.c.obj
+[ 34%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/vm.c.obj
+[ 34%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/vstr.c.obj
+[ 35%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/py/warning.c.obj
+[ 35%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/libc/abort_.c.obj
+[ 35%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/libc/printf.c.obj
+[ 35%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/btstack/modbluetooth_btstack.c.obj
+[ 35%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_adc.c.obj
+[ 36%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_adc_block.c.obj
+[ 36%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_bitstream.c.obj
+[ 36%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_i2c.c.obj
+[ 36%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_i2s.c.obj
+[ 37%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_mem.c.obj
+[ 37%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_pulse.c.obj
+[ 37%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_pwm.c.obj
+[ 37%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_signal.c.obj
+[ 37%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_spi.c.obj
+[ 38%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_uart.c.obj
+[ 38%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_usb_device.c.obj
+[ 38%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/machine_wdt.c.obj
+[ 38%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modbluetooth.c.obj
+[ 39%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modframebuf.c.obj
+[ 39%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modlwip.c.obj
+[ 39%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modmachine.c.obj
+[ 39%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modnetwork.c.obj
+[ 39%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modonewire.c.obj
+[ 40%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modasyncio.c.obj
+[ 40%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modbinascii.c.obj
+[ 40%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modcryptolib.c.obj
+[ 40%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/moductypes.c.obj
+[ 41%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/moddeflate.c.obj
+[ 41%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modhashlib.c.obj
+[ 41%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modheapq.c.obj
+[ 41%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modjson.c.obj
+[ 41%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modos.c.obj
+[ 41%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modrandom.c.obj
+[ 42%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modplatform.c.obj
+[ 42%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modre.c.obj
+[ 42%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modselect.c.obj
+[ 42%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modtls_axtls.c.obj
+[ 42%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modtls_mbedtls.c.obj
+[ 43%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modsocket.c.obj
+[ 43%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modtime.c.obj
+[ 43%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modvfs.c.obj
+[ 44%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modwebsocket.c.obj
+[ 44%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/modwebrepl.c.obj
+[ 44%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/network_lwip.c.obj
+[ 44%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/network_cyw43.c.obj
+[ 45%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/network_ninaw10.c.obj
+[ 45%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/network_ppp_lwip.c.obj
+[ 45%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/network_wiznet5k.c.obj
+[ 45%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/os_dupterm.c.obj
+[ 45%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs.c.obj
+[ 46%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_blockdev.c.obj
+[ 46%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_fat.c.obj
+[ 46%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_fat_diskio.c.obj
+[ 46%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_fat_file.c.obj
+[ 47%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_lfs.c.obj
+[ 47%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_posix.c.obj
+[ 47%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_posix_file.c.obj
+[ 47%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/vfs_reader.c.obj
+[ 47%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/virtpin.c.obj
+[ 48%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/extmod/nimble/modbluetooth_nimble.c.obj
+[ 48%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/littlefs/lfs1.c.obj
+[ 48%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/littlefs/lfs1_util.c.obj
+[ 49%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/littlefs/lfs2_util.c.obj
+[ 49%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/littlefs/lfs2.c.obj
+[ 49%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/oofatfs/ff.c.obj
+[ 49%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/oofatfs/ffunicode.c.obj
+[ 49%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/netutils/dhcpserver.c.obj
+[ 49%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/netutils/netutils.c.obj
+[ 50%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/netutils/trace.c.obj
+[ 50%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/readline/readline.c.obj
+[ 50%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/gchelper_native.c.obj
+[ 50%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/interrupt_char.c.obj
+[ 51%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/mpirq.c.obj
+[ 51%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/pyexec.c.obj
+[ 51%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/stdout_helpers.c.obj
+[ 51%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/softtimer.c.obj
+[ 52%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/sys_stdio_mphal.c.obj
+[ 52%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/timeutils/timeutils.c.obj
+[ 52%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/tinyusb/mp_usbd.c.obj
+[ 52%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/tinyusb/mp_usbd_cdc.c.obj
+[ 52%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/tinyusb/mp_usbd_descriptor.c.obj
+[ 53%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/tinyusb/mp_usbd_runtime.c.obj
+[ 53%] Building ASM object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/shared/runtime/gchelper_rv32i.s.obj
+[ 53%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/drivers/bus/softspi.c.obj
+[ 54%] Building C object CMakeFiles/firmware.dir/clocks_extra.c.obj
+[ 54%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/drivers/dht/dht.c.obj
+[ 54%] Building C object CMakeFiles/firmware.dir/datetime_patch.c.obj
+[ 54%] Building C object CMakeFiles/firmware.dir/fatfs_port.c.obj
+[ 54%] Building C object CMakeFiles/firmware.dir/help.c.obj
+[ 54%] Building C object CMakeFiles/firmware.dir/machine_bitstream.c.obj
+[ 55%] Building C object CMakeFiles/firmware.dir/machine_i2c.c.obj
+[ 55%] Building C object CMakeFiles/firmware.dir/machine_rtc.c.obj
+[ 55%] Building C object CMakeFiles/firmware.dir/machine_pin.c.obj
+[ 55%] Building C object CMakeFiles/firmware.dir/machine_spi.c.obj
+[ 56%] Building C object CMakeFiles/firmware.dir/machine_timer.c.obj
+[ 56%] Building C object CMakeFiles/firmware.dir/main.c.obj
+[ 56%] Building C object CMakeFiles/firmware.dir/modrp2.c.obj
+[ 56%] Building C object CMakeFiles/firmware.dir/mphalport.c.obj
+[ 56%] Building C object CMakeFiles/firmware.dir/mpnetworkport.c.obj
+[ 57%] Building C object CMakeFiles/firmware.dir/mpthreadport.c.obj
+[ 57%] Building C object CMakeFiles/firmware.dir/mutex_extra.c.obj
+[ 57%] Building C object CMakeFiles/firmware.dir/pendsv.c.obj
+[ 58%] Building C object CMakeFiles/firmware.dir/rp2_pio.c.obj
+[ 58%] Building C object CMakeFiles/firmware.dir/rp2_flash.c.obj
+[ 58%] Building C object CMakeFiles/firmware.dir/rp2_dma.c.obj
+[ 58%] Building C object CMakeFiles/firmware.dir/uart.c.obj
+[ 58%] Building C object CMakeFiles/firmware.dir/usbd.c.obj
+[ 58%] Building C object CMakeFiles/firmware.dir/msc_disk.c.obj
+[ 59%] Building C object CMakeFiles/firmware.dir/mbedtls/mbedtls_port.c.obj
+[ 59%] Building C object CMakeFiles/firmware.dir/pins_RPI_PICO2.c.obj
+[ 59%] Building C object CMakeFiles/firmware.dir/frozen_content.c.obj
+[ 59%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls_errors/mp_mbedtls_errors.c.obj
+[ 60%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/aes.c.obj
+[ 60%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/aesni.c.obj
+[ 60%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/asn1parse.c.obj
+[ 60%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/asn1write.c.obj
+[ 60%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/base64.c.obj
+[ 61%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/bignum_core.c.obj
+[ 61%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/bignum_mod_raw.c.obj
+[ 61%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/bignum_mod.c.obj
+[ 61%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/bignum.c.obj
+[ 62%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/camellia.c.obj
+[ 62%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ccm.c.obj
+[ 62%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/chacha20.c.obj
+[ 62%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/chachapoly.c.obj
+[ 62%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/cipher.c.obj
+[ 63%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/cipher_wrap.c.obj
+[ 63%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/nist_kw.c.obj
+[ 63%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/aria.c.obj
+[ 63%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/cmac.c.obj
+[ 64%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/mps_reader.c.obj
+[ 64%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/mps_trace.c.obj
+[ 64%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ctr_drbg.c.obj
+[ 64%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/debug.c.obj
+[ 64%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/des.c.obj
+[ 65%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/dhm.c.obj
+[ 65%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ecdh.c.obj
+[ 65%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ecdsa.c.obj
+[ 66%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ecp_curves.c.obj
+[ 66%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ecp.c.obj
+[ 66%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ecjpake.c.obj
+[ 66%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/entropy.c.obj
+[ 66%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/entropy_poll.c.obj
+[ 66%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/gcm.c.obj
+[ 67%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/hmac_drbg.c.obj
+[ 67%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/md.c.obj
+[ 67%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/md5.c.obj
+[ 67%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/oid.c.obj
+[ 68%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/padlock.c.obj
+[ 68%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pem.c.obj
+[ 68%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pk.c.obj
+[ 68%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pkcs12.c.obj
+[ 69%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pkcs5.c.obj
+[ 69%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pkparse.c.obj
+[ 69%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pk_wrap.c.obj
+[ 69%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/pkwrite.c.obj
+[ 69%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/platform.c.obj
+[ 70%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/platform_util.c.obj
+[ 70%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/poly1305.c.obj
+[ 70%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ripemd160.c.obj
+[ 70%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/rsa.c.obj
+[ 71%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/rsa_alt_helpers.c.obj
+[ 71%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/sha256.c.obj
+[ 71%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/sha512.c.obj
+[ 71%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/sha1.c.obj
+[ 71%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_cache.c.obj
+[ 72%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_ciphersuites.c.obj
+[ 72%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_tls12_client.c.obj
+[ 72%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_tls12_server.c.obj
+[ 72%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_client.c.obj
+[ 73%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_cookie.c.obj
+[ 73%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_debug_helpers_generated.c.obj
+[ 73%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_msg.c.obj
+[ 73%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_ticket.c.obj
+[ 73%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/ssl_tls.c.obj
+[ 74%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/timing.c.obj
+[ 74%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/constant_time.c.obj
+[ 74%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509.c.obj
+[ 74%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509_create.c.obj
+[ 75%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509_crl.c.obj
+[ 75%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509_crt.c.obj
+[ 75%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509_csr.c.obj
+[ 75%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509write_crt.c.obj
+[ 75%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/mbedtls/library/x509write_csr.c.obj
+[ 76%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_adc/adc.c.obj
+[ 76%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2350/pico_platform/platform.c.obj
+[ 76%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_platform_panic/panic.c.obj
+[ 76%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/hardware_claim/claim.c.obj
+[ 77%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_sync/sync.c.obj
+[ 77%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_sync_spin_lock/sync_spin_lock.c.obj
+[ 77%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.obj
+[ 77%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_irq/irq.c.obj
+[ 77%] Building ASM object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.S.obj
+[ 78%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_sync/sem.c.obj
+[ 78%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_sync/lock_core.c.obj
+[ 78%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_sync/mutex.c.obj
+[ 78%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_sync/critical_section.c.obj
+[ 79%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_time/time.c.obj
+[ 79%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_time/timeout_helper.c.obj
+[ 79%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_timer/timer.c.obj
+[ 79%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_util/datetime.c.obj
+[ 79%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_util/pheap.c.obj
+[ 80%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/common/pico_util/queue.c.obj
+[ 80%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_boot_lock/boot_lock.c.obj
+[ 80%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.obj
+[ 80%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_pll/pll.c.obj
+[ 80%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_ticks/ticks.c.obj
+[ 81%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_vreg/vreg.c.obj
+[ 81%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_watchdog/watchdog.c.obj
+[ 81%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_xosc/xosc.c.obj
+[ 81%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj
+[ 82%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_flash/flash.c.obj
+[ 82%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_bootrom/bootrom.c.obj
+[ 82%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_bootrom/bootrom_lock.c.obj
+[ 82%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_i2c/i2c.c.obj
+[ 83%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_pio/pio.c.obj
+[ 83%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_spi/spi.c.obj
+[ 83%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_uart/uart.c.obj
+[ 83%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_aon_timer/aon_timer.c.obj
+[ 83%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_powman/powman.c.obj
+[ 84%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_multicore/multicore.c.obj
+[ 84%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_runtime/runtime.c.obj
+[ 84%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init.c.obj
+[ 84%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_clocks.c.obj
+[ 85%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_runtime_init/runtime_init_stack_guard.c.obj
+[ 85%] Building ASM object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_bit_ops/bit_ops_aeabi.S.obj
+[ 85%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_divider/divider_compiler.c.obj
+[ 85%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/acoshf.c.obj
+[ 86%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/asinfacosf.c.obj
+[ 86%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/asinhf.c.obj
+[ 86%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/atanf.c.obj
+[ 86%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/atan2f.c.obj
+[ 86%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/atanhf.c.obj
+[ 87%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/ef_rem_pio2.c.obj
+[ 87%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/erf_lgamma.c.obj
+[ 87%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/fmodf.c.obj
+[ 87%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/kf_cos.c.obj
+[ 88%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/kf_tan.c.obj
+[ 88%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/kf_sin.c.obj
+[ 88%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/kf_rem_pio2.c.obj
+[ 88%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/log1pf.c.obj
+[ 88%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/math.c.obj
+[ 89%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/nearbyintf.c.obj
+[ 89%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/roundf.c.obj
+[ 89%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_cos.c.obj
+[ 89%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_erf.c.obj
+[ 90%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_frexp.c.obj
+[ 90%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_ldexp.c.obj
+[ 90%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_modf.c.obj
+[ 90%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_tan.c.obj
+[ 90%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/sf_sin.c.obj
+[ 91%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/wf_lgamma.c.obj
+[ 91%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/ef_sqrt.c.obj
+[ 91%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/libm/wf_tgamma.c.obj
+[ 92%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_malloc/malloc.c.obj
+[ 92%] Building C object CMakeFiles/firmware.dir/libm_extra.c.obj
+[ 92%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_atomic/atomic.c.obj
+[ 92%] Building CXX object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_cxx_options/new_delete.cpp.obj
+[ 92%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_standard_binary_info/standard_binary_info.c.obj
+[ 92%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_printf/printf.c.obj
+[ 93%] Building ASM object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_crt0/crt0_riscv.S.obj
+[ 93%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_clib_interface/newlib_interface.c.obj
+[ 93%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_stdio/stdio.c.obj
+[ 93%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_stdio_uart/stdio_uart.c.obj
+[ 94%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_stdlib/stdlib.c.obj
+[ 94%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/hardware_divider/divider.c.obj
+[ 94%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_unique_id/unique_id.c.obj
+[ 94%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/tusb.c.obj
+[ 94%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/common/tusb_fifo.c.obj
+[ 95%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/portable/raspberrypi/rp2040/dcd_rp2040.c.obj
+[ 95%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/portable/raspberrypi/rp2040/rp2040_usb.c.obj
+[ 95%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/device/usbd.c.obj
+[ 95%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/device/usbd_control.c.obj
+[ 96%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/audio/audio_device.c.obj
+[ 96%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/cdc/cdc_device.c.obj
+[ 96%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/dfu/dfu_device.c.obj
+[ 96%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/dfu/dfu_rt_device.c.obj
+[ 96%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/hid/hid_device.c.obj
+[ 97%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/midi/midi_device.c.obj
+[ 97%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/msc/msc_device.c.obj
+[ 97%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/net/ecm_rndis_device.c.obj
+[ 97%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/net/ncm_device.c.obj
+[ 98%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/vendor/vendor_device.c.obj
+[ 98%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/usbtmc/usbtmc_device.c.obj
+[ 98%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/tinyusb/src/class/video/video_device.c.obj
+[ 98%] Building C object CMakeFiles/firmware.dir/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/lib/pico-sdk/src/rp2_common/pico_fix/rp2040_usb_device_enumeration/rp2040_usb_device_enumeration.c.obj
+[ 98%] Linking CXX executable firmware.elf
+   text	   data	    bss	    dec	    hex	filename
+ 392436	      0	   5240	 397676	  6116c	/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV/firmware.elf
+make[3]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+[100%] Built target firmware
+make[2]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make[1]: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2/build-RPI_PICO2-RISCV'
+make: Leaving directory '/home/maerki/work_octoprobe_testbed_micropython/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8/ports/rp2'

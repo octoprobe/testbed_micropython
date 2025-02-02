@@ -3,19 +3,6 @@ name: Ruff, Mypy and Pytest
 on:
   push:
 
-  workflow_dispatch:
-    # Inputs the workflow accepts.
-    inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,6 +20,11 @@ jobs:
         run: |
           uv sync --python ${{ matrix.python-version }}
       
+      - name: Build docs
+        run: |
+          make -C docs/ html
+          continue-on-error: true
+
       - name: Ruff
         run: |
           uv run ruff check --output-format github --config pyproject.toml --fix

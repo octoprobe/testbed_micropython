@@ -10,14 +10,17 @@ import pytest
 from octoprobe.usb_tentacle.usb_baseclasses import Location
 from octoprobe.usb_tentacle.usb_tentacle import UsbTentacle
 
-from testbed.constants import EnumFut
-from testbed.mptest import util_testrunner
-from testbed.multiprocessing import test_bartender
-from testbed.tentacle_spec import TentacleMicropython, TentacleSpecMicropython
-from testbed.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO
-from testbed.testcollection import baseclasses_run, testrun_specs
-from testbed.testcollection.baseclasses_spec import ConnectedTentacles
-from testbed.util_pytest_git import assert_git_unchanged
+from testbed_micropython.constants import EnumFut
+from testbed_micropython.mptest import util_testrunner
+from testbed_micropython.multiprocessing import test_bartender
+from testbed_micropython.tentacle_spec import (
+    TentacleMicropython,
+    TentacleSpecMicropython,
+)
+from testbed_micropython.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO
+from testbed_micropython.testcollection import baseclasses_run, testrun_specs
+from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacles
+from testbed_micropython.util_pytest_git import assert_git_unchanged
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_TESTRESULTS = DIRECTORY_OF_THIS_FILE / "test_collection_testresults"

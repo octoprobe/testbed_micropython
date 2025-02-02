@@ -3,7 +3,7 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project]
-name = "octoprobe_testbed_micropython"
+name = "testbed_micropython"
 dynamic = ["version"]
 description = "Octoprobe HIL Testenvironment for MicroPython release tesing"
 readme = "README.rst"
@@ -39,12 +39,11 @@ Documentation = "https://github.com/octoprobe/octoprobe"
 Repository = "https://github.com/octoprobe/octoprobe"
 
 [project.scripts]
-mptest = "testbed.mptest.cli:app"
+mptest = "testbed_micropython.mptest.cli:app"
 
 [project.optional-dependencies]
 
-all = [
-]
+all = []
 
 dev = [
     # "-e .",
@@ -53,16 +52,15 @@ dev = [
 
 # TODO: Is the line below needed?
 # "octoprobe@git+https://github.com/octoprobe/octoprobe#egg=main[doc]",
-doc = [
-]
+doc = []
 
 [tool.pdm]
-version = { source = "file", path = "src/testbed/__init__.py" }
+version = { source = "file", path = "src/testbed_micropython/__init__.py" }
 distribution = true
 
 [tool.pdm.build]
 package-dir = "src"
-source-includes = ["src/testbed"]
+source-includes = ["src/testbed_micropython"]
 # source-includes = [
 #     "octoprobe/",
 #     "requirements*.txt",
@@ -153,7 +151,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"testbed/__init__.py" = ["F401", "I001"]
+"testbed_micropython/__init__.py" = ["F401", "I001"]
 
 [tool.ruff.lint.isort]
 # known-third-party = ["usbhubctl"]
