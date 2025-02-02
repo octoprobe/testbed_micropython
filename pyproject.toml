@@ -50,8 +50,9 @@ dev = [
     "notebook",
 ]
 
+# TODO: Is the line below needed?
+# "octoprobe@git+https://github.com/octoprobe/octoprobe#egg=main[doc]",
 doc = [
-    "octoprobe@git+https://github.com/octoprobe/octoprobe#egg=main[doc]",
 ]
 
 [tool.pdm]
