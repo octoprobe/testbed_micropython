@@ -4,7 +4,12 @@ import dataclasses
 import pathlib
 import typing
 
-from octoprobe.util_firmware_spec import MICROPYTHON_FULL_VERSION_TEXT_FORCE
+from octoprobe.util_baseclasses import OctoprobeAppExitException
+from octoprobe.util_firmware_spec import (
+    FIRMWARE_DOWNLOAD_EXTENSION,
+    FirmwareDownloadSpec,
+    MICROPYTHON_FULL_VERSION_TEXT_FORCE,
+)
 
 if typing.TYPE_CHECKING:
     from .constants import TentacleBase
@@ -20,16 +25,19 @@ class ArgsFirmware:
         flash_skip: bool,
         flash_force: bool,
         git_clean: bool,
+        directory_git_cache: pathlib.Path,
     ) -> None:
         assert isinstance(firmware_build, str)
         assert isinstance(flash_skip, bool)
         assert isinstance(flash_force, bool)
         assert isinstance(git_clean, bool)
+        assert isinstance(directory_git_cache, pathlib.Path)
         self.firmware_build = firmware_build
         self.flash_skip = flash_skip
         self.flash_force = flash_force
         self.git_clean = git_clean
-        self._builder: FirmwareBuilderBase
+        self.directory_git_cache = directory_git_cache
+        self._builder: FirmwareBuilderBase | None = None
 
     def setup(self) -> None:
         """
@@ -43,14 +51,28 @@ class ArgsFirmware:
 
         if self.flash_skip:
             self._builder = FirmwareBuilderSkipFlash()
-        else:
-            self._builder = FirmwareBuilder(
-                firmware_git=self.firmware_build,
-                git_clean=self.git_clean,
-            )
+            return
+
+        if self._is_firmware_download:
+            if not pathlib.Path(self.firmware_build).is_file():
+                raise OctoprobeAppExitException(
+                    f"File does not exist: {self.firmware_build}"
+                )
+            return
+
+        self._builder = FirmwareBuilder(
+            firmware_git=self.firmware_build,
+            directory_git_cache=self.directory_git_cache,
+            git_clean=self.git_clean,
+        )
+
+    @property
+    def _is_firmware_download(self) -> bool:
+        return self.firmware_build.endswith(FIRMWARE_DOWNLOAD_EXTENSION)
 
     @property
     def repo_micropython_firmware(self) -> pathlib.Path:
+        assert self._builder is not None
         return self._builder.repo_directory
 
     def build_firmware(
@@ -62,6 +84,13 @@ class ArgsFirmware:
         Build the firmware and update 'tentacle.tentacle_state.firmware_spec'.
         """
         if tentacle.is_mcu:
+            if self._is_firmware_download:
+                tentacle.tentacle_state.firmware_spec = FirmwareDownloadSpec.factory(
+                    self.firmware_build
+                )
+                return
+
+            assert self._builder is not None
             spec = self._builder.build(
                 firmware_spec=tentacle.tentacle_state.firmware_spec,
                 mpbuild_artifacts=mpbuild_artifacts,

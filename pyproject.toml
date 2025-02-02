@@ -47,11 +47,8 @@ all = []
 
 dev = [
     # "-e .",
-    "notebook",
 ]
 
-# TODO: Is the line below needed?
-# "octoprobe@git+https://github.com/octoprobe/octoprobe#egg=main[doc]",
 doc = []
 
 [tool.pdm]
@@ -69,6 +66,10 @@ source-includes = ["src/testbed_micropython"]
 [tool.mypy]
 # strict = true
 enable_incomplete_feature = ["NewGenericSyntax"]
+
+[[tool.mypy.overrides]]
+module = "pallets_sphinx_themes.*"
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "pyudev.*"

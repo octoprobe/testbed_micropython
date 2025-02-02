@@ -11,7 +11,7 @@ from octoprobe.util_firmware_spec import (
 )
 from octoprobe.util_micropython_boards import BoardVariant
 
-from .constants import DIRECTORY_GIT_CACHE, is_url
+from .constants import is_url
 from .mpbuild.build_api import build_by_variant_normalized
 from .tentacle_spec import (
     TentacleMicropython,
@@ -44,9 +44,12 @@ class FirmwareBuilder(FirmwareBuilderSkipFlash):
     many tests might require it.
     """
 
-    def __init__(self, firmware_git: str, git_clean: bool) -> None:
+    def __init__(
+        self, firmware_git: str, directory_git_cache: pathlib.Path, git_clean: bool
+    ) -> None:
         super().__init__()
         assert isinstance(firmware_git, str)
+        assert isinstance(directory_git_cache, pathlib.Path)
         assert isinstance(git_clean, bool)
 
         self._already_build_firmwares: dict[str, FirmwareBuildSpec] = {}
@@ -57,7 +60,7 @@ class FirmwareBuilder(FirmwareBuilderSkipFlash):
         if is_url(firmware_git):
             self.firmware_git = firmware_git
             self.git_repo = CachedGitRepo(
-                directory_cache=DIRECTORY_GIT_CACHE,
+                directory_cache=directory_git_cache,
                 git_spec=firmware_git,
                 prefix="micropython_firmware_",
             )
