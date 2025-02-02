@@ -59,12 +59,12 @@ python
 
     uv python install 3.13.1
 
-    uv venv --python 3.13.1 --prompt=testbed_micropython ~/testbed_micropython/venv
+    uv venv --python 3.13.1 --prompt=testbed_micropython ~/testbed_micropython/.venv
 
-    source ~/testbed_micropython/venv/bin/activate
+    source ~/testbed_micropython/.venv/bin/activate
     uv pip install --upgrade -e ~/testbed_micropython
 
-    echo 'source ~/testbed_micropython/venv/bin/activate' >> ~/.profile
+    echo 'source ~/testbed_micropython/.venv/bin/activate' >> ~/.profile
     # Log out and in again
 
 
