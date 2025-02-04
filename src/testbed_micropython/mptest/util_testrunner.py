@@ -7,7 +7,7 @@ import shutil
 import time
 import typing
 
-from octoprobe.octoprobe import NTestRun
+from octoprobe.octoprobe import CtxTestRun
 from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
 from octoprobe.util_baseclasses import OctoprobeTestException
 from octoprobe.util_constants import relative_cwd
@@ -96,7 +96,10 @@ class Args:
         assert isinstance(self.force_multiprocessing, bool)
 
     @staticmethod
-    def get_default_args() -> Args:
+    def get_default_args(
+        directory_git_cache: pathlib.Path,
+        directory_results: pathlib.Path,
+    ) -> Args:
         return Args(
             mp_test=ArgsMpTest(
                 micropython_tests=constants.URL_FILENAME_DEFAULT,
@@ -106,8 +109,9 @@ class Args:
                 flash_skip=True,
                 flash_force=False,
                 git_clean=False,
+                directory_git_cache=directory_git_cache,
             ),
-            directory_results=constants.DIRECTORY_TESTRESULTS_DEFAULT,
+            directory_results=directory_results,
             only_boards=None,
             only_test=None,
             force_multiprocessing=False,
@@ -162,7 +166,7 @@ class TestRunner:
         Clone github.
         """
         assert isinstance(args, Args)
-        self.ntestrun: NTestRun
+        self.ctxtestrun: CtxTestRun
         self.test_bartender: TestBartender
         self.firmware_bartender: FirmwareBartenderBase
 
@@ -181,7 +185,8 @@ class TestRunner:
             logfile=self.args.directory_results / "journalctl.txt"
         )
         journalctl.start_observer_thread()
-        query_result_tentacles = NTestRun.session_powercycle_tentacles()
+        # TODO: Is the name 'query_result_tentacles' correct?
+        query_result_tentacles = CtxTestRun.session_powercycle_tentacles()
 
         connected_tentacles = instantiate_tentacles(
             usb_tentacles=query_result_tentacles
@@ -194,7 +199,7 @@ class TestRunner:
             boards=self.args.only_boards
         )
 
-        self.ntestrun = NTestRun(connected_tentacles=connected_tentacles)
+        self.ctxtestrun = CtxTestRun(connected_tentacles=connected_tentacles)
         self.args.firmware.setup()
 
         # _testrun.session_powercycle_tentacles()
@@ -236,7 +241,7 @@ class TestRunner:
                 / constants.SUBDIR_MPBUILD,
             )
 
-            self.ntestrun.function_setup_infa_and_dut(
+            self.ctxtestrun.function_setup_infa_and_dut(
                 udev_poller=udev_poller,
                 tentacle=tentacle,
                 directory_logs=self.args.directory_results
@@ -281,7 +286,7 @@ class TestRunner:
                     async_target = self.test_bartender.testrun_next(
                         firmwares_built=self.firmware_bartender.firmwares_built,
                         args=self.args,
-                        ntestrun=self.ntestrun,
+                        ctxtestrun=self.ctxtestrun,
                         repo_micropython_tests=repo_micropython_tests,
                     )
 
@@ -367,7 +372,7 @@ class TestRunner:
         target_ctx.close_and_join(self.firmware_bartender.async_targets)
         target_ctx.close_and_join(self.test_bartender.async_targets)
 
-        self.ntestrun.session_teardown()
+        self.ctxtestrun.session_teardown()
         UDEV_POLLER_LAZY.close()
 
         generate_task_report(align_time=True)
@@ -393,7 +398,7 @@ class TestRunner:
         * Resets the relays.
 
         :param testrun: The structure created by `testrun()`
-        :type testrun: NTestRun
+        :type testrun: CtxTestRun
         """
         assert isinstance(async_target, AsyncTargetTest)
         assert isinstance(target_ctx, util_multiprocessing.TargetCtx)
@@ -423,7 +428,7 @@ class TestRunner:
 
 
 def _target_run_one_test_async_b(
-    ntestrun: NTestRun,
+    ctxtestrun: CtxTestRun,
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
@@ -437,18 +442,18 @@ def _target_run_one_test_async_b(
     logger.info(f"TEST SETUP {duration_text(0.0)} {testid_patch}")
 
     for tentacle in testrun.tentacles:
-        ntestrun.function_prepare_dut(tentacle=tentacle)
-        ntestrun.function_setup_infra(
+        ctxtestrun.function_prepare_dut(tentacle=tentacle)
+        ctxtestrun.function_setup_infra(
             udev_poller=UDEV_POLLER_LAZY.udev_poller,
             tentacle=tentacle,
         )
-        ntestrun.function_setup_dut_flash(
+        ctxtestrun.function_setup_dut_flash(
             udev_poller=UDEV_POLLER_LAZY.udev_poller,
             tentacle=tentacle,
             directory_logs=testresults_directory.directory_test,
         )
 
-    ntestrun.setup_relays(
+    ctxtestrun.setup_relays(
         futs=(testrun.testrun_spec.required_fut,),
         tentacles=testrun.tentacles,
     )
@@ -466,7 +471,7 @@ def _target_run_one_test_async_b(
 
 def _target_run_one_test_async_a(
     args: Args,
-    ntestrun: NTestRun,
+    ctxtestrun: CtxTestRun,
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
@@ -484,7 +489,7 @@ def _target_run_one_test_async_a(
 
     try:
         _target_run_one_test_async_b(
-            ntestrun=ntestrun,
+            ctxtestrun=ctxtestrun,
             testrun=testrun,
             repo_micropython_tests=repo_micropython_tests,
             testresults_directory=testresults_directory,
@@ -505,7 +510,7 @@ def _target_run_one_test_async_a(
     finally:
         logger.info(f"TEST TEARDOWN {duration_text()} {testid_patch}")
         try:
-            ntestrun.function_teardown(active_tentacles=testrun.tentacles)
+            ctxtestrun.function_teardown(active_tentacles=testrun.tentacles)
         except Exception as e:
             logger.exception(e)
         logger.info(f"TEST END {duration_text()} {testid_patch}")
@@ -514,7 +519,7 @@ def _target_run_one_test_async_a(
 def target_run_one_test_async(
     arg1: util_multiprocessing.TargetArg1,
     args: Args,
-    ntestrun: NTestRun,
+    ctxtestrun: CtxTestRun,
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
 ) -> None:
@@ -535,7 +540,7 @@ def target_run_one_test_async(
 
             success = _target_run_one_test_async_a(
                 args=args,
-                ntestrun=ntestrun,
+                ctxtestrun=ctxtestrun,
                 testrun=testrun,
                 repo_micropython_tests=repo_micropython_tests,
                 testresults_directory=testresults_directory,

@@ -10,7 +10,7 @@ import pytest
 from octoprobe.usb_tentacle.usb_baseclasses import Location
 from octoprobe.usb_tentacle.usb_tentacle import UsbTentacle
 
-from testbed_micropython.constants import EnumFut
+from testbed_micropython import constants
 from testbed_micropython.mptest import util_testrunner
 from testbed_micropython.multiprocessing import test_bartender
 from testbed_micropython.tentacle_spec import (
@@ -100,8 +100,11 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         "ESP8266_GENERIC",
         "ESP8266_GENERIC-FLASH_512K",
     }
-    args = util_testrunner.Args.get_default_args()
-    ntestrun = util_testrunner.NTestRun(connected_tentacles=connected_tentacles)
+    args = util_testrunner.Args.get_default_args(
+        directory_git_cache=constants.DIRECTORY_GIT_CACHE,
+        directory_results=constants.DIRECTORY_TESTRESULTS_DEFAULT,
+    )
+    ctxtestrun = util_testrunner.CtxTestRun(connected_tentacles=connected_tentacles)
     repo_micropython_tests = pathlib.Path("/dummy_path")
 
     def testrun_done(len_actual_testruns_at_least: int) -> None:
@@ -142,7 +145,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             async_target = bartender.testrun_next(
                 firmwares_built=firmwares_built,
                 args=args,
-                ntestrun=ntestrun,
+                ctxtestrun=ctxtestrun,
                 repo_micropython_tests=repo_micropython_tests,
             )
             assert async_target is not None
@@ -170,7 +173,7 @@ _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
     label="TESTPERF",
     helptext="Run perftest on each board.",
     command=["perfbench.py", "run-perfbench.py"],
-    required_fut=EnumFut.FUT_MCU_ONLY,
+    required_fut=constants.EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     timeout_s=60.0,
 )
@@ -178,7 +181,7 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     label="TESTWLAN",
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
-    required_fut=EnumFut.FUT_WLAN,
+    required_fut=constants.EnumFut.FUT_WLAN,
     required_tentacles_count=2,
     timeout_s=5 * 60.0,
 )

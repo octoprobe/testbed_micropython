@@ -70,12 +70,12 @@ class TestBartender:
         self,
         firmwares_built: set[str] | None,
         args: util_testrunner.Args,
-        ntestrun: util_testrunner.NTestRun,
+        ctxtestrun: util_testrunner.CtxTestRun,
         repo_micropython_tests: pathlib.Path,
     ) -> AsyncTargetTest:
         assert isinstance(firmwares_built, set | None)
         assert isinstance(args, util_testrunner.Args)
-        assert isinstance(ntestrun, util_testrunner.NTestRun)
+        assert isinstance(ctxtestrun, util_testrunner.CtxTestRun)
         assert isinstance(repo_micropython_tests, pathlib.Path)
 
         possible_testruns = self.possible_testruns(firmwares_built=firmwares_built)
@@ -85,7 +85,7 @@ class TestBartender:
         selected_testrun = possible_testruns[0]
         async_target = AsyncTargetTest(
             args=args,
-            ntestrun=ntestrun,
+            ctxtestrun=ctxtestrun,
             testrun=selected_testrun,
             repo_micropython_tests=repo_micropython_tests,
             timeout_s=selected_testrun.timeout_s,
@@ -161,7 +161,7 @@ class AsyncTargetTest(util_multiprocessing.AsyncTarget):
     def __init__(
         self,
         args: util_testrunner.Args,
-        ntestrun: util_testrunner.NTestRun,
+        ctxtestrun: util_testrunner.CtxTestRun,
         testrun: TestRun,
         repo_micropython_tests: pathlib.Path,
         timeout_s: float,
@@ -170,7 +170,7 @@ class AsyncTargetTest(util_multiprocessing.AsyncTarget):
         from ..mptest import util_testrunner
 
         assert isinstance(args, util_testrunner.Args)
-        assert isinstance(ntestrun, util_testrunner.NTestRun)
+        assert isinstance(ctxtestrun, util_testrunner.CtxTestRun)
         assert isinstance(testrun, TestRun)
         assert isinstance(repo_micropython_tests, pathlib.Path)
         assert isinstance(timeout_s, float)
@@ -179,7 +179,7 @@ class AsyncTargetTest(util_multiprocessing.AsyncTarget):
             target_unique_name=testrun.testid,
             tentacles=testrun.tentacles,
             func=util_testrunner.target_run_one_test_async,
-            func_args=[args, ntestrun, testrun, repo_micropython_tests],
+            func_args=[args, ctxtestrun, testrun, repo_micropython_tests],
             timeout_s=timeout_s,
         )
 

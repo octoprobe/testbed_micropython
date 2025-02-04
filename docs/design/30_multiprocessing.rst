@@ -96,7 +96,7 @@ These parameters are pickled by 'multiprocessing.process' and call on of these f
    def target_run_one_test_async(
       arg1: util_multiprocessing.TargetArg1,
       args: Args,
-      ntestrun: NTestRun,
+      ctxtestrun: CtxTestRun,
       testrun: TestRun,
       repo_micropython_tests: pathlib.Path,
    ) -> None:
