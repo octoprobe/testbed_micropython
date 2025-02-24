@@ -28,7 +28,7 @@ classifiers = [
 ]
 dependencies = [
     "pyusb",
-    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
+    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@v0.2-release",
     "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@main_with_PRs",
     # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
 ]
