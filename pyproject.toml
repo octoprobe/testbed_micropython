@@ -57,11 +57,13 @@ distribution = true
 
 [tool.pdm.build]
 package-dir = "src"
-source-includes = ["src/testbed_micropython"]
-# source-includes = [
-#     "octoprobe/",
-#     "requirements*.txt",
-#     ]
+includes = [
+    "src/testbed_micropython/",
+]
+source-includes = [
+    "LICENSE",
+    "README.rst"
+]
 
 [tool.mypy]
 # strict = true

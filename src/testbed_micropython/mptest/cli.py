@@ -200,7 +200,7 @@ def test(
             help="Only run these on this tentacle.",
             autocompletion=complete_only_board,
         ),
-    ] = None,  # noqa: UNoneP007
+    ] = None,  # noqa: UP007
     only_test: TyperAnnotated[
         str | None,
         typer.Option(help="Only run this test.", autocompletion=complete_only_test),
