@@ -9,6 +9,6 @@ downloads/**
 testbed.lock
 **/*\ copy.py
 **/*\ copy\ [0-9]*.py
-src/testbed/mpbuild/tests/results/*.txt
+src/testbed_micropython/mpbuild/tests/results/*.txt
+src/testbed_micropython/mpbuild/docker-build-micropython-esp32/esp-idf
 src/testbed/experiments/*
-src/testbed/mpbuild/docker-build-micropython-esp32/esp-idf

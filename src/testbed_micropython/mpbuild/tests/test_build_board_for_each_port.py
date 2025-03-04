@@ -11,7 +11,7 @@ import pathlib
 from mpbuild import Database
 from mpbuild.build import MpbuildNotSupportedException
 
-from ...mpbuild.build_api import build
+from testbed_micropython.mpbuild.build_api import build
 
 THIS_FILE = pathlib.Path(__file__)
 RESULTS_DIRECTORY = THIS_FILE.parent / "results"
