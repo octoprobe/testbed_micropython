@@ -127,17 +127,33 @@ class Firmware:
     Set to 'MICROPYTHON_FULL_VERSION_TEXT_FORCE' if the value is not known.
     """
 
+    micropython_sys_build_text: str | None
+    """
+    Example:
+    Calling '>>> sys.implementation._build'
+    on firmware https://micropython.org/resources/firmware/RPI_PICO2-RISCV-20241129-v1.24.1.uf2
+    will return: 'RPI_PICO2-RISCV'
+    will return: '' if sys.implementation._build is not build into the firmware.
+
+    This string will be used by octoprobe to verify if the correct firmware is installed.
+
+    Note that 'sys.implementation._build' was introduced with https://github.com/micropython/micropython/pull/16843!
+    """
+
     @property
     def micropython_full_version_text(self) -> str:
         if self.micropython_sys_version_text is None:
             return MICROPYTHON_FULL_VERSION_TEXT_FORCE
         if self.micropython_sys_implementation_text is None:
             return MICROPYTHON_FULL_VERSION_TEXT_FORCE
-        return (
-            self.micropython_sys_version_text
-            + VERSION_IMPLEMENTATION_SEPARATOR
-            + self.micropython_sys_implementation_text
-        )
+        if self.micropython_sys_build_text is None:
+            return MICROPYTHON_FULL_VERSION_TEXT_FORCE
+        versions = []
+        if self.micropython_sys_build_text != "":
+            versions.append(self.micropython_sys_build_text)
+        versions.append(self.micropython_sys_version_text)
+        versions.append(self.micropython_sys_implementation_text)
+        return VERSION_IMPLEMENTATION_SEPARATOR.join(versions)
 
     def __str__(self) -> str:
         return f"Firmware({self.variant_name_full}, {self.filename}, {self.micropython_sys_version_text})"
@@ -202,6 +218,13 @@ class BuildFolder:
     """
     static const mp_obj_str_t mp_sys_implementation_machine_obj = {{&mp_type_str}, 0, sizeof("Raspberry Pi Pico2" " with " "RP2350-RISCV") - 1, (const byte *)"Raspberry Pi Pico2" " with " "RP2350-RISCV"};
     static const mp_obj_str_t mp_sys_implementation_machine_obj = {{&mp_type_str}, 0, sizeof("ESP module (512K)" " with " "ESP8266") - 1, (const byte *)"ESP module (512K)" " with " "ESP8266"};
+    """
+
+    _REGEX_MICROPY_BUILD = re.compile(
+        r"mp_sys_implementation__build_obj.*?sizeof\((\".+?\")\)"
+    )
+    """
+    static const mp_obj_str_t mp_sys_implementation__build_obj = {{&mp_type_str}, 0, sizeof("PYBV11") - 1, (const byte *)"PYBV11"};
     """
 
     def __init__(self, board: Board, variant: str | None) -> None:
@@ -272,6 +295,18 @@ class BuildFolder:
         """
         return self.get_regex(self._REGEX_MICROPY_MCU_NAME)
 
+    @property
+    def sys_build_text(self) -> str:
+        """
+        As returned from 'sys.implementation._build'
+        See https://github.com/micropython/micropython/pull/16843.
+        Example: 'PYBV11-DP'
+        """
+        match = self._REGEX_MICROPY_BUILD.search(self.file_qstr_i_last)
+        if match is None:
+            return ""
+        return self.get_regex(self._REGEX_MICROPY_BUILD)
+
     def get_regex(self, pattern: re.Pattern) -> str:
         match = pattern.search(self.file_qstr_i_last)
         if match is None:
@@ -320,7 +355,7 @@ def build(
             stderr=subprocess.STDOUT,
         )
         f.write(f"\n\nreturncode={proc.returncode}\n")
-        f.write(f"duration={time.monotonic()-begin_s:0.3f}s\n")
+        f.write(f"duration={time.monotonic() - begin_s:0.3f}s\n")
 
     if proc.returncode != 0:
         raise MpbuildDockerException(
@@ -337,6 +372,7 @@ def build(
         variant=variant,
         micropython_sys_version_text=build_folder.micropython_version_text,
         micropython_sys_implementation_text=build_folder.sys_implementation_text,
+        micropython_sys_build_text=build_folder.sys_build_text,
     )
 
 
