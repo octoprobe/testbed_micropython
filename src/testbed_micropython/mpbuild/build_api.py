@@ -32,7 +32,6 @@ from mpbuild.build import (
     docker_build_cmd,
 )
 from octoprobe.lib_tentacle_dut import VERSION_IMPLEMENTATION_SEPARATOR
-from octoprobe.util_firmware_spec import MICROPYTHON_FULL_VERSION_TEXT_FORCE
 
 from .board_tweaks import board_specific_download, tweak_build_folder
 
@@ -103,60 +102,17 @@ class Firmware:
     None: Default variant
     """
 
-    micropython_sys_version_text: str | None
+    micropython_full_version_text: str
     """
     Example:
-    Calling '>>> sys.version'
-    on firmware https://micropython.org/resources/firmware/RPI_PICO2-RISCV-20241129-v1.24.1.uf2
-    will return: '3.4.0; MicroPython v1.24.1 on 2024-11-29'
+     * PYBV11-DP: 3.4.0; MicroPython v1.24.0-338.g265d1b2ec on 2025-03-04;PYBv1.1 with STM32F405RG
 
-    This string will be used by octoprobe to verify if the correct firmware is installed.
-
-    Set to 'None' if the value is not known.
+    Example - after https://github.com/micropython/micropython/pull/16843:
+     * PYBV11-DP: PYBV11-DP;3.4.0; MicroPython v1.24.0-338.g265d1b2ec on 2025-03-04;PYBv1.1 with STM32F405RG
     """
-
-    micropython_sys_implementation_text: str | None
-    """
-    Example:
-    Calling '>>> sys.implementation[2]'
-    on firmware https://micropython.org/resources/firmware/RPI_PICO2-RISCV-20241129-v1.24.1.uf2
-    will return: 'Raspberry Pi Pico2 with RP2350-RISCV'
-
-    This string will be used by octoprobe to verify if the correct firmware is installed.
-
-    Set to 'MICROPYTHON_FULL_VERSION_TEXT_FORCE' if the value is not known.
-    """
-
-    micropython_sys_build_text: str | None
-    """
-    Example:
-    Calling '>>> sys.implementation._build'
-    on firmware https://micropython.org/resources/firmware/RPI_PICO2-RISCV-20241129-v1.24.1.uf2
-    will return: 'RPI_PICO2-RISCV'
-    will return: '' if sys.implementation._build is not build into the firmware.
-
-    This string will be used by octoprobe to verify if the correct firmware is installed.
-
-    Note that 'sys.implementation._build' was introduced with https://github.com/micropython/micropython/pull/16843!
-    """
-
-    @property
-    def micropython_full_version_text(self) -> str:
-        if self.micropython_sys_version_text is None:
-            return MICROPYTHON_FULL_VERSION_TEXT_FORCE
-        if self.micropython_sys_implementation_text is None:
-            return MICROPYTHON_FULL_VERSION_TEXT_FORCE
-        if self.micropython_sys_build_text is None:
-            return MICROPYTHON_FULL_VERSION_TEXT_FORCE
-        versions = []
-        if self.micropython_sys_build_text != "":
-            versions.append(self.micropython_sys_build_text)
-        versions.append(self.micropython_sys_version_text)
-        versions.append(self.micropython_sys_implementation_text)
-        return VERSION_IMPLEMENTATION_SEPARATOR.join(versions)
 
     def __str__(self) -> str:
-        return f"Firmware({self.variant_name_full}, {self.filename}, {self.micropython_sys_version_text})"
+        return f"Firmware({self.variant_name_full}, {self.filename}, {self.micropython_full_version_text})"
 
     @property
     def variant_name_full(self) -> str:
@@ -182,9 +138,7 @@ class Firmware:
         """
         If sources files have been touched, 'dirty' is added.
         """
-        if self.micropython_sys_version_text is None:
-            return True
-        return "dirty" in self.micropython_sys_version_text
+        return "dirty" in self.micropython_full_version_text
 
 
 _FIRMWARE_FILENAMES = {
@@ -279,7 +233,7 @@ class BuildFolder:
         return _filename
 
     @property
-    def micropython_version_text(self) -> str:
+    def micropython_sys_version_text(self) -> str:
         """
         As returned from 'sys.version'
         Example: '3.4.0; MicroPython v1.24.0 on 2024-10-25'
@@ -288,7 +242,7 @@ class BuildFolder:
         return self.get_regex(self._REGEX_MICOPY_SYS_VERSION2)
 
     @property
-    def sys_implementation_text(self) -> str:
+    def micropython_sys_implementation_text(self) -> str:
         """
         As returned from 'sys.implementation'
         Example: 'LOLIN_C3_MINI with ESP32-C3FH4'
@@ -296,7 +250,7 @@ class BuildFolder:
         return self.get_regex(self._REGEX_MICROPY_MCU_NAME)
 
     @property
-    def sys_build_text(self) -> str:
+    def micropython_sys_build_text(self) -> str:
         """
         As returned from 'sys.implementation._build'
         See https://github.com/micropython/micropython/pull/16843.
@@ -306,6 +260,15 @@ class BuildFolder:
         if match is None:
             return ""
         return self.get_regex(self._REGEX_MICROPY_BUILD)
+
+    @property
+    def micropython_full_version_text(self) -> str:
+        versions = []
+        if self.micropython_sys_build_text != "":
+            versions.append(self.micropython_sys_build_text)
+        versions.append(self.micropython_sys_version_text)
+        versions.append(self.micropython_sys_implementation_text)
+        return VERSION_IMPLEMENTATION_SEPARATOR.join(versions)
 
     def get_regex(self, pattern: re.Pattern) -> str:
         match = pattern.search(self.file_qstr_i_last)
@@ -370,9 +333,7 @@ def build(
         filename=build_folder.firmware_filename,
         board=board,
         variant=variant,
-        micropython_sys_version_text=build_folder.micropython_version_text,
-        micropython_sys_implementation_text=build_folder.sys_implementation_text,
-        micropython_sys_build_text=build_folder.sys_build_text,
+        micropython_full_version_text=build_folder.micropython_full_version_text,
     )
 
 
