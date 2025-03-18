@@ -48,8 +48,8 @@ from __future__ import annotations
 from octoprobe import (
     util_mcu_mimxrt,
     util_mcu_nrf,
+    util_mcu_pico,
     util_mcu_pyboard,
-    util_mcu_rp2,
     util_mcu_samd,
 )
 
@@ -377,8 +377,8 @@ Connections
     ],
     mcu_usb_id=util_mcu_pyboard.PYBOARD_USB_ID,
     # TODO: Enable all board variants when issue fixed: https://github.com/micropython/micropython/issues/16498
-    # tags="build_variants=:DP:THREAD:DP_THREAD,mcu=stm32,programmer=dfu-util",
-    tags="build_variants=,mcu=stm32,programmer=dfu-util",
+    tags="build_variants=:DP:THREAD:DP_THREAD,mcu=stm32,programmer=dfu-util",
+    # tags="build_variants=,mcu=stm32,programmer=dfu-util",
     mcu_config=McuConfig(),
 )
 
@@ -449,7 +449,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
-    mcu_usb_id=util_mcu_rp2.RPI_PICO_USB_ID,
+    mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
     mcu_config=McuConfig(),
 )
@@ -468,7 +468,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
-    mcu_usb_id=util_mcu_rp2.RPI_PICO_USB_ID,
+    mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
     mcu_config=McuConfig(),
 )
@@ -485,7 +485,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
-    mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
+    mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
     mcu_config=McuConfig(),
 )
@@ -520,7 +520,7 @@ Connections
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
-    mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
+    mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     # TODO: No RISCV variant. Why?
     # tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
     tags="build_variants=,mcu=rp2,programmer=picotool",
@@ -714,7 +714,7 @@ MCU_RPI_PICO = TentacleSpecMicropython(
     tentacle_tag="MCU_RPI_PICO",
     futs=[],
     doc=DOC_TENTACLE_RPI_PICO,
-    mcu_usb_id=util_mcu_rp2.RPI_PICO_USB_ID,
+    mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="boards=RPI_PICO,mcu=rp2,programmer=picotool",
     relays_closed={},
     mcu_config=McuConfig(),
@@ -729,7 +729,7 @@ MCU_RPI_PICO = TentacleSpecMicropython(
 #     tentacle_tag="MCU_RPI_PICO2",
 #     futs=[],
 #     doc=DOC_TENTACLE_RPI_PICO2,
-#     mcu_usb_id=util_mcu_rp2.RPI_PICO2_USB_ID,
+#     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
 #     tags="boards=RPI_PICO2:RPI_PICO2-RISCV,mcu=rp2,programmer=picotool",
 #     relays_closed={},
 #     mcu_config=McuConfig(),

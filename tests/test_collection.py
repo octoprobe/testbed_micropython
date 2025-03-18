@@ -7,8 +7,8 @@ import sys
 import typing
 
 import pytest
-from octoprobe.usb_tentacle.usb_baseclasses import Location
-from octoprobe.usb_tentacle.usb_tentacle import UsbTentacle
+from octoprobe.usb_tentacle.usb_baseclasses import Location, TENTACLE_VERSION_V03
+from octoprobe.usb_tentacle.usb_tentacle import UsbPico, UsbTentacle
 
 from testbed_micropython import constants
 from testbed_micropython.mptest import util_testrunner
@@ -76,7 +76,13 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                 hw_version="1.0",
                 usb_tentacle=UsbTentacle(
                     hub4_location=Location(3, [1, i]),
-                    rp2_infra=None,
+                    pico_infra=UsbPico(
+                        location=Location(bus=1, path=[]),
+                        serial=None,
+                        serial_port=None,
+                    ),
+                    pico_probe=None,
+                    tentacle_version=TENTACLE_VERSION_V03,
                 ),
             )
 

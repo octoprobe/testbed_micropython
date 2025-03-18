@@ -8,7 +8,10 @@ import time
 import typing
 
 from octoprobe.octoprobe import CtxTestRun
-from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
+from octoprobe.usb_tentacle.usb_tentacle import (
+    UsbTentacles,
+    assert_serialdelimtied_valid,
+)
 from octoprobe.util_baseclasses import OctoprobeTestException
 from octoprobe.util_constants import relative_cwd
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
@@ -119,7 +122,7 @@ class Args:
 
 
 def query_connected_tentacles_fast() -> ConnectedTentacles:
-    usb_tentacles = UsbTentacles.query(require_serial=True)
+    usb_tentacles = UsbTentacles.query(poweron=False)
 
     return instantiate_tentacles(usb_tentacles)
 
@@ -132,22 +135,24 @@ def instantiate_tentacles(usb_tentacles: UsbTentacles) -> ConnectedTentacles:
 
     tentacles = ConnectedTentacles()
     for usb_tentacle in usb_tentacles:
-        rp2_infra = usb_tentacle.rp2_infra
-        if rp2_infra is None:
+        pico_infra = usb_tentacle.pico_infra
+        if pico_infra is None:
             continue
-        serial = rp2_infra.serial
-        if serial is None:
+        serial_delimited = pico_infra.serial_delimited
+        if serial_delimited is None:
             continue
+        assert_serialdelimtied_valid(serial_delimited=serial_delimited)
         try:
-            tentacle_instance = TENTACLES_INVENTORY[serial]
+            tentacle_instance = TENTACLES_INVENTORY[serial_delimited]
+
         except KeyError:
             logger.warning(
-                f"Tentacle with serial {serial} is not specified in TENTACLES_INVENTORY."
+                f"Tentacle with serial {serial_delimited} is not specified in TENTACLES_INVENTORY."
             )
             continue
 
         tentacle = TentacleMicropython(
-            tentacle_serial_number=serial,
+            tentacle_serial_number=serial_delimited,
             tentacle_spec_base=tentacle_instance.tentacle_spec,
             hw_version=tentacle_instance.hw_version,
             usb_tentacle=usb_tentacle,

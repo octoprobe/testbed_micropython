@@ -338,7 +338,10 @@ def build(
 
 
 def build_by_variant_normalized(
-    logfile: Path, db: Database, variant_normalized: str, do_clean: bool
+    logfile: Path,
+    db: Database,
+    variant_normalized: str,
+    do_clean: bool,
 ) -> Firmware:
     """
     This is the main entry point into mpbuild.
@@ -373,7 +376,11 @@ def build_by_variant_normalized(
     variant = None if variant_str == "" else variant_str
 
     return build(
-        logfile=logfile, db=db, board=board, variant=variant, do_clean=do_clean
+        logfile=logfile,
+        db=db,
+        board=board,
+        variant=variant,
+        do_clean=do_clean,
     )
 
 

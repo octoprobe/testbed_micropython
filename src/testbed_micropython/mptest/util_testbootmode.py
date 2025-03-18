@@ -25,7 +25,7 @@ def get_programmer_labels() -> str:
 
 
 def do_debugbootmode(programmer: str) -> None:
-    usb_tentacles = UsbTentacles.query(require_serial=True)
+    usb_tentacles = UsbTentacles.query(poweron=False)
     init_logging()
     if len(usb_tentacles) != 1:
         print(

@@ -83,7 +83,8 @@
                 // v1.24.1: PYBV11 fails
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.24.1",
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.24.0",
-                "--firmware-build=https://github.com/micropython/micropython.git@master",
+                // "--firmware-build=https://github.com/micropython/micropython.git@master",
+                "--firmware-build=https://github.com/dpgeorge/micropython@master",
                 // "--firmware-build=https://github.com/hmaerki/fork_micropython@fix_build_ESP32_GENERIC_S3",
                 // "--flash-skip",
                 // "--flash-force",
@@ -105,8 +106,6 @@
                 // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
-                // "RPI_PICO",
-                // "ESP8266_GENERIC",
             ],
             "console": "integratedTerminal",
             "env": {
