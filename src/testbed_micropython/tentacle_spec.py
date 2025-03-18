@@ -42,7 +42,7 @@ class TentacleSpecMicropython(TentacleSpecBase):
     @property
     def build_variants(self) -> list[str]:
         """
-        Example for RP2_PICO: ["", "RISCV"]
+        Example for PICO: ["", "RISCV"]
         Example for ESP8266_GENERIC: [""]
         """
         variants = self.get_tag(TAG_BUILD_VARIANTS)

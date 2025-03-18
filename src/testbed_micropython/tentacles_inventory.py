@@ -58,10 +58,10 @@ TENTACLES_INVENTORY = (
     #         ("492f", "v0.0", tentacle_specs.AA_UNASSEMBLED),
     #     ],
     # )
-    # .add_testbed_instance(
-    #     testbed_instance="ch_greenliff_1",
-    #     tentacles=[
-    #         # ("e46340474b55-1722", "v1.0", tentacle_specs.RPI_PICO),
-    #     ],
-    # )
+    .add_testbed_instance(
+        testbed_instance="ch_greenliff_1",
+        tentacles=[
+            ("e46340474b55-1722", "v1.0", tentacle_specs.RPI_PICO),
+        ],
+    )
 ).inventory
