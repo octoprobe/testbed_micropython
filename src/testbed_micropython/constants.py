@@ -9,6 +9,7 @@ import pathlib
 import typing
 
 from octoprobe.util_baseclasses import TENTACLE_TYPE_MCU
+from octoprobe.util_constants import DIRECTORY_OCTOPROBE_GIT_CACHE
 
 if typing.TYPE_CHECKING:
     from octoprobe.lib_tentacle import TentacleBase
@@ -25,7 +26,7 @@ DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
 # assert (DIRECTORY_REPO / "src" / "testbed_micropython").is_dir()
 DIRECTORY_DOWNLOADS = DIRECTORY_REPO / "downloads"
 DIRECTORY_TESTRESULTS_DEFAULT = DIRECTORY_REPO / "results"
-DIRECTORY_GIT_CACHE = DIRECTORY_REPO / "git_cache"
+DIRECTORY_GIT_CACHE = DIRECTORY_OCTOPROBE_GIT_CACHE
 FILENAME_TESTBED_LOCK = pathlib.Path("/var/lock/octoprobe_testbed.lock")
 SUBDIR_MPBUILD = "mpbuild"
 DIRECTORY_MPBUILD_ARTIFACTS_DEFAULT = DIRECTORY_TESTRESULTS_DEFAULT / SUBDIR_MPBUILD

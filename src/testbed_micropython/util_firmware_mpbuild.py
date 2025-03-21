@@ -62,7 +62,7 @@ class FirmwareBuilder(FirmwareBuilderSkipFlash):
             self.git_repo = CachedGitRepo(
                 directory_cache=directory_git_cache,
                 git_spec=firmware_git,
-                prefix="firmware-build_",
+                prefix="firmware_",
             )
             self.git_repo.clone(git_clean=git_clean)
             self.repo_directory = self.git_repo.directory_git_worktree
