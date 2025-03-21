@@ -41,11 +41,11 @@ class ArgsMpTest:
             git_repo = CachedGitRepo(
                 directory_cache=directory_git_cache,
                 git_spec=self.micropython_tests,
-                prefix="micropython_tests_",
+                prefix="tests_",
             )
             git_repo.clone(git_clean=False)
 
-            _directory = git_repo.directory
+            _directory = git_repo.directory_git_worktree
         else:
             # 'self.micropython_tests' is a filename.
             _directory = pathlib.Path(self.micropython_tests).expanduser().resolve()

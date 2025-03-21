@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../work_octoprobe_octoprobe"
 		}
 	],
 	"settings": {

@@ -62,10 +62,10 @@ class FirmwareBuilder(FirmwareBuilderSkipFlash):
             self.git_repo = CachedGitRepo(
                 directory_cache=directory_git_cache,
                 git_spec=firmware_git,
-                prefix="micropython_firmware_",
+                prefix="firmware-build_",
             )
             self.git_repo.clone(git_clean=git_clean)
-            self.repo_directory = self.git_repo.directory
+            self.repo_directory = self.git_repo.directory_git_worktree
 
         else:
             self.repo_directory = pathlib.Path(firmware_git).expanduser().resolve()
