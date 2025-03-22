@@ -19,6 +19,7 @@ Problems:
 
 from __future__ import annotations
 
+import logging
 import re
 import subprocess
 import time
@@ -34,6 +35,8 @@ from mpbuild.build import (
 from octoprobe.lib_tentacle_dut import VERSION_IMPLEMENTATION_SEPARATOR
 
 from .board_tweaks import board_specific_download, tweak_build_folder
+
+logger = logging.getLogger(__file__)
 
 BOARD_VARIANT_SEPARATOR = "-"
 
@@ -304,8 +307,17 @@ def build(
         privileged=False,
     )
 
+    mpbuild_cmd = f"mpbuild build {board.name}"
+    if variant is not None:
+        mpbuild_cmd += f" {variant}"
+    logger.debug("Calling mpbuild:")
+    logger.debug(f"  cd {db.mpy_root_directory}")
+    logger.debug(f"  {mpbuild_cmd}")
+
     with logfile.open("w") as f:
         begin_s = time.monotonic()
+        f.write(f"cd {db.mpy_root_directory}\n")
+        f.write(f"{mpbuild_cmd}\n")
         f.write(f"{build_cmd}\n\n\n")
         f.flush()
         proc = subprocess.run(
