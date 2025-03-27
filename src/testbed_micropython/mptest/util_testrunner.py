@@ -176,13 +176,15 @@ class TestRunner:
         self.firmware_bartender: FirmwareBartenderBase
 
         self.args = args
+
+        util_logging.init_logging()
+
         _TESTBED_LOCK.acquire(constants.FILENAME_TESTBED_LOCK)
 
         if args.directory_results.exists():
             shutil.rmtree(args.directory_results, ignore_errors=False)
         args.directory_results.mkdir(parents=True, exist_ok=True)
 
-        util_logging.init_logging()
         util_logging.Logs(args.directory_results)
 
     def init(self) -> None:
