@@ -8,7 +8,7 @@
             "name": "mptest labels",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed_micopython.mptest.cli",
+            "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
                 "labels"
@@ -23,7 +23,7 @@
             "name": "mptest list",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed_micopython.mptest.cli",
+            "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
                 "list",
@@ -38,7 +38,7 @@
             "name": "mptest debugbootmode",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed_micopython.mptest.cli",
+            "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
                 "debugbootmode",
@@ -56,9 +56,8 @@
             "name": "mptest flash",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed_micopython.mptest.cli",
-            "cwd": "${workspaceFolder}/git_cache/micropython_firmware_e8452d67a60e9613af4e0de0bafed1b8",
-            // "cwd": "${workspaceFolder}/git_cache/micropython_tests_e8452d67a60e9613af4e0de0bafed1b8/",
+            "module": "testbed_micropython.mptest.cli",
+            "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
             "args": [
                 "flash",
                 // "--last-variant",
@@ -83,8 +82,8 @@
                 // v1.24.1: PYBV11 fails
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.24.1",
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.24.0",
-                // "--firmware-build=https://github.com/micropython/micropython.git@master",
-                "--firmware-build=https://github.com/dpgeorge/micropython@master",
+                "--firmware-build=https://github.com/micropython/micropython.git@master",
+                // "--firmware-build=https://github.com/dpgeorge/micropython@master",
                 // "--firmware-build=https://github.com/hmaerki/fork_micropython@fix_build_ESP32_GENERIC_S3",
                 // "--flash-skip",
                 // "--flash-force",

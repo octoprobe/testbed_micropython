@@ -27,7 +27,10 @@ DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
 DIRECTORY_DOWNLOADS = DIRECTORY_REPO / "downloads"
 DIRECTORY_TESTRESULTS_DEFAULT = DIRECTORY_REPO / "results"
 DIRECTORY_GIT_CACHE = DIRECTORY_OCTOPROBE_GIT_CACHE
-FILENAME_TESTBED_LOCK = pathlib.Path("/var/lock/octoprobe/testbed.lock")
+FILENAME_TESTBED_LOCK = pathlib.Path("/tmp/octoprobe/testbed.lock")
+"""
+Does not work: "/var/lock/octoprobe/testbed.lock": On Archlinux: Failed to create folder "/var/lock/octoprobe".
+"""
 SUBDIR_MPBUILD = "mpbuild"
 DIRECTORY_MPBUILD_ARTIFACTS_DEFAULT = DIRECTORY_TESTRESULTS_DEFAULT / SUBDIR_MPBUILD
 
