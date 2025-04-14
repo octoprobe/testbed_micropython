@@ -1,0 +1,28 @@
+{
+    "args": {
+        "test_instance": "port:/dev/ttyACM4",
+        "baudrate": 115200,
+        "user": "micro",
+        "password": "python",
+        "test_dirs": null,
+        "result_dir": "/home/maerki/work_octoprobe_testbed_micropython/results/RUN-TESTS_BASICS[1722-RPI_PICO]",
+        "filters": [],
+        "emit": "bytecode",
+        "heapsize": null,
+        "via_mpy": false,
+        "mpy_cross_flags": "-march=armv6m",
+        "keep_path": false,
+        "jobs": 1,
+        "files": [],
+        "print_failures": false,
+        "clean_failures": false,
+        "run_failures": false,
+        "platform": "rp2",
+        "arch": "armv6m",
+        "inlineasm_arch": "thumb"
+    },
+    "failed_tests": [
+        "extmod/re_sub.py",
+        "ports/rp2/rp2_dma.py"
+    ]
+}
