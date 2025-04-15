@@ -86,7 +86,7 @@ class TestRun:
             return f"{tv.tentacle.label_short}{tv.dash_variant}"
 
         tentacles = ",".join([testid(tv) for tv in self.list_tentacle_variant])
-        return f"{self.testrun_spec.label}[{tentacles}]"
+        return f"{self.testrun_spec.label}@{tentacles}"
 
     @property
     def debug_text(self) -> str:
