@@ -357,7 +357,7 @@ class TestRunner:
                             )
                         )
                     elif isinstance(event, firmware_bartender.EventExitFirmware):
-                        logger.debug(f"{event.target_unique_name}: Terminated")
+                        logger.debug(f"{event.target_unique_name}: Completed")
                         target_ctx.close_and_join(self.firmware_bartender.async_targets)
                         if not event.success:
                             msg = f"Firmware build failed: {event.logfile_relative}"

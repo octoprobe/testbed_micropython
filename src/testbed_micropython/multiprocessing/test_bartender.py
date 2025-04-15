@@ -109,7 +109,7 @@ class TestBartender:
         color = "[COLOR_SUCCESS]" if event.success else "[COLOR_FAILED]"
 
         log(
-            f"{color}{async_target.target_unique_name}: Terminated in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {event.logfile_relative}"
+            f"{color}{async_target.target_unique_name}: Completed in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {event.logfile_relative}"
         )
 
         return async_target
