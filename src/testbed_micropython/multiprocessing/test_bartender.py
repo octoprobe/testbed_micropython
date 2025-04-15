@@ -111,7 +111,6 @@ class TestBartender:
         log(
             f"{color}{async_target.target_unique_name}: Completed in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {event.logfile_relative}"
         )
-
         return async_target
 
     def _find_async_target(self, testid: str) -> AsyncTargetTest:
@@ -143,9 +142,11 @@ class TestBartender:
         assert isinstance(report_tasks, util_report_tasks.Tasks)
 
         for async_target in self.async_targets.timeout_reached():
-            self._release(async_target=async_target)
-
             report_tasks.append(async_target.report_task)
+            self._release(async_target=async_target)
+            logger.warning(
+                f"[COLOR_FAILED]{async_target.target_unique_name}: Timeout after {async_target.target.livetime_text_full}: Terminated!"
+            )
 
     def pytest_print_actual_testruns(
         self, title: str, indent: int, file: typing.TextIO

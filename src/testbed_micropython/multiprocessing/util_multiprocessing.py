@@ -216,7 +216,7 @@ class AsyncTargets(list[T], typing.Generic[T]):
             if target is None:
                 continue
             if target.timeout_reached():
-                logger.warning(
+                logger.debug(
                     f"{target.name}: Timeout {target.timeout_text} reached: Kill and join "
                 )
                 yield ar

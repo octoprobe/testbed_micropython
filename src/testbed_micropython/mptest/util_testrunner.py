@@ -4,6 +4,7 @@ import dataclasses
 import logging
 import pathlib
 import shutil
+import subprocess
 import time
 import typing
 
@@ -368,11 +369,11 @@ class TestRunner:
                     else:
                         raise ValueError("Programming error!")
 
-                    if self.test_bartender.tests_todo == 0:
-                        if target_ctx.done(self.test_bartender.async_targets):
-                            if target_ctx.done(self.firmware_bartender.async_targets):
-                                logger.info(f"Done in {target_ctx.duration_text}")
-                                return
+                if self.test_bartender.tests_todo == 0:
+                    if target_ctx.done(self.test_bartender.async_targets):
+                        if target_ctx.done(self.firmware_bartender.async_targets):
+                            logger.info(f"Done in {target_ctx.duration_text}")
+                            return
 
         run_all()
 
@@ -504,10 +505,12 @@ def _target_run_one_test_async_a(
             duration_text=duration_text,
         )
         return True
-    except (OctoprobeTestException, UdevFailException) as e:
-        logger.warning(f"{testid_patch}: Terminating test due to: {e!r}")
-        return False
-    except SubprocessExitCodeException as e:
+    except (
+        OctoprobeTestException,
+        UdevFailException,
+        SubprocessExitCodeException,
+        subprocess.TimeoutExpired,
+    ) as e:
         logger.warning(f"{testid_patch}: Terminating test due to: {e!r}")
         return False
     except Exception as e:
