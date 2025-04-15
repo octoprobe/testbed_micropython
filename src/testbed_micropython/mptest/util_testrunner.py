@@ -24,6 +24,8 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY, UdevFailException, UdevPolle
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
+from testbed_micropython.mptest.util_baseclasses import ArgsQuery
+
 from .. import constants
 from ..mptest.util_common import ArgsMpTest
 from ..multiprocessing import firmware_bartender, util_multiprocessing
@@ -60,7 +62,11 @@ class EventExitRunOneTest(util_multiprocessing.EventExit):
     testid: str
 
 
-def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
+def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
+    if query is None:
+        query = ArgsQuery()
+    assert isinstance(query, ArgsQuery)
+
     specs = [
         multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
         multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
@@ -71,15 +77,27 @@ def get_testrun_specs(only_test: str | None = None) -> TestRunSpecs:
         runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
     ]
 
-    if only_test is not None:
-        err_msg = f"Test '{only_test}' not found. Valid tests are {','.join([s.label for s in specs])}"
-        for spec in specs:
-            if spec.label == only_test:
-                return TestRunSpecs([spec])
+    valid_tests = {s.label for s in specs}
 
-        raise ValueError(err_msg)
+    def assert_valid_tests(tests: set[str]) -> None:
+        for test in tests:
+            if test not in valid_tests:
+                raise ValueError(
+                    f"Test '{test}' not found. Valid tests are {','.join(sorted(valid_tests))}"
+                )
 
-    return TestRunSpecs(specs)
+    assert_valid_tests(tests=query.only)
+    assert_valid_tests(tests=query.skip)
+
+    selected_tests = valid_tests
+    if len(query.only) > 0:
+        selected_tests.intersection_update(query.only)
+    if len(query.skip) > 0:
+        selected_tests.difference_update(query.skip)
+
+    return TestRunSpecs(
+        [spec for spec in specs if spec.label in sorted(selected_tests)]
+    )
 
 
 @dataclasses.dataclass
@@ -87,17 +105,17 @@ class Args:
     mp_test: ArgsMpTest | None
     firmware: ArgsFirmware
     directory_results: pathlib.Path
-    only_boards: list[str] | None
-    only_test: str | None
     force_multiprocessing: bool
+    query_test: ArgsQuery
+    query_board: ArgsQuery
 
     def __post_init__(self) -> None:
         assert isinstance(self.mp_test, ArgsMpTest | None)
         assert isinstance(self.firmware, ArgsFirmware)
         assert isinstance(self.directory_results, pathlib.Path)
-        assert isinstance(self.only_boards, list | None)
-        assert isinstance(self.only_test, str | None)
         assert isinstance(self.force_multiprocessing, bool)
+        assert isinstance(self.query_test, ArgsQuery)
+        assert isinstance(self.query_board, ArgsQuery)
 
     @staticmethod
     def get_default_args(
@@ -116,8 +134,8 @@ class Args:
                 directory_git_cache=directory_git_cache,
             ),
             directory_results=directory_results,
-            only_boards=None,
-            only_test=None,
+            query_board=ArgsQuery(),
+            query_test=ArgsQuery(),
             force_multiprocessing=False,
         )
 
@@ -203,18 +221,16 @@ class TestRunner:
             logger.warning("No tentacles discovered!")
             raise SystemExit(0)
 
-        connected_tentacles = connected_tentacles.get_boards_only(
-            boards=self.args.only_boards
-        )
+        connected_tentacles = connected_tentacles.query_boards(query=ArgsQuery())
 
         self.ctxtestrun = CtxTestRun(connected_tentacles=connected_tentacles)
         self.args.firmware.setup()
 
         # _testrun.session_powercycle_tentacles()
 
-        testrun_specs = get_testrun_specs(only_test=self.args.only_test)
+        testrun_specs = get_testrun_specs(query=self.args.query_test)
         testrun_specs.assign_tentacles(
-            tentacles=connected_tentacles.get_boards_only(boards=self.args.only_boards)
+            tentacles=connected_tentacles.query_boards(query=self.args.query_board)
         )
         self.test_bartender = TestBartender(
             connected_tentacles=connected_tentacles,

@@ -8,6 +8,7 @@ import dataclasses
 import logging
 
 from ..constants import EnumFut
+from ..mptest.util_baseclasses import ArgsQuery
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 
 logger = logging.getLogger(__file__)
@@ -152,10 +153,25 @@ class ConnectedTentacles(list[TentacleMicropython]):
     def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
         return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
 
-    def get_boards_only(self, boards: list[str] | None) -> ConnectedTentacles:
-        assert isinstance(boards, list | None)
+    def query_boards(self, query: ArgsQuery) -> ConnectedTentacles:
+        connected_boards = {t.tentacle_spec.board for t in self}
 
-        if boards is None:
-            return self
+        def board_not_connected_warning(boards: set[str]) -> None:
+            for board in boards:
+                if board not in connected_boards:
+                    logger.warning(
+                        f"Board '{board}' not found. Connected boards are {','.join(sorted(boards))}"
+                    )
 
-        return ConnectedTentacles([t for t in self if t.tentacle_spec.board in boards])
+        board_not_connected_warning(boards=query.only)
+        board_not_connected_warning(boards=query.skip)
+
+        selected_boards = connected_boards
+        if len(query.only) > 0:
+            selected_boards.intersection_update(query.only)
+        if len(query.skip) > 0:
+            selected_boards.difference_update(query.skip)
+
+        return ConnectedTentacles(
+            [t for t in self if t.tentacle_spec.board in sorted(selected_boards)]
+        )

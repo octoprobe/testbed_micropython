@@ -26,6 +26,7 @@ from ..multiprocessing import util_multiprocessing
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from ..util_firmware_mpbuild_interface import ArgsFirmware
+from .util_baseclasses import ArgsQuery
 from .util_testbootmode import do_debugbootmode, get_programmer_labels
 
 logger = logging.getLogger(__file__)
@@ -151,8 +152,8 @@ def flash(
             directory_git_cache=constants.DIRECTORY_GIT_CACHE,
         ),
         directory_results=pathlib.Path(results),
-        only_boards=None,
-        only_test=None,
+        query_board=ArgsQuery(),
+        query_test=ArgsQuery(),
         force_multiprocessing=False,
     )
 
@@ -195,15 +196,26 @@ def test(
         ),
     ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
     only_board: TyperAnnotated[
-        str | None,
+        list[str],
         typer.Option(
-            help="Only run these on this tentacle.",
+            help="Run tests only on this board (tentacles).",
+            autocompletion=complete_only_board,
+        ),
+    ] = None,  # noqa: UP007
+    skip_board: TyperAnnotated[
+        list[str],
+        typer.Option(
+            help="Skip tests on this board (tentacles).",
             autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UP007
     only_test: TyperAnnotated[
-        str | None,
-        typer.Option(help="Only run this test.", autocompletion=complete_only_test),
+        list[str],
+        typer.Option(help="Run this test only.", autocompletion=complete_only_test),
+    ] = None,  # noqa: UP007
+    skip_test: TyperAnnotated[
+        list[str],
+        typer.Option(help="Skip this test.", autocompletion=complete_only_test),
     ] = None,  # noqa: UP007
     flash_force: TyperAnnotated[
         bool | None,
@@ -233,8 +245,6 @@ def test(
     ] = False,  # noqa: UP007
 ) -> None:
     try:
-        only_boards = None if only_board is None else [only_board]
-
         args = util_testrunner.Args(
             mp_test=ArgsMpTest(
                 micropython_tests=micropython_tests,
@@ -247,8 +257,8 @@ def test(
                 directory_git_cache=constants.DIRECTORY_GIT_CACHE,
             ),
             directory_results=pathlib.Path(results),
-            only_boards=only_boards,
-            only_test=only_test,
+            query_test=ArgsQuery.factory(only=only_test, skip=skip_test),
+            query_board=ArgsQuery.factory(only=only_board, skip=skip_board),
             force_multiprocessing=force_multiprocessing,
         )
         testrunner = util_testrunner.TestRunner(args=args)
