@@ -1,0 +1,43 @@
+# Octoprobe test report
+
+{% set tests = data.tests %}
+{% set testgroups = data.testgroups %}
+
+* Trigger: {{ tests.trigger }}
+
+* Execution
+  * testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
+  * start, end: {{ tests.time_start }} - {{ tests.time_end }}
+  * command line: {{ tests.commandline }}
+  * firmware: {{ tests.ref_firmware }}
+  * tests: {{ tests.ref_tests }}
+  * log_output: [{{ tests.log_output }}]({{ tests.log_output }})
+  {% if tests.error %}
+  * error: {{ tests.error }}
+  {% endif %}
+
+## Summary
+
+| Test | failed | error | skipped | passed |
+| - | :-: | :-: | :-: | :-: |
+{%- for line  in data.summary %}
+| {{ line.testgroup }} | {{ line.failed }}  | {{ line.error }} | {{ line.skipped }} | {{ line.passed }}|
+{%- endfor %}
+
+## Failed tests
+
+| Testgroup | Test | Port-Variant | Tentacle | Text | Testresult | Logfile |
+| - | - | - | :-: | - | - | - |
+{%- for testgroup in testgroups %}
+    {%- for result  in testgroup.results_failed %}
+| {{ testgroup.testgroup }} | {{ result.name }} |  | {{ testgroup.tentacles }} | - | - | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+    {%- endfor %}
+{%- endfor %}
+
+## Tests
+
+| Testgroup | Error | Logfile |
+| - | - | - |
+{%- for testgroup in testgroups %}
+| {{ testgroup.testgroup }} | {{ testgroup.error }} | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+{%- endfor %}

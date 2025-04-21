@@ -19,6 +19,9 @@ from mpbuild.board_database import MpbuildMpyDirectoryException
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
+from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT
+from testbed_micropython.testreport.testreport import ReportRenderer
+
 from .. import constants
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
@@ -283,6 +286,25 @@ def test(
     except util_testrunner.OctoprobeAppExitException as e:
         logger.info(f"Terminating test due to OctoprobeAppExitException: {e}")
         raise typer.Exit(1) from e
+
+
+@app.command(help="Collect json files and create a report")
+def report(
+    results: TyperAnnotated[
+        str,
+        typer.Option(
+            envvar="TESTBED_MICROPYTHON_REPORT_RESULTS_DIRECTORY",
+            help="Directory containing results",
+        ),
+    ] = DIRECTORY_TESTRESULTS_DEFAULT,
+) -> None:
+    _results = pathlib.Path(results)
+    if not _results.is_dir():
+        print(f"Directory does not exist: {_results}")
+        typer.Exit(1)
+
+    renderer = ReportRenderer(directory_results=_results)
+    renderer.render()
 
 
 if __name__ == "__main__":

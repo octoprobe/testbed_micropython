@@ -25,7 +25,10 @@ from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
 from testbed_micropython.mptest.util_baseclasses import ArgsQuery
-from testbed_micropython.testreport.util_testreport import ReportTests, ReportTestgroup
+from testbed_micropython.testreport.util_testreport import (
+    ReportTestgroup,
+    ReportTests,
+)
 
 from .. import constants
 from ..mptest.util_common import ArgsMpTest

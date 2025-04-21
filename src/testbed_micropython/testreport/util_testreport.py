@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import dataclasses
 import json
 import os
@@ -6,7 +8,6 @@ import platform
 import sys
 import time
 
-from octoprobe.util_pytest.util_logging import LOGFILENAME_HACK
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from ..testcollection.testrun_specs import TestRun
@@ -39,6 +40,11 @@ class ResultTestGroup:
     results: list[ResultTestResult] = dataclasses.field(default_factory=list)
     error: str = "Test never finished..."
 
+    @property
+    def results_failed(self) -> list[ResultTestResult]:
+        failed = [r for r in self.results if r.result == "failed"]
+        return sorted(failed, key=lambda r: r.name)
+
 
 @dataclasses.dataclass
 class ResultTests:
@@ -61,6 +67,56 @@ class ResultTests:
     log_output: str = ""
     # logger_20_info.log
     error: str = "Test never finished..."
+
+
+@dataclasses.dataclass
+class DataSummaryLine:
+    testgroup: str
+    error: int = 0
+    skipped: int = 0
+    passed: int = 0
+    failed: int = 0
+
+
+@dataclasses.dataclass
+class Data:
+    tests: ResultTests
+    testgroups: list[ResultTestGroup] = dataclasses.field(default_factory=list)
+
+    @property
+    def summary(self) -> list[DataSummaryLine]:
+        dict_summary: dict[str, DataSummaryLine] = {}
+        for testgroup in self.testgroups:
+            line = dict_summary.get(testgroup.testgroup, None)
+            if line is None:
+                line = DataSummaryLine(testgroup.testgroup)
+                dict_summary[testgroup.testgroup] = line
+            for result in testgroup.results:
+                if result.result == "failed":
+                    line.failed += 1
+        return sorted(dict_summary.values(), key=lambda line: line.testgroup)
+
+    @staticmethod
+    def factory(directory_results: pathlib.Path) -> Data:
+        def collect_top():
+            filename = directory_results / "context.json"
+            json_text = filename.read_text()
+            json_dict = json.loads(json_text)
+            tests = ResultTests(**json_dict)
+            return Data(tests=tests)
+
+        data = collect_top()
+
+        def collect():
+            for filename in directory_results.glob("*/context_testgroup.json"):
+                json_text = filename.read_text()
+                json_dict = json.loads(json_text)
+                testgroup = ResultTestGroup(**json_dict)
+                testgroup.results = [ResultTestResult(**r) for r in testgroup.results]
+                data.testgroups.append(testgroup)
+
+        collect()
+        return data
 
 
 def now_formatted() -> str:
@@ -88,7 +144,7 @@ class ReportTests:
             if os.environ.get("CI", False):
                 # See: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
                 return "github ci pipeline"
-            return platform.node()
+            return f"manually started from {platform.node()}"
 
         self.report.trigger = get_trigger()
         self._write()
@@ -106,6 +162,11 @@ class ReportTests:
         filename = self.testresults_directory / "context.json"
         json_text = json.dumps(dataclasses.asdict(self.report), indent=4)
         filename.write_text(json_text)
+
+        from .testreport import ReportRenderer
+
+        renderer = ReportRenderer(directory_results=self.testresults_directory)
+        renderer.render()
 
 
 class ReportTestgroup:
