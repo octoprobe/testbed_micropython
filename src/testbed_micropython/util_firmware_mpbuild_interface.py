@@ -67,6 +67,14 @@ class ArgsFirmware:
         assert self._builder is not None
         return self._builder.repo_directory
 
+    @property
+    def ref_firmware(self) -> str:
+        if self.flash_skip:
+            return "unknown due to flash_skip"
+        if self.firmware_build is None:
+            return "???"
+        return self.firmware_build
+
     def build_firmware(
         self,
         tentacle: TentacleBase,

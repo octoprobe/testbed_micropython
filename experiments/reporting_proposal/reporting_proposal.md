@@ -44,14 +44,17 @@
   "time_end": "2025-04-18 23:43:14",
   "log_output": "logger_20_info.log",
   "results" [
-    "basics/async_for.py": {
+    {
+      "name": "basics/async_for.py",
       "result": "pass",
     },
-    "machine_i2s_rate": {
+    {
+      "name": "machine_i2s_rate",
       "result": "fail",
       "text": "Why the test failed...",
     },
-    "perf_bench/core_yield_from.py": {
+    {
+      "name": "perf_bench/core_yield_from.py",
       "result": "pass",
       "text": "71705.62 0.0048 278.92 0.0048",
     }

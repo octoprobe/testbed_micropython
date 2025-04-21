@@ -25,6 +25,7 @@ from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
 from testbed_micropython.mptest.util_baseclasses import ArgsQuery
+from testbed_micropython.testreport.util_testreport import ReportTests, ReportTestgroup
 
 from .. import constants
 from ..mptest.util_common import ArgsMpTest
@@ -171,9 +172,8 @@ def instantiate_tentacles(usb_tentacles: UsbTentacles) -> ConnectedTentacles:
             continue
 
         tentacle = TentacleMicropython(
+            tentacle_instance=tentacle_instance,
             tentacle_serial_number=serial_delimited,
-            tentacle_spec_base=tentacle_instance.tentacle_spec,
-            hw_version=tentacle_instance.hw_version,
             usb_tentacle=usb_tentacle,
         )
 
@@ -193,7 +193,6 @@ class TestRunner:
         self.ctxtestrun: CtxTestRun
         self.test_bartender: TestBartender
         self.firmware_bartender: FirmwareBartenderBase
-
         self.args = args
 
         util_logging.init_logging()
@@ -204,7 +203,13 @@ class TestRunner:
             shutil.rmtree(args.directory_results, ignore_errors=False)
         args.directory_results.mkdir(parents=True, exist_ok=True)
 
-        util_logging.Logs(args.directory_results)
+        logs = util_logging.Logs(args.directory_results)
+        self.report_testgroup = ReportTests(
+            testresults_directory=args.directory_results,
+            log_output=logs.filename,
+            ref_firmware=args.firmware.ref_firmware,
+            ref_tests=args.mp_test.micropython_tests,
+        )
 
     def init(self) -> None:
         journalctl = JournalctlObserver(
@@ -246,6 +251,15 @@ class TestRunner:
         if self.args.firmware.flash_force:
             for tentacle in connected_tentacles:
                 tentacle.tentacle_state.flash_force = True
+
+        def update_testbed_instance() -> None:
+            for connected_tentacle in connected_tentacles:
+                self.report_testgroup.set_testbed(
+                    testbed_name=connected_tentacle.tentacle_instance.testbed_name,
+                    testbed_instance=connected_tentacle.tentacle_instance.testbed_instance,
+                )
+
+        update_testbed_instance()
 
     def flash(self, udev_poller: UdevPoller, last_variant: bool) -> None:
         assert isinstance(last_variant, bool)
@@ -399,6 +413,7 @@ class TestRunner:
         self.ctxtestrun.session_teardown()
         UDEV_POLLER_LAZY.close()
 
+        self.report_testgroup.write_ok()
         generate_task_report(align_time=True)
 
     def run_one_test(
@@ -496,6 +511,7 @@ def _target_run_one_test_async_b(
 def _target_run_one_test_async_a(
     args: Args,
     ctxtestrun: CtxTestRun,
+    logfile: pathlib.Path,
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
@@ -505,6 +521,11 @@ def _target_run_one_test_async_a(
     return True on success
     """
     begin_s = time.monotonic()
+    report_test = ReportTestgroup(
+        testresults_directory=testresults_directory,
+        testrun=testrun,
+        logfile=logfile,
+    )
 
     def duration_text(duration_s: float | None = None) -> str:
         if duration_s is None:
@@ -520,6 +541,7 @@ def _target_run_one_test_async_a(
             testid_patch=testid_patch,
             duration_text=duration_text,
         )
+        report_test.write_ok()
         return True
     except (
         OctoprobeTestException,
@@ -527,11 +549,14 @@ def _target_run_one_test_async_a(
         SubprocessExitCodeException,
         subprocess.TimeoutExpired,
     ) as e:
-        logger.warning(f"{testid_patch}: Terminating test due to: {e!r}")
+        msg = f"{testid_patch}: Terminating test due to: {e!r}"
+        logger.warning(msg)
+        report_test.write_error(error=msg)
         return False
     except Exception as e:
         msg = f"{testid_patch}: Terminating test due to: {e!r}"
         logger.error(msg, exc_info=e)
+        report_test.write_error(error=msg)
         return False
     finally:
         logger.info(f"TEST TEARDOWN {duration_text()} {testid_patch}")
@@ -567,6 +592,7 @@ def target_run_one_test_async(
             success = _target_run_one_test_async_a(
                 args=args,
                 ctxtestrun=ctxtestrun,
+                logfile=logfile,
                 testrun=testrun,
                 repo_micropython_tests=repo_micropython_tests,
                 testresults_directory=testresults_directory,
