@@ -62,7 +62,10 @@ class ArgsMpTest:
 
 
 def mip_install(
-    testargs: TestArgs, tentacle: TentacleBase, serial_port: str, mip_package: str
+    testargs: TestArgs,
+    tentacle: TentacleBase,
+    serial_port: str,
+    mip_package: str,
 ) -> None:
     assert testargs.__class__.__name__ == "TestArgs"
     assert isinstance(tentacle, TentacleBase)

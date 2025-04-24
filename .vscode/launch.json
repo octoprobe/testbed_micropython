@@ -129,7 +129,7 @@
                 // "--no-multiprocessing",
                 // "--git-clean",
                 // "--only-test=RUN-TESTS_BASICS",
-                // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
+                "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
                 // "--only-test=RUN-TESTS_NET_HOSTED",
                 // "--only-test=RUN-TESTS_NET_INET",
                 // "--skip-test=RUN-TESTS_EXTMOD_HARDWARE",

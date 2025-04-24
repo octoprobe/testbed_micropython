@@ -8,6 +8,7 @@ import platform
 import sys
 import time
 
+from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from ..testcollection.testrun_specs import TestRun
@@ -67,6 +68,22 @@ class ResultTests:
     log_output: str = ""
     # logger_20_info.log
     error: str = "Test never finished..."
+    directories: dict[str, str] = dataclasses.field(default_factory=dict)
+    # {"F": "/home/xy/firmware/microython", "R", "/home/xy/results"}
+    git_ref: dict[str, str] = dataclasses.field(default_factory=dict)
+    # {"F": "https://github.com/micropython/micropython.git@master"}
+
+    def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
+        if isinstance(directory, pathlib.Path):
+            directory = str(directory)
+        assert isinstance(tag, DirectoryTag)
+        assert isinstance(directory, str)
+        self.directories[tag.name] = directory
+
+    def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
+        assert isinstance(tag, DirectoryTag)
+        assert isinstance(git_ref, str)
+        self.git_ref[tag.name] = git_ref
 
 
 @dataclasses.dataclass

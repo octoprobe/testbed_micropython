@@ -16,6 +16,7 @@ import pathlib
 import typer
 import typing_extensions
 from mpbuild.board_database import MpbuildMpyDirectoryException
+from octoprobe.scripts.commissioning import init_logging
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
@@ -95,7 +96,12 @@ def debugbootmode(
 def list_() -> None:
     # args = util_testrunner.Args.get_default_args()
     # testrunner = util_testrunner.TestRunner(args=args)
-    connected_tentacles = util_testrunner.query_connected_tentacles_fast()
+    init_logging()
+    try:
+        connected_tentacles = util_testrunner.query_connected_tentacles_fast()
+    except Exception as e:
+        logger.error(f"Terminating test due to: {e!r}")
+        raise typer.Exit(1) from e
 
     print("")
     print("Connected")

@@ -474,7 +474,7 @@ class EventExit(EventBase):
     success: bool
 
     @property
-    def logfile_relative(self) -> pathlib.Path:
+    def logfile_relative(self) -> str:
         return relative_cwd(self.logfile)
 
 

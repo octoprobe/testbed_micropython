@@ -5,6 +5,7 @@ import logging
 import pathlib
 import shutil
 import subprocess
+import sys
 import time
 import typing
 
@@ -13,8 +14,8 @@ from octoprobe.usb_tentacle.usb_tentacle import (
     UsbTentacles,
     assert_serialdelimtied_valid,
 )
-from octoprobe.util_baseclasses import OctoprobeTestException
-from octoprobe.util_constants import relative_cwd
+from octoprobe.util_baseclasses import OctoprobeAppExitException, OctoprobeTestException
+from octoprobe.util_constants import DirectoryTag, relative_cwd
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
 from octoprobe.util_micropython_boards import BoardVariant
@@ -37,7 +38,6 @@ from ..multiprocessing.firmware_bartender import (
     FirmwareBartender,
     FirmwareBartenderBase,
     FirmwareBartenderSkipFlash,
-    OctoprobeAppExitException,
 )
 from ..multiprocessing.test_bartender import (
     AsyncTargetTest,
@@ -207,12 +207,27 @@ class TestRunner:
         args.directory_results.mkdir(parents=True, exist_ok=True)
 
         logs = util_logging.Logs(args.directory_results)
+        ref_tests = "Not specified (no tests to run)"
+        if args.mp_test is not None:
+            ref_tests = args.mp_test.micropython_tests
         self.report_testgroup = ReportTests(
             testresults_directory=args.directory_results,
             log_output=logs.filename,
             ref_firmware=args.firmware.ref_firmware,
-            ref_tests=args.mp_test.micropython_tests,
+            ref_tests=ref_tests,
         )
+        if args.mp_test is not None:
+            self.set_git_ref(DirectoryTag.T, args.mp_test.micropython_tests)
+        self.set_git_ref(DirectoryTag.F, args.firmware.ref_firmware)
+        self.set_directory(DirectoryTag.R, args.directory_results)
+        self.set_directory(DirectoryTag.P, pathlib.Path(sys.executable).parent)
+        self.set_directory(DirectoryTag.W, pathlib.Path.cwd())
+
+    def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
+        self.report_testgroup.report.set_directory(tag=tag, directory=directory)
+
+    def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
+        self.report_testgroup.report.set_git_ref(tag=tag, git_ref=git_ref)
 
     def init(self) -> None:
         journalctl = JournalctlObserver(
@@ -233,6 +248,7 @@ class TestRunner:
 
         self.ctxtestrun = CtxTestRun(connected_tentacles=connected_tentacles)
         self.args.firmware.setup()
+        self.set_directory(DirectoryTag.F, self.args.firmware.repo_micropython_firmware)
 
         # _testrun.session_powercycle_tentacles()
 
@@ -297,7 +313,7 @@ class TestRunner:
         repo_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
             directory_git_cache=constants.DIRECTORY_GIT_CACHE
         )
-
+        self.set_directory(DirectoryTag.T, str(repo_micropython_tests))
         async_target = self.firmware_bartender.build_firmwares(
             directory_mpbuild_artifacts=self.args.directory_results
             / constants.SUBDIR_MPBUILD,
