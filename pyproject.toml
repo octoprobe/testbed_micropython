@@ -30,6 +30,8 @@ dependencies = [
     "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@hmaerki/reporting_proposal",
     "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@main_with_PRs",
     # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
+    "requests~=2.32",
+    "types-requests~=2.32",
 ]
 
 [project.urls]
@@ -176,6 +178,8 @@ keep-runtime-typing = true
 [tool.pylint."MESSAGES CONTROL"]
 disable = '''
     broad-exception-caught,
+    cyclic-import,
+    fixme,
     import-outside-toplevel,
     line-too-long,
     logging-fstring-interpolation,
@@ -187,18 +191,16 @@ disable = '''
     too-many-branches,
     too-many-instance-attributes,
     too-many-locals,
+    too-many-nested-blocks,
+    too-many-positional-arguments,
     too-many-return-statements,
     too-many-statements,
     unnecessary-lambda,
     unreachable,
+    unspecified-encoding,
     unused-argument,
     using-constant-test,
     wrong-import-order,
-    too-many-nested-blocks,
-    too-many-positional-arguments,
-    cyclic-import,
-    unspecified-encoding,
-    fixme,
 '''
 # too-many-positional-arguments,
 

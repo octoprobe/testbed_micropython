@@ -13,6 +13,8 @@ from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from ..testcollection.testrun_specs import TestRun
 
+TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
+
 
 @dataclasses.dataclass
 class ResultTestResult:
@@ -138,7 +140,11 @@ class Data:
 
 def now_formatted() -> str:
     now = time.localtime()
-    return time.strftime("%Y-%m-%d %H:%M:%S", now)
+    return time.strftime(TIME_FORMAT, now)
+
+
+def parse_formatted(time_str: str) -> time.struct_time:
+    return time.strptime(time_str, TIME_FORMAT)
 
 
 class ReportTests:

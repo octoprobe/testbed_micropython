@@ -22,6 +22,7 @@ from octoprobe.util_tentacle_label import label_renderer
 
 from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT
 from testbed_micropython.testreport.testreport import ReportRenderer
+from testbed_micropython.testreport.util_push_testresults import TarAndHttpsPush
 
 from .. import constants
 from ..mptest import util_testrunner
@@ -67,6 +68,16 @@ def complete_only_board():
 
     tsvs = connected_tentacles.get_tsvs()
     return sorted([t.board_variant for t in tsvs])
+
+
+def assert_valid_testresults(testresults: str) -> pathlib.Path:
+    assert isinstance(testresults, str)
+
+    _testresults = pathlib.Path(testresults).resolve()
+    if not _testresults.is_dir():
+        print(f"Directory does not exist: {_testresults}")
+        typer.Exit(1)  # pylint: disable=pointless-exception-statement
+    return _testresults
 
 
 @app.command(help="Create a pdf with lables for the bolzone_due")
@@ -153,7 +164,7 @@ def flash(
         ),
     ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
 ) -> None:
-    directory_results = pathlib.Path(testresults).resolve(strict=True)
+    directory_results = assert_valid_testresults(testresults)
     args = util_testrunner.Args(
         mp_test=None,
         firmware=ArgsFirmware(
@@ -257,7 +268,7 @@ def test(
     ] = False,  # noqa: UP007
 ) -> None:
     try:
-        directory_results = pathlib.Path(testresults).resolve()
+        directory_results = assert_valid_testresults(testresults)
         args = util_testrunner.Args(
             mp_test=ArgsMpTest(
                 micropython_tests=micropython_tests,
@@ -307,14 +318,34 @@ def report(
             help="Directory containing results",
         ),
     ] = DIRECTORY_TESTRESULTS_DEFAULT,
+    url: TyperAnnotated[
+        str,
+        typer.Option(
+            envvar="TESTBED_MICROPYTHON_RESULTS_URL",
+            help="Where to push the results. Empty string will skip.",
+        ),
+    ] = "https://reports.octoprobe.org/upload",
+    label: TyperAnnotated[
+        str,
+        typer.Option(
+            help="Label to be used for store the results. For example 'ch_hans_1-2025_04_22-12_33_22'.",
+        ),
+    ] = None,
+    action_url: TyperAnnotated[
+        str,
+        typer.Option(
+            help="The url which points back to the github action. For example '://github.com/octoprobe/testbed_micropython_runner/actions/runs/14647476492'.",
+        ),
+    ] = None,
 ) -> None:
-    _results = pathlib.Path(testresults)
-    if not _results.is_dir():
-        print(f"Directory does not exist: {_results}")
-        typer.Exit(1)  # pylint: disable=pointless-exception-statement
+    init_logging()
+    directory_results = assert_valid_testresults(testresults)
 
-    renderer = ReportRenderer(directory_results=_results)
+    tar = TarAndHttpsPush(directory=directory_results, label=label)
+    renderer = ReportRenderer(directory_results=directory_results)
     renderer.render()
+    rc = tar.https_push(url=url)
+    typer.Exit(rc)
 
 
 if __name__ == "__main__":
