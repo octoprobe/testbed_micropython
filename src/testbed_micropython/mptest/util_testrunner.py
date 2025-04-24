@@ -15,7 +15,7 @@ from octoprobe.usb_tentacle.usb_tentacle import (
     assert_serialdelimtied_valid,
 )
 from octoprobe.util_baseclasses import OctoprobeAppExitException, OctoprobeTestException
-from octoprobe.util_constants import DirectoryTag, relative_cwd
+from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
 from octoprobe.util_micropython_boards import BoardVariant
@@ -260,6 +260,7 @@ class TestRunner:
             connected_tentacles=connected_tentacles,
             testrun_specs=testrun_specs,
             priority_sorter=TestRun.priority_sorter,
+            directory_results=self.args.directory_results,
         )
         if self.args.firmware.flash_skip:
             self.firmware_bartender = FirmwareBartenderSkipFlash()
@@ -394,8 +395,12 @@ class TestRunner:
                         report_tasks.append(async_target_test.report_task)
 
                     elif isinstance(event, firmware_bartender.EventFirmwareSpec):
+                        logfile = DirectoryTag.R.render_relative_to(
+                            top=self.args.directory_results, filename=event.logfile
+                        )
+
                         logger.info(
-                            f"[COLOR_SUCCESS]{event.target_unique_name}: Firmware build took {event.duration_text}. Logfile: {relative_cwd(event.logfile)}"
+                            f"[COLOR_SUCCESS]{event.target_unique_name}: Firmware build took {event.duration_text}. Logfile: {logfile}"
                         )
                         self.firmware_bartender.firmware_built(event.firmware_spec)
                         report_tasks.append(
@@ -410,7 +415,11 @@ class TestRunner:
                         logger.debug(f"{event.target_unique_name}: Completed")
                         target_ctx.close_and_join(self.firmware_bartender.async_targets)
                         if not event.success:
-                            msg = f"Firmware build failed: {event.logfile_relative}"
+                            logfile = DirectoryTag.R.render_relative_to(
+                                top=self.args.directory_results,
+                                filename=event.logfile,
+                            )
+                            msg = f"Firmware build failed: {logfile}"
                             logger.error(
                                 f"[COLOR_ERROR]{event.target_unique_name}: {msg}"
                             )

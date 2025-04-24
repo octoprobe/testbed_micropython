@@ -151,6 +151,7 @@ def flash(
         ),
     ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
 ) -> None:
+    directory_results = pathlib.Path(results).resolve(strict=True)
     args = util_testrunner.Args(
         mp_test=None,
         firmware=ArgsFirmware(
@@ -160,7 +161,7 @@ def flash(
             git_clean=False,
             directory_git_cache=constants.DIRECTORY_GIT_CACHE,
         ),
-        directory_results=pathlib.Path(results),
+        directory_results=directory_results,
         query_board=ArgsQuery(),
         query_test=ArgsQuery(),
         force_multiprocessing=False,
@@ -254,6 +255,7 @@ def test(
     ] = False,  # noqa: UP007
 ) -> None:
     try:
+        directory_results = pathlib.Path(results).resolve()
         args = util_testrunner.Args(
             mp_test=ArgsMpTest(
                 micropython_tests=micropython_tests,
@@ -265,7 +267,7 @@ def test(
                 git_clean=git_clean,
                 directory_git_cache=constants.DIRECTORY_GIT_CACHE,
             ),
-            directory_results=pathlib.Path(results),
+            directory_results=directory_results,
             query_test=ArgsQuery.factory(only=only_test, skip=skip_test),
             query_board=ArgsQuery.factory(only=only_board, skip=skip_board),
             force_multiprocessing=force_multiprocessing,

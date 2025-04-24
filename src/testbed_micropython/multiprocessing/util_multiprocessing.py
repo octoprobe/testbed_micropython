@@ -25,8 +25,6 @@ from dataclasses import dataclass
 from logging import config
 from queue import Empty
 
-from octoprobe.util_constants import relative_cwd
-
 from ..reports import util_report_tasks
 from ..tentacle_spec import TentacleMicropython
 
@@ -472,10 +470,6 @@ class EventBase:
 class EventExit(EventBase):
     logfile: pathlib.Path
     success: bool
-
-    @property
-    def logfile_relative(self) -> str:
-        return relative_cwd(self.logfile)
 
 
 @dataclass(repr=True)

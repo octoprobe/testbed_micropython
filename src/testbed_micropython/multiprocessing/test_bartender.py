@@ -18,6 +18,8 @@ import logging
 import pathlib
 import typing
 
+from octoprobe.util_constants import DirectoryTag
+
 from ..mptest import util_testrunner
 from ..multiprocessing import util_multiprocessing
 from ..reports import util_report_tasks
@@ -38,16 +40,19 @@ class TestBartender:
         connected_tentacles: ConnectedTentacles,
         testrun_specs: TestRunSpecs,
         priority_sorter: typing.Callable[[list[TestRun]], list[TestRun]],
+        directory_results: pathlib.Path,
     ) -> None:
         assert isinstance(connected_tentacles, ConnectedTentacles)
         assert isinstance(testrun_specs, TestRunSpecs)
         assert isinstance(priority_sorter, typing.Callable)  # type: ignore[arg-type]
+        assert isinstance(directory_results, pathlib.Path)
         self.connected_tentacles = connected_tentacles
         self.testrun_specs = testrun_specs
         self.available_tentacles = connected_tentacles.copy()
         self.async_targets = util_multiprocessing.AsyncTargets[AsyncTargetTest]()
         self.get_by_event = self.async_targets.get_by_event
         self.priority_sorter = priority_sorter
+        self.directory_results = directory_results
 
     @property
     def tests_todo(self) -> int:
@@ -108,8 +113,12 @@ class TestBartender:
         log = logger.info if event.success else logger.warning
         color = "[COLOR_SUCCESS]" if event.success else "[COLOR_FAILED]"
 
+        logfile = DirectoryTag.R.render_relative_to(
+            top=self.directory_results,
+            filename=event.logfile,
+        )
         log(
-            f"{color}{async_target.target_unique_name}: Completed in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {event.logfile_relative}"
+            f"{color}{async_target.target_unique_name}: Completed in {async_target.target.livetime_text_full}: success={event.success}: Logfile: {logfile}"
         )
         return async_target
 

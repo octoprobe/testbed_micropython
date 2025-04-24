@@ -155,7 +155,9 @@ class ReportTests:
         self.report.commandline = " ".join(sys.argv)
         self.report.ref_firmware = ref_firmware
         self.report.ref_tests = ref_tests
-        self.report.log_output = str(log_output.relative_to(testresults_directory))
+        self.report.log_output = DirectoryTag.R.render_relative_to(
+            top=testresults_directory, filename=log_output
+        )
 
         def get_trigger() -> str:
             if os.environ.get("CI", False):
@@ -203,8 +205,9 @@ class ReportTestgroup:
         )
         self.report.testid = testrun.testid
         self.report.commandline = " ".join(testrun.testrun_spec.command)
-        self.report.log_output = str(
-            logfile.relative_to(self.testresults_directory.directory_top)
+        self.report.log_output = DirectoryTag.R.render_relative_to(
+            top=self.testresults_directory.directory_top,
+            filename=logfile,
         )
         self.report.tentacles = sorted([t.label_short for t in testrun.tentacles])
 

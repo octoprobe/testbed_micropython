@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import sys
 
-from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
@@ -40,7 +39,9 @@ class TestRunPerfTest(TestRun):
         assert isinstance(perftest_args[1], str)
 
         logfile = testargs.testresults_directory("testresults.txt").filename
-        EVENTLOGCALLBACK.log(msg=f"Logfile: {relative_cwd(logfile)}")
+        EVENTLOGCALLBACK.log(
+            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+        )
         args = [
             sys.executable,
             *self.testrun_spec.command,
