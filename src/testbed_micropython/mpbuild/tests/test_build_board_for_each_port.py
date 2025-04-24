@@ -14,7 +14,7 @@ from mpbuild.build import MpbuildNotSupportedException
 from testbed_micropython.mpbuild.build_api import build
 
 THIS_FILE = pathlib.Path(__file__)
-RESULTS_DIRECTORY = THIS_FILE.parent / "results"
+RESULTS_DIRECTORY = THIS_FILE.parent / "testresults"
 RESULTS_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
 

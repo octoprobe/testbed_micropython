@@ -83,7 +83,7 @@ class RendererAscii(RendererBase):
             Example "<20", "^20", ">20"
             """
             cols = [table.header[i].text, *[row[i] for row in table.rows]]
-            width = max([len(col) for col in cols])
+            width = max(len(col) for col in cols)
             return f"{table.header[i].align.fstring}{width:d}"
 
         fstrings = [fstring(i) for i in range(column_count)]

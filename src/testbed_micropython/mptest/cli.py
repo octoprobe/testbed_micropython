@@ -54,7 +54,9 @@ def complete_only_test():
 
 def complete_only_board():
     if False:
-        args = util_testrunner.Args.get_default_args()
+        args = util_testrunner.Args.get_default_args(
+            pathlib.Path.cwd(), pathlib.Path.cwd()
+        )
         testrunner = util_testrunner.TestRunner(args=args)
 
         connected_tentacles = testrunner.bartender.connected_tentacles
@@ -143,15 +145,15 @@ def flash(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = constants.URL_FILENAME_DEFAULT,
-    results: TyperAnnotated[
+    testresults: TyperAnnotated[
         str,
         typer.Option(
-            envvar="TESTBED_MICROPYTHON_RESULTS",
+            envvar="TESTBED_MICROPYTHON_TESTRESULTS",
             help="Directory for the testresults",
         ),
     ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
 ) -> None:
-    directory_results = pathlib.Path(results).resolve(strict=True)
+    directory_results = pathlib.Path(testresults).resolve(strict=True)
     args = util_testrunner.Args(
         mp_test=None,
         firmware=ArgsFirmware(
@@ -198,10 +200,10 @@ def test(
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ] = constants.URL_FILENAME_DEFAULT,
-    results: TyperAnnotated[
+    testresults: TyperAnnotated[
         str,
         typer.Option(
-            envvar="TESTBED_MICROPYTHON_RESULTS",
+            envvar="TESTBED_MICROPYTHON_TESTRESULTS",
             help="Directory for the testresults",
         ),
     ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
@@ -255,7 +257,7 @@ def test(
     ] = False,  # noqa: UP007
 ) -> None:
     try:
-        directory_results = pathlib.Path(results).resolve()
+        directory_results = pathlib.Path(testresults).resolve()
         args = util_testrunner.Args(
             mp_test=ArgsMpTest(
                 micropython_tests=micropython_tests,
@@ -298,18 +300,18 @@ def test(
 
 @app.command(help="Collect json files and create a report")
 def report(
-    results: TyperAnnotated[
+    testresults: TyperAnnotated[
         str,
         typer.Option(
-            envvar="TESTBED_MICROPYTHON_REPORT_RESULTS_DIRECTORY",
+            envvar="TESTBED_MICROPYTHON_TESTRESULTS",
             help="Directory containing results",
         ),
     ] = DIRECTORY_TESTRESULTS_DEFAULT,
 ) -> None:
-    _results = pathlib.Path(results)
+    _results = pathlib.Path(testresults)
     if not _results.is_dir():
         print(f"Directory does not exist: {_results}")
-        typer.Exit(1)
+        typer.Exit(1)  # pylint: disable=pointless-exception-statement
 
     renderer = ReportRenderer(directory_results=_results)
     renderer.render()

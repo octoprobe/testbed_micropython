@@ -48,12 +48,12 @@ class FormatterAscii(FormatterBase):
     @typing.override
     def h1(self, title: str):
         self.f.write(f"{title}\n")
-        self.f.write(f"{'='*len(title)}\n\n")
+        self.f.write(f"{'=' * len(title)}\n\n")
 
     @typing.override
     def h2(self, title: str):
         self.f.write(f"\n{title}\n")
-        self.f.write(f"{'-'*len(title)}\n\n")
+        self.f.write(f"{'-' * len(title)}\n\n")
 
     @typing.override
     def table(self, table: Table) -> None:
@@ -67,7 +67,7 @@ class FormatterAscii(FormatterBase):
             Example "<20", "^20", ">20"
             """
             cols = [table.header[i].text, *[row[i] for row in table.rows]]
-            width = max([len(col) for col in cols])
+            width = max(len(col) for col in cols)
             return f"{table.header[i].align.fstring}{width:d}"
 
         fstrings = [fstring(i) for i in range(column_count)]
@@ -149,8 +149,8 @@ class Tasks(list[Task]):
             ],
             rows=[
                 [
-                    f"{task.start_s-first_start_s:0.1f}s",
-                    f"{task.end_s-first_start_s:0.1f}s",
+                    f"{task.start_s - first_start_s:0.1f}s",
+                    f"{task.end_s - first_start_s:0.1f}s",
                     task.duration_text,
                     task.tentacle_text,
                     task.label,
@@ -168,7 +168,7 @@ class ReportRow:
     def columns(
         self, first_start_s: float, legend_tentacles: LegendTentacles
     ) -> list[str]:
-        start_text = f"{self.start_s-first_start_s:0.1f}s"
+        start_text = f"{self.start_s - first_start_s:0.1f}s"
         columns = [start_text]
 
         def get_column(legend_tentacle: LegendTentacle) -> str:

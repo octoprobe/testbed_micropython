@@ -116,7 +116,7 @@ class Tasks(list[Task]):
     def first_start_s(self) -> float:
         if len(self) == 0:
             return 0.0
-        return min([task.start_s for task in self])
+        return min(task.start_s for task in self)
 
     def as_table(self) -> Table:
         return Table(

@@ -5,8 +5,8 @@ import dataclasses
 
 @dataclasses.dataclass
 class ArgsQuery:
-    only: set[str]= dataclasses.field(default_factory=set)
-    skip: set[str]= dataclasses.field(default_factory=set)
+    only: set[str] = dataclasses.field(default_factory=set)
+    skip: set[str] = dataclasses.field(default_factory=set)
 
     def __post_init__(self) -> None:
         for elements in (
@@ -24,5 +24,3 @@ class ArgsQuery:
         if skip is None:
             skip = []
         return ArgsQuery(only=set(only), skip=set(skip))
-
-

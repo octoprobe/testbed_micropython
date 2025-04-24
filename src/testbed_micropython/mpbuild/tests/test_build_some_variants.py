@@ -12,7 +12,7 @@ from mpbuild.board_database import Database
 from ...mpbuild.build_api import build_by_variant_normalized
 
 THIS_FILE = pathlib.Path(__file__)
-RESULTS_DIRECTORY = THIS_FILE.parent / "results"
+RESULTS_DIRECTORY = THIS_FILE.parent / "testresults"
 RESULTS_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
 MICROPY_DIR = "MICROPY_DIR"

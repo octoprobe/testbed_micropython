@@ -9,6 +9,7 @@ import typing
 import pytest
 from octoprobe.usb_tentacle.usb_baseclasses import Location, TENTACLE_VERSION_V03
 from octoprobe.usb_tentacle.usb_tentacle import UsbPico, UsbTentacle
+from octoprobe.util_baseclasses import TentacleInstance
 
 from testbed_micropython import constants
 from testbed_micropython.mptest import util_testrunner
@@ -35,7 +36,7 @@ class ForkTextIO(typing.TextIO):  # pylint: disable=abstract-method
         self.files = files
 
     @typing.override
-    def write(self, msg: typing.AnyStr) -> int:
+    def write(self, msg: typing.AnyStr) -> int:  # pylint: disable=deprecated-attribute
         assert isinstance(msg, str)
         for file in self.files:
             file.write(msg)
@@ -66,14 +67,21 @@ def _test_collection(testparam: Ttestparam) -> None:
 
 def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
     specs = testparam.specs
-    testrun_specs = testparam.testrun_specs
+    testrun_specs_ = testparam.testrun_specs
 
     def factory() -> typing.Iterator[TentacleMicropython]:
         for i, spec in enumerate(specs):
-            yield TentacleMicropython(
-                tentacle_spec_base=spec,
-                tentacle_serial_number=f"1c4{i}",
+            serial = f"1c4{i}"
+            tentacle_instance = TentacleInstance(
+                serial=serial,
+                tentacle_spec=spec,
                 hw_version="1.0",
+                testbed_name="testbed_micropython",
+                testbed_instance="ch_hans_1",
+            )
+            yield TentacleMicropython(
+                tentacle_instance=tentacle_instance,
+                tentacle_serial_number=serial,
                 usb_tentacle=UsbTentacle(
                     hub4_location=Location(3, [1, i]),
                     pico_infra=UsbPico(
@@ -88,15 +96,16 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     connected_tentacles = ConnectedTentacles(factory())
 
-    testrun_specs.assign_tentacles(tentacles=connected_tentacles)
+    testrun_specs_.assign_tentacles(tentacles=connected_tentacles)
 
     print("## testrun_specs", file=file)
-    testrun_specs.pytest_print(indent=1, file=file)
+    testrun_specs_.pytest_print(indent=1, file=file)
 
     bartender = test_bartender.TestBartender(
         connected_tentacles=connected_tentacles,
-        testrun_specs=testrun_specs,
+        testrun_specs=testrun_specs_,
         priority_sorter=baseclasses_run.TestRun.priority_sorter,
+        directory_results=DIRECTORY_TESTRESULTS,
     )
     print(f"## START: test_todo={bartender.tests_todo}")
 
@@ -139,7 +148,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
         try:
             print(f"## {i}: testrun_specs", file=file)
-            testrun_specs.pytest_print(indent=1, file=file)
+            testrun_specs_.pytest_print(indent=1, file=file)
 
             possible_testruns = bartender.possible_testruns(
                 firmwares_built=firmwares_built

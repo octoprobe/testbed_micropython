@@ -132,7 +132,7 @@ class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
 
     @property
     def tests_todo(self) -> int:
-        return sum([len(tsvs_todo) for tsvs_todo in self])
+        return sum(len(tsvs_todo) for tsvs_todo in self)
 
 
 class ConnectedTentacles(list[TentacleMicropython]):

@@ -25,7 +25,7 @@ DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
 # assert (DIRECTORY_REPO / "src" / "testbed_micropython").is_dir()
 DIRECTORY_DOWNLOADS = DIRECTORY_REPO / "downloads"
-DIRECTORY_TESTRESULTS_DEFAULT = DIRECTORY_REPO / "results"
+DIRECTORY_TESTRESULTS_DEFAULT = DIRECTORY_REPO / "testresults"
 DIRECTORY_GIT_CACHE = DIRECTORY_OCTOPROBE_GIT_CACHE
 FILENAME_TESTBED_LOCK = pathlib.Path("/tmp/octoprobe/testbed.lock")
 """

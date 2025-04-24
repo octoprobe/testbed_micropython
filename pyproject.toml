@@ -194,6 +194,11 @@ disable = '''
     unused-argument,
     using-constant-test,
     wrong-import-order,
+    too-many-nested-blocks,
+    too-many-positional-arguments,
+    cyclic-import,
+    unspecified-encoding,
+    fixme,
 '''
 # too-many-positional-arguments,
 

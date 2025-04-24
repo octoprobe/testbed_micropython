@@ -96,7 +96,7 @@
                 "--micropython-tests=https://github.com/micropython/micropython.git@master",
                 // "--firmware-build=https://github.com/micropython/micropython.git@master",
                 "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
-                "--results=${workspaceFolder}/results",
+                "--testresults=${workspaceFolder}/testresults",
                 // "--only-test=RUN-TESTS_NET_INET",
                 // "--only-test=RUN-TESTS_BASICS",
                 "--no-multiprocessing",

@@ -114,10 +114,8 @@ class TestRun:
 
         def priority(testrun: TestRun) -> tuple:
             build_variants = sum(
-                [
-                    len(tentacle.tentacle_spec.build_variants)
-                    for tentacle in testrun.tentacles
-                ]
+                len(tentacle.tentacle_spec.build_variants)
+                for tentacle in testrun.tentacles
             )
             priorities = (
                 # The more variants to compile, the higher the priority
