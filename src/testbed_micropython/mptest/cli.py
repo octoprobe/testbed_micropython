@@ -342,8 +342,8 @@ def report(
     directory_results = assert_valid_testresults(testresults)
 
     tar = TarAndHttpsPush(directory=directory_results, label=label)
-    renderer = ReportRenderer(directory_results=directory_results)
-    renderer.render()
+    renderer = ReportRenderer(directory_results=directory_results, label=label)
+    renderer.render(action_url=action_url)
     rc = tar.https_push(url=url)
     typer.Exit(rc)
 

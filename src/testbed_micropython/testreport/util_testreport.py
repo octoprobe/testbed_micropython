@@ -15,6 +15,8 @@ from ..testcollection.testrun_specs import TestRun
 
 TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
 
+FILENAME_CONTEXT_JSON = "context.json"
+
 
 @dataclasses.dataclass
 class ResultTestResult:
@@ -118,7 +120,7 @@ class Data:
     @staticmethod
     def factory(directory_results: pathlib.Path) -> Data:
         def collect_top():
-            filename = directory_results / "context.json"
+            filename = directory_results / FILENAME_CONTEXT_JSON
             json_text = filename.read_text()
             json_dict = json.loads(json_text)
             tests = ResultTests(**json_dict)
@@ -184,7 +186,7 @@ class ReportTests:
 
     def _write(self) -> None:
         self.report.time_end = now_formatted()
-        filename = self.testresults_directory / "context.json"
+        filename = self.testresults_directory / FILENAME_CONTEXT_JSON
         json_text = json.dumps(dataclasses.asdict(self.report), indent=4)
         filename.write_text(json_text)
 

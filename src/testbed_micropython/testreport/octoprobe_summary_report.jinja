@@ -3,9 +3,10 @@
 {% set tests = data.tests %}
 {% set testgroups = data.testgroups %}
 
-* Trigger: {{ tests.trigger }}
+* Trigger: {{ tests.trigger }} {% if action_url %}[Github Action]({{ action_url }}){% endif %}
 
 * Execution
+
   * testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
   * start, end: {{ tests.time_start }} - {{ tests.time_end }}
   * command line: {{ tests.commandline }}

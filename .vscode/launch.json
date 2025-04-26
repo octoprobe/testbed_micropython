@@ -11,7 +11,9 @@
             "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
-                "report"
+                "report",
+                "--label=github_testbed_micropython_100",
+                "--action-url=https://github.com/octoprobe/testbed_micropython_runner/actions/runs/14650052333"
             ],
             "console": "integratedTerminal",
             "env": {
