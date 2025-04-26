@@ -4,6 +4,7 @@ import logging
 import pathlib
 
 from octoprobe import util_jinja2
+from octoprobe.util_constants import DirectoryTag
 
 from testbed_micropython.testreport.util_testreport import Data
 
@@ -42,8 +43,8 @@ class ReportRenderer:
 
     def _fix_links(self, report_text: str) -> str:
         dict_expansions = {
-            "R": f"https://reports.octoprobe.org/testresults/{self.label}/",
-            "P": "",
+            DirectoryTag.R: f"https://reports.octoprobe.org/{self.label}/testresults/",
+            DirectoryTag.P: "",
         }
         for tag, directory in self.data.tests.directories.items():
             if not directory.endswith("/"):

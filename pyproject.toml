@@ -68,7 +68,7 @@ source-includes = [
 
 [tool.mypy]
 # strict = true
-enable_incomplete_feature = ["NewGenericSyntax"]
+# enable_incomplete_feature = ["NewGenericSyntax"]
 
 [[tool.mypy.overrides]]
 module = "pallets_sphinx_themes.*"
@@ -129,7 +129,7 @@ omit = [
 ]
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 # All paths are relative to the project root, which is the directory containing the pyproject.toml.
 src = ["src", "tests"]
 exclude = []
