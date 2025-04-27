@@ -35,7 +35,8 @@ class TarAndHttpsPush:
         with tarfile.open(filename_tar, "w:gz") as tar:
             for file in self.directory.rglob("*"):
                 if file.is_file():
-                    arcname = f"testresults/{file.relative_to(self.directory)}"
+                    # arcname = f"{DIRECTORY_NAME_TESTRESULTS}/{file.relative_to(self.directory)}"
+                    arcname = str(file.relative_to(self.directory))
                     tar.add(file, arcname=arcname)
         logger.info(f"Created {filename_tar}.")
         return filename_tar

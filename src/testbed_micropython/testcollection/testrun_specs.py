@@ -63,7 +63,7 @@ class TestRun:
 
     @property
     @contextlib.contextmanager
-    def active_led_on(self) -> typing.Generator[typing.Any, None, None]:
+    def active_led_on(self) -> typing.Generator[typing.Any]:
         """
         Turn active leds on during the test
         """

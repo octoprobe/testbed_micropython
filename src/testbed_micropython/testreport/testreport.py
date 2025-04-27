@@ -6,7 +6,7 @@ import pathlib
 from octoprobe import util_jinja2
 from octoprobe.util_constants import DirectoryTag
 
-from testbed_micropython.testreport.util_testreport import Data, GitRef
+from testbed_micropython.testreport.util_testreport import Data
 
 logger = logging.getLogger(__file__)
 

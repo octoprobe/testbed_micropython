@@ -345,7 +345,7 @@ def report(
     renderer = ReportRenderer(directory_results=directory_results, label=label)
     renderer.render(action_url=action_url)
     rc = tar.https_push(url=url)
-    typer.Exit(rc)
+    raise typer.Exit(rc)
 
 
 if __name__ == "__main__":
