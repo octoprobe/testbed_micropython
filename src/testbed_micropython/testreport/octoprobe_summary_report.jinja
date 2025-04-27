@@ -10,8 +10,8 @@
   * testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
   * start, end: {{ tests.time_start }} - {{ tests.time_end }}
   * command line: {{ tests.commandline }}
-  * firmware: {{ tests.ref_firmware }}
-  * tests: {{ tests.ref_tests }}
+  * firmware: {{ tests.ref_firmware2.markdown }}
+  * tests: {{ tests.ref_tests2.markdown }}
   * log_output: [{{ tests.log_output }}]({{ tests.log_output }})
   {% if tests.error %}
   * error: {{ tests.error }}

@@ -6,7 +6,7 @@ import pathlib
 from octoprobe import util_jinja2
 from octoprobe.util_constants import DirectoryTag
 
-from testbed_micropython.testreport.util_testreport import Data
+from testbed_micropython.testreport.util_testreport import Data, GitRef
 
 logger = logging.getLogger(__file__)
 
@@ -42,7 +42,7 @@ class ReportRenderer:
         filename.write_text(report_text)
 
     def _fix_links(self, report_text: str) -> str:
-        dict_expansions = {
+        dict_expansions: dict[str, str] = {
             DirectoryTag.R: f"https://reports.octoprobe.org/{self.label}/testresults/",
             DirectoryTag.P: "",
         }

@@ -89,6 +89,14 @@ class ResultTests:
         assert isinstance(git_ref, str)
         self.git_ref[tag.name] = git_ref
 
+    @property
+    def ref_firmware2(self) -> GitRef:
+        return GitRef.factory(self.ref_firmware)
+
+    @property
+    def ref_tests2(self) -> GitRef:
+        return GitRef.factory(self.ref_tests)
+
 
 @dataclasses.dataclass
 class DataSummaryLine:
@@ -262,3 +270,44 @@ class ReportTestgroup:
                 ResultTestResult(name=failed_test, result="failed")
             )
         return True
+
+
+@dataclasses.dataclass
+class GitRef:
+    ref: str
+    url: str | None
+    """
+    None if undefined
+    """
+    branch: str
+
+    @staticmethod
+    def factory(ref: str) -> GitRef:
+        """
+        Examples:
+        https://github.com/micropython/micropython.git@master
+        https://github.com/micropython/micropython.git@dc46cf15c17ab5bd8371c00e11ee9743229b7868
+        https://github.com/micropython/micropython.git@v1.25.0
+        """
+        x = ".git@"
+        pos = ref.find(x)
+        if pos == -1:
+            return GitRef(ref=ref, url=None, branch="")
+
+        url = ref[:pos]
+        branch = ref[pos + len(x) :]
+        return GitRef(ref=ref, url=url, branch=branch)
+
+    @property
+    def url_link(self) -> str:
+        """
+        Example:
+        https://github.com/micropython/micropython/tree/master
+        """
+        return f"{self.url}/tree/{self.branch}"
+
+    @property
+    def markdown(self) -> str:
+        if self.url is None:
+            return self.ref
+        return f"[{self.ref}]({self.url_link})"
