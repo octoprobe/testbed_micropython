@@ -43,7 +43,7 @@ class ReportRenderer:
 
     def _fix_links(self, report_text: str) -> str:
         dict_expansions: dict[str, str] = {
-            DirectoryTag.R: f"https://reports.octoprobe.org/{self.label}/testresults/",
+            DirectoryTag.R: f"https://reports.octoprobe.org/{self.label}/",
             DirectoryTag.P: "",
         }
         for tag, directory in self.data.tests.directories.items():
