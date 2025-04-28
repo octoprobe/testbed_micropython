@@ -27,7 +27,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@hmaerki/reporting_proposal",
+    "octoprobe[dev,doc]@git+https://github.com/octoprobe/octoprobe@main",
     "mpbuild@git+https://github.com/hmaerki/fork_mpbuild@main_with_PRs",
     # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
     "requests~=2.32",
