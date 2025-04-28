@@ -11,6 +11,7 @@ from ..mptest.util_common import mip_install
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
+    MICROPYTHON_DIRECTORY_TESTS,
     TIMEOUT_FLASH_S,
     TestArgs,
     TestRun,
@@ -39,7 +40,9 @@ class TestRunRunTests(TestRun):
         # for tests 'net_hosted', this call is irrelevant
         util_common.copy_certificates(
             dut=tentacle.dut,
-            src=testargs.repo_micropython_tests / "tests" / "net_inet",
+            src=testargs.repo_micropython_tests
+            / MICROPYTHON_DIRECTORY_TESTS
+            / "net_inet",
         )
 
         util_common.init_wlan(dut=tentacle.dut)
@@ -67,7 +70,7 @@ class TestRunRunTests(TestRun):
         ]
         subprocess_run(
             args=args,
-            cwd=testargs.repo_micropython_tests / "tests",
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,

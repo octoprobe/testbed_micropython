@@ -8,6 +8,7 @@ from ..constants import EnumFut
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
+    MICROPYTHON_DIRECTORY_TESTS,
     TIMEOUT_FLASH_S,
     TestArgs,
     TestRun,
@@ -51,7 +52,7 @@ class TestRunPerfTest(TestRun):
         ]
         subprocess_run(
             args=args,
-            cwd=testargs.repo_micropython_tests / "tests",
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,
         )

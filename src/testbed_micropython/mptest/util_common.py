@@ -18,6 +18,7 @@ from octoprobe.util_baseclasses import OctoprobeTestException, assert_micropytho
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import is_url
+from ..testcollection.testrun_specs import MICROPYTHON_DIRECTORY_TESTS
 from ..util_firmware_mpbuild import CachedGitRepo
 
 if typing.TYPE_CHECKING:
@@ -90,7 +91,7 @@ def mip_install(
     ]
     subprocess_run(
         args=args,
-        cwd=testargs.repo_micropython_tests / "tests",
+        cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
         logfile=testargs.testresults_directory(
             f"mip_install_{mip_package}.txt"
         ).filename,

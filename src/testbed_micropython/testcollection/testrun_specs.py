@@ -30,6 +30,8 @@ class TestArgs:
 
 _ROLE_LABELS = ["First", "Second", "Third"]
 
+MICROPYTHON_DIRECTORY_TESTS = "tests"
+
 
 @dataclasses.dataclass(repr=True)
 class TestRun:

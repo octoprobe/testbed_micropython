@@ -11,7 +11,7 @@ import time
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
-from ..testcollection.testrun_specs import TestRun
+from ..testcollection.testrun_specs import MICROPYTHON_DIRECTORY_TESTS, TestRun
 
 TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
 
@@ -21,8 +21,28 @@ FILENAME_CONTEXT_JSON = "context.json"
 @dataclasses.dataclass
 class ResultTestResult:
     name: str
+    """
+    extmod_hardware/machine_pwm.py
+    """
     result: str = ""
     text: str = ""
+
+    def name_markdown(self, tests: ResultTests) -> str:
+        """
+        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/extmod_hardware/machine_pwm.py	)
+        """
+        assert isinstance(tests, ResultTests)
+
+        python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + self.name
+
+        # Find the git_ref for the micropython tests repository
+        ref_tests = tests.git_ref.get(DirectoryTag.T, None)
+        if ref_tests is None:
+            return self.name
+        ref = GitRef.factory(ref=ref_tests)
+
+        # Build the link
+        return f"[{self.name}]({ref.link(file=python_test)})"
 
 
 @dataclasses.dataclass
@@ -49,6 +69,35 @@ class ResultTestGroup:
     def results_failed(self) -> list[ResultTestResult]:
         failed = [r for r in self.results if r.result == "failed"]
         return sorted(failed, key=lambda r: r.name)
+
+    def testgroup_markdown(self, tests: ResultTests) -> str:
+        """
+        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+        """
+        from ..mptest.util_testrunner import get_testrun_spec
+
+        # Find the testgroup 'RUN-TESTS_EXTMOD_HARDWARE'
+        testspec = get_testrun_spec(self.testgroup)
+        if testspec is None:
+            return self.testgroup
+        python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + testspec.command_executable
+
+        return self.testgroup_markdown2(tests=tests, python_test=python_test)
+
+    def testgroup_markdown2(self, tests: ResultTests, python_test: str) -> str:
+        """
+        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+        """
+        assert isinstance(tests, ResultTests)
+
+        # Find the git_ref for the micropython tests repository
+        ref_tests = tests.git_ref.get(DirectoryTag.T, None)
+        if ref_tests is None:
+            return f"{self.testgroup} ({python_test})"
+        ref = GitRef.factory(ref=ref_tests)
+
+        # Build the link
+        return f"[{self.testgroup}]({ref.link(file=python_test)})"
 
 
 @dataclasses.dataclass
@@ -100,11 +149,17 @@ class ResultTests:
 
 @dataclasses.dataclass
 class DataSummaryLine:
-    testgroup: str
+    testgroup: ResultTestGroup
     error: int = 0
     skipped: int = 0
     passed: int = 0
     failed: int = 0
+
+    def testgroup_markdown(self, tests: ResultTests) -> str:
+        """
+        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+        """
+        return self.testgroup.testgroup_markdown(tests=tests)
 
 
 @dataclasses.dataclass
@@ -118,12 +173,12 @@ class Data:
         for testgroup in self.testgroups:
             line = dict_summary.get(testgroup.testgroup, None)
             if line is None:
-                line = DataSummaryLine(testgroup.testgroup)
+                line = DataSummaryLine(testgroup)
                 dict_summary[testgroup.testgroup] = line
             for result in testgroup.results:
                 if result.result == "failed":
                     line.failed += 1
-        return sorted(dict_summary.values(), key=lambda line: line.testgroup)
+        return sorted(dict_summary.values(), key=lambda line: line.testgroup.testgroup)
 
     @staticmethod
     def factory(directory_results: pathlib.Path) -> Data:
@@ -289,13 +344,16 @@ class GitRef:
         https://github.com/micropython/micropython.git@dc46cf15c17ab5bd8371c00e11ee9743229b7868
         https://github.com/micropython/micropython.git@v1.25.0
         """
-        x = ".git@"
-        pos = ref.find(x)
+        tag_at = "@"
+        pos = ref.find(tag_at)
         if pos == -1:
             return GitRef(ref=ref, url=None, branch="")
 
         url = ref[:pos]
-        branch = ref[pos + len(x) :]
+        tag_git = ".git"
+        if url.endswith(tag_git):
+            url = url[: -len(tag_git)]
+        branch = ref[pos + len(tag_at) :]
         return GitRef(ref=ref, url=url, branch=branch)
 
     @property
@@ -311,3 +369,27 @@ class GitRef:
         if self.url is None:
             return self.ref
         return f"[{self.ref}]({self.url_link})"
+
+    # def markdown2(self, label: str, file: str) -> str:
+    #     """
+    #     Example url: https://github.com/micropython/micropython/
+    #     Example branch: master
+    #     Example label: RUN-TESTS_BASICS
+    #     Example file: tests/run-tests.py
+    #     Return: [RUN-TESTS_BASICS](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+    #     """
+    #     if self.url is None:
+    #         return file
+    #     link = f"{self.url_link}/{file}".replace("//", "/")
+    #     return f"[{label} ({file})]({link})"
+
+    def link(self, file: str) -> str | None:
+        """
+        Example url: https://github.com/micropython/micropython/
+        Example branch: master
+        Example file: tests/run-tests.py
+        Return: https://github.com/micropython/micropython/tree/master/tests/run-tests.py
+        """
+        if self.url is None:
+            return None
+        return f"{self.url_link}/{file}"

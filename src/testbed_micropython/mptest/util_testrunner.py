@@ -49,7 +49,7 @@ from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
-from ..testcollection.testrun_specs import TestArgs, TestRun
+from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from ..testrunspecs import multinet, perftest, runtests, runtests_net_inet
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 
@@ -66,22 +66,30 @@ class EventExitRunOneTest(util_multiprocessing.EventExit):
     testid: str
 
 
+_TESTRUN_SPECS = [
+    multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+    multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
+    perftest.TESTRUNSPEC_PERFTEST,
+    runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
+    runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
+    runtests.TESTRUNSPEC_RUNTESTS_BASICS,
+    runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
+]
+
+
+def get_testrun_spec(label: str) -> TestRunSpec|None:
+    for spec in _TESTRUN_SPECS:
+        if spec.label == label:
+            return spec
+    return None
+
+
 def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
     if query is None:
         query = ArgsQuery()
     assert isinstance(query, ArgsQuery)
 
-    specs = [
-        multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
-        multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
-        perftest.TESTRUNSPEC_PERFTEST,
-        runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
-        runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
-        runtests.TESTRUNSPEC_RUNTESTS_BASICS,
-        runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
-    ]
-
-    valid_tests = {s.label for s in specs}
+    valid_tests = {s.label for s in _TESTRUN_SPECS}
 
     def assert_valid_tests(tests: set[str]) -> None:
         for test in tests:
@@ -100,7 +108,7 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
         selected_tests.difference_update(query.skip)
 
     return TestRunSpecs(
-        [spec for spec in specs if spec.label in sorted(selected_tests)]
+        [spec for spec in _TESTRUN_SPECS if spec.label in sorted(selected_tests)]
     )
 
 

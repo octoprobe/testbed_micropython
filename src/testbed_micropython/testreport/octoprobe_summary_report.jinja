@@ -22,7 +22,7 @@
 | Test | failed | error | skipped | passed |
 | - | :-: | :-: | :-: | :-: |
 {%- for line  in data.summary %}
-| {{ line.testgroup }} | {{ line.failed }}  | {{ line.error }} | {{ line.skipped }} | {{ line.passed }}|
+| {{ line.testgroup_markdown(tests) }} | {{ line.failed }}  | {{ line.error }} | {{ line.skipped }} | {{ line.passed }}|
 {%- endfor %}
 
 ## Failed tests
@@ -31,7 +31,7 @@
 | - | - | - | :-: | - | - | - |
 {%- for testgroup in testgroups %}
     {%- for result  in testgroup.results_failed %}
-| {{ testgroup.testgroup }} | {{ result.name }} |  | {{ testgroup.tentacles }} | - | - | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+| {{ testgroup.testgroup_markdown(tests) }} | {{ result.name_markdown(tests) }} |  | {{ testgroup.tentacles }} | - | failed | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
     {%- endfor %}
 {%- endfor %}
 
@@ -40,5 +40,5 @@
 | Testgroup | Error | Logfile |
 | - | - | - |
 {%- for testgroup in testgroups %}
-| {{ testgroup.testgroup }} | {{ testgroup.error }} | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+| {{ testgroup.testgroup_markdown(tests) }} | {{ testgroup.error }} | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
 {%- endfor %}
