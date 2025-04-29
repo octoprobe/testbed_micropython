@@ -1,4 +1,4 @@
-/home/maerki/work_octoprobe_testbed_micropython/venv/bin/python3 run-tests.py -t=port:/dev/ttyACM4 --jobs=1 --result-dir=/home/maerki/work_octoprobe_testbed_micropython/results/RUN-TESTS_BASICS[1722-RPI_PICO]
+/home/maerki/work_octoprobe_testbed_micropython/venv/bin/python3 run-tests.py -t=port:/dev/ttyACM4 --jobs=1 --result-dir=/home/maerki/work_octoprobe_testbed_micropython/results/RUN-TESTS_STANDARD[1722-RPI_PICO]
 
 
 platform=rp2 arch=armv6m inlineasm=thumb

@@ -18,7 +18,7 @@
 | Test | error | skipped | passed | failed |
 | - | :-: | :-: | :-: | :-: |
 | RUN-PERFBENCH | 0 | 3 | 20 | 0 |
-| RUN-TESTS_BASICS | 0 | 3 | 50 | **4** |
+| RUN-TESTS_STANDARD | 0 | 3 | 50 | **4** |
 | RUN-TESTS_NET_INET | 0 | 2 | 30 | **6** |
 | RUN-TESTS_EXTMOD_HARDWARE | 0 | 0 | 20 | 0 |
 
@@ -28,7 +28,7 @@
 
 | Testgroup | Test | Port-Variant | Tentacle | Text | Testresult |
 | - | - | - | :-: | - | - |
-| TESTS_BASICS | [machine_i2s_rate](https://github.com/micropython/micropython/blob/master/tests/extmod/machine_i2s_rate.py) | ESP32_C3_DEVKIT | b0c30 | - | [testresults.txt](http://octoprobe.org/reports/octoprobe-report-41/RUN-TESTS_BASICS%5b0c30-ESP32_C3_DEVKIT%5d/testresults.txt) |
+| TESTS_STANDARD | [machine_i2s_rate](https://github.com/micropython/micropython/blob/master/tests/extmod/machine_i2s_rate.py) | ESP32_C3_DEVKIT | b0c30 | - | [testresults.txt](http://octoprobe.org/reports/octoprobe-report-41/RUN-TESTS_STANDARD%5b0c30-ESP32_C3_DEVKIT%5d/testresults.txt) |
 | RUN-TESTS_EXTMOD_HARDWARE | [machine_pwm](https://github.com/micropython/micropython/blob/master/tests/extmod_hardware/machine_pwm.py) | ESP32_C3_DEVKIT | b0c30 | - | [testresults.txt](http://octoprobe.org/reports/octoprobe-report-41/RUN-TESTS_EXTMOD_HARDWARE%5b0c30-ESP32_C3_DEVKIT%5d/testresults.txt) |
 
 Legend

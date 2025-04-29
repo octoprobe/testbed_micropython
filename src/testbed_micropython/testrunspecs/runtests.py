@@ -80,8 +80,8 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
 )
 
 
-TESTRUNSPEC_RUNTESTS_BASICS = TestRunSpec(
-    label="RUN-TESTS_BASICS",
+TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
+    label="RUN-TESTS_STANDARD",
     helptext="On each board, do some basic python language tests",
     # TODO: Allow overwrite by command line
     command=["run-tests.py"],

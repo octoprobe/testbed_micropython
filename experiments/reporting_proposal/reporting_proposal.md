@@ -14,8 +14,8 @@
 
 ### Existing result files - created by `run-tests.py`:
 
-  * [RUN-TESTS_BASICS-xxx/testresults.txt](subreports/testresults.txt) [#41](http://octoprobe.org/reports/octoprobe-report-41/RUN-TESTS_BASICS%5b0c30-ESP32_C3_DEVKIT%5d/testresults.txt)
-  * [RUN-TESTS_BASICS-xxx/_results.json](subreports/_results.json)
+  * [RUN-TESTS_STANDARD-xxx/testresults.txt](subreports/testresults.txt) [#41](http://octoprobe.org/reports/octoprobe-report-41/RUN-TESTS_STANDARD%5b0c30-ESP32_C3_DEVKIT%5d/testresults.txt)
+  * [RUN-TESTS_STANDARD-xxx/_results.json](subreports/_results.json)
 
 
 ### New result files - created by `mptest`:
@@ -37,7 +37,7 @@
 ```json
 // ./RUN-xxx/context_test.json
 {
-  "testgroup": "RUN-TESTS_BASICS",
+  "testgroup": "RUN-TESTS_STANDARD",
   "tentacle": "b0c30",
   "port-variant": "ESP32_C3_DEVKIT",
   "time_start": "2025-04-18 23:22:12",
