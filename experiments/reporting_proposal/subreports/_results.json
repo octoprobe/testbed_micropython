@@ -5,7 +5,7 @@
         "user": "micro",
         "password": "python",
         "test_dirs": null,
-        "result_dir": "/home/maerki/work_octoprobe_testbed_micropython/results/RUN-TESTS_BASICS[1722-RPI_PICO]",
+        "result_dir": "/home/maerki/work_octoprobe_testbed_micropython/results/RUN-TESTS_STANDARD[1722-RPI_PICO]",
         "filters": [],
         "emit": "bytecode",
         "heapsize": null,

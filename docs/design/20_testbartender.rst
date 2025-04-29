@@ -50,7 +50,7 @@ The method `generate()` might be seen as a bartender which hands out a burger or
 
     TESTRUNSPEC_PERFTEST = TestRunSpec("run-perfbench.py", TestRunPerfTest)
     TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec("run-multitests.py", TestRunMultitestMultinet)
-    TESTRUNSPEC_RUNTESTS_BASICS = TestRunSpec("run-tests.py", TestRunRunTests)
+    TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec("run-tests.py", TestRunRunTests)
 
     specs = [
         multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
@@ -58,7 +58,7 @@ The method `generate()` might be seen as a bartender which hands out a burger or
         perftest.TESTRUNSPEC_PERFTEST,
         runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
         runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
-        runtests.TESTRUNSPEC_RUNTESTS_BASICS,
+        runtests.TESTRUNSPEC_RUNTESTS_STANDARD,
         runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
     ]
 

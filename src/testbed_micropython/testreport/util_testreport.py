@@ -51,7 +51,7 @@ class ResultTestGroup:
     testgroup: str = ""
     testid: str = ""
     commandline: str = ""
-    # RUN-TESTS_BASICS
+    # RUN-TESTS_STANDARD
     tentacles: list[str] = dataclasses.field(default_factory=list)
     # b0c30
     # port_variant: str = ""
@@ -374,9 +374,9 @@ class GitRef:
     #     """
     #     Example url: https://github.com/micropython/micropython/
     #     Example branch: master
-    #     Example label: RUN-TESTS_BASICS
+    #     Example label: RUN-TESTS_STANDARD
     #     Example file: tests/run-tests.py
-    #     Return: [RUN-TESTS_BASICS](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+    #     Return: [RUN-TESTS_STANDARD](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
     #     """
     #     if self.url is None:
     #         return file

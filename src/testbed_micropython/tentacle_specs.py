@@ -109,7 +109,7 @@ See: https://www.wemos.cc/en/latest/tutorials/d1/get_started_with_micropython_d1
 
 TODO: State of the board
 TODO: Programming (double tabbing the boot button) works but should be heavely tested
-TODO: RUN-TESTS_BASICS: The board crashes
+TODO: RUN-TESTS_STANDARD: The board crashes
 TODO: RUN-TESTS_EXTMOD_HARDWARE: Not tested and no gpios connected
 Connections
 
