@@ -87,7 +87,7 @@ _TESTRUN_SPECS = [
 ]
 
 
-def get_testrun_spec(label: str) -> TestRunSpec|None:
+def get_testrun_spec(label: str) -> TestRunSpec | None:
     for spec in _TESTRUN_SPECS:
         if spec.label == label:
             return spec
