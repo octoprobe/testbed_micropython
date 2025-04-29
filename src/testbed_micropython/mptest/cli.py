@@ -17,6 +17,7 @@ import typer
 import typing_extensions
 from mpbuild.board_database import MpbuildMpyDirectoryException
 from octoprobe.scripts.commissioning import init_logging
+from octoprobe.util_constants import ExitCode
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
@@ -328,7 +329,7 @@ def report(
     label: TyperAnnotated[
         str,
         typer.Option(
-            help="Label to be used for store the results. For example 'ch_hans_1-2025_04_22-12_33_22'.",
+            help="Label to be used for store the results. For example 'notebook_hans-2025_04_22-12_33_22'.",
         ),
     ] = None,
     action_url: TyperAnnotated[
@@ -344,6 +345,10 @@ def report(
     tar = TarAndHttpsPush(directory=directory_results, label=label)
     renderer = ReportRenderer(directory_results=directory_results, label=label)
     renderer.render(action_url=action_url)
+    if url == "":
+        logger.info("Skipped pushing of the reports: --url=''")
+        raise typer.Exit(ExitCode.SUCCESS)
+
     rc = tar.https_push(url=url)
     raise typer.Exit(rc)
 

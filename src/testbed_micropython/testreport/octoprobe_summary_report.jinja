@@ -19,26 +19,29 @@
 
 ## Summary
 
-| Test | failed | error | skipped | passed |
-| - | :-: | :-: | :-: | :-: |
+| Test | Group<br>run | Group<br>error  | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
+| - | :-: | :-: | :-: | :-: | :-: |
+| .. | .. | .. | .. | .. | .. |
 {%- for line  in data.summary %}
-| {{ line.testgroup_markdown(tests) }} | {{ line.failed }}  | {{ line.error }} | {{ line.skipped }} | {{ line.passed }}|
+| {{ line.testgroup_markdown(tests) }} | {{ line.group_run }} | {{ line.group_error }} | {{ line.tests_passed }}  | {{ line.tests_skipped }} | {{ line.tests_failed }} |
 {%- endfor %}
 
-## Failed tests
+## Tests which failed
 
-| Testgroup | Test | Port-Variant | Tentacle | Text | Testresult | Logfile |
-| - | - | - | :-: | - | - | - |
+| Testgroup | Test | Tentacle | Logfile |
+| - | - | :-: | - |
 {%- for testgroup in testgroups %}
     {%- for result  in testgroup.results_failed %}
-| {{ testgroup.testgroup_markdown(tests) }} | {{ result.name_markdown(tests) }} |  | {{ testgroup.tentacles }} | - | failed | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+| {{ testgroup.testgroup_markdown(tests) }} | {{ result.name_markdown(tests) }} | {{ testgroup.tentacles }} | [logfile]({{ testgroup.log_output }}) |
     {%- endfor %}
 {%- endfor %}
 
-## Tests
+## Testsgroups which could not run due to an error
 
 | Testgroup | Error | Logfile |
 | - | - | - |
 {%- for testgroup in testgroups %}
+    {%- if testgroup.error %}
 | {{ testgroup.testgroup_markdown(tests) }} | {{ testgroup.error }} | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+    {%- endif %}
 {%- endfor %}

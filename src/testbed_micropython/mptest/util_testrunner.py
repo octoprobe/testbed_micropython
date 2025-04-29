@@ -53,9 +53,9 @@ from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from ..testrunspecs import (
     multinet,
     perftest,
+    run_natmodtests,
     runtests,
     runtests_net_inet,
-    run_natmodtests,
 )
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 

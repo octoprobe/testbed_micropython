@@ -64,6 +64,10 @@ class ResultTestGroup:
     # logger_20_info.log
     results: list[ResultTestResult] = dataclasses.field(default_factory=list)
     error: str = "Test never finished..."
+    """
+    Error message.
+    "": No error
+    """
 
     @property
     def results_failed(self) -> list[ResultTestResult]:
@@ -150,10 +154,11 @@ class ResultTests:
 @dataclasses.dataclass
 class DataSummaryLine:
     testgroup: ResultTestGroup
-    error: int = 0
-    skipped: int = 0
-    passed: int = 0
-    failed: int = 0
+    group_run: int = 0
+    group_error: int = 0
+    tests_skipped: int = 0
+    tests_passed: int = 0
+    tests_failed: int = 0
 
     def testgroup_markdown(self, tests: ResultTests) -> str:
         """
@@ -175,13 +180,22 @@ class Data:
             if line is None:
                 line = DataSummaryLine(testgroup)
                 dict_summary[testgroup.testgroup] = line
+            assert isinstance(line, DataSummaryLine)
+            line.group_run += 1
+            if testgroup.error != "":
+                line.group_error += 1
             for result in testgroup.results:
                 if result.result == "failed":
-                    line.failed += 1
+                    line.tests_failed += 1
         return sorted(dict_summary.values(), key=lambda line: line.testgroup.testgroup)
 
     @staticmethod
-    def factory(directory_results: pathlib.Path) -> Data:
+    def gather_json_files(directory_results: pathlib.Path) -> Data:
+        """
+        Loop over all testresults and collect and read json files.
+        Return the collected data.
+        """
+
         def collect_top():
             filename = directory_results / FILENAME_CONTEXT_JSON
             json_text = filename.read_text()

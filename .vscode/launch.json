@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mptest report",
+            "name": "mptest report --url=",
             "type": "debugpy",
             "request": "launch",
             "module": "testbed_micropython.mptest.cli",
@@ -13,7 +13,8 @@
             "args": [
                 "report",
                 "--label=github_testbed_micropython_100",
-                "--action-url=https://github.com/octoprobe/testbed_micropython_runner/actions/runs/14650052333"
+                "--action-url=https://github.com/octoprobe/testbed_micropython_runner/actions/runs/14650052333",
+                "--url="
             ],
             "console": "integratedTerminal",
             "env": {
@@ -87,7 +88,7 @@
             "justMyCode": false,
         },
         {
-            "name": "mptest test REPORT FAST",
+            "name": "mptest test FAST",
             "type": "debugpy",
             "request": "launch",
             "module": "testbed_micropython.mptest.cli",

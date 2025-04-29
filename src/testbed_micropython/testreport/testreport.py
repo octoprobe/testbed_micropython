@@ -23,7 +23,7 @@ class ReportRenderer:
         assert isinstance(label, str | None)
         self.directory_results = directory_results
         self.label = label
-        self.data = Data.factory(directory_results=directory_results)
+        self.data = Data.gather_json_files(directory_results=directory_results)
 
     def render(self, action_url: str | None = None) -> None:
         assert isinstance(action_url, str | None)

@@ -8,6 +8,7 @@ import time
 
 import requests
 import urllib3
+from octoprobe.util_constants import ExitCode
 
 from .util_testreport import now_formatted
 
@@ -17,7 +18,7 @@ logger = logging.getLogger(__file__)
 class TarAndHttpsPush:
     def __init__(self, directory: pathlib.Path, label: str | None):
         """
-        Example label: ch_hans_1-2025_04_22-12_33_22
+        Example label: notebook_hans-2025_04_22-12_33_22
         """
         assert isinstance(directory, pathlib.Path)
         assert isinstance(label, str | None)
@@ -41,8 +42,9 @@ class TarAndHttpsPush:
         logger.info(f"Created {filename_tar}.")
         return filename_tar
 
-    def _http_push(self, url: str, filename: pathlib.Path) -> int:
+    def _http_push(self, url: str, filename: pathlib.Path) -> ExitCode:
         logger.info(f"About to push to {url}...")
+
         begin_s = time.monotonic()
         with filename.open("rb") as tar_file:
             files = {
@@ -66,12 +68,12 @@ class TarAndHttpsPush:
             logger.info(
                 f"Successfully uploaded {size_mb:0.3f} MBytes in {duration_text}."
             )
-            return 0
+            return ExitCode.SUCCESS
         logger.error(
             f"Failed to upload to {url}: {response.status_code} {response.text}!"
         )
-        return 1
+        return ExitCode.ERROR
 
-    def https_push(self, url: str) -> int:
+    def https_push(self, url: str) -> ExitCode:
         filename_tar = self._create_tarfile()
         return self._http_push(url=url, filename=filename_tar)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import sys
 
 from octoprobe.util_subprocess import subprocess_run
@@ -19,6 +20,10 @@ from ..testcollection.testrun_specs import (
 
 logger = logging.getLogger(__file__)
 
+_LIST_MOCKED_ERRORS = [
+    # r"RUN-TESTS_EXTMOD_HARDWARE@\w+-ESP32_C3_DEVKIT",
+]
+
 
 class TestRunRunTests(TestRun):
     """
@@ -32,6 +37,12 @@ class TestRunRunTests(TestRun):
         assert len(self.list_tentacle_variant) == 1
         tentacle_variant = self.list_tentacle_variant[0]
         assert isinstance(tentacle_variant, TentacleVariant)
+
+        for mocked_error in _LIST_MOCKED_ERRORS:
+            if re.match(mocked_error, self.testid):
+                logger.error(f"Test ID matches '{mocked_error}")
+                raise ValueError(f"Mocked error for testid='{mocked_error}'")
+
         tentacle = tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
