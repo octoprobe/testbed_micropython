@@ -168,7 +168,22 @@ class ResultTests:
 
     @property
     def commandline_markdown(self) -> str:
-        return "<br>".join([f"```{arg}```" for arg in self.commandline.split(" ")])
+        markdown = "<br>".join([f"```{arg}```" for arg in self.commandline.split(" ")])
+
+        # Avoid github to make a link out of
+        # https://github.com/micropython/micropython.git@master
+        markdown = markdown.replace("https://", "https:// ")
+        # markdown = markdown.replace("@", " @ ")
+
+        # for ref in (self.ref_firmware, self.ref_tests):
+        #     ref_markdown = GitRef.factory(self.ref_firmware).markdown
+        #     markdown_try = markdown.replace(ref, ref_markdown)
+        #     if markdown_try.find("[[") == -1:
+        #         # Avoid double replacement which results in
+        #         # [[https://github.com/micropython/micropython.git@master](https://github.com/micropython/micropython/tree/master)](https://github.com/micropython/micropython/tree/master)
+        #         markdown = markdown_try
+
+        return markdown
 
 
 @dataclasses.dataclass
