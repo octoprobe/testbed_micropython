@@ -50,7 +50,13 @@ from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
-from ..testrunspecs import multinet, perftest, runtests, runtests_net_inet
+from ..testrunspecs import (
+    multinet,
+    perftest,
+    runtests,
+    runtests_net_inet,
+    run_natmodtests,
+)
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
@@ -77,6 +83,7 @@ _TESTRUN_SPECS = [
     runtests.TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE,
     runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
     runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE,
+    run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS,
 ]
 
 
