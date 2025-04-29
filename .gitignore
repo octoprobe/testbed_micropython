@@ -2,7 +2,7 @@
 schematics_kicad/kicad/testbed-backups/*
 docs/_build/**
 testresults/**
-testresults_/**
+testresults_*/**
 results_*/**
 git_cache/**
 downloads/**

@@ -74,9 +74,13 @@ class ResultTestGroup:
         failed = [r for r in self.results if r.result == "failed"]
         return sorted(failed, key=lambda r: r.name)
 
-    def testgroup_markdown(self, tests: ResultTests) -> str:
+    def testgroup_markdown(self, tests: ResultTests, testid: bool = False) -> str:
         """
-        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+        Example return:
+          testid=False:
+            [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+          testid=True:
+            [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
         """
         from ..mptest.util_testrunner import get_testrun_spec
 
@@ -86,11 +90,22 @@ class ResultTestGroup:
             return self.testgroup
         python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + testspec.command_executable
 
-        return self.testgroup_markdown2(tests=tests, python_test=python_test)
+        md = self.testgroup_markdown2(
+            tests=tests, python_test=python_test, testid=testid
+        )
+        if testid:
+            md = md.replace("@", "<br>@")
+        return md
 
-    def testgroup_markdown2(self, tests: ResultTests, python_test: str) -> str:
+    def testgroup_markdown2(
+        self, tests: ResultTests, python_test: str, testid: bool
+    ) -> str:
         """
-        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+        Example return:
+          testid=False:
+            [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+          testid=True:
+            [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
         """
         assert isinstance(tests, ResultTests)
 
@@ -101,7 +116,8 @@ class ResultTestGroup:
         ref = GitRef.factory(ref=ref_tests)
 
         # Build the link
-        return f"[{self.testgroup}]({ref.link(file=python_test)})"
+        label = self.testid if testid else self.testgroup
+        return f"[{label}]({ref.link(file=python_test)})"
 
 
 @dataclasses.dataclass
@@ -150,6 +166,10 @@ class ResultTests:
     def ref_tests2(self) -> GitRef:
         return GitRef.factory(self.ref_tests)
 
+    @property
+    def commandline_markdown(self) -> str:
+        return "<br>".join([f"```{arg}```" for arg in self.commandline.split(" ")])
+
 
 @dataclasses.dataclass
 class DataSummaryLine:
@@ -171,6 +191,10 @@ class DataSummaryLine:
 class Data:
     tests: ResultTests
     testgroups: list[ResultTestGroup] = dataclasses.field(default_factory=list)
+
+    @property
+    def testgroups_ordered(self) -> list[ResultTestGroup]:
+        return sorted(self.testgroups, key=lambda testgroup: testgroup.testid)
 
     @property
     def summary(self) -> list[DataSummaryLine]:

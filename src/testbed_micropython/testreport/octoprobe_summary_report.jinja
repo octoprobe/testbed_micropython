@@ -1,7 +1,6 @@
 # Octoprobe test report
 
 {% set tests = data.tests %}
-{% set testgroups = data.testgroups %}
 
 * Trigger: {{ tests.trigger }} {% if action_url %}[Github Action]({{ action_url }}){% endif %}
 
@@ -9,7 +8,7 @@
 
   * testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
   * start, end: {{ tests.time_start }} - {{ tests.time_end }}
-  * command line: {{ tests.commandline }}
+  * command line: {{ tests.commandline_markdown }}
   * firmware: {{ tests.ref_firmware2.markdown }}
   * tests: {{ tests.ref_tests2.markdown }}
   * log_output: [{{ tests.log_output }}]({{ tests.log_output }})
@@ -19,29 +18,29 @@
 
 ## Summary
 
-| Test | Group<br>run | Group<br>error  | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
+| Test | Groups<br>run | Groups<br>error  | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
 | - | :-: | :-: | :-: | :-: | :-: |
 | .. | .. | .. | .. | .. | .. |
 {%- for line  in data.summary %}
-| {{ line.testgroup_markdown(tests) }} | {{ line.group_run }} | {{ line.group_error }} | {{ line.tests_passed }}  | {{ line.tests_skipped }} | {{ line.tests_failed }} |
+| {{ line.testgroup_markdown(tests) }} | {{ line.group_run }} | **{{ line.group_error }}** | {{ line.tests_passed }}  | {{ line.tests_skipped }} | **{{ line.tests_failed }}** |
 {%- endfor %}
 
 ## Tests which failed
 
-| Testgroup | Test | Tentacle | Logfile |
-| - | - | :-: | - |
-{%- for testgroup in testgroups %}
+| Testgroup (testid) | Test |  Logfile |
+| - | - | - |
+{%- for testgroup in data.testgroups_ordered %}
     {%- for result  in testgroup.results_failed %}
-| {{ testgroup.testgroup_markdown(tests) }} | {{ result.name_markdown(tests) }} | {{ testgroup.tentacles }} | [logfile]({{ testgroup.log_output }}) |
+| {{ testgroup.testgroup_markdown(tests, testid=True) }} | {{ result.name_markdown(tests) }} | [logfile]({{ testgroup.log_output }}) |
     {%- endfor %}
 {%- endfor %}
 
 ## Testsgroups which could not run due to an error
 
-| Testgroup | Error | Logfile |
+| Testgroup (testid) | Logfile | Error |
 | - | - | - |
-{%- for testgroup in testgroups %}
+{%- for testgroup in data.testgroups_ordered %}
     {%- if testgroup.error %}
-| {{ testgroup.testgroup_markdown(tests) }} | {{ testgroup.error }} | [{{ testgroup.log_output }}]({{ testgroup.log_output }}) |
+| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output }})  | ```{{ testgroup.error }}``` |
     {%- endif %}
 {%- endfor %}
