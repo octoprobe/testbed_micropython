@@ -69,9 +69,40 @@ class TestRunRunTests(TestRun):
         )
 
 
+TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
+    label="RUN-TESTS_STANDARD",
+    helptext="Run the standard set of tests",
+    # TODO: Allow overwrite by command line
+    command=["run-tests.py"],
+    required_fut=EnumFut.FUT_MCU_ONLY,
+    required_tentacles_count=1,
+    testrun_class=TestRunRunTests,
+    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+)
+
+TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
+    label="RUN-TESTS_STANDARD_VIA_MPY",
+    helptext="Run the standard set of tests via .mpy",
+    command=["run-tests.py", "--via-mpy"],
+    required_fut=EnumFut.FUT_MCU_ONLY,
+    required_tentacles_count=1,
+    testrun_class=TestRunRunTests,
+    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+)
+
+TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
+    label="RUN-TESTS_STANDARD_NATIVE",
+    helptext="Run the standard set of tests with the native emitter",
+    command=["run-tests.py", "--via-mpy", "--emit", "native"],
+    required_fut=EnumFut.FUT_MCU_ONLY,
+    required_tentacles_count=1,
+    testrun_class=TestRunRunTests,
+    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+)
+
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE",
-    helptext="On each board, do test on a gpio feedback loop",
+    helptext="Run hardware specific tests",
     command=["run-tests.py", "--test-dirs=extmod_hardware"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,
@@ -79,14 +110,18 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     timeout_s=30.0 + TIMEOUT_FLASH_S,
 )
 
-
-TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
-    label="RUN-TESTS_STANDARD",
-    helptext="On each board, do some basic python language tests",
-    # TODO: Allow overwrite by command line
-    command=["run-tests.py"],
-    required_fut=EnumFut.FUT_MCU_ONLY,
+TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE = TestRunSpec(
+    label="RUN-TESTS_EXTMOD_HARDWARE_NATIVE",
+    helptext="Run hardware specific tests with the native emitter",
+    command=[
+        "run-tests.py",
+        "--via-mpy",
+        "--emit",
+        "native",
+        "--test-dirs=extmod_hardware",
+    ],
+    required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
-    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+    timeout_s=30.0 + TIMEOUT_FLASH_S,
 )
