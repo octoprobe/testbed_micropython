@@ -172,7 +172,7 @@ class ResultTests:
 
         # Avoid github to make a link out of
         # https://github.com/micropython/micropython.git@master
-        markdown = markdown.replace("https://", "https:// ")
+        # markdown = markdown.replace("https://", "https:// ")
         # markdown = markdown.replace("@", " @ ")
 
         # for ref in (self.ref_firmware, self.ref_tests):
