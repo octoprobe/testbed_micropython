@@ -257,7 +257,7 @@ def test(
         typer.Option(
             help="Do a 'git clean -fXd' to make sure that all prior artifacts are removed. Applies ONLY to the firmware repo!",
         ),
-    ] = False,  # noqa: UP007
+    ] = True,  # noqa: UP007
     force_multiprocessing: TyperAnnotated[
         bool,
         typer.Option(
