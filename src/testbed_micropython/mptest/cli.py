@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 import pathlib
+import sys
 
 import typer
 import typing_extensions
@@ -287,6 +288,7 @@ def test(
             force_multiprocessing=force_multiprocessing,
         )
         testrunner = util_testrunner.TestRunner(args=args)
+        logger.info(f"{' '.join(sys.argv)}")
         logger.info(f"{multiprocessing=}")
         logger.info(f"directory_results={args.directory_results}")
         try:
