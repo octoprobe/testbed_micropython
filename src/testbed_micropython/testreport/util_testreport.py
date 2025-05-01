@@ -98,7 +98,10 @@ class ResultTestGroup:
         return md
 
     def testgroup_markdown2(
-        self, tests: ResultTests, python_test: str, testid: bool
+        self,
+        tests: ResultTests,
+        python_test: str,
+        testid: bool,
     ) -> str:
         """
         Example return:

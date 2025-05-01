@@ -32,6 +32,7 @@ dependencies = [
     # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
     "requests~=2.32",
     "types-requests~=2.32",
+    "markdown2~=2.5.3",
 ]
 
 [project.urls]

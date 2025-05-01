@@ -1,19 +1,16 @@
-# Octoprobe test report
+# {{ title }}
 
 {% set tests = data.tests %}
 
 * Trigger: {{ tests.trigger }} {% if action_url %}[Github Action]({{ action_url }}){% endif %}
-
-* Execution
-
-  * testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
-  * start, end: {{ tests.time_start }} - {{ tests.time_end }}
-  * firmware: {{ tests.ref_firmware2.markdown }}
-  * tests: {{ tests.ref_tests2.markdown }}
-  * log_output: [{{ tests.log_output }}]({{ tests.log_output }})
-  {% if tests.error %}
-  * error: {{ tests.error }}
-  {% endif %}
+* Testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
+* Start - End: {{ tests.time_start }} - {{ tests.time_end }}
+* Repo Firmware: {{ tests.ref_firmware2.markdown }}
+* Repo Tests: {{ tests.ref_tests2.markdown }}
+* Logoutput: [{{ tests.log_output }}]({{ tests.log_output }})
+{% if tests.error %}
+* Error: {{ tests.error }}
+{% endif %}
 
 ## Summary
 
