@@ -83,6 +83,10 @@ ignore_missing_imports = true
 module = "markdown2.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "mpremote.*"
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 pythonpath = "."
 addopts = [

@@ -1,13 +1,13 @@
-# {{ title }}
+# {{ title|md_escape }}
 
 {% set tests = data.tests %}
 
-* Trigger: {{ tests.trigger }} {% if action_url %}[Github Action]({{ action_url }}){% endif %}
-* Testbed: {{ tests.testbed_instance }} {{ tests.testbed_name }}
-* Start - End: {{ tests.time_start }} - {{ tests.time_end }}
+* Trigger: {{ tests.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
+* Testbed: {{ tests.testbed_instance|md_escape }} {{ tests.testbed_name|md_escape }}
+* Start - End: {{ tests.time_start|md_escape }} - {{ tests.time_end|md_escape }}
 * Repo Firmware: {{ tests.ref_firmware2.markdown }}
 * Repo Tests: {{ tests.ref_tests2.markdown }}
-* Logoutput: [{{ tests.log_output }}]({{ tests.log_output }})
+* Logoutput: [{{ tests.log_output|fix_links|md_escape }}]({{ tests.log_output|fix_links|md_escape }})
 {% if tests.error %}
 * Error: {{ tests.error }}
 {% endif %}
@@ -16,7 +16,7 @@
 
 | Test | Groups<br>run | Groups<br>skipped | Groups<br>error | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
 | - | :-: | :-: | :-: | :-: | :-: | :-: |
-| .. | .. | .. | .. | .. | .. |
+| .. | .. | .. | .. | .. | .. | .. |
 {%- for line in data.summary %}
 | {{ line.testgroup_markdown(tests) }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezerobold }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_failed|hidezerobold }} |
 {%- endfor %}
@@ -27,7 +27,7 @@
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
     {%- for result in testgroup.results_failed %}
-| {{ testgroup.testgroup_markdown(tests, testid=True) }} | {{ result.name_markdown(tests) }} | [logfile]({{ testgroup.log_output }}) |
+| {{ testgroup.testgroup_markdown(tests, testid=True) }} | {{ result.name_markdown(tests) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) |
     {%- endfor %}
 {%- endfor %}
 
@@ -37,6 +37,6 @@
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
     {%- if testgroup.msg_error %}
-| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output }}) | ```{{ testgroup.msg_error }}``` |
+| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
     {%- endif %}
 {%- endfor %}

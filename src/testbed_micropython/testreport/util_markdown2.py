@@ -1,5 +1,27 @@
 import markdown2
 
+
+def md_escape(md: str) -> str:
+    r"""
+    Markdown will write 'TEST_XY' as 'TEST<italic>XY'.
+    We escape using '\_'
+    See:
+    https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#ignoring-markdown-formatting
+    https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#styling-text
+    """
+    for c in "[]*_<>":
+        md = md.replace(c, "\\" + c)
+    return md
+
+
+def md_link(label: str, link: str | None) -> str:
+    label_escaped = md_escape(label)
+    if link is None:
+        return label_escaped
+    link_escaped = md_escape(link)
+    return f"[{label_escaped}]({link_escaped})"
+
+
 # See: https://github.com/trentm/python-markdown2/wiki/Extras
 _MARKDOWN = markdown2.Markdown(
     extras=[

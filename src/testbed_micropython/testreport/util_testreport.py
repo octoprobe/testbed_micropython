@@ -12,6 +12,7 @@ from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from ..testcollection.testrun_specs import MICROPYTHON_DIRECTORY_TESTS, TestRun
+from .util_markdown2 import md_link
 
 TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
 
@@ -42,7 +43,7 @@ class ResultTestResult:
         ref = GitRef.factory(ref=ref_tests)
 
         # Build the link
-        return f"[{self.name}]({ref.link(file=python_test)})"
+        return md_link(label=self.name, link=ref.link(file=python_test))
 
 
 @dataclasses.dataclass
@@ -98,6 +99,7 @@ class ResultTestGroup:
         md = self.testgroup_markdown2(
             tests=tests, python_test=python_test, testid=testid
         )
+        # TODO: Is this still required?
         if testid:
             md = md.replace("@", "<br>@")
         return md
@@ -125,7 +127,8 @@ class ResultTestGroup:
 
         # Build the link
         label = self.testid if testid else self.testgroup
-        return f"[{label}]({ref.link(file=python_test)})"
+
+        return md_link(label=label, link=ref.link(file=python_test))
 
 
 @dataclasses.dataclass
@@ -445,7 +448,7 @@ class GitRef:
     def markdown(self) -> str:
         if self.url is None:
             return self.ref
-        return f"[{self.ref}]({self.url_link})"
+        return md_link(label=self.ref, link=self.url_link)
 
     # def markdown2(self, label: str, file: str) -> str:
     #     """
