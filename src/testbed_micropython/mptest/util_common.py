@@ -12,6 +12,7 @@ import pathlib
 import sys
 import typing
 
+from mpremote.transport import TransportExecError
 from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.lib_tentacle_dut import TentacleDut
 from octoprobe.util_baseclasses import OctoprobeTestException, assert_micropython_repo
@@ -105,8 +106,13 @@ def copy_certificates(dut: TentacleDut, src: pathlib.Path) -> None:
 
     dut.mp_remote.set_rtc()
 
-    for certificate in src.glob("*.der"):
-        dut.mp_remote.cp(certificate, ":")
+    try:
+        for certificate in src.glob("*.der"):
+            dut.mp_remote.cp(certificate, ":")
+    except TransportExecError as e:
+        msg = f"{dut.label}: Failed to copy certificate '{certificate}': Might be there is not local filesystem: Skipped copying certificate."
+        logger.debug(msg, exc_info=e)
+        logger.warning(msg)
 
 
 def init_wlan(dut: TentacleDut) -> None:
