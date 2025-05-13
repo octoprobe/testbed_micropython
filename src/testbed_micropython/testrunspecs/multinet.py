@@ -68,6 +68,8 @@ class TestRunMultitestBase(TestRun):
 class TestRunMultitestMultinet(TestRunMultitestBase):
     def setup(self, testargs: TestArgs) -> None:
         for tentacle_variant in self.list_tentacle_variant:
+            util_common.skip_if_no_filesystem(tentacle=tentacle_variant.tentacle)
+
             dut = tentacle_variant.tentacle.dut
             util_common.copy_certificates(
                 dut=dut,

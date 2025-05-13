@@ -7,7 +7,7 @@ from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..mptest.util_common import mip_install
+from ..mptest.util_common import mip_install, skip_if_no_filesystem
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
@@ -36,6 +36,8 @@ class TestRunRunTests(TestRun):
         tentacle = tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
+
+        skip_if_no_filesystem(tentacle=tentacle)
 
         # for tests 'net_hosted', this call is irrelevant
         util_common.copy_certificates(

@@ -12,10 +12,14 @@ import pathlib
 import sys
 import typing
 
-from mpremote.transport import TransportExecError
+from octoprobe.lib_mpremote import ExceptionCmdFailed
 from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.lib_tentacle_dut import TentacleDut
-from octoprobe.util_baseclasses import OctoprobeTestException, assert_micropython_repo
+from octoprobe.util_baseclasses import (
+    OctoprobeTestException,
+    OctoprobeTestSkipException,
+    assert_micropython_repo,
+)
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import is_url
@@ -63,6 +67,16 @@ class ArgsMpTest:
         return _directory
 
 
+def skip_if_no_filesystem(tentacle: TentacleBase) -> None:
+    assert isinstance(tentacle, TentacleBase)
+    try:
+        _ret = tentacle.dut.mp_remote.exec_raw("import os; os.listdir('/')")
+    except ExceptionCmdFailed as e:
+        msg = f"{tentacle.label_short}: No filesystem: Skip Test!"
+        logger.warning(msg)
+        raise OctoprobeTestSkipException(msg) from e
+
+
 def mip_install(
     testargs: TestArgs,
     tentacle: TentacleBase,
@@ -106,13 +120,8 @@ def copy_certificates(dut: TentacleDut, src: pathlib.Path) -> None:
 
     dut.mp_remote.set_rtc()
 
-    try:
-        for certificate in src.glob("*.der"):
-            dut.mp_remote.cp(certificate, ":")
-    except TransportExecError as e:
-        msg = f"{dut.label}: Failed to copy certificate '{certificate}': Might be there is not local filesystem: Skipped copying certificate."
-        logger.debug(msg, exc_info=e)
-        logger.warning(msg)
+    for certificate in src.glob("*.der"):
+        dut.mp_remote.cp(certificate, ":")
 
 
 def init_wlan(dut: TentacleDut) -> None:

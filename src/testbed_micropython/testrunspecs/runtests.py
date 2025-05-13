@@ -9,7 +9,7 @@ from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
-from ..mptest.util_common import mip_install
+from ..mptest.util_common import mip_install, skip_if_no_filesystem
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
@@ -48,6 +48,8 @@ class TestRunRunTests(TestRun):
         tentacle = tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
+
+        skip_if_no_filesystem(tentacle=tentacle)
 
         def env_for_mpycross() -> dict[str, str]:
             if "--via-mpy" not in self.testrun_spec.command_args:
