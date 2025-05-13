@@ -40,3 +40,13 @@
 | {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
     {%- endif %}
 {%- endfor %}
+
+## Testsgroups which where skipped
+
+| Testgroup (testid) | Logfile | Error |
+| - | - | - |
+{%- for testgroup in data.testgroups_ordered %}
+    {%- if testgroup.msg_skipped %}
+| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_skipped|fix_links }}``` |
+    {%- endif %}
+{%- endfor %}
