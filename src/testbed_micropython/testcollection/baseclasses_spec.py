@@ -160,7 +160,7 @@ class ConnectedTentacles(list[TentacleMicropython]):
             for board in boards:
                 if board not in connected_boards:
                     logger.warning(
-                        f"Board '{board}' not found. Connected boards are {','.join(sorted(boards))}"
+                        f"Board '{board}' not found. Connected boards are {','.join(sorted(connected_boards))}"
                     )
 
         board_not_connected_warning(boards=query.only)
