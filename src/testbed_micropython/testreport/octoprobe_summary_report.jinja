@@ -14,19 +14,19 @@
 
 ## Summary
 
-| Test | Groups<br>run | Groups<br>error  | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
-| - | :-: | :-: | :-: | :-: | :-: |
+| Test | Groups<br>run | Groups<br>skipped | Groups<br>error | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
+| - | :-: | :-: | :-: | :-: | :-: | :-: |
 | .. | .. | .. | .. | .. | .. |
-{%- for line  in data.summary %}
-| {{ line.testgroup_markdown(tests) }} | {{ line.group_run }} | **{{ line.group_error }}** | {{ line.tests_passed }}  | {{ line.tests_skipped }} | **{{ line.tests_failed }}** |
+{%- for line in data.summary %}
+| {{ line.testgroup_markdown(tests) }} | {{ line.group_run }} | {{ line.group_skipped }} | **{{ line.group_error }}** | {{ line.tests_passed }} | {{ line.tests_skipped }} | **{{ line.tests_failed }}** |
 {%- endfor %}
 
 ## Tests which failed
 
-| Testgroup (testid) | Test |  Logfile |
+| Testgroup (testid) | Test | Logfile |
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
-    {%- for result  in testgroup.results_failed %}
+    {%- for result in testgroup.results_failed %}
 | {{ testgroup.testgroup_markdown(tests, testid=True) }} | {{ result.name_markdown(tests) }} | [logfile]({{ testgroup.log_output }}) |
     {%- endfor %}
 {%- endfor %}
@@ -36,7 +36,7 @@
 | Testgroup (testid) | Logfile | Error |
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
-    {%- if testgroup.error %}
-| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output }})  | ```{{ testgroup.error }}``` |
+    {%- if testgroup.msg_error %}
+| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output }}) | ```{{ testgroup.msg_error }}``` |
     {%- endif %}
 {%- endfor %}

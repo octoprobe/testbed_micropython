@@ -63,10 +63,15 @@ class ResultTestGroup:
     log_output: str = ""
     # logger_20_info.log
     results: list[ResultTestResult] = dataclasses.field(default_factory=list)
-    error: str = "Test never finished..."
+    msg_error: str = "Test never finished..."
     """
     Error message.
     "": No error
+    """
+    msg_skipped: str = ""
+    """
+    Example:
+    It looks like the firmware has not been compiled, but the test requires '--via-mpy'!
     """
 
     @property
@@ -193,6 +198,7 @@ class ResultTests:
 class DataSummaryLine:
     testgroup: ResultTestGroup
     group_run: int = 0
+    group_skipped: int = 0
     group_error: int = 0
     tests_skipped: int = 0
     tests_passed: int = 0
@@ -223,9 +229,14 @@ class Data:
                 line = DataSummaryLine(testgroup)
                 dict_summary[testgroup.testgroup] = line
             assert isinstance(line, DataSummaryLine)
-            line.group_run += 1
-            if testgroup.error != "":
+
+            if testgroup.msg_skipped != "":
+                line.group_skipped += 1
+            elif testgroup.msg_error != "":
                 line.group_error += 1
+            else:
+                line.group_run += 1
+
             for result in testgroup.results:
                 if result.result == "failed":
                     line.tests_failed += 1
@@ -343,11 +354,17 @@ class ReportTestgroup:
 
     def write_ok(self) -> None:
         self._report_written = True
-        self.report.error = ""
+        self.report.msg_error = ""
         self._append_testresults_from_json()
         self._write()
 
-    def write_error(self, error: str) -> None:
+    def write_error(self, msg: str, skipped: bool = False) -> None:
+        """
+        if skipped is True:
+           * The test terminated as it was skipped
+        if skipped is False:
+           * The test terminated due to an error
+        """
         if self._report_written:
             # This file has already been written
             return
@@ -356,11 +373,15 @@ class ReportTestgroup:
         # See: https://github.com/octoprobe/testbed_micropython/issues/8
         if self._append_testresults_from_json():
             # The file could be read: We leave the error empty
-            self.report.error = ""
+            self.report.msg_error = ""
             self._write()
             return
 
-        self.report.error = error
+        if skipped:
+            self.report.msg_error = ""
+            self.report.msg_skipped = msg
+        else:
+            self.report.msg_error = msg
         self._write()
 
     def _write(self) -> None:

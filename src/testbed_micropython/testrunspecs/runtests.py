@@ -5,7 +5,7 @@ import pathlib
 import re
 import sys
 
-from octoprobe.util_baseclasses import OctoprobeTestException
+from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
@@ -63,7 +63,7 @@ class TestRunRunTests(TestRun):
                 return False
 
             if firmware_not_build():
-                raise OctoprobeTestException(
+                raise OctoprobeTestSkipException(
                     "It looks like the firmware has not been compiled, but the test requires '--via-mpy'!"
                 )
 

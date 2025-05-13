@@ -14,7 +14,11 @@ from octoprobe.usb_tentacle.usb_tentacle import (
     UsbTentacles,
     assert_serialdelimtied_valid,
 )
-from octoprobe.util_baseclasses import OctoprobeAppExitException, OctoprobeTestException
+from octoprobe.util_baseclasses import (
+    OctoprobeAppExitException,
+    OctoprobeTestException,
+    OctoprobeTestSkipException,
+)
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
@@ -598,12 +602,13 @@ def _target_run_one_test_async_a(
     ) as e:
         msg = f"{testid_patch}: Terminating test due to: {e!r}"
         logger.warning(msg)
-        report_test.write_error(error=msg)
+        skipped = isinstance(e, OctoprobeTestSkipException)
+        report_test.write_error(msg=msg, skipped=skipped)
         return False
     except Exception as e:
         msg = f"{testid_patch}: Terminating test due to: {e!r}"
         logger.error(msg, exc_info=e)
-        report_test.write_error(error=msg)
+        report_test.write_error(msg=msg)
         return False
     finally:
         logger.info(f"TEST TEARDOWN {duration_text()} {testid_patch}")
