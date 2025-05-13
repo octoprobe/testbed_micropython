@@ -154,7 +154,7 @@ class ConnectedTentacles(list[TentacleMicropython]):
         return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
 
     def query_boards(self, query: ArgsQuery) -> ConnectedTentacles:
-        connected_boards = {t.tentacle_spec.board for t in self}
+        connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
 
         def board_not_connected_warning(boards: set[str]) -> None:
             for board in boards:
@@ -173,5 +173,5 @@ class ConnectedTentacles(list[TentacleMicropython]):
             selected_boards.difference_update(query.skip)
 
         return ConnectedTentacles(
-            [t for t in self if t.tentacle_spec.board in sorted(selected_boards)]
+            [t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)]
         )
