@@ -18,7 +18,7 @@
 | - | :-: | :-: | :-: | :-: | :-: | :-: |
 | .. | .. | .. | .. | .. | .. |
 {%- for line in data.summary %}
-| {{ line.testgroup_markdown(tests) }} | {{ line.group_run }} | {{ line.group_skipped }} | **{{ line.group_error }}** | {{ line.tests_passed }} | {{ line.tests_skipped }} | **{{ line.tests_failed }}** |
+| {{ line.testgroup_markdown(tests) }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezerobold }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_failed|hidezerobold }} |
 {%- endfor %}
 
 ## Tests which failed

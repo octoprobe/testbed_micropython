@@ -3,8 +3,8 @@ from __future__ import annotations
 import logging
 import pathlib
 
-from octoprobe import util_jinja2
 from octoprobe.util_constants import DirectoryTag
+from octoprobe.util_jinja2 import JinjaEnv
 
 from testbed_micropython.testreport.util_markdown2 import markdown2html
 from testbed_micropython.testreport.util_testreport import Data
@@ -32,9 +32,14 @@ class ReportRenderer:
         filename_template = DIRECTORY_OF_THIS_FILE / "octoprobe_summary_report.jinja"
         template = filename_template.read_text()
 
+        jinja_env = JinjaEnv()
+        jinja_env.env.filters["hidezero"] = lambda i: "" if i == 0 else i
+        jinja_env.env.filters["hidezerobold"] = lambda i: "" if i == 0 else f"**{i}**"
+
         title = "Octoprobe test report"
-        report_md = util_jinja2.render(
-            template,
+
+        report_md = jinja_env.render_string(
+            micropython_code=template,
             data=self.data,
             action_url=action_url,
             title=title,
