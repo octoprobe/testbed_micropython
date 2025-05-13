@@ -271,11 +271,12 @@ class TestRunner:
         # _testrun.session_powercycle_tentacles()
 
         testrun_specs = get_testrun_specs(query=self.args.query_test)
-        testrun_specs.assign_tentacles(
-            tentacles=connected_tentacles.query_boards(query=self.args.query_board)
+        selected_tentacles = connected_tentacles.query_boards(
+            query=self.args.query_board
         )
+        testrun_specs.assign_tentacles(tentacles=selected_tentacles)
         self.test_bartender = TestBartender(
-            connected_tentacles=connected_tentacles,
+            connected_tentacles=selected_tentacles,
             testrun_specs=testrun_specs,
             priority_sorter=TestRun.priority_sorter,
             directory_results=self.args.directory_results,
@@ -287,14 +288,14 @@ class TestRunner:
                 self.test_bartender.testrun_specs
             )
         if self.args.firmware.flash_force:
-            for tentacle in connected_tentacles:
+            for tentacle in selected_tentacles:
                 tentacle.tentacle_state.flash_force = True
 
         def update_testbed_instance() -> None:
-            for connected_tentacle in connected_tentacles:
+            for tentacle in selected_tentacles:
                 self.report_testgroup.set_testbed(
-                    testbed_name=connected_tentacle.tentacle_instance.testbed_name,
-                    testbed_instance=connected_tentacle.tentacle_instance.testbed_instance,
+                    testbed_name=tentacle.tentacle_instance.testbed_name,
+                    testbed_instance=tentacle.tentacle_instance.testbed_instance,
                 )
 
         update_testbed_instance()
