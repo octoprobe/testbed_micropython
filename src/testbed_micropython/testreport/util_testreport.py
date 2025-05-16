@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import enum
 import json
 import os
 import pathlib
@@ -17,6 +18,14 @@ from .util_markdown2 import md_link
 TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
 
 FILENAME_CONTEXT_JSON = "context.json"
+
+FILENAME_CONTEXT_TESTGROUP_JSON = "context_testgroup.json"
+
+
+class Outcome(enum.StrEnum):
+    PASSED = "passed"
+    FAILED = "failed"
+    SKIPPED = "skipped"
 
 
 @dataclasses.dataclass
@@ -77,8 +86,19 @@ class ResultTestGroup:
 
     @property
     def results_failed(self) -> list[ResultTestResult]:
-        failed = [r for r in self.results if r.result == "failed"]
-        return sorted(failed, key=lambda r: r.name)
+        return self._result_count(Outcome.FAILED)
+
+    @property
+    def results_skipped(self) -> list[ResultTestResult]:
+        return self._result_count(Outcome.SKIPPED)
+
+    @property
+    def results_success(self) -> list[ResultTestResult]:
+        return self._result_count(Outcome.PASSED)
+
+    def _result_count(self, outcome: Outcome.FAILED) -> list[ResultTestResult]:
+        test_results = [r for r in self.results if r.result == outcome]
+        return sorted(test_results, key=lambda r: r.name)
 
     def testgroup_markdown(self, tests: ResultTests, testid: bool = False) -> str:
         """
@@ -245,8 +265,15 @@ class Data:
                 line.group_run += 1
 
             for result in testgroup.results:
-                if result.result == "failed":
+                if result.result == Outcome.FAILED:
                     line.tests_failed += 1
+                    continue
+                if result.result == Outcome.SKIPPED:
+                    line.tests_skipped += 1
+                    continue
+                assert result.result == Outcome.PASSED
+                line.tests_passed += 1
+
         return sorted(dict_summary.values(), key=lambda line: line.testgroup.testgroup)
 
     @staticmethod
@@ -266,7 +293,9 @@ class Data:
         data = collect_top()
 
         def collect():
-            for filename in directory_results.glob("*/context_testgroup.json"):
+            for filename in directory_results.glob(
+                f"*/{FILENAME_CONTEXT_TESTGROUP_JSON}"
+            ):
                 json_text = filename.read_text()
                 json_dict = json.loads(json_text)
                 testgroup = ResultTestGroup(**json_dict)
@@ -393,7 +422,9 @@ class ReportTestgroup:
 
     def _write(self) -> None:
         self.report.time_end = now_formatted()
-        filename = self.testresults_directory.directory_test / "context_testgroup.json"
+        filename = (
+            self.testresults_directory.directory_test / FILENAME_CONTEXT_TESTGROUP_JSON
+        )
         json_text = json.dumps(dataclasses.asdict(self.report), indent=4)
         filename.write_text(json_text)
 
@@ -404,10 +435,11 @@ class ReportTestgroup:
         json_text = filename.read_text()
         json_dict = json.loads(json_text)
         self.report.results = []
-        for failed_test in json_dict["failed_tests"]:
-            self.report.results.append(
-                ResultTestResult(name=failed_test, result="failed")
-            )
+        for outcome in Outcome:
+            for test_name in json_dict.get(f"{outcome}_tests", []):
+                self.report.results.append(
+                    ResultTestResult(name=test_name, result=outcome)
+                )
         return True
 
 
