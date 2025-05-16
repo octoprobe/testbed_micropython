@@ -19,6 +19,7 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestException,
     OctoprobeTestSkipException,
 )
+from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
@@ -248,6 +249,18 @@ class TestRunner:
     def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
         self.report_testgroup.report.set_directory(tag=tag, directory=directory)
 
+        def git_ref_describe():
+            from testbed_micropython.util_firmware_mpbuild import PLACEHOLDER_PATH
+
+            if str(directory) == PLACEHOLDER_PATH:
+                return ""
+            return CachedGitRepo.git_ref_describe(pathlib.Path(directory))
+
+        if tag is DirectoryTag.T:
+            self.report_testgroup.report.ref_tests_describe = git_ref_describe()
+        if tag is DirectoryTag.F:
+            self.report_testgroup.report.ref_firmware_describe = git_ref_describe()
+
     def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
         self.report_testgroup.report.set_git_ref(tag=tag, git_ref=git_ref)
 
@@ -337,7 +350,7 @@ class TestRunner:
         repo_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
             directory_git_cache=constants.DIRECTORY_GIT_CACHE
         )
-        self.set_directory(DirectoryTag.T, str(repo_micropython_tests))
+        self.set_directory(DirectoryTag.T, repo_micropython_tests)
         async_target = self.firmware_bartender.build_firmwares(
             directory_mpbuild_artifacts=self.args.directory_results
             / constants.SUBDIR_MPBUILD,

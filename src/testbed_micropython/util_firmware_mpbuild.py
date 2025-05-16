@@ -22,10 +22,12 @@ logger = logging.getLogger(__file__)
 
 _ENV_MICROPY_DIR = "MICROPY_DIR"
 
+PLACEHOLDER_PATH = "/placeholder_path"
+
 
 class FirmwareBuilderSkipFlash:
     def __init__(self) -> None:
-        self.repo_directory = pathlib.Path("/placeholder_path")
+        self.repo_directory = pathlib.Path(PLACEHOLDER_PATH)
 
     def build(
         self,

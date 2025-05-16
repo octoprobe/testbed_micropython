@@ -5,8 +5,8 @@
 * Trigger: {{ tests.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
 * Testbed: {{ tests.testbed_instance|md_escape }} {{ tests.testbed_name|md_escape }}
 * Start - End: {{ tests.time_start|md_escape }} - {{ tests.time_end|md_escape }}
-* Repo Firmware: {{ tests.ref_firmware2.markdown }}
-* Repo Tests: {{ tests.ref_tests2.markdown }}
+* Repo Firmware: {{ tests.ref_firmware2.markdown }} {{ tests.ref_firmware_describe }}
+* Repo Tests: {{ tests.ref_tests2.markdown }} {{ tests.ref_tests_describe }}
 * Logoutput: [{{ tests.log_output|fix_links|md_escape }}]({{ tests.log_output|fix_links|md_escape }})
 {% if tests.error %}
 * Error: {{ tests.error }}
