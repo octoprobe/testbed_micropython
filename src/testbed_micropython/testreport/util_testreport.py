@@ -108,6 +108,7 @@ class ResultTestGroup:
           testid=True:
             [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
         """
+        assert isinstance(tests, ResultTests)
         from ..mptest.util_testrunner import get_testrun_spec
 
         # Find the testgroup 'RUN-TESTS_EXTMOD_HARDWARE'
@@ -223,19 +224,13 @@ class ResultTests:
 
 @dataclasses.dataclass
 class DataSummaryLine:
-    testgroup: ResultTestGroup
+    label: str
     group_run: int = 0
     group_skipped: int = 0
     group_error: int = 0
     tests_skipped: int = 0
     tests_passed: int = 0
     tests_failed: int = 0
-
-    def testgroup_markdown(self, tests: ResultTests) -> str:
-        """
-        Example return: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
-        """
-        return self.testgroup.testgroup_markdown(tests=tests)
 
 
 @dataclasses.dataclass
@@ -253,7 +248,11 @@ class Data:
         for testgroup in self.testgroups:
             line = dict_summary.get(testgroup.testgroup, None)
             if line is None:
-                line = DataSummaryLine(testgroup)
+                """
+                Example label: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+                """
+                label = testgroup.testgroup_markdown(tests=self.tests)
+                line = DataSummaryLine(label=label)
                 dict_summary[testgroup.testgroup] = line
             assert isinstance(line, DataSummaryLine)
 
@@ -274,7 +273,17 @@ class Data:
                 assert result.result == Outcome.PASSED
                 line.tests_passed += 1
 
-        return sorted(dict_summary.values(), key=lambda line: line.testgroup.testgroup)
+        lines = sorted(dict_summary.values(), key=lambda line: line.label)
+        total_line = DataSummaryLine(label="Total")
+        for line in lines:
+            total_line.group_error += line.group_error
+            total_line.group_skipped += line.group_skipped
+            total_line.group_run += line.group_run
+            total_line.tests_failed += line.tests_failed
+            total_line.tests_skipped += line.tests_skipped
+            total_line.tests_passed += line.tests_passed
+        lines.insert(0, total_line)
+        return lines
 
     @staticmethod
     def gather_json_files(directory_results: pathlib.Path) -> Data:
