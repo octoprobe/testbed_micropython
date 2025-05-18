@@ -11,9 +11,7 @@ from octoprobe.util_firmware_spec import (
 
 if typing.TYPE_CHECKING:
     from .constants import TentacleBase
-    from .util_firmware_mpbuild import (
-        FirmwareBuilderBase,
-    )
+    from .util_firmware_mpbuild import FirmwareBuilderBase
 
 
 class ArgsFirmware:

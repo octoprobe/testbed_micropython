@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import logging
-import pathlib
 import re
 import sys
 
-from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_subprocess import subprocess_run
+
+from testbed_micropython import constants
+from testbed_micropython.util_mpycross import get_filename_mpycross
 
 from ..constants import EnumFut
 from ..mptest.util_common import mip_install, skip_if_no_filesystem
@@ -55,39 +56,12 @@ class TestRunRunTests(TestRun):
             if "--via-mpy" not in self.testrun_spec.command_args:
                 return {}
 
-            tentacle_state = tentacle.tentacle_state
-
-            def firmware_not_build() -> bool:
-                if not tentacle_state.has_firmware_spec:
-                    return True
-                if not tentacle_state.firmware_spec.do_flash:
-                    return True
-                return False
-
-            if firmware_not_build():
-                raise OctoprobeTestSkipException(
-                    "It looks like the firmware has not been compiled, but the test requires '--via-mpy'!"
-                )
-
-            def mpycross_filename() -> pathlib.Path:
-                """
-                We know the filename of the firmware and start here to find mpy-cross.
-                However, it would be a cleaner solutions to start from the firmware-repo top!
-                """
-                firmware_filename = tentacle_state.firmware_spec.filename
-                # firmware_filename: <micropython>/ports/rp2/build-RPI_PICO/firmware.uf2
-                mpy_cross_filename = firmware_filename.parent
-                while mpy_cross_filename.name != "ports":
-                    mpy_cross_filename = mpy_cross_filename.parent
-                # mpy_cross_filename: <micropython>/ports/
-                mpy_cross_filename = (
-                    mpy_cross_filename.parent / "mpy-cross" / "build" / "mpy-cross"
-                )
-                # mpy_cross_filename: <micropython>/mpy-cross/build/mpy-cross
-                assert mpy_cross_filename.is_file(), mpy_cross_filename
-                return mpy_cross_filename
-
-            return {"MICROPY_MPYCROSS": str(mpycross_filename())}
+            filename_mpycross = get_filename_mpycross(
+                directory_mpbuild_artifacts=testargs.testresults_directory.directory_top
+                / constants.SUBDIR_MPBUILD,
+                repo_micropython=testargs.repo_micropython_tests,
+            )
+            return {"MICROPY_MPYCROSS": str(filename_mpycross)}
 
         serial_port = tentacle.dut.get_tty()
 

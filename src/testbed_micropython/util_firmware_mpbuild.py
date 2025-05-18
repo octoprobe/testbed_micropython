@@ -158,7 +158,7 @@ class Builder:
                 board=firmware.board.name,
                 variant="" if firmware.variant is None else firmware.variant,
             ),
-            _filename=firmware.filename,
+            _filename=filename,
             micropython_full_version_text=firmware.micropython_full_version_text,
         )
 

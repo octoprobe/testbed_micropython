@@ -18,6 +18,7 @@ from ..mpbuild.build_api import MpbuildDockerException
 from ..multiprocessing import util_multiprocessing
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..util_firmware_mpbuild import FirmwareSpecBase
+from ..util_mpycross import copy_mpycross
 
 logger = logging.getLogger(__file__)
 
@@ -90,6 +91,10 @@ def target_build_firmware_async(
                     )
                     raise e
 
+                copy_mpycross(
+                    repo_micropython=repo_micropython_firmware,
+                    directory_mpbuild_artifacts=directory_mpbuild_artifacts,
+                )
                 arg1.queue_put(
                     EventFirmwareSpec(
                         target_unique_name=spec.board_variant.name_normalized,

@@ -96,7 +96,7 @@ class ResultTestGroup:
     def results_success(self) -> list[ResultTestResult]:
         return self._result_count(Outcome.PASSED)
 
-    def _result_count(self, outcome: Outcome.FAILED) -> list[ResultTestResult]:
+    def _result_count(self, outcome: Outcome) -> list[ResultTestResult]:
         test_results = [r for r in self.results if r.result == outcome]
         return sorted(test_results, key=lambda r: r.name)
 
