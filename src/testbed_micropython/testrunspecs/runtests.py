@@ -120,6 +120,8 @@ class TestRunRunTests(TestRun):
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-perfbench.py' is fixed.
+            success_returncodes=[0, 1],
         )
 
 

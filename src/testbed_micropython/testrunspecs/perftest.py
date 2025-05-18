@@ -55,6 +55,8 @@ class TestRunPerfTest(TestRun):
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-perfbench.py' is fixed.
+            success_returncodes=[0, 1],
         )
 
 
