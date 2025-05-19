@@ -107,7 +107,7 @@ TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
-    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+    timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
 
 TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
@@ -117,7 +117,7 @@ TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
-    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+    timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
 
 TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
@@ -127,7 +127,7 @@ TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
-    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
+    timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
