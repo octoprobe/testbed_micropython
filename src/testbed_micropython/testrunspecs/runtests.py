@@ -87,10 +87,11 @@ class TestRunRunTests(TestRun):
             f"--result-dir={testargs.testresults_directory.directory_test}",
             # "misc/cexample_class.py",
         ]
+        env = env_for_mpycross()
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-            env=env_for_mpycross(),
+            env=env,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,

@@ -13,3 +13,4 @@ testbed.lock
 src/testbed_micropython/mpbuild/tests/results/*.txt
 src/testbed_micropython/mpbuild/docker-build-micropython-esp32/esp-idf
 src/testbed/experiments/*
+testresults*/**
