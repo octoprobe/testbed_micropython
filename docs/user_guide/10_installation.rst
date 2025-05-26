@@ -57,10 +57,12 @@ python
 
 .. code::
 
-    uv venv --python 3.13.2 --prompt=testbed_micropython ~/testbed_micropython/.venv
+    cd ~/testbed_micropython
 
-    source ~/testbed_micropython/.venv/bin/activate
-    uv pip install --upgrade --no-cache -e ~/testbed_micropython
+    uv venv --python 3.13.3
+
+    source .venv/bin/activate
+    uv pip install --upgrade -e .
 
     echo 'source ~/testbed_micropython/.venv/bin/activate' >> ~/.profile
     # Log out and in again

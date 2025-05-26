@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../octoprobe"
+		},
+		{
+			"path": "../testbed_micropython_reports"
 		}
 	],
 	"settings": {
