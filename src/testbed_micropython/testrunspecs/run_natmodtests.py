@@ -7,6 +7,7 @@ from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
+from ..mptest import util_common
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
@@ -60,6 +61,7 @@ class TestRunRunTests(TestRun):
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / "tests",
+            env=util_common.ENV_PYTHONUNBUFFERED,
             logfile=logfile,
             timeout_s=self.timeout_s,
             # TODO: Remove the following line as soon returncode of 'run-natmodtests.py' is fixed.

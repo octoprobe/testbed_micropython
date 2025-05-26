@@ -31,6 +31,8 @@ if typing.TYPE_CHECKING:
 
 logger = logging.getLogger(__file__)
 
+ENV_PYTHONUNBUFFERED = {"PYTHONUNBUFFERED": "1"}
+
 
 @dataclasses.dataclass
 class ArgsMpTest:
@@ -107,6 +109,7 @@ def mip_install(
     subprocess_run(
         args=args,
         cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+        env=ENV_PYTHONUNBUFFERED,
         logfile=testargs.testresults_directory(
             f"mip_install_{mip_package}.txt"
         ).filename,

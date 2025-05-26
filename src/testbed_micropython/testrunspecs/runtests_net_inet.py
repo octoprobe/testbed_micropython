@@ -7,7 +7,6 @@ from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..mptest.util_common import mip_install, skip_if_no_filesystem
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
@@ -37,7 +36,7 @@ class TestRunRunTests(TestRun):
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 
-        skip_if_no_filesystem(tentacle=tentacle)
+        util_common.skip_if_no_filesystem(tentacle=tentacle)
 
         # for tests 'net_hosted', this call is irrelevant
         util_common.copy_certificates(
@@ -51,7 +50,7 @@ class TestRunRunTests(TestRun):
 
         serial_port = tentacle.dut.get_tty()
 
-        mip_install(
+        util_common.mip_install(
             testargs=testargs,
             tentacle=tentacle,
             serial_port=serial_port,
@@ -73,6 +72,7 @@ class TestRunRunTests(TestRun):
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            env=util_common.ENV_PYTHONUNBUFFERED,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,

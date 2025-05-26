@@ -248,9 +248,7 @@ class Data:
         for testgroup in self.testgroups:
             line = dict_summary.get(testgroup.testgroup, None)
             if line is None:
-                """
-                Example label: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
-                """
+                # Example label: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
                 label = testgroup.testgroup_markdown(tests=self.tests)
                 line = DataSummaryLine(label=label)
                 dict_summary[testgroup.testgroup] = line

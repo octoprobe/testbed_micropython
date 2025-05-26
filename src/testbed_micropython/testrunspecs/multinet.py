@@ -59,6 +59,7 @@ class TestRunMultitestBase(TestRun):
         subprocess_run(
             args=args,
             cwd=cwd,
+            env=util_common.ENV_PYTHONUNBUFFERED,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,

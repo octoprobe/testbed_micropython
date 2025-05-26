@@ -10,7 +10,7 @@ from testbed_micropython import constants
 from testbed_micropython.util_mpycross import get_filename_mpycross
 
 from ..constants import EnumFut
-from ..mptest.util_common import mip_install, skip_if_no_filesystem
+from ..mptest import util_common
 from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
@@ -50,23 +50,26 @@ class TestRunRunTests(TestRun):
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 
-        skip_if_no_filesystem(tentacle=tentacle)
+        util_common.skip_if_no_filesystem(tentacle=tentacle)
 
         def env_for_mpycross() -> dict[str, str]:
+            env = util_common.ENV_PYTHONUNBUFFERED
+
             if "--via-mpy" not in self.testrun_spec.command_args:
-                return {}
+                return env
 
             filename_mpycross = get_filename_mpycross(
                 directory_mpbuild_artifacts=testargs.testresults_directory.directory_top
                 / constants.SUBDIR_MPBUILD,
                 repo_micropython=testargs.repo_micropython_tests,
             )
-            return {"MICROPY_MPYCROSS": str(filename_mpycross)}
+            env["MICROPY_MPYCROSS"] = str(filename_mpycross)
+            return env
 
         serial_port = tentacle.dut.get_tty()
 
         # Install mip
-        mip_install(
+        util_common.mip_install(
             testargs=testargs,
             tentacle=tentacle,
             serial_port=serial_port,
