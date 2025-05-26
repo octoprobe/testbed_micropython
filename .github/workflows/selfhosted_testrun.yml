@@ -1,0 +1,98 @@
+name: selfhosted_testrun
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      email_testreport:
+        description: 'The email address to sent the testreport to.'
+        required: false
+        type: string
+
+      repo_tests:
+        description: 'The microptyhon repo used for the test code'
+        # default: 'https://github.com/micropython/micropython.git@v1.24.1'
+        default: 'https://github.com/micropython/micropython.git@master'
+        required: true
+        type: string
+
+      repo_firmware:
+        description: 'The microptyhon repo used to build the firmware'
+        # default: 'https://github.com/micropython/micropython.git@v1.24.1'
+        default: 'https://github.com/micropython/micropython.git@master'
+        required: false
+        type: string
+
+      arguments:
+        description: 'Auxiliary arguments to mptest. Example: --git-clean --flash-skip --only-test=RUN-TESTS_EXTMOD_HARDWARE --only-board=RPI_PICO_W'
+        default: ''
+        required: false
+        type: string
+
+permissions:
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  testrun:
+    runs-on: octoprobe
+    # runs-on: ubuntu-latest
+
+    steps:
+    - name: Run mptest
+      run: |
+        . ~/.profile
+        mptest test --testresults=./testresults --micropython-tests=${{ inputs.repo_tests }} --firmware-build=${{ inputs.repo_firmware }} ${{ inputs.arguments }}
+
+        mkdir -p ./testresults/github_debug
+        # env > ./testresults/github_debug/env.txt
+        echo '${{ toJson(github) }}' > ./testresults/github_debug/github.json
+        echo '${{ toJson(inputs) }}' > ./testresults/github_debug/inputs.json
+        echo Backlink: '${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}'
+      timeout-minutes: 120.0
+
+    - name: Run mptest report
+      if: always()
+      run: |
+        . ~/.profile
+        mptest report --testresults=./testresults --label='github_${{ github.workflow }}_${{ github.run_number }}' --action-url='${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}'
+
+    - name: Add summary report
+      # https://github.com/peter-evans/create-or-update-comment/blob/main/README.md
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        # issue-number: ${{ github.event.issue.number }}
+        issue-number: 20
+        body-path: "./testresults/octoprobe_summary_report.md"
+
+    # - name: Setup Pages
+    #   if: github.ref == 'refs/heads/main'
+    #   uses: actions/configure-pages@v3
+
+    # - name: Upload Pages Artifacts
+    #   if: github.ref == 'refs/heads/main'
+    #   uses: actions/upload-pages-artifact@v3
+    #   with:
+    #     path: "./testresults"
+
+    - name: Upload Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: octoprobe-testresults-${{ github.workflow }}_${{ github.run_number }}
+        path: "./testresults/**"
+  
+    - name: Send email
+      # https://github.com/marketplace/actions/send-email
+      if: always() && inputs.email_testreport != ''
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: ${{ secrets.SMTP_HOST }}
+        server_port: 587
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        subject: "[octoprobe/testbed_micropython] Testrun done"
+        html_body: file://testresults/octoprobe_summary_report.html
+        to: "${{ inputs.email_testreport }},buhtig.hans.maerki@ergoinfo.ch"
+        from: 'Hans Märki<buhtig.hans.maerki@ergoinfo.ch>'

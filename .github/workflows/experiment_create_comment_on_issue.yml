@@ -1,0 +1,85 @@
+name: create comment on new isssue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump GitHub Context
+      # https://manski.net/articles/github/actions/dump-context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT" | jq -C
+
+    - name: Dump GitHub Context 2
+      # https://youtu.be/-hVG9z0fCac?si=dAAVltMAbmwyMQBu
+      run: echo '${{ toJson(github) }}' | jq -C
+      shell: bash
+
+    - name: Dump GitHub Event
+      # https://youtu.be/-hVG9z0fCac?si=dAAVltMAbmwyMQBu
+      run: echo '${{ toJson(github.event) }}' | jq -C
+      shell: bash
+
+    - name: Dump local environment
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: env
+      shell: bash
+
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        issue-number: ${{ github.event.issue.number }}
+        body: |
+          This is a multi-line test comment
+          - With GitHub **Markdown** :sparkles:
+          - Created by [create-or-update-comment][1]
+
+          [1]: https://github.com/peter-evans/create-or-update-comment
+        reactions: '+1'
+
+    - name: Simple
+      run: gh issue comment $ISSUE --body "Thank you for opening this issue!"
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ISSUE: ${{ github.event.issue.html_url }}
+  
+    - name: Create comment with API
+      # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-github-cli-in-workflows
+      # https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#update-an-issue
+      run: |
+        echo https://api.github.com/repos/${ORGANIZATION}/${REPOSITORY}/issue/${ISSUE_NUMBER}
+        echo GITHUB_TOKEN=$GITHUB_TOKEN
+        echo GH_TOKEN=$GH_TOKEN
+        echo ISSUE=$ISSUE
+        gh api -X POST \
+          https://api.github.com/repos/${ORGANIZATION}/${REPOSITORY}/issues/${ISSUE_NUMBER} \
+          -f body='
+          Comment but from the API call 1
+          '
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ISSUE: ${{ github.event.issue.html_url }}
+        ORGANIZATION: ${{ github.event.organization.login }}
+        REPOSITORY: ${{ github.event.repository.name }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+
+    - name: Create comment with API 2
+      run: |
+        gh api -X POST \
+          https://api.github.com/repos/${{ github.event.organization.login }}/${{ github.event.repository.name }}/issues/${{ github.event.issue.number }} \
+          -f title='
+          Title but from the API call 2
+          '
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
