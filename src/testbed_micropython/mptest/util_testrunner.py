@@ -365,6 +365,9 @@ class TestRunner:
         if async_target is not None:
             target_ctx.start(async_target=async_target)
 
+        # Write 'context_json' in case the tests will timeout!
+        self.report_testgroup.write_context_json()
+
         report_tasks = util_report_tasks.Tasks()
 
         def generate_task_report(align_time: bool = False) -> None:

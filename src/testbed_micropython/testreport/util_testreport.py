@@ -357,11 +357,14 @@ class ReportTests:
         self.report.error = ""
         self._write()
 
-    def _write(self) -> None:
-        self.report.time_end = now_formatted()
+    def write_context_json(self) -> None:
         filename = self.testresults_directory / FILENAME_CONTEXT_JSON
         json_text = json.dumps(dataclasses.asdict(self.report), indent=4)
         filename.write_text(json_text)
+
+    def _write(self) -> None:
+        self.report.time_end = now_formatted()
+        self.write_context_json()
 
         from .testreport import ReportRenderer
 
