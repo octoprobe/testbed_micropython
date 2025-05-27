@@ -26,21 +26,21 @@ Legend: Tasks
 
 Task-ID  Task               Tentacle                            Duration
       a  Build PICO2                                                3.5s
-      b  Build PICO2-RISCV                                          7.5s
+      b  Build PICO2_RISCV                                          7.5s
       c  Build ESP8266                                              6.5s
       1  Test X             PICO(PICO2)                             8.5s
-      2  Test Test X        PICO2(PICO2-RISCV), Lolin(ESP8266)      3.5s
-      3  Test Y             PICO(PICO2-RISCV)                       2.5s
-      4  Test Test Y        PICO2(PICO2-RISCV), Lolin(ESP8266)      3.5s
+      2  Test Test X        PICO2(PICO2_RISCV), Lolin(ESP8266)      3.5s
+      3  Test Y             PICO(PICO2_RISCV)                       2.5s
+      4  Test Test Y        PICO2(PICO2_RISCV), Lolin(ESP8266)      3.5s
 
 Report input data
 -----------------
 
 Start    End  Duration  Task               Tentacles                         
  0.0s   3.5s      3.5s  Build PICO2                                          
- 3.5s  11.0s      7.5s  Build PICO2-RISCV                                    
+ 3.5s  11.0s      7.5s  Build PICO2_RISCV                                    
  3.5s  12.0s      8.5s  Test X             PICO(PICO2)                       
-11.0s  14.5s      3.5s  Test Test X        PICO2(PICO2-RISCV), Lolin(ESP8266)
-12.5s  15.0s      2.5s  Test Y             PICO(PICO2-RISCV)                 
+11.0s  14.5s      3.5s  Test Test X        PICO2(PICO2_RISCV), Lolin(ESP8266)
+12.5s  15.0s      2.5s  Test Y             PICO(PICO2_RISCV)                 
 12.5s  19.0s      6.5s  Build ESP8266                                        
-14.5s  18.0s      3.5s  Test Test Y        PICO2(PICO2-RISCV), Lolin(ESP8266)
+14.5s  18.0s      3.5s  Test Test Y        PICO2(PICO2_RISCV), Lolin(ESP8266)

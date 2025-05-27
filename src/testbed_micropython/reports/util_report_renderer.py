@@ -10,6 +10,8 @@ import enum
 import html
 import typing
 
+from ..testreport.util_markdown2 import md_escape
+
 
 @dataclasses.dataclass
 class Table:
@@ -103,20 +105,20 @@ class RendererAscii(RendererBase):
 class RendererMarkdown(RendererBase):
     @typing.override
     def h1(self, title: str):
-        self.f.write(f"# {title}\n")
+        self.f.write(f"# {md_escape(title)}\n")
 
     @typing.override
     def h2(self, title: str):
-        self.f.write(f"\n## {title}\n")
+        self.f.write(f"\n## {md_escape(title)}\n")
 
     @typing.override
     def table(self, table: Table) -> None:
-        cols = " | ".join([col.text for col in table.header])
+        cols = " | ".join([md_escape(col.text) for col in table.header])
         self.f.write(f"| {cols} |\n")
         cols = " | ".join([col.align.markdown for col in table.header])
         self.f.write(f"| {cols} |\n")
         for row in table.rows:
-            cols = " | ".join(row)
+            cols = " | ".join(md_escape(col) for col in row)
             self.f.write(f"| {cols} |\n")
 
 
