@@ -35,6 +35,12 @@ class CurrentlyNoTestsException(Exception):
 
 
 class TestBartender:
+    WAIT_FOR_SUBPROCESS_EXIT_TIMEOUT_S = 60.0
+    """
+    The subprocess.run should kill the process. As a consequence, the python multiprocess.target should return.
+    If multiprocess.targer does not return after WAIT_FOR_SUBPROCESS_EXIT_TIMEOUT_S, it should kill itself
+    """
+
     def __init__(
         self,
         connected_tentacles: ConnectedTentacles,
@@ -93,7 +99,8 @@ class TestBartender:
             ctxtestrun=ctxtestrun,
             testrun=selected_testrun,
             repo_micropython_tests=repo_micropython_tests,
-            timeout_s=selected_testrun.timeout_s,
+            timeout_s=selected_testrun.timeout_s
+            + self.WAIT_FOR_SUBPROCESS_EXIT_TIMEOUT_S,
         )
         self._reserve(async_target=async_target)
         return async_target
