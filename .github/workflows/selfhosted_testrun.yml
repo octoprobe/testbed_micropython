@@ -50,7 +50,7 @@ jobs:
         echo '${{ toJson(github) }}' > ./testresults/github_debug/github.json
         echo '${{ toJson(inputs) }}' > ./testresults/github_debug/inputs.json
         echo Backlink: '${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}'
-      timeout-minutes: 120.0
+      timeout-minutes: 240.0
 
     - name: Run mptest report
       if: always()

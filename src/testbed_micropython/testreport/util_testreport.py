@@ -442,14 +442,29 @@ class ReportTestgroup:
         filename = self.testresults_directory.directory_test / "_results.json"
         if not filename.exists():
             return False
+
         json_text = filename.read_text()
         json_dict = json.loads(json_text)
+
         self.report.results = []
-        for outcome in Outcome:
-            for test_name in json_dict.get(f"{outcome}_tests", []):
-                self.report.results.append(
-                    ResultTestResult(name=test_name, result=outcome)
-                )
+        list_results = json_dict.get("results", None)
+        if list_results is None:
+            # structure of _results.json before https://github.com/micropython/micropython/pull/17373
+            for outcome in Outcome:
+                for test_name in json_dict.get(f"{outcome}_tests", []):
+                    self.report.results.append(
+                        ResultTestResult(name=test_name, result=outcome)
+                    )
+            return True
+
+        FIX_OUTCOMES = {"pass": "passed", "skip": "skipped", "fail": "failed"}
+        for test_name, _outcome, reason in list_results:
+            _outcome = FIX_OUTCOMES[_outcome]
+            outcome = Outcome(_outcome)
+            self.report.results.append(
+                ResultTestResult(name=test_name, result=outcome, text=reason)
+            )
+
         return True
 
 
