@@ -99,5 +99,5 @@ def _compile_mpycross(
         timeout_s=60.0,
     )
     filename_build = repo_micropython / BUILD_FILENAME_MPCROSS
-    filename_build.is_file(), filename_build
+    assert filename_build.is_file(), filename_build
     shutil.copy(filename_build, filename)

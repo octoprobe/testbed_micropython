@@ -94,7 +94,8 @@ See: https://micropython.org/download/ADAFRUIT_ITSYBITSY_M0_EXPRESS/
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
     mcu_usb_id=util_mcu_samd.ADAFRUIT_ITSYBITSY_M0_EXPRESS_USB_ID,
-    tags="board=ADAFRUIT_ITSYBITSY_M0_EXPRESS,mcu=samd,programmer=samd_mount_point",
+    tags="board=ADAFRUIT_ITSYBITSY_M0_EXPRESS,mcu=samd,programmer=samd_bossac",
+    programmer_args=["--offset=0x2000"],
     # -  Push the reset button twice or call machine.bootloader(). A drive
     #   icon should appear representing a virtual drive.
     # -  Copy the .uf2 file with the required firmware to that drive.

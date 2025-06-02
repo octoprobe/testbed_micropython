@@ -457,9 +457,9 @@ class ReportTestgroup:
                     )
             return True
 
-        FIX_OUTCOMES = {"pass": "passed", "skip": "skipped", "fail": "failed"}
+        fix_outcomes = {"pass": "passed", "skip": "skipped", "fail": "failed"}
         for test_name, _outcome, reason in list_results:
-            _outcome = FIX_OUTCOMES[_outcome]
+            _outcome = fix_outcomes[_outcome]
             outcome = Outcome(_outcome)
             self.report.results.append(
                 ResultTestResult(name=test_name, result=outcome, text=reason)

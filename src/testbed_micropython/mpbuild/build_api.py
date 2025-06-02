@@ -148,7 +148,8 @@ _FIRMWARE_FILENAMES = {
     "esp32": "firmware.bin",
     "esp8266": "firmware.bin",
     "rp2": "firmware.uf2",
-    "samd": "firmware.uf2",
+    "samd": "firmware.bin",  # using programmer=samd_bossac
+    # "samd": "firmware.uf2", # using programmer=samd_mount_point
     "stm32": "firmware.dfu",
     "unix": "micropython",
     "nrf": "firmware.bin",
