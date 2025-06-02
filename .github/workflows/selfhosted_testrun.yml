@@ -58,13 +58,13 @@ jobs:
         . ~/.profile
         mptest report --testresults=./testresults --label='github_${{ github.workflow }}_${{ github.run_number }}' --action-url='${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}'
 
-    - name: Add summary report
-      # https://github.com/peter-evans/create-or-update-comment/blob/main/README.md
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        # issue-number: ${{ github.event.issue.number }}
-        issue-number: 20
-        body-path: "./testresults/octoprobe_summary_report.md"
+    # - name: Add summary report
+    #   # https://github.com/peter-evans/create-or-update-comment/blob/main/README.md
+    #   uses: peter-evans/create-or-update-comment@v4
+    #   with:
+    #     # issue-number: ${{ github.event.issue.number }}
+    #     issue-number: 20
+    #     body-path: "./testresults/octoprobe_summary_report.md"
 
     # - name: Setup Pages
     #   if: github.ref == 'refs/heads/main'
