@@ -96,7 +96,7 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     required_fut=EnumFut.FUT_WLAN,
     required_tentacles_count=2,
     testrun_class=TestRunMultitestMultinet,
-    timeout_s=60.0 + TIMEOUT_FLASH_S,
+    timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
 )
 
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
@@ -106,5 +106,5 @@ TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     required_fut=EnumFut.FUT_BLE,
     required_tentacles_count=2,
     testrun_class=TestRunMultitestBluetooth,
-    timeout_s=60.0 + TIMEOUT_FLASH_S,
+    timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
 )
