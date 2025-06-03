@@ -9,7 +9,7 @@ import platform
 import sys
 import time
 
-from octoprobe.util_cached_git_repo import GIT_REF_TAG_BRANCH, GIT_REF_TAG_GIT
+from octoprobe.util_cached_git_repo import GitSpec
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
@@ -471,43 +471,57 @@ class ReportTestgroup:
 
 @dataclasses.dataclass
 class GitRef:
-    ref: str
-    url: str | None
-    """
-    None if undefined
-    """
-    branch: str
+    git_spec: GitSpec
 
     @staticmethod
     def factory(ref: str) -> GitRef:
         """
         Examples:
-        https://github.com/micropython/micropython.git@master
-        https://github.com/micropython/micropython.git@dc46cf15c17ab5bd8371c00e11ee9743229b7868
-        https://github.com/micropython/micropython.git@v1.25.0
+        https://github.com/micropython/micropython.git
+        https://github.com/micropython/micropython.git~17232
+        https://github.com/micropython/micropython.git@1.25.0
+        https://github.com/micropython/micropython.git~17232@1.25.0
         """
-        pos = ref.find(GIT_REF_TAG_BRANCH)
-        if pos == -1:
-            return GitRef(ref=ref, url=None, branch="")
+        assert isinstance(ref, str)
+        return GitRef(git_spec=GitSpec.parse(git_ref=ref))
 
-        url = ref[:pos]
-        if url.endswith(GIT_REF_TAG_GIT):
-            url = url[: -len(GIT_REF_TAG_GIT)]
-        branch = ref[pos + len(GIT_REF_TAG_BRANCH) :]
-        return GitRef(ref=ref, url=url, branch=branch)
+    @property
+    def ref(self) -> str:
+        return self.git_spec.git_spec
+
+    @property
+    def url_without_git(self) -> str:
+        """
+        The url WITHOUT '.git'
+        "https://github.com/micropython/micropython"
+        """
+        return self.git_spec.url_without_git
+
+    @property
+    def branch(self) -> str | None:
+        "v1.25.0"
+        return self.git_spec.branch
+
+    @property
+    def pr(self) -> str | None:
+        "17232"
+        return self.git_spec.pr
 
     @property
     def url_link(self) -> str:
         """
         Example:
         https://github.com/micropython/micropython/tree/master
+        https://github.com/micropython/micropython/pull/17419
         """
-        return f"{self.url}/tree/{self.branch}"
+        if self.pr is not None:
+            return f"{self.url_without_git}/pull/{self.pr}"
+        if self.branch is not None:
+            return f"{self.url_without_git}/tree/{self.branch}"
+        return self.url_without_git
 
     @property
     def markdown(self) -> str:
-        if self.url is None:
-            return self.ref
         return md_link(label=self.ref, link=self.url_link)
 
     # def markdown2(self, label: str, file: str) -> str:
@@ -530,6 +544,4 @@ class GitRef:
         Example file: tests/run-tests.py
         Return: https://github.com/micropython/micropython/tree/master/tests/run-tests.py
         """
-        if self.url is None:
-            return None
         return f"{self.url_link}/{file}"
