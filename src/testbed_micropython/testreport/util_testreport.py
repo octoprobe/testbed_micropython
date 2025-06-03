@@ -514,11 +514,7 @@ class GitRef:
         https://github.com/micropython/micropython/tree/master
         https://github.com/micropython/micropython/pull/17419
         """
-        if self.pr is not None:
-            return f"{self.url_without_git}/pull/{self.pr}"
-        if self.branch is not None:
-            return f"{self.url_without_git}/tree/{self.branch}"
-        return self.url_without_git
+        return self.git_spec.url_link
 
     @property
     def markdown(self) -> str:
