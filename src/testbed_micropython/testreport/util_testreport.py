@@ -9,6 +9,7 @@ import platform
 import sys
 import time
 
+from octoprobe.util_cached_git_repo import GIT_REF_TAG_BRANCH, GIT_REF_TAG_GIT
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
@@ -485,16 +486,14 @@ class GitRef:
         https://github.com/micropython/micropython.git@dc46cf15c17ab5bd8371c00e11ee9743229b7868
         https://github.com/micropython/micropython.git@v1.25.0
         """
-        tag_at = "@"
-        pos = ref.find(tag_at)
+        pos = ref.find(GIT_REF_TAG_BRANCH)
         if pos == -1:
             return GitRef(ref=ref, url=None, branch="")
 
         url = ref[:pos]
-        tag_git = ".git"
-        if url.endswith(tag_git):
-            url = url[: -len(tag_git)]
-        branch = ref[pos + len(tag_at) :]
+        if url.endswith(GIT_REF_TAG_GIT):
+            url = url[: -len(GIT_REF_TAG_GIT)]
+        branch = ref[pos + len(GIT_REF_TAG_BRANCH) :]
         return GitRef(ref=ref, url=url, branch=branch)
 
     @property
