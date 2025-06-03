@@ -177,6 +177,7 @@ class ResultTests:
     # mptest.cli test --only-test=RUN-TESTS_EXTMOD_HARDWARE --no-multiprocessing --flash-skip
     log_output: str = ""
     # logger_20_info.log
+    log_directory: str = ""
     error: str = "Test never finished..."
     directories: dict[str, str] = dataclasses.field(default_factory=dict)
     # {"F": "/home/xy/firmware/microython", "R", "/home/xy/results"}
@@ -340,6 +341,12 @@ class ReportTests:
         self.report.log_output = DirectoryTag.R.render_relative_to(
             top=testresults_directory, filename=log_output
         )
+        self.report.log_directory = (
+            DirectoryTag.R.render_relative_to(
+                top=testresults_directory, filename=log_output.parent
+            )
+            + "/"
+        )  # Hack: "/" is required for later path replacement!
 
         def get_trigger() -> str:
             if os.environ.get("CI", False):

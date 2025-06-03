@@ -7,6 +7,7 @@
 * Start - End: {{ tests.time_start|md_escape }} - {{ tests.time_end|md_escape }}
 * Repo Firmware: {{ tests.ref_firmware2.markdown }} {{ tests.ref_firmware_describe }}
 * Repo Tests: {{ tests.ref_tests2.markdown }} {{ tests.ref_tests_describe }}
+* Logdirectory: [{{ tests.log_directory|fix_links|md_escape }}]({{ tests.log_directory|fix_links|md_escape }})
 * Logoutput: [{{ tests.log_output|fix_links|md_escape }}]({{ tests.log_output|fix_links|md_escape }})
 {% if tests.error %}
 * Error: {{ tests.error }}
