@@ -1,8 +1,8 @@
 name: create comment on new isssue
 
-on:
-  issues:
-    types: [opened]
+# on:
+#   issues:
+#     types: [opened]
 
 permissions:
   pull-requests: write
