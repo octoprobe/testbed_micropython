@@ -40,6 +40,14 @@ jobs:
     # runs-on: ubuntu-latest
 
     steps:
+    - name: git pull and pip install
+      run: |
+        . ~/.profile
+        cd ~/testbed_micropython
+        git fetch --all -p
+        git reset --hard origin/main
+        uv pip install --upgrade -e .
+
     - name: Run mptest
       run: |
         . ~/.profile
