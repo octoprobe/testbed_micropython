@@ -180,6 +180,7 @@ Connections
         "-z",
         "0x0",
     ],
+    power_on_delay_s=1.0,
     mcu_config=McuConfig(),
 )
 
@@ -221,6 +222,7 @@ Connections
         "-z",
         "0x0",
     ],
+    power_on_delay_s=1.0,
     mcu_config=McuConfig(),
 )
 
@@ -294,6 +296,7 @@ Connections
         "--flash_mode=dio",
         "0",
     ],
+    power_on_delay_s=1.0,
     mcu_config=McuConfig(
         micropython_perftest_args=["50", "36"],
     ),
