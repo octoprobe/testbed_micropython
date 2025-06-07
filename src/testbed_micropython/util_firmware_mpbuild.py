@@ -67,7 +67,7 @@ class FirmwareBuilder(FirmwareBuilderSkipFlash):
                 prefix="firmware_",
             )
             self.git_repo.clone(git_clean=git_clean)
-            self.repo_directory = self.git_repo.directory_git_worktree
+            self.repo_directory = self.git_repo.directory_git_work_repo
 
         else:
             self.repo_directory = pathlib.Path(firmware_git).expanduser().resolve()

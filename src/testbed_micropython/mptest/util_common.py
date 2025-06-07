@@ -53,7 +53,7 @@ class ArgsMpTest:
             )
             git_repo.clone(git_clean=False)
 
-            _directory = git_repo.directory_git_worktree
+            _directory = git_repo.directory_git_work_repo
         else:
             # 'self.micropython_tests' is a filename.
             _directory = pathlib.Path(self.micropython_tests).expanduser().resolve()
