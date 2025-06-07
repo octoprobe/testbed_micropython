@@ -250,17 +250,17 @@ class TestRunner:
     def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
         self.report_testgroup.report.set_directory(tag=tag, directory=directory)
 
-        def git_ref_describe():
+        def git_metadata() -> dict:
             from testbed_micropython.util_firmware_mpbuild import PLACEHOLDER_PATH
 
             if str(directory) == PLACEHOLDER_PATH:
-                return ""
-            return CachedGitRepo.git_ref_describe(pathlib.Path(directory))
+                return {}
+            return CachedGitRepo.git_metadata(pathlib.Path(directory))
 
         if tag is DirectoryTag.T:
-            self.report_testgroup.report.ref_tests_describe = git_ref_describe()
+            self.report_testgroup.report.ref_tests_metadata = git_metadata()
         if tag is DirectoryTag.F:
-            self.report_testgroup.report.ref_firmware_describe = git_ref_describe()
+            self.report_testgroup.report.ref_firmware_metadata = git_metadata()
 
     def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
         self.report_testgroup.report.set_git_ref(tag=tag, git_ref=git_ref)
@@ -283,6 +283,9 @@ class TestRunner:
         connected_tentacles = connected_tentacles.query_boards(query=ArgsQuery())
 
         self.ctxtestrun = CtxTestRun(connected_tentacles=connected_tentacles)
+        CachedGitRepo.clean_directory_work_repo(
+            directory_cache=constants.DIRECTORY_GIT_CACHE
+        )
         self.args.firmware.setup()
         self.set_directory(DirectoryTag.F, self.args.firmware.repo_micropython_firmware)
 
@@ -348,6 +351,7 @@ class TestRunner:
         target_ctx: util_multiprocessing.TargetCtx,
     ) -> None:
         assert self.args.mp_test is not None
+
         repo_micropython_tests = self.args.mp_test.clone_git_micropython_tests(
             directory_git_cache=constants.DIRECTORY_GIT_CACHE
         )

@@ -165,11 +165,11 @@ class ResultTests:
     # 2025-04-18 23:43:14
     ref_firmware: str = ""
     # "https://github.com/micropython/micropython.git@master",
-    ref_firmware_describe: str = ""
+    ref_firmware_metadata: dict = dataclasses.field(default_factory=dict)
     # "git describe --dirty"
     ref_tests: str = ""
     # "https://github.com/dpgeorge/micropython@master",
-    ref_tests_describe: str = ""
+    ref_tests_metadata: dict = dataclasses.field(default_factory=dict)
     # "git describe --dirty"
     trigger: str = ""
     # "https://github.com/micropython/micropython/pull/17091"
