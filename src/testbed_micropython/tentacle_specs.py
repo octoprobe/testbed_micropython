@@ -204,6 +204,8 @@ Connections
   * Testpoint CH0/trigger <=> Board GPIO6
   * Testpoint CH1/extmod_a <=> Board GPIO4
 
+  v1.0: USB DUT is connected to 'UART'
+  v1.1: USB DUT is connected to 'USB'
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_S3_DEVKIT",
