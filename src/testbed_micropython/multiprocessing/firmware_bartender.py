@@ -292,7 +292,7 @@ class AsyncTargetFirmware(util_multiprocessing.AsyncTarget):
                 firmwares_build,
                 repo_micropython_firmware,
             ],
-            timeout_s=25 * 60.0,
+            timeout_s=60 * 60.0,
         )
 
         self.firmwares_build = firmwares_build
