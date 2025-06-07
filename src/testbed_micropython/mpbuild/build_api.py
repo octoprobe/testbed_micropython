@@ -305,7 +305,6 @@ def build(
         do_clean=do_clean,
         extra_args=[],
         docker_interactive=False,
-        privileged=False,
     )
 
     mpbuild_cmd = f"mpbuild build {board.name}"
