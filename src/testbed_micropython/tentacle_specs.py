@@ -224,7 +224,6 @@ Connections
         "-z",
         "0x0",
     ],
-    power_on_delay_s=1.0,
     mcu_config=McuConfig(),
 )
 

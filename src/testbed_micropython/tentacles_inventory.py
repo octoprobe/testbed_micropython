@@ -37,7 +37,7 @@ TENTACLES_INVENTORY = (
             ("e46340474b14-1c29", "v1.0", tentacle_specs.RPI_PICO2),
             ("e46414481318-3d2c", "v1.0", tentacle_specs.RPI_PICO2_W),
             ("e46414481355-442b", "v0.0", tentacle_specs.ESP32_C3_DEVKIT),
-            ("e46414481348-1930", "v1.0", tentacle_specs.ESP32_S3_DEVKIT),
+            ("e46414481348-1930", "v1.1", tentacle_specs.ESP32_S3_DEVKIT),
             ("e46414481337-1c2a", "v0.0", tentacle_specs.ARDUINO_NANO_33),
             ("e46414481312-292a", "v1.0", tentacle_specs.ADA_ITSYBITSY_M0),
             ("e46414481336-3e2a", "v1.0", tentacle_specs.TEENSY40),
