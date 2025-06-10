@@ -38,13 +38,6 @@ BUILD_DIRECTORY_MPCROSS = _DIRECTORY_MPCROSS
 BUILD_FILENAME_MPCROSS = f"{_DIRECTORY_MPCROSS}/build/{FILENAME_MPCROSS}"
 
 
-def remove_mpycross(directory_mpbuild_artifacts: pathlib.Path) -> None:
-    filename = directory_mpbuild_artifacts / FILENAME_MPCROSS
-    if filename.exists():
-        logger.info(f"Unlink: {filename}")
-        filename.unlink(missing_ok=True)
-
-
 def copy_mpycross(
     repo_micropython: pathlib.Path,
     directory_mpbuild_artifacts: pathlib.Path,

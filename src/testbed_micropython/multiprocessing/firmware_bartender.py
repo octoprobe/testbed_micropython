@@ -17,7 +17,6 @@ from .. import util_firmware_mpbuild
 from ..mpbuild.build_api import MpbuildDockerException
 from ..multiprocessing import util_multiprocessing
 from ..testcollection.baseclasses_run import TestRunSpecs
-from ..util_firmware_mpbuild import FirmwareSpecBase
 from ..util_mpycross import copy_mpycross
 
 logger = logging.getLogger(__file__)
@@ -93,7 +92,7 @@ def target_build_firmware_async(
 
                 copy_mpycross(
                     repo_micropython=repo_micropython_firmware,
-                    directory_mpbuild_artifacts=directory_mpbuild_artifacts,
+                    directory_mpbuild_artifacts=builder.mpbuild_artifacts,
                 )
                 arg1.queue_put(
                     EventFirmwareSpec(
@@ -188,7 +187,11 @@ class FirmwareBartenderSkipFlash:
     ) -> AsyncTargetFirmware | None:
         return None
 
-    def get_firmware_spec(self, board: str, variant: str) -> FirmwareSpecBase:
+    def get_firmware_spec(
+        self,
+        board: str,
+        variant: str,
+    ) -> util_firmware_mpbuild.FirmwareSpecBase:
         #
         # Nothing was specified: We do not flash any firmware
         #
@@ -244,7 +247,11 @@ class FirmwareBartender(FirmwareBartenderSkipFlash):
         return set(self._firmwares_built)
 
     @typing.override
-    def get_firmware_spec(self, board: str, variant: str) -> FirmwareSpecBase:
+    def get_firmware_spec(
+        self,
+        board: str,
+        variant: str,
+    ) -> util_firmware_mpbuild.FirmwareSpecBase:
         """
         Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
         Now we create firmware specs.

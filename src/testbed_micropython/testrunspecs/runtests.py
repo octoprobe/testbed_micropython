@@ -58,9 +58,13 @@ class TestRunRunTests(TestRun):
             if "--via-mpy" not in self.testrun_spec.command_args:
                 return env
 
+            directory_mpbuild_artifacts = (
+                testargs.testresults_directory.directory_top
+                / constants.SUBDIR_MPBUILD
+                / tentacle_variant.board_variant
+            )
             filename_mpycross = get_filename_mpycross(
-                directory_mpbuild_artifacts=testargs.testresults_directory.directory_top
-                / constants.SUBDIR_MPBUILD,
+                directory_mpbuild_artifacts=directory_mpbuild_artifacts,
                 repo_micropython=testargs.repo_micropython_tests,
             )
             env["MICROPY_MPYCROSS"] = str(filename_mpycross)

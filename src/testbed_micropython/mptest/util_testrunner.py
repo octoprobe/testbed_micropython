@@ -30,7 +30,6 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY, UdevFailException, UdevPolle
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
-from testbed_micropython import util_mpycross
 from testbed_micropython.mptest.util_baseclasses import ArgsQuery
 from testbed_micropython.testreport.util_testreport import (
     ReportTestgroup,
@@ -358,9 +357,6 @@ class TestRunner:
         self.set_directory(DirectoryTag.T, repo_micropython_tests)
         directory_mpbuild_artifacts = (
             self.args.directory_results / constants.SUBDIR_MPBUILD
-        )
-        util_mpycross.remove_mpycross(
-            directory_mpbuild_artifacts=directory_mpbuild_artifacts
         )
         async_target = self.firmware_bartender.build_firmwares(
             directory_mpbuild_artifacts=directory_mpbuild_artifacts,
