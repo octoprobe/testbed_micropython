@@ -21,7 +21,7 @@ If only the questioned tentacle is connected, this is even faster:
     mptest flash
 
 
-Remotely flash a DUT rpi_pico
+DUT rpi_pico: Remotely flash
 --------------------------------
 
 This will bring the PICO into boot mode and.
@@ -59,5 +59,15 @@ If you prefer to use `picotool`:
     [492023.002484] usb 1-3.1.4.3: Manufacturer: Raspberry Pi
     [492023.002494] usb 1-3.1.4.3: SerialNumber: E0C9125B0D9B
 
+    picotool erase --all --bus 1 --address 113
+    or
     wget https://github.com/dwelch67/raspberrypi-pico/blob/main/flash_nuke.uf2
     picotool load flash_nuke.uf2 --bus 1 --address 89
+
+DUT rpi_pico: format crashed filesystem
+----------------------------------------
+
+.. code-block:: python
+
+    import vfs, rp2
+    vfs.VfsLfs2.mkfs(rp2.Flash(), progsize=256)
