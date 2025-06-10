@@ -52,6 +52,7 @@ class TestRunMultitestBase(TestRun):
         args = [
             sys.executable,
             self.testrun_spec.command_executable,
+            f"--result-dir={testargs.testresults_directory.directory_test}",
             f"--instance=pyb:{serial_port_first}",
             f"--instance=pyb:{serial_port_second}",
             *list_tests,

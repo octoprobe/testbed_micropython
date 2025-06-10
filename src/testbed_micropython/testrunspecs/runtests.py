@@ -88,10 +88,10 @@ class TestRunRunTests(TestRun):
         args = [
             sys.executable,
             *self.testrun_spec.command,
+            f"--result-dir={testargs.testresults_directory.directory_test}",
             f"-t=port:{serial_port}",
             # f"--target={target}",
             "--jobs=1",
-            f"--result-dir={testargs.testresults_directory.directory_test}",
             # "misc/cexample_class.py",
         ]
         env = env_for_mpycross()
