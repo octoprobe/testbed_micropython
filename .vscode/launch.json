@@ -61,9 +61,10 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "debugbootmode",
-                "--programmer=samd_mount_point",
+                // "--programmer=samd_mount_point",
                 // "--programmer=dfu-util",
                 // "--programmer=bossac",
+                "--programmer=picotool",
             ],
             "console": "integratedTerminal",
             "env": {
