@@ -46,3 +46,16 @@ Conflicting firmwares are:
 
 * Stimuli: Start test with FUT_EXTMOD_HARDWARE
 * Expected: The test is only run on 1 tentacle
+
+## Group: git clone
+
+There are many different situations in cloning git.
+
+See: `src/octoprobe/util_cached_git_repo.py: # Git specs to be used for manual testing`.
+
+Test all above combinations for success.
+
+Test error conditions for:
+* Tag not found.
+* Commit not found.
+* Rebase failed.
