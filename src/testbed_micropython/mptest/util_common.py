@@ -124,6 +124,7 @@ def copy_certificates(dut: TentacleDut, src: pathlib.Path) -> None:
     dut.mp_remote.set_rtc()
 
     for certificate in src.glob("*.der"):
+        logger.info(f"{dut.label}: copy_certificates(): {certificate.name}")
         dut.mp_remote.cp(certificate, ":")
 
 
