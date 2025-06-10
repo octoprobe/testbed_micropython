@@ -142,6 +142,44 @@ Connections
 )
 
 
+ESP32_DEVKIT = TentacleSpecMicropython(
+    doc="""
+See: ESP32-DevKitC V4
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html
+
+Connections
+
+* GND
+  * Board GND <=> Tentacle GND
+
+* FUT_EXTMOD_HARDWARE
+  * Board 5/U0RXD/RX <=> 4/U0TXD/TX
+
+* Testpoints
+  * Testpoint "GND" <=> Tentacle GND
+  * Testpoint "extmod" <=> Board 5/U0RXD/RX
+""",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ESP32_DEVKIT",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_WLAN,
+        EnumFut.FUT_BLE,
+    ],
+    tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool",
+    programmer_args=[
+        "--chip=esp32",
+        "--baud=460800",
+        "--before=default_reset",
+        "--after=hard_reset",
+        "write_flash",
+        "0x1000",
+    ],
+    power_on_delay_s=1.0,
+    mcu_config=McuConfig(),
+)
+
 ESP32_C3_DEVKIT = TentacleSpecMicropython(
     doc="""
 TODO: Remove: ESP32_GENERIC_C3 firmware on Lolin C3 Mini
