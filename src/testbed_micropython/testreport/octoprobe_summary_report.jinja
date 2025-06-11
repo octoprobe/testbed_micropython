@@ -5,8 +5,22 @@
 * Trigger: {{ tests.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
 * Testbed: {{ tests.testbed_instance|md_escape }} {{ tests.testbed_name|md_escape }}
 * Start - End: {{ tests.time_start|md_escape }} - {{ tests.time_end|md_escape }}
-* Repo Firmware: {{ tests.ref_firmware2.markdown }}
-* Repo Tests: {{ tests.ref_tests2.markdown }}
+* Repo Firmware: {{ tests.ref_firmware2.markdown }} {% if tests.ref_firmware_metadata %} [{{ tests.ref_firmware_metadata.commit_comment }}]({{ tests.ref_firmware_metadata.url_commit_hash }}) {% endif %}
+{% if tests.ref_firmware_metadata %}
+
+  ```
+{{ tests.ref_firmware_metadata.command_log.stdout|indent2|md_escape }}
+  ```
+
+{% endif %}
+* Repo Tests: {{ tests.ref_tests2.markdown }} {% if tests.ref_tests_metadata %} [{{ tests.ref_tests_metadata.commit_comment }}]({{ tests.ref_tests_metadata.url_commit_hash }}) {% endif %}
+{% if tests.ref_tests_metadata %}
+
+  ```
+{{ tests.ref_tests_metadata.command_log.stdout|indent2|md_escape }}
+  ```
+
+{% endif %}
 * Logdirectory: [{{ tests.log_directory|fix_links|md_escape }}]({{ tests.log_directory|fix_links|md_escape }})
 * Logoutput: [{{ tests.log_output|fix_links|md_escape }}]({{ tests.log_output|fix_links|md_escape }})
 {% if tests.error %}

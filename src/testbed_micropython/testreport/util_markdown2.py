@@ -58,6 +58,8 @@ table, th, td {
 def markdown2html(markdown_content: str, title: str) -> str:
     # Convert Markdown to HTML
     html_content = _MARKDOWN.convert(markdown_content)
-
+    html_content = html_content.replace("<code>", "<pre><code>").replace(
+        "</code>", "</code></pre>"
+    )
     # Return the HTML content
     return _HTML_BODY.replace("[[TITLE]]", title).replace("[[BODY]]", html_content)

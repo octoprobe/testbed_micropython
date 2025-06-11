@@ -196,6 +196,16 @@ class ResultTests:
         assert isinstance(git_ref, str)
         self.git_ref[tag.name] = git_ref
 
+    @classmethod
+    def from_dict(cls, json_dict: dict) -> ResultTests:
+        for key in ("ref_firmware_metadata", "ref_tests_metadata"):
+            if json_dict[key] is None:
+                continue
+            json_dict[key] = GitMetadata(**json_dict[key])
+
+        result_tests = ResultTests(**json_dict)
+        return result_tests
+
     @property
     def ref_firmware2(self) -> GitRef:
         return GitRef.factory(self.ref_firmware)
@@ -296,7 +306,7 @@ class Data:
             filename = directory_results / FILENAME_CONTEXT_JSON
             json_text = filename.read_text()
             json_dict = json.loads(json_text)
-            tests = ResultTests(**json_dict)
+            tests = ResultTests.from_dict(json_dict=json_dict)
             return Data(tests=tests)
 
         data = collect_top()

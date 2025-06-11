@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import pathlib
+import textwrap
 
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_jinja2 import JinjaEnv
@@ -56,6 +57,7 @@ class ReportRenderer:
         jinja_env.env.filters["hidezero"] = lambda i: "" if i == 0 else i
         jinja_env.env.filters["hidezerobold"] = lambda i: "" if i == 0 else f"**{i}**"
         jinja_env.env.filters["md_escape"] = md_escape
+        jinja_env.env.filters["indent2"] = lambda text: textwrap.indent(text, "  ")
         jinja_env.env.filters["fix_links"] = lambda text: self._fix_links(text)
 
         report_md = jinja_env.render_string(
