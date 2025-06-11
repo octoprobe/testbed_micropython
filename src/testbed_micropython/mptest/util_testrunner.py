@@ -19,7 +19,7 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestException,
     OctoprobeTestSkipException,
 )
-from octoprobe.util_cached_git_repo import CachedGitRepo
+from octoprobe.util_cached_git_repo import CachedGitRepo, GitMetadata
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
@@ -249,11 +249,11 @@ class TestRunner:
     def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
         self.report_testgroup.report.set_directory(tag=tag, directory=directory)
 
-        def git_metadata() -> dict:
+        def git_metadata() -> GitMetadata | None:
             from testbed_micropython.util_firmware_mpbuild import PLACEHOLDER_PATH
 
             if str(directory) == PLACEHOLDER_PATH:
-                return {}
+                return None
             return CachedGitRepo.git_metadata(pathlib.Path(directory))
 
         if tag is DirectoryTag.T:

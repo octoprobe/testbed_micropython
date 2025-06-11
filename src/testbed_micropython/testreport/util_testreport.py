@@ -9,7 +9,7 @@ import platform
 import sys
 import time
 
-from octoprobe.util_cached_git_repo import GitSpec
+from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
@@ -165,11 +165,11 @@ class ResultTests:
     # 2025-04-18 23:43:14
     ref_firmware: str = ""
     # "https://github.com/micropython/micropython.git@master",
-    ref_firmware_metadata: dict = dataclasses.field(default_factory=dict)
+    ref_firmware_metadata: GitMetadata | None = None
     # "git describe --dirty"
     ref_tests: str = ""
     # "https://github.com/dpgeorge/micropython@master",
-    ref_tests_metadata: dict = dataclasses.field(default_factory=dict)
+    ref_tests_metadata: GitMetadata | None = None
     # "git describe --dirty"
     trigger: str = ""
     # "https://github.com/micropython/micropython/pull/17091"
