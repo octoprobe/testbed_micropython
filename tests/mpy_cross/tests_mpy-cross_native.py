@@ -36,7 +36,7 @@ def main() -> None:
                 print(mpy_cross)
             assert mpy_cross.is_file()
 
-            args = f"{mpy_cross}  -o - -march={march} -X emit=native {FILENAME_TEST_SOURCE} | md5sum --binary"
+            args = f"{mpy_cross}  -o - -march={march} -X emit=native -s test.py {FILENAME_TEST_SOURCE} | md5sum --binary"
             if DEBUG_OUTPUT:
                 print(f"  {args}")
             output = subprocess.check_output(args=args, shell=True, text=True)
