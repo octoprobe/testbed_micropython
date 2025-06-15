@@ -9,7 +9,7 @@ FILENAME_TEST_SOURCE = pathlib.Path(
 assert FILENAME_TEST_SOURCE.is_file()
 
 DIRECTORY_REPORTS_MPBUILD = pathlib.Path(
-    "~/work_octoprobe/testbed_micropython_reports/reports/github_selfhosted_testrun_69/mpbuild"
+    "~/work_octoprobe/testbed_micropython_reports/reports/github_selfhosted_testrun_76/mpbuild"
 ).expanduser()
 assert DIRECTORY_REPORTS_MPBUILD.is_dir()
 
