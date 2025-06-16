@@ -215,7 +215,8 @@ Connections
         "--before=default_reset",
         "--after=hard_reset",
         "write_flash",
-        "-z",
+        "--no-progress",
+        "--compress",
         "0x0",
     ],
     power_on_delay_s=1.0,
@@ -255,14 +256,16 @@ Connections
     ],
     # TODO: board=ESP32_GENERIC_S3:UM_FEATHERS3
     tags="board=ESP32_GENERIC_S3,mcu=esp32,programmer=esptool",
+    # https://micropython.org/download/ESP32_GENERIC_S3/
     programmer_args=[
-        "--baud=921600",
         "--chip=esp32s3",
+        "--baud=460800",
         "write_flash",
-        "-z",
+        "--no-progress",
+        "--compress",
         "0x0",
     ],
-    power_on_delay_s=1.0,
+    power_on_delay_s=2.0,
     mcu_config=McuConfig(),
 )
 
@@ -298,7 +301,8 @@ Connections
         "--before=default_reset",
         "--after=hard_reset",
         "write_flash",
-        "-z",
+        "--no-progress",
+        "--compress",
         "0x0",
     ],
     mcu_config=McuConfig(),
@@ -330,8 +334,10 @@ Connections
     ],
     tags="board=ESP8266_GENERIC,build_variants=:FLASH_512K,mcu=esp8266,programmer=esptool",
     programmer_args=[
+        "--chip=esp8266",
         "--baud=1000000",
         "write_flash",
+        "--no-progress",
         "--flash_size=4MB",
         "--flash_mode=dio",
         "0",
@@ -643,13 +649,10 @@ Connections
     programmer_args=[
         "--chip=esp32",
         "--baud=921600",
-        "--port=<port>",
-        # PROGRAMMER.PORT,
         "write_flash",
+        "--no-progress",
         "--compress",
         "0x1000",
-        # PROGRAMMER.FIRMWARE_BIN,
-        "<firmware.bin>",
     ],
     mcu_config=McuConfig(),
 )
@@ -682,11 +685,10 @@ Connections
     tags="mcu=esp32,programmer=esptool",
     programmer_args=[
         "--chip=esp32s2",
-        "--port <port>",
         "write_flash",
-        "-z",
+        "--no-progress",
+        "--compress",
         "0x1000",
-        "<firmware.bin>",
     ],
     mcu_config=McuConfig(),
 )
@@ -720,11 +722,10 @@ Connections
     tags="mcu=esp32,programmer=esptool",
     programmer_args=[
         "--chip=esp32s3",
-        "--port <port>",
         "write_flash",
-        "-z",
+        "--no-progress",
+        "--compress",
         "0x0",
-        "<firmware.bin>",
     ],
     mcu_config=McuConfig(),
 )
