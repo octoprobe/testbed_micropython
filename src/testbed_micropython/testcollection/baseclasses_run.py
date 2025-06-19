@@ -46,3 +46,9 @@ class TestRunSpecs(list[TestRunSpec]):
                 file=file,
             )
             testrunspec.pytest_print(indent + 1, file=file)
+
+    def contains_test_with_label(self, label: str) -> bool:
+        for testrun_specs in self:
+            if testrun_specs.label == label:
+                return True
+        return False

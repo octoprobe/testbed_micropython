@@ -35,6 +35,7 @@ from testbed_micropython.testreport.util_testreport import (
     ReportTestgroup,
     ReportTests,
 )
+from testbed_micropython.testrunspecs.run_natmodtests import NATMOD_EXAMPLES
 
 from .. import constants
 from ..mptest.util_common import ArgsMpTest
@@ -358,6 +359,13 @@ class TestRunner:
         directory_mpbuild_artifacts = (
             self.args.directory_results / constants.SUBDIR_MPBUILD
         )
+        if self.test_bartender.contains_test_with_label(
+            label=run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS.label
+        ):
+            NATMOD_EXAMPLES.compile_all(
+                repo_micropython_tests=repo_micropython_tests,
+                directory_mpbuild_artifacts=directory_mpbuild_artifacts,
+            )
         async_target = self.firmware_bartender.build_firmwares(
             directory_mpbuild_artifacts=directory_mpbuild_artifacts,
             repo_micropython_firmware=self.args.firmware.repo_micropython_firmware,

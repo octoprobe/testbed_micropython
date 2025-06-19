@@ -37,6 +37,9 @@ ENV_PYTHONUNBUFFERED = {"PYTHONUNBUFFERED": "1"}
 @dataclasses.dataclass
 class ArgsMpTest:
     micropython_tests: str
+    """
+    A git_ref or a directory path.
+    """
 
     def clone_git_micropython_tests(
         self, directory_git_cache: pathlib.Path

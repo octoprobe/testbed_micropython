@@ -64,6 +64,9 @@ class TestBartender:
     def tests_todo(self) -> int:
         return self.testrun_specs.tests_todo
 
+    def contains_test_with_label(self, label: str) -> bool:
+        return self.testrun_specs.contains_test_with_label(label=label)
+
     def possible_testruns(
         self,
         firmwares_built: set[str] | None,
