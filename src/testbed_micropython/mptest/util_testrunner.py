@@ -248,7 +248,7 @@ class TestRunner:
         self.set_directory(DirectoryTag.W, pathlib.Path.cwd())
 
     def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
-        self.report_testgroup.report.set_directory(tag=tag, directory=directory)
+        self.report_testgroup.result_context.set_directory(tag=tag, directory=directory)
 
         def git_metadata() -> GitMetadata | None:
             from testbed_micropython.util_firmware_mpbuild import PLACEHOLDER_PATH
@@ -258,12 +258,12 @@ class TestRunner:
             return CachedGitRepo.git_metadata(pathlib.Path(directory))
 
         if tag is DirectoryTag.T:
-            self.report_testgroup.report.ref_tests_metadata = git_metadata()
+            self.report_testgroup.result_context.ref_tests_metadata = git_metadata()
         if tag is DirectoryTag.F:
-            self.report_testgroup.report.ref_firmware_metadata = git_metadata()
+            self.report_testgroup.result_context.ref_firmware_metadata = git_metadata()
 
     def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
-        self.report_testgroup.report.set_git_ref(tag=tag, git_ref=git_ref)
+        self.report_testgroup.result_context.set_git_ref(tag=tag, git_ref=git_ref)
 
     def init(self) -> None:
         journalctl = JournalctlObserver(

@@ -34,7 +34,7 @@ class ReportRenderer:
             DirectoryTag.R: f"https://reports.octoprobe.org/{self.label}/",
             DirectoryTag.P: "",
         }
-        for tag, directory in self.data.tests.directories.items():
+        for tag, directory in self.data.result_context.directories.items():
             if not directory.endswith("/"):
                 directory += "/"
             expansion = dict_expansions.get(tag, None)
