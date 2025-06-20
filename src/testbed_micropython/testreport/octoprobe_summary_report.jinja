@@ -1,30 +1,30 @@
 # {{ title|md_escape }}
 
-{% set tests = data.tests %}
+{% set result_context = data.result_context %}
 
-* Trigger: {{ tests.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
-* Testbed: {{ tests.testbed_instance|md_escape }} {{ tests.testbed_name|md_escape }}
-* Start - End: {{ tests.time_start|md_escape }} - {{ tests.time_end|md_escape }}
-* Repo Firmware: {{ tests.ref_firmware2.markdown }} {% if tests.ref_firmware_metadata %} [{{ tests.ref_firmware_metadata.commit_comment }}]({{ tests.ref_firmware_metadata.url_commit_hash }}) {% endif %}
-{% if tests.ref_firmware_metadata %}
-
-  ```
-{{ tests.ref_firmware_metadata.command_log.stdout|indent2|md_escape }}
-  ```
-
-{% endif %}
-* Repo Tests: {{ tests.ref_tests2.markdown }} {% if tests.ref_tests_metadata %} [{{ tests.ref_tests_metadata.commit_comment }}]({{ tests.ref_tests_metadata.url_commit_hash }}) {% endif %}
-{% if tests.ref_tests_metadata %}
+* Trigger: {{ result_context.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
+* Testbed: {{ result_context.testbed_instance|md_escape }} {{ result_context.testbed_name|md_escape }}
+* Start - End: {{ result_context.time_start|md_escape }} - {{ result_context.time_end|md_escape }}
+* Repo Firmware: {{ result_context.ref_firmware2.markdown }} {% if result_context.ref_firmware_metadata %} [{{ result_context.ref_firmware_metadata.commit_comment }}]({{ result_context.ref_firmware_metadata.url_commit_hash }}) {% endif %}
+{% if result_context.ref_firmware_metadata %}
 
   ```
-{{ tests.ref_tests_metadata.command_log.stdout|indent2|md_escape }}
+{{ result_context.ref_firmware_metadata.command_log.stdout|indent2|md_escape }}
   ```
 
 {% endif %}
-* Logdirectory: [{{ tests.log_directory|fix_links|md_escape }}]({{ tests.log_directory|fix_links|md_escape }})
-* Logoutput: [{{ tests.log_output|fix_links|md_escape }}]({{ tests.log_output|fix_links|md_escape }})
-{% if tests.error %}
-* Error: {{ tests.error }}
+* Repo Tests: {{ result_context.ref_tests2.markdown }} {% if result_context.ref_tests_metadata %} [{{ result_context.ref_tests_metadata.commit_comment }}]({{ result_context.ref_tests_metadata.url_commit_hash }}) {% endif %}
+{% if result_context.ref_tests_metadata %}
+
+  ```
+{{ result_context.ref_tests_metadata.command_log.stdout|indent2|md_escape }}
+  ```
+
+{% endif %}
+* Logdirectory: [{{ result_context.log_directory|fix_links|md_escape }}]({{ result_context.log_directory|fix_links|md_escape }})
+* Logoutput: [{{ result_context.log_output|fix_links|md_escape }}]({{ result_context.log_output|fix_links|md_escape }})
+{% if result_context.error %}
+* Error: {{ result_context.error }}
 {% endif %}
 
 ## Summary
@@ -35,15 +35,38 @@
 | {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezerobold }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_failed|hidezerobold }} |
 {%- endfor %}
 
+## Failures
+
+{%- for group in data.summary_by_test %}
+### {{ group.testgroup.testgroup_markdown(result_context=result_context) }}
+{{ group.table_header_markup }}
+{{ group.table_delimiter_markup }}
+
+  {%- for outcomes_for_one_test in group %}
+| {{ outcomes_for_one_test.test_name -}}
+    {%- for tentacle_combination in group.tentacle_combinations -%}
+|
+    {%- set outcome = outcomes_for_one_test.get_outcome(tentacle_combination) -%}
+    {%- if outcome -%}
+[{{ outcome.test_outcome.outcome|md_escape }}]({{ outcome.testgroup.log_output|fix_links|md_escape }})
+    {%- endif -%}
+  {%- endfor -%}
+|
+  {%- endfor %}
+
+{%- endfor %}
+
+{#
 ## Tests which failed
 
 | Testgroup (testid) | Test | Logfile |
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
     {%- for result in testgroup.results_failed %}
-| {{ testgroup.testgroup_markdown(tests, testid=True) }} | {{ result.name_markdown(tests) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) |
+| {{ testgroup.testgroup_markdown(result_context, testid=True) }} | {{ result.name_markdown(result_context) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) |
     {%- endfor %}
 {%- endfor %}
+#}
 
 ## Testsgroups which could not run due to an error
 
@@ -51,7 +74,7 @@
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
     {%- if testgroup.msg_error %}
-| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
+| {{ testgroup.testgroup_markdown(result_context, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
     {%- endif %}
 {%- endfor %}
 
@@ -61,6 +84,6 @@
 | - | - | - |
 {%- for testgroup in data.testgroups_ordered %}
     {%- if testgroup.msg_skipped %}
-| {{ testgroup.testgroup_markdown(tests, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_skipped|fix_links }}``` |
+| {{ testgroup.testgroup_markdown(result_context, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_skipped|fix_links }}``` |
     {%- endif %}
 {%- endfor %}
