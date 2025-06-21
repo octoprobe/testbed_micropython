@@ -58,13 +58,14 @@ class ReportRenderer:
         jinja_env.env.filters["hidezerobold"] = lambda i: "" if i == 0 else f"**{i}**"
         jinja_env.env.filters["md_escape"] = md_escape
         jinja_env.env.filters["indent2"] = lambda text: textwrap.indent(text, "  ")
-        jinja_env.env.filters["fix_links"] = lambda text: self._fix_links(text)
+        jinja_env.env.filters["fix_links"] = self._fix_links
 
         report_md = jinja_env.render_string(
             micropython_code=template,
             data=self.data,
             action_url=action_url,
             title=title,
+            fix_links=self._fix_links,
         )
 
         filename_md.write_text(report_md)

@@ -41,16 +41,11 @@
 ### {{ group.testgroup.testgroup_markdown(result_context=result_context) }}
 {{ group.table_header_markup }}
 {{ group.table_delimiter_markup }}
-
   {%- for outcomes_for_one_test in group %}
-| {{ outcomes_for_one_test.test_name -}}
+| {{ outcomes_for_one_test.test_name|md_escape -}}
     {%- for tentacle_combination in group.tentacle_combinations -%}
-|
-    {%- set outcome = outcomes_for_one_test.get_outcome(tentacle_combination) -%}
-    {%- if outcome -%}
-[{{ outcome.test_outcome.outcome|md_escape }}]({{ outcome.testgroup.log_output|fix_links|md_escape }})
-    {%- endif -%}
-  {%- endfor -%}
+| {{ outcomes_for_one_test.outcome_link(tentacle_combination, fix_links) }}
+    {%- endfor -%}
 |
   {%- endfor %}
 

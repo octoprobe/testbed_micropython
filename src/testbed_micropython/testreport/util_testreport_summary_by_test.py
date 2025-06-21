@@ -17,10 +17,12 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import typing
 
 from markupsafe import Markup
 
 from .util_baseclasses import Outcome
+from .util_markdown2 import md_escape
 from .util_testreport import (
     ResultTestGroup,
     ResultTestOutcome,
@@ -47,8 +49,24 @@ class OutcomesForOneTest(list[TestOutcome]):
     Example: basics/0prelim.py
     """
 
-    def get_outcome(
-        self, tentacle_combination: TentacleCombination
+    def outcome_link(
+        self,
+        tentacle_combination: TentacleCombination,
+        fix_links: typing.Callable[[str], str],
+    ) -> str:
+        outcome = self._get_outcome(tentacle_combination)
+        if outcome is None:
+            return ""
+        decoration_begin, decoration_end = {
+            Outcome.FAILED.value: ("**", "**"),
+            Outcome.PASSED.value: ("*", "*"),
+            Outcome.SKIPPED.value: ("<sub>*", "*</sub>"),
+        }.get(outcome.test_outcome.outcome, ("", ""))
+        return f"{decoration_begin}[{md_escape(outcome.test_outcome.outcome)}]({md_escape(fix_links(outcome.testgroup.log_output))}){decoration_end}"
+
+    def _get_outcome(
+        self,
+        tentacle_combination: TentacleCombination,
     ) -> TestOutcome | None:
         for outcome in self:
             assert isinstance(outcome, TestOutcome)
@@ -131,7 +149,7 @@ class Group(list[OutcomesForOneTest]):
             def f(t: str):
                 "Example: 1133-TEENSY40"
                 serial, _, board = t.partition("-")
-                return "-<br>".join([serial, board])
+                return "-<br>".join([md_escape(serial), md_escape(board)])
 
             return "<br>".join([f(t) for t in c])
 
