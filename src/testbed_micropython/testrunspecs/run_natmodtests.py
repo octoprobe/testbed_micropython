@@ -254,5 +254,5 @@ TESTRUNSPEC_RUN_NATMODTESTS = TestRunSpec(
     required_fut=EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
     testrun_class=TestRunRunTests,
-    timeout_s=1 * 60.0 + TIMEOUT_FLASH_S,
+    timeout_s=2 * 60.0 + TIMEOUT_FLASH_S,
 )
