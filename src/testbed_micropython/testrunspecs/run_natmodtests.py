@@ -162,6 +162,8 @@ class NatmodExamples:
                 if arch.pyelftools_patch:
                     args_extra = natmod_containers.docker_args_ext
 
+                arg_trace = "--trace"
+                arg_trace = ""
                 args = [
                     "/usr/bin/docker",
                     "run",
@@ -172,7 +174,7 @@ class NatmodExamples:
                     arch.container,
                     "bash",
                     "-c",
-                    f"{opt_extra} make --trace --always-make -C {repo_micropython_tests}/examples/natmod/{example} ARCH={arch.arch} {arch.extra_args}",
+                    f"{opt_extra} make {arg_trace} --always-make -C {repo_micropython_tests}/examples/natmod/{example} ARCH={arch.arch} {arch.extra_args}",
                 ]
                 logfile = (
                     directory_natmodtests / f"natmodtest-{arch.arch}-{example}.txt"

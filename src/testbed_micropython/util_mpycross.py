@@ -84,7 +84,7 @@ def _compile_mpycross(
     repo_micropython: pathlib.Path,
     filename: pathlib.Path,
 ) -> None:
-    logfile = directory_mpbuild_artifacts / f"{FILENAME_MPCROSS}_make.log"
+    logfile = directory_mpbuild_artifacts / f"{FILENAME_MPCROSS}_make.txt"
     subprocess_run(
         args=["make", "-j", "8"],
         cwd=repo_micropython / BUILD_DIRECTORY_MPCROSS,
