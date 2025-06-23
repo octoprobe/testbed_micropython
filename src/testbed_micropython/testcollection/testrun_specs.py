@@ -215,7 +215,10 @@ class TestRunSpec:
         firmwares_built: set[str] | None,
     ) -> Iterator[TestRun]:
         def iter_tvs(tentacle: TentacleMicropython) -> typing.Iterator[TentacleVariant]:
-            for variant in tentacle.tentacle_spec.build_variants:
+            build_variants = tentacle.tentacle_spec.build_variants
+            if tentacle.tentacle_state.variants_required is not None:
+                build_variants = tentacle.tentacle_state.variants_required
+            for variant in build_variants:
                 tv = TentacleVariant(
                     tentacle=tentacle,
                     board=tentacle.tentacle_spec.board,

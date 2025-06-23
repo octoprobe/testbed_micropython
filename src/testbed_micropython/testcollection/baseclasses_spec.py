@@ -8,6 +8,7 @@ import dataclasses
 import logging
 
 from ..constants import EnumFut
+from ..mpbuild.build_api import BoardVariant
 from ..mptest.util_baseclasses import ArgsQuery
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 
@@ -46,17 +47,18 @@ class TentacleSpecVariant:
         return f"{self.board}-{self.variant}"
 
 
-def tentacle_spec_2_tsvs(
-    tentacle_spec: TentacleSpecMicropython,
-) -> list[TentacleSpecVariant]:
+def tentacle_spec_2_tsvs(tentacle: TentacleMicropython) -> list[TentacleSpecVariant]:
     """
     ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
     """
-    assert isinstance(tentacle_spec, TentacleSpecMicropython)
+    assert isinstance(tentacle, TentacleMicropython)
 
-    variants = tentacle_spec.build_variants
+    variants = tentacle.tentacle_spec.build_variants
+    if tentacle.tentacle_state.variants_required is not None:
+        variants = tentacle.tentacle_state.variants_required
     return [
-        TentacleSpecVariant(tentacle_spec=tentacle_spec, variant=v) for v in variants
+        TentacleSpecVariant(tentacle_spec=tentacle.tentacle_spec, variant=v)
+        for v in variants
     ]
 
 
@@ -136,17 +138,10 @@ class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
-    @property
-    def tentacle_specs(self) -> set[TentacleSpecMicropython]:
-        specs: set[TentacleSpecMicropython] = set()
-        for t in self:
-            specs.add(t.tentacle_spec)
-        return specs
-
     def get_tsvs(self) -> TentacleSpecVariants:
         s = TentacleSpecVariants()
-        for tentacle_spec in self.tentacle_specs:
-            for tsv in tentacle_spec_2_tsvs(tentacle_spec=tentacle_spec):
+        for tentacle in self:
+            for tsv in tentacle_spec_2_tsvs(tentacle=tentacle):
                 s.add(tsv)
         return s
 
@@ -156,6 +151,8 @@ class ConnectedTentacles(list[TentacleMicropython]):
     def query_boards(self, query: ArgsQuery) -> ConnectedTentacles:
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
 
+        query_only = {BoardVariant.parse(o).board for o in query.only}
+
         def board_not_connected_warning(boards: set[str]) -> None:
             for board in boards:
                 if board not in connected_boards:
@@ -163,15 +160,31 @@ class ConnectedTentacles(list[TentacleMicropython]):
                         f"Board '{board}' not found. Connected boards are {','.join(sorted(connected_boards))}"
                     )
 
-        board_not_connected_warning(boards=query.only)
+        board_not_connected_warning(boards=query_only)
         board_not_connected_warning(boards=query.skip)
 
         selected_boards = connected_boards
-        if len(query.only) > 0:
-            selected_boards.intersection_update(query.only)
+        if len(query_only) > 0:
+            selected_boards.intersection_update(query_only)
         if len(query.skip) > 0:
             selected_boards.difference_update(query.skip)
 
-        return ConnectedTentacles(
-            [t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)]
-        )
+        connected_tentacles = [
+            t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)
+        ]
+        if len(query_only) > 0:
+            # If a board with variant was specified. Example: --only-board=RPI_PICO2-RISCV
+            # Then 'RISCV' has to be stored in the 'tentacle_state'.
+            for connected_tentacle in connected_tentacles:
+                for _board_variant in query.only:
+                    board_variant = BoardVariant.parse(_board_variant)
+                    if board_variant.has_variant_separator:
+                        if (
+                            connected_tentacle.tentacle_spec.board
+                            == board_variant.board
+                        ):
+                            connected_tentacle.tentacle_state.set_variants_required(
+                                [board_variant.variant]
+                            )
+
+        return ConnectedTentacles(connected_tentacles)

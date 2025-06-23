@@ -122,9 +122,7 @@ def list_() -> None:
     print("Connected")
     for tentacle in connected_tentacles:
         print(f"  {tentacle.label}")
-        variants = ",".join(
-            f"{tsv!r}" for tsv in tentacle_spec_2_tsvs(tentacle.tentacle_spec)
-        )
+        variants = ",".join(f"{tsv!r}" for tsv in tentacle_spec_2_tsvs(tentacle))
         print(f"    variants={variants}")
         futs = ",".join([fut.name for fut in tentacle.tentacle_spec.futs])
         print(f"    futs={futs}")
@@ -223,7 +221,7 @@ def test(
     only_board: TyperAnnotated[
         list[str],
         typer.Option(
-            help="Run tests only on this board (tentacles).",
+            help="Run tests only on this board (tentacles). Examples: 'RPI-PICO2-RISCV' will only test variant 'RISCV'. 'RPI_PICO2-' will only test variant ''. 'RPI_PICO2' will test all variants.",
             autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UP007

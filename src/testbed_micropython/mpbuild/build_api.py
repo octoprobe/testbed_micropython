@@ -373,20 +373,20 @@ def build_by_variant_normalized(
     * captured output with the error message is written to stdout/strerr (it would be better to write it to a logfile)
     """
 
-    board_str, variant_str = split_board_variant(variant_normalized)
+    board_variant = BoardVariant.parse(variant_normalized)
     # Example variant_str:
     #  "": for the default variant
     #  "THREAD": for variant "THREAD"
 
     try:
-        board = db.boards[board_str]
+        board = db.boards[board_variant.board]
     except KeyError as e:
         valid_boards = sorted(db.boards.keys())
         raise MpbuildException(
-            f"Board '{board_str}' not found. Valid boards are {valid_boards}"
+            f"Board '{board_variant.board}' not found. Valid boards are {valid_boards}"
         ) from e
 
-    variant = None if variant_str == "" else variant_str
+    variant = None if board_variant.variant == "" else board_variant.variant
 
     return build(
         logfile=logfile,
@@ -397,10 +397,33 @@ def build_by_variant_normalized(
     )
 
 
-def split_board_variant(board_variant: str) -> tuple[str, str]:
+@dataclass(slots=True, frozen=True)
+class BoardVariant:
+    board_variant: str
+    board: str
     """
-    Example: "RPI_PICO2-RISCV" -> "RPI_PICO2", "RISCV"
-    Example: "RPI_PICO2" -> "RPI_PICO", ""
+    Example: "RPI_PICO2-RISCV" -> "RPI_PICO2",
+    Example: "RPI_PICO2" -> "RPI_PICO2"
     """
-    board_str, _, variant_str = board_variant.partition(BOARD_VARIANT_SEPARATOR)
-    return (board_str, variant_str)
+    variant: str
+    """
+    Example: "RPI_PICO2-RISCV" -> "RISCV",
+    Example: "RPI_PICO2" -> ""
+    """
+    has_variant_separator: bool
+    """
+    Example: "RPI_PICO2-RISCV" -> True. Indicates only variant 'RISCV' should be tested.
+    Example: "RPI_PICO2-" -> True. Indicates only variant '' should be tested.
+    Example: "RPI_PICO2" -> False. Indicates all variants should be tested.
+    """
+
+    @staticmethod
+    def parse(board_variant: str) -> BoardVariant:
+        board, separator, variant = board_variant.partition(BOARD_VARIANT_SEPARATOR)
+
+        return BoardVariant(
+            board_variant=board_variant,
+            board=board,
+            variant=variant,
+            has_variant_separator=separator == BOARD_VARIANT_SEPARATOR,
+        )

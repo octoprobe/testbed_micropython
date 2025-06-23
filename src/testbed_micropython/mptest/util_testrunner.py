@@ -140,7 +140,12 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
             [testspec_factory(TestArg.parse(t)) for t in selected_tests]
         )
 
-    assert len(query_only) > 0
+    if len(query_only) == 0:
+        # Run all tests
+        return TestRunSpecs(
+            [testspec_factory(TestArg.parse(t)) for t in DICT_TESTRUN_SPECS.keys()]
+        )
+
     if len(query_only) > 1:
         if len([q for q in query_only if q.has_args]) >= 1:
             raise ValueError(
