@@ -283,8 +283,16 @@ def test(
                 directory_git_cache=constants.DIRECTORY_GIT_CACHE,
             ),
             directory_results=directory_results,
-            query_test=ArgsQuery.factory(only=only_test, skip=skip_test),
-            query_board=ArgsQuery.factory(only=only_board, skip=skip_board),
+            query_test=ArgsQuery.factory(
+                only=only_test,
+                skip=skip_test,
+                arg="tests",
+            ),
+            query_board=ArgsQuery.factory(
+                only=only_board,
+                skip=skip_board,
+                arg="board",
+            ),
             force_multiprocessing=force_multiprocessing,
         )
         testrunner = util_testrunner.TestRunner(args=args)

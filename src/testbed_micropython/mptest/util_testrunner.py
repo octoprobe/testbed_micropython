@@ -30,13 +30,6 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY, UdevFailException, UdevPolle
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
-from testbed_micropython.mptest.util_baseclasses import ArgsQuery
-from testbed_micropython.testreport.util_testreport import (
-    ReportTestgroup,
-    ReportTests,
-)
-from testbed_micropython.testrunspecs.run_natmodtests import NATMOD_EXAMPLES
-
 from .. import constants
 from ..mptest.util_common import ArgsMpTest
 from ..multiprocessing import firmware_bartender, util_multiprocessing
@@ -56,6 +49,10 @@ from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
+from ..testreport.util_testreport import (
+    ReportTestgroup,
+    ReportTests,
+)
 from ..testrunspecs import (
     multinet,
     perftest,
@@ -63,7 +60,10 @@ from ..testrunspecs import (
     runtests,
     runtests_net_inet,
 )
+from ..testrunspecs.run_natmodtests import NATMOD_EXAMPLES
+from ..testrunspecs.util_testarg import TestArg
 from ..util_firmware_mpbuild_interface import ArgsFirmware
+from .util_baseclasses import ArgsQuery
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
@@ -91,6 +91,7 @@ _TESTRUN_SPECS = [
     runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE,
     run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS,
 ]
+DICT_TESTRUN_SPECS = {s.label: s for s in _TESTRUN_SPECS}
 
 
 def get_testrun_spec(label: str) -> TestRunSpec | None:
@@ -105,27 +106,48 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
         query = ArgsQuery()
     assert isinstance(query, ArgsQuery)
 
-    valid_tests = {s.label for s in _TESTRUN_SPECS}
+    assert (len(query.only) == 0) or (len(query.skip) == 0)
 
-    def assert_valid_tests(tests: set[str]) -> None:
-        for test in tests:
-            if test not in valid_tests:
+    query_only = [TestArg.parse(t) for t in query.only]
+    query_skip = [TestArg.parse(t) for t in query.skip]
+
+    def assert_valid_tests(testargs: list[TestArg]) -> None:
+        for testarg in testargs:
+            if testarg.testname not in DICT_TESTRUN_SPECS:
                 raise ValueError(
-                    f"Test '{test}' not found. Valid tests are {','.join(sorted(valid_tests))}"
+                    f"Test '{testarg.testname}' not found. Valid tests are {','.join(sorted(DICT_TESTRUN_SPECS.keys()))}"
                 )
 
-    assert_valid_tests(tests=query.only)
-    assert_valid_tests(tests=query.skip)
+    assert_valid_tests(testargs=query_only)
+    assert_valid_tests(testargs=query_skip)
 
-    selected_tests = valid_tests
-    if len(query.only) > 0:
-        selected_tests.intersection_update(query.only)
-    if len(query.skip) > 0:
-        selected_tests.difference_update(query.skip)
+    def testspec_factory(testspec: TestArg, idx: int = 0) -> TestRunSpec:
+        s = DICT_TESTRUN_SPECS[testspec.testname]
+        if testspec.has_args:
+            label = f"{s.label}-{chr(ord('a') + idx)}"
+            command = testspec.command.split(" ")
+            return dataclasses.replace(
+                s,
+                label=label,
+                command=command,  # type: ignore[arg-type]
+            )
 
-    return TestRunSpecs(
-        [spec for spec in _TESTRUN_SPECS if spec.label in sorted(selected_tests)]
-    )
+        return s
+
+    if len(query_skip) > 0:
+        selected_tests = set(DICT_TESTRUN_SPECS.keys()) - query.skip
+        return TestRunSpecs(
+            [testspec_factory(TestArg.parse(t)) for t in selected_tests]
+        )
+
+    assert len(query_only) > 0
+    if len(query_only) > 1:
+        if len([q for q in query_only if q.has_args]) >= 1:
+            raise ValueError(
+                f"'--test-only' with arguments may not be used once: {' '.join(query.only)}:"
+            )
+
+    return TestRunSpecs([testspec_factory(t, idx) for idx, t in enumerate(query_only)])
 
 
 @dataclasses.dataclass

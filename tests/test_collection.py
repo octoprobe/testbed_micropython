@@ -21,7 +21,7 @@ from testbed_micropython.tentacle_spec import (
 from testbed_micropython.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO
 from testbed_micropython.testcollection import baseclasses_run, testrun_specs
 from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacles
-from testbed_micropython.testrunspecs.runtests import TestRunRunTests
+from testbed_micropython.testrunspecs import runtests
 from testbed_micropython.util_pytest_git import assert_git_unchanged
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
@@ -191,7 +191,7 @@ _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
     command=["perfbench.py", "run-perfbench.py"],
     required_fut=constants.EnumFut.FUT_MCU_ONLY,
     required_tentacles_count=1,
-    testrun_class=TestRunRunTests,
+    testrun_class=runtests.TestRunRunTests,
     timeout_s=60.0,
 )
 _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
@@ -200,7 +200,7 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     command=["wlan.py", "wlantest.py"],
     required_fut=constants.EnumFut.FUT_WLAN,
     required_tentacles_count=2,
-    testrun_class=TestRunRunTests,
+    testrun_class=runtests.TestRunRunTests,
     timeout_s=5 * 60.0,
 )
 
