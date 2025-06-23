@@ -147,7 +147,7 @@ class TestRunSpec:
     required_fut: EnumFut
     required_tentacles_count: int
     timeout_s: float
-    testrun_class: type[TestRun] = TestRun
+    testrun_class: type[TestRun]
     roles_tsvs_todo: RolesTentacleSpecVariants = dataclasses.field(
         default_factory=RolesTentacleSpecVariants
     )

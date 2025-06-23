@@ -191,7 +191,7 @@ class AsyncTarget:
 T = typing.TypeVar("T", bound=AsyncTarget)
 
 
-class AsyncTargets(list[T], typing.Generic[T]):
+class AsyncTargets(list[T]):
     def get_by_event(self, event: EventBase) -> T | None:
         assert isinstance(event, EventBase)
         for ar in self:
