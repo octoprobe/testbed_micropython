@@ -33,7 +33,7 @@ _ROLE_LABELS = ["First", "Second", "Third"]
 MICROPYTHON_DIRECTORY_TESTS = "tests"
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(slots=True, repr=True)
 class TestRun:
     testrun_spec: TestRunSpec
     list_tentacle_variant: list[TentacleVariant]
@@ -132,7 +132,7 @@ class TestRun:
         return sorted(testruns, key=priority)
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(slots=True, repr=True)
 class TestRunSpec:
     """
     Tentacle_WLA_STA connects to Tentacle_WLAN_AP.
@@ -141,32 +141,30 @@ class TestRunSpec:
     Every tentacle has to be tested against two other tentacles. Once as fist, and once as second.
     """
 
-    def __init__(
-        self,
-        label: str,
-        helptext: str,
-        command: list[str],
-        required_fut: EnumFut,
-        required_tentacles_count: int,
-        timeout_s: float,
-        testrun_class: type[TestRun] = TestRun,
-    ) -> None:
-        assert isinstance(label, str)
-        assert isinstance(helptext, str)
-        assert isinstance(command, list)
-        assert isinstance(required_fut, EnumFut)
-        assert isinstance(required_tentacles_count, int)
-        assert isinstance(timeout_s, float)
-        assert isinstance(testrun_class, type(TestRun))
+    label: str
+    helptext: str
+    command: list[str]
+    required_fut: EnumFut
+    required_tentacles_count: int
+    timeout_s: float
+    testrun_class: type[TestRun] = TestRun
+    roles_tsvs_todo: RolesTentacleSpecVariants = dataclasses.field(
+        default_factory=RolesTentacleSpecVariants
+    )
 
-        self.command = command
-        self.label = label
-        self.helptext = helptext
-        self.testrun_class = testrun_class
-        self.required_fut = required_fut
-        self.tentacles_required = required_tentacles_count
-        self.timeout_s = timeout_s
-        self.roles_tsvs_todo = RolesTentacleSpecVariants()
+    def __post_init__(self) -> None:
+        assert isinstance(self.label, str)
+        assert isinstance(self.helptext, str)
+        assert isinstance(self.command, list)
+        assert isinstance(self.required_fut, EnumFut)
+        assert isinstance(self.required_tentacles_count, int)
+        assert isinstance(self.timeout_s, float)
+        assert isinstance(self.testrun_class, type(TestRun))
+        assert isinstance(self.roles_tsvs_todo, RolesTentacleSpecVariants)
+
+    @property
+    def tentacles_required(self) -> int:
+        return self.required_tentacles_count
 
     @property
     def command_executable(self) -> str:
