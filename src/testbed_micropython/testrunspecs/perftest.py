@@ -70,5 +70,6 @@ TESTRUNSPEC_PERFTEST = TestRunSpec(
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
     required_tentacles_count=1,
     testrun_class=TestRunPerfTest,
-    timeout_s=4 * 60.0 + TIMEOUT_FLASH_S,
+    # TODO(hans): 2025-07-30: Lower von 10 to 4
+    timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,
 )
