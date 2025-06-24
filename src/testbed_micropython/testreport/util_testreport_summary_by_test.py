@@ -62,7 +62,9 @@ class OutcomesForOneTest(list[TestOutcome]):
             Outcome.PASSED.value: ("*", "*"),
             Outcome.SKIPPED.value: ("<sub>*", "*</sub>"),
         }.get(outcome.test_outcome.outcome, ("", ""))
-        return f"{decoration_begin}[{md_escape(outcome.test_outcome.outcome)}]({md_escape(fix_links(outcome.testgroup.log_output))}){decoration_end}"
+
+        outcome_short = Outcome(outcome.test_outcome.outcome).short
+        return f"{decoration_begin}[{md_escape(outcome_short)}]({md_escape(fix_links(outcome.testgroup.log_output))}){decoration_end}"
 
     def _get_outcome(
         self,

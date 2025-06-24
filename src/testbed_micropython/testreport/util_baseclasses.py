@@ -16,6 +16,14 @@ class Outcome(enum.StrEnum):
     FAILED = "failed"
     SKIPPED = "skipped"
 
+    @property
+    def short(self) -> str:
+        return {
+            Outcome.PASSED: "pass",
+            Outcome.FAILED: "FAIL",
+            Outcome.SKIPPED: "skip",
+        }[self]
+
 
 @dataclasses.dataclass(slots=True)
 class ResultTestOutcome:
