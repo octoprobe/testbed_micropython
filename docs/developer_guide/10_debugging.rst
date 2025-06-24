@@ -71,3 +71,47 @@ DUT rpi_pico: format crashed filesystem
 
     import vfs, rp2
     vfs.VfsLfs2.mkfs(rp2.Flash(), progsize=256)
+
+
+DUT NUCLEO_WB55: Remotely flash bluetooth stack
+---------------------------------------------------
+
+This will bring the PICO into boot mode and.
+
+.. code-block:: bash
+
+    # Force discover all tentacles
+    op query --poweron
+    export TENTACLE=2f2c
+    # Power off DUT
+    op power --serials=$TENTACLE --off dut
+    # Press boot button
+    op exec-infra --serials=$TENTACLE 'set_relays([(1, True)])'
+    # Power on DUT
+    op power --serials=$TENTACLE --on dut
+    # Release boot button
+    op exec-infra --serials=$TENTACLE 'set_relays([(1, False)])'
+
+Flash bluetooth stack
+
+.. code-block:: bash
+
+    dfu-util -a 0 -D micropy_nucleo_wb55.dfu
+
+Read bluetooth stack version
+
+.. code-block:: bash
+
+    # Before flashing
+    >>> import stm
+    >>> stm.rfcore_fw_version(0)
+    (0, 5, 3, 0, 0)
+    >>> stm.rfcore_fw_version(1)
+    (0, 5, 1, 0, 0)
+
+    # After flashing
+    >>> stm.rfcore_fw_version(0)
+    (1, 1, 0, 0, 0)
+    >>> stm.rfcore_fw_version(1)
+    (1, 10, 0, 0, 1)
+

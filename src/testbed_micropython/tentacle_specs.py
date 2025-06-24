@@ -388,6 +388,7 @@ Board setup:
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_pyboard.NUCLEO_WB55_USB_ID,
     # TODO: Enable all board variants when issue fixed: https://github.com/micropython/micropython/issues/16498
