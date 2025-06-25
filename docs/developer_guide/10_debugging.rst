@@ -115,3 +115,10 @@ Read bluetooth stack version
     >>> stm.rfcore_fw_version(1)
     (1, 10, 0, 0, 1)
 
+DUT NUCLEO_WB55: format crashed filesystem
+------------------------------------------
+
+.. code-block:: python
+
+    import vfs, pyb
+    vfs.VfsFat.mkfs(pyb.Flash(start=0))
