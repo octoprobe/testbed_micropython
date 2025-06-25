@@ -24,7 +24,7 @@ TENTACLES_INVENTORY = (
             ("e46414481311-3c2a", "v0.0", tentacle_specs.ARDUINO_NANO_33),
             ("e4641448132a-5f2a", "v1.0", tentacle_specs.ADA_ITSYBITSY_M0),
             ("e46414481354-1133", "v1.0", tentacle_specs.TEENSY40),
-            ("e4641448130f-2f2c", "v1.0", tentacle_specs.NUCLEO_WB55),
+            ("e4641448130f-2f2c", "v1.1", tentacle_specs.NUCLEO_WB55),
         ],
     )
     .add_testbed_instance(
@@ -43,7 +43,7 @@ TENTACLES_INVENTORY = (
             ("e46414481337-1c2a", "v0.0", tentacle_specs.ARDUINO_NANO_33),
             ("e46414481312-292a", "v1.0", tentacle_specs.ADA_ITSYBITSY_M0),
             ("e46414481336-3e2a", "v1.0", tentacle_specs.TEENSY40),
-            ("e4641448130f-272c", "v1.0", tentacle_specs.NUCLEO_WB55),
+            ("e4641448130f-272c", "v1.1", tentacle_specs.NUCLEO_WB55),
             ("e4641448132c-612a", "v0.0", tentacle_specs.AA_UNASSEMBLED),
             ("e46414481317-5325", "v0.0", tentacle_specs.AA_UNASSEMBLED),
             ("e46414481339-4321", "v0.0", tentacle_specs.AA_UNASSEMBLED),

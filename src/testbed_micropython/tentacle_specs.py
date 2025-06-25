@@ -355,7 +355,8 @@ See: https://micropython.org/download/NUCLEO_WB55/
 See: https://www.st.com/en/evaluation-tools/p-nucleo-wb55.html
 See: https://www.st.com/en/evaluation-tools/nucleo-wb55rg.html
 See headers: https://os.mbed.com/platforms/ST-Nucleo-WB55RG/
-See - old doc, but detailed: https://fcc.report/FCC-ID/YCP-MB1355002/5777411.pdf
+See - old doc rev1, but detailed: https://fcc.report/FCC-ID/YCP-MB1355002/5777411.pdf
+See - old doc rev2, but detailed: https://community.st.com/ysqtg83639/attachments/ysqtg83639/mcu-wireless-forum/22082/1/P-NUCLEO-WB55%20User%20Manual%20UM2435%20Rev%202%20April%202019.pdf
 
 Connections
 
@@ -367,15 +368,20 @@ Connections
   * Board CN7-pin8(GND) <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board CN7-pin28(X1/A0) <=> Board CN7-pin30(X2/A1)
+  * v1.0: Board CN7-pin28(X1/A0) <=> Board CN7-pin30(X2/A1)
+  * v1.1: CN10-pin35(PA2/LPUART1_TX) <=> Board CN10-pin37(PA3/LPUART1_RX)
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board TODO
-  * Testpoint CH1/extmod_a <=> Board CN7-pin28(X1/A0)
+  * v1.0: Testpoint CH1/extmod_a <=> Board CN7-pin28(X1/A0)
+  * v1.1: Testpoint CH1/extmod_a <=> Board CN10-pin35(PA2)
 
 Board setup:
 * CN1: USB cable
+  Note:
+    USB_STLINK CN15: located on the back side of 'LED4'
+    USB_MCU    CN1 : located on the back side of 'RESET'
 * JP1: all open. But "USB MCU" closed.
 * JP2: closed
 * JP3: closed
