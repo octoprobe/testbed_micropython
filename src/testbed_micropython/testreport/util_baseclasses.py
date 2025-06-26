@@ -8,7 +8,7 @@ from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DirectoryTag
 
 from ..testcollection.testrun_specs import MICROPYTHON_DIRECTORY_TESTS
-from .util_markdown2 import md_link
+from .util_markdown2 import md_escape, md_link
 
 
 class Outcome(enum.StrEnum):
@@ -123,7 +123,7 @@ class GitRef:
         Example file: tests/run-tests.py
         Return: https://github.com/micropython/micropython/tree/master/tests/run-tests.py
         """
-        return f"{self.url_link}/{file}"
+        return f"{self.url_link}/{file}".replace("//", "/")
 
 
 @dataclasses.dataclass(slots=True)
@@ -288,7 +288,9 @@ class ResultTestGroup:
         python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + testspec.command_executable
 
         md = self.testgroup_markdown2(
-            tests=result_context, python_test=python_test, testid=testid
+            result_context=result_context,
+            python_test=python_test,
+            testid=testid,
         )
         # TODO: Is this still required?
         if testid:
@@ -297,7 +299,7 @@ class ResultTestGroup:
 
     def testgroup_markdown2(
         self,
-        tests: ResultContext,
+        result_context: ResultContext,
         python_test: str,
         testid: bool,
     ) -> str:
@@ -308,10 +310,10 @@ class ResultTestGroup:
           testid=True:
             [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
         """
-        assert isinstance(tests, ResultContext)
+        assert isinstance(result_context, ResultContext)
 
         # Find the git_ref for the micropython tests repository
-        ref_tests = tests.git_ref.get(DirectoryTag.T, None)
+        ref_tests = result_context.git_ref.get(DirectoryTag.T, None)
         if ref_tests is None:
             return f"{self.testgroup} ({python_test})"
         ref = GitRef.factory(ref=ref_tests)
@@ -320,3 +322,25 @@ class ResultTestGroup:
         label = self.testid if testid else self.testgroup
 
         return md_link(label=label, link=ref.link(file=python_test))
+
+    def test_filename_link(
+        self,
+        result_context: ResultContext,
+        python_test: str,
+    ) -> str:
+        """
+        Example return:
+          [basics/builtin_pow3_intbig.py](https://github.com/micropython/micropython/tree/master/tests/basics/builtin_pow3_intbig.py)
+        """
+        assert isinstance(result_context, ResultContext)
+
+        # Find the git_ref for the micropython tests repository
+        ref_tests = result_context.git_ref.get(DirectoryTag.T, None)
+        if ref_tests is None:
+            return md_escape(python_test)
+        ref = GitRef.factory(ref=ref_tests)
+
+        return md_link(
+            label=python_test,
+            link=ref.link(file=f"/{MICROPYTHON_DIRECTORY_TESTS}/{python_test}"),
+        )

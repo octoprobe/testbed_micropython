@@ -21,7 +21,7 @@ import typing
 
 from markupsafe import Markup
 
-from .util_baseclasses import Outcome
+from .util_baseclasses import Outcome, ResultContext
 from .util_markdown2 import md_escape
 from .util_testreport import (
     ResultTestGroup,
@@ -44,10 +44,21 @@ class TestOutcome:
 
 @dataclasses.dataclass(repr=True, slots=True)
 class OutcomesForOneTest(list[TestOutcome]):
+    testgroup: ResultTestGroup
     test_name: str
     """
     Example: basics/0prelim.py
     """
+
+    def test_name_link_markup(
+        self,
+        result_context: ResultContext,
+    ) -> Markup:
+        test_filename_link = self.testgroup.test_filename_link(
+            result_context=result_context,
+            python_test=self.test_name,
+        )
+        return Markup(test_filename_link)
 
     def outcome_link(
         self,
@@ -124,12 +135,19 @@ class Group(list[OutcomesForOneTest]):
         default_factory=TentacleCombinations
     )
 
-    def find_or_new(self, test_name: str) -> OutcomesForOneTest:
+    def find_or_new(
+        self,
+        testgroup: ResultTestGroup,
+        test_name: str,
+    ) -> OutcomesForOneTest:
         for outcomes_for_one_test in self:
             if outcomes_for_one_test.test_name == test_name:
                 return outcomes_for_one_test
 
-        outcomes_for_one_test = OutcomesForOneTest(test_name=test_name)
+        outcomes_for_one_test = OutcomesForOneTest(
+            testgroup=testgroup,
+            test_name=test_name,
+        )
         self.append(outcomes_for_one_test)
         return outcomes_for_one_test
 
@@ -186,7 +204,10 @@ class SummaryByTest(list[Group]):
         for testgroup in testgroups:
             group = groups.find_or_new(testgroup=testgroup)
             for test_outcome in testgroup.outcomes:
-                outcomes_for_one_test = group.find_or_new(test_name=test_outcome.name)
+                outcomes_for_one_test = group.find_or_new(
+                    testgroup=testgroup,
+                    test_name=test_outcome.name,
+                )
                 tentacle_combination = group.tentacle_combinations.add(
                     tentacles=testgroup.tentacles
                 )

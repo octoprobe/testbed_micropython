@@ -42,7 +42,7 @@
 {{ group.table_header_markup }}
 {{ group.table_delimiter_markup }}
   {%- for outcomes_for_one_test in group %}
-| {{ outcomes_for_one_test.test_name|md_escape -}}
+| {{ outcomes_for_one_test.test_name_link_markup(result_context=result_context) -}}
     {%- for tentacle_combination in group.tentacle_combinations -%}
 | {{ outcomes_for_one_test.outcome_link(tentacle_combination, fix_links) }}
     {%- endfor -%}
