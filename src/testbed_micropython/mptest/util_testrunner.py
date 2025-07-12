@@ -121,30 +121,41 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
     assert_valid_tests(testargs=query_only)
     assert_valid_tests(testargs=query_skip)
 
-    def testspec_factory(testspec: TestArg, idx: int = 0) -> TestRunSpec:
-        s = DICT_TESTRUN_SPECS[testspec.testname]
-        if testspec.has_args:
-            label = f"{s.label}-{chr(ord('a') + idx)}"
-            command = testspec.command.split(" ")
-            return dataclasses.replace(
-                s,
-                label=label,
-                command=command,  # type: ignore[arg-type]
-            )
+    def factory(testargs: list[TestArg]) -> TestRunSpecs:
+        assert isinstance(testargs, list)
+        for testarg in testargs:
+            assert isinstance(testarg, TestArg)
 
-        return s
+        def factory_inner(testspec: TestArg, idx: int = 0) -> TestRunSpec:
+            assert isinstance(testspec, TestArg)
+            assert isinstance(idx, int)
+            s = DICT_TESTRUN_SPECS[testspec.testname]
+            label = f"{s.label}#{chr(ord('a') + idx)}"
+            if testspec.has_args:
+                command = testspec.command.split(" ")
+                return dataclasses.replace(
+                    s,
+                    label=label,
+                    command=command,  # type: ignore[arg-type]
+                )
+
+            return dataclasses.replace(s, label=label)
+
+        return TestRunSpecs(
+            [
+                factory_inner(testarg, idx=idx)
+                for idx in range(query.count)
+                for testarg in testargs
+            ]
+        )
 
     if len(query_skip) > 0:
         selected_tests = set(DICT_TESTRUN_SPECS.keys()) - query.skip
-        return TestRunSpecs(
-            [testspec_factory(TestArg.parse(t)) for t in selected_tests]
-        )
+        return factory([TestArg.parse(t) for t in selected_tests])
 
     if len(query_only) == 0:
         # Run all tests
-        return TestRunSpecs(
-            [testspec_factory(TestArg.parse(t)) for t in DICT_TESTRUN_SPECS.keys()]
-        )
+        return factory([TestArg.parse(t) for t in DICT_TESTRUN_SPECS.keys()])
 
     if len(query_only) > 1:
         if len([q for q in query_only if q.has_args]) >= 1:
@@ -152,7 +163,7 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
                 f"'--test-only' with arguments may not be used once: {' '.join(query.only)}:"
             )
 
-    return TestRunSpecs([testspec_factory(t, idx) for idx, t in enumerate(query_only)])
+    return factory(query_only)
 
 
 @dataclasses.dataclass

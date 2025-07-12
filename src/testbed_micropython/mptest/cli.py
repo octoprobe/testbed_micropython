@@ -266,6 +266,10 @@ def test(
         bool | None,
         typer.Option(help="Will not flash and use the firmware already on the boards"),
     ] = False,  # noqa: UP007
+    count: TyperAnnotated[
+        int | None,
+        typer.Option(help="Run every test multiple times to detect flakiness"),
+    ] = 1,  # noqa: UP007
 ) -> None:
     try:
         directory_results = assert_valid_testresults(testresults)
@@ -285,6 +289,7 @@ def test(
                 only=only_test,
                 skip=skip_test,
                 arg="tests",
+                count=count,
             ),
             query_board=ArgsQuery.factory(
                 only=only_board,
@@ -296,6 +301,7 @@ def test(
         testrunner = util_testrunner.TestRunner(args=args)
         logger.info(f"{' '.join(sys.argv)}")
         logger.info(f"{multiprocessing=}")
+        logger.info(f"{count=}")
         logger.info(f"directory_results={args.directory_results}")
         try:
             testrunner.init()
