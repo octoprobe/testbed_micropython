@@ -123,7 +123,10 @@ class GitRef:
         Example file: tests/run-tests.py
         Return: https://github.com/micropython/micropython/tree/master/tests/run-tests.py
         """
-        return f"{self.url_link}/{file}".replace("//", "/")
+        url_link = self.url_link
+        if url_link.endswith("/"):
+            return url_link + file
+        return url_link + "/" + file
 
 
 @dataclasses.dataclass(slots=True)
@@ -225,19 +228,44 @@ class ResultTestGroup:
 
     directory_relative: str = ""
     testgroup: str = ""
+    """
+    Example: RUN-TESTS_EXTMOD_HARDWARE
+    """
     testid: str = ""
+    """
+    Example: RUN-TESTS_EXTMOD_HARDWARE#b@5f2c-RPI_PICO_W
+    Unique id of a testrun
+    """
+    testid_group: str = ""
+    """
+    Example: RUN-TESTS_EXTMOD_HARDWARE@5f2c-RPI_PICO_W
+    Used to group testsruns to show flakiness.
+    """
+    testid_tentacles: str = ""
+    """
+    Example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
+    Used to group by tentacles.
+    """
     commandline: str = ""
-    # RUN-TESTS_STANDARD
+    """
+    Example: RUN-TESTS_STANDARD
+    """
     tentacles: list[str] = dataclasses.field(default_factory=list)
-    # b0c30
-    # port_variant: str = ""
-    # ESP32_C3_DEVKIT
+    """
+    Example: ['5f2c-RPI_PICO_W']
+    """
     time_start: str = ""
-    # 2025-04-18 23:22:12
+    """
+    Example: 2025-04-18 23:22:12
+    """
     time_end: str = ""
-    # 2025-04-18 23:43:14
+    """
+    Example: 2025-04-18 23:43:14
+    """
     log_output: str = ""
-    # logger_20_info.log
+    """
+    Example: logger_20_info.log
+    """
     outcomes: list[ResultTestOutcome] = dataclasses.field(default_factory=list)
     msg_error: str = "Test never finished..."
     """
@@ -249,6 +277,9 @@ class ResultTestGroup:
     Example:
     It looks like the firmware has not been compiled, but the test requires '--via-mpy'!
     """
+
+    def __post_init__(self) -> None:
+        pass
 
     @property
     def results_failed(self) -> list[ResultTestOutcome]:

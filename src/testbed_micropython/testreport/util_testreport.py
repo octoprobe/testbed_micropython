@@ -92,15 +92,8 @@ class Data:
                     del json_dict["results"]
                 testgroup = ResultTestGroup(**json_dict)
 
-                def fix(r):
-                    # TODO(hans): Remove after 2025-06-31
-                    if "result" in r:
-                        r["outcome"] = r["result"]
-                        del r["result"]
-                    return r
-
                 testgroup.outcomes = [
-                    ResultTestOutcome(**fix(r)) for r in testgroup.outcomes
+                    ResultTestOutcome(**r) for r in testgroup.outcomes
                 ]
                 data.testgroups.append(testgroup)
 
@@ -188,7 +181,9 @@ class ReportTestgroup:
         self.report.directory_relative = (
             self.testresults_directory.directory_test_relative
         )
+        self.report.testid_group = testrun.testid_group
         self.report.testid = testrun.testid
+        self.report.testid_tentacles = testrun.tentacles_text
         self.report.commandline = " ".join(testrun.testrun_spec.command)
         self.report.log_output = DirectoryTag.R.render_relative_to(
             top=self.testresults_directory.directory_top,

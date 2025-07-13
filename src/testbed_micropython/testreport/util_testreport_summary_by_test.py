@@ -20,6 +20,11 @@ import logging
 import typing
 
 from markupsafe import Markup
+from octoprobe.util_constants import DELIMITER_SERIAL_BOARD
+
+from testbed_micropython.testcollection.testrun_specs import (
+    DELIMITER_TENTACLES,
+)
 
 from .util_baseclasses import Outcome, ResultContext
 from .util_markdown2 import md_escape
@@ -33,7 +38,7 @@ logger = logging.getLogger(__file__)
 
 @dataclasses.dataclass(repr=True, slots=True)
 class TestOutcome:
-    tentacle_combination: TentacleCombination
+    testid_tentacles: str
     test_outcome: ResultTestOutcome
     testgroup: ResultTestGroup
 
@@ -62,31 +67,43 @@ class OutcomesForOneTest(list[TestOutcome]):
 
     def outcome_link(
         self,
-        tentacle_combination: TentacleCombination,
+        testid_tentacles: str,
         fix_links: typing.Callable[[str], str],
     ) -> str:
-        outcome = self._get_outcome(tentacle_combination)
-        if outcome is None:
+        outcomes = [
+            outcome for outcome in self if outcome.testid_tentacles == testid_tentacles
+        ]
+        if len(outcomes) == 0:
             return ""
-        decoration_begin, decoration_end = {
-            Outcome.FAILED.value: ("**", "**"),
-            Outcome.PASSED.value: ("*", "*"),
-            Outcome.SKIPPED.value: ("<sub>*", "*</sub>"),
-        }.get(outcome.test_outcome.outcome, ("", ""))
+        outcomes.sort(key=lambda outcome: outcome.testgroup.testid)
 
-        outcome_short = Outcome(outcome.test_outcome.outcome).short
-        return f"{decoration_begin}[{md_escape(outcome_short)}]({md_escape(fix_links(outcome.testgroup.log_output))}){decoration_end}"
+        def get_decoration(outcomes: list[TestOutcome]) -> tuple[str, str]:
+            has_failed = False
+            has_passed = False
+            for outcome in outcomes:
+                if outcome.test_outcome.outcome == Outcome.FAILED.value:
+                    has_failed = True
+                if outcome.test_outcome.outcome == Outcome.PASSED.value:
+                    has_passed = True
 
-    def _get_outcome(
-        self,
-        tentacle_combination: TentacleCombination,
-    ) -> TestOutcome | None:
-        for outcome in self:
-            assert isinstance(outcome, TestOutcome)
-            if outcome.tentacle_combination == tentacle_combination:
-                return outcome
+            if not has_failed:
+                # All success: subscript italic
+                return ("<sub>*", "*</sub>")
 
-        return None
+            if has_passed and has_failed:
+                # Flaky: italic
+                return ("*", "*")
+
+            # all failed: bold
+            return ("**", "**")
+
+        decoration_begin, decoration_end = get_decoration(outcomes)
+
+        def render_outcome(outcome: TestOutcome) -> str:
+            outcome_short = Outcome(outcome.test_outcome.outcome).short
+            return f"{decoration_begin}[{md_escape(outcome_short)}]({md_escape(fix_links(outcome.testgroup.log_output))}){decoration_end}"
+
+        return " ".join([render_outcome(outcome) for outcome in outcomes])
 
     @property
     def interesting(self) -> bool:
@@ -99,30 +116,6 @@ class OutcomesForOneTest(list[TestOutcome]):
         return False
 
 
-TentacleCombination = list[str]
-
-
-class TentacleCombinations(list[TentacleCombination]):
-    """
-    This represents the columns of the summary table
-    """
-
-    def add(self, tentacles: list[str]) -> TentacleCombination:
-        """
-        Add if not already there.
-        """
-        for tentacle_combination in self:
-            if tentacle_combination == tentacles:
-                return tentacle_combination
-
-        tentacle_combination = tentacles
-        self.append(tentacle_combination)
-        return tentacle_combination
-
-    def sortit(self) -> None:
-        self.sort()
-
-
 @dataclasses.dataclass(slots=True)
 class Group(list[OutcomesForOneTest]):
     testgroup: ResultTestGroup
@@ -131,9 +124,11 @@ class Group(list[OutcomesForOneTest]):
     The group is related to many 'ResultTestGroup's.
     'testgroup' just references just one.
     """
-    tentacle_combinations: TentacleCombinations = dataclasses.field(
-        default_factory=TentacleCombinations
-    )
+    testids_tentacles: set[str] = dataclasses.field(default_factory=set)
+
+    @property
+    def testids_tentacles_sorted(self) -> list[str]:
+        return sorted(self.testids_tentacles)
 
     def find_or_new(
         self,
@@ -165,16 +160,16 @@ class Group(list[OutcomesForOneTest]):
         | :- | - | - |
         """
 
-        def format_tentacle_combination(c: TentacleCombination) -> str:
-            def f(t: str):
-                "Example: 1133-TEENSY40"
-                serial, _, board = t.partition("-")
-                return "-<br>".join([md_escape(serial), md_escape(board)])
-
-            return "<br>".join([f(t) for t in c])
+        def format_tentacle_combination(testid_tentacles: str) -> str:
+            testid_tentacles = md_escape(testid_tentacles)
+            return testid_tentacles.replace(
+                DELIMITER_TENTACLES,
+                DELIMITER_TENTACLES + "<br>",
+            ).replace(DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>", 1)
 
         elems_header = [
-            format_tentacle_combination(c) for c in self.tentacle_combinations
+            format_tentacle_combination(testid_tentacles)
+            for testid_tentacles in self.testids_tentacles_sorted
         ]
         return Markup(f"| Test | {' | '.join(elems_header)} |")
 
@@ -184,7 +179,7 @@ class Group(list[OutcomesForOneTest]):
         | Test | RPI_PICO_W | ESP32_DEVKIT |
         | :-: | - | - |
         """
-        elems_header = [":-:" for x in self.tentacle_combinations]
+        elems_header = [":-:" for x in self.testids_tentacles_sorted]
         return Markup(f"| :- | {' | '.join(elems_header)} |")
 
 
@@ -208,12 +203,10 @@ class SummaryByTest(list[Group]):
                     testgroup=testgroup,
                     test_name=test_outcome.name,
                 )
-                tentacle_combination = group.tentacle_combinations.add(
-                    tentacles=testgroup.tentacles
-                )
+                group.testids_tentacles.add(testgroup.testid_tentacles)
                 outcomes_for_one_test.append(
                     TestOutcome(
-                        tentacle_combination=tentacle_combination,
+                        testid_tentacles=testgroup.testid_tentacles,
                         test_outcome=test_outcome,
                         testgroup=testgroup,
                     )
@@ -231,9 +224,7 @@ class SummaryByTest(list[Group]):
         # Just keep the groups which have outcomes.
         groups = SummaryByTest(g for g in groups if len(group) > 0)
 
-        for group in groups:
-            group.tentacle_combinations.sortit()
-
+        groups.sort(key=lambda g: g.group_name)
         groups.print()
         return groups
 

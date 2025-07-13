@@ -31,6 +31,13 @@ class TestArgs:
 _ROLE_LABELS = ["First", "Second", "Third"]
 
 MICROPYTHON_DIRECTORY_TESTS = "tests"
+DELIMITER_TESTRUN = ";"
+DELIMITER_TENTACLE = "@"
+# TODO: Find an merge other places where this ',' is used!
+DELIMITER_TENTACLES = ","
+"""
+Example: 8f34-PICO_W,23ad-LOLIN_C3
+"""
 
 
 @dataclasses.dataclass(slots=True, repr=True)
@@ -61,18 +68,20 @@ class TestRun:
     @property
     def testid(self) -> str:
         """
-        For example: run-perfbench.py[2d2d-lolin_D1-ESP8266_GENERIC]
+        For example: run-perfbench.py#a@2d2d-lolin_D1-ESP8266_GENERIC
+        This is the unique id of the testrun.
         """
+        return (
+            self.testrun_spec.label_testrun + DELIMITER_TENTACLE + self.tentacles_text
+        )
 
-        def testid(tv: TentacleVariant) -> str:
-            if self.flash_skip:
-                if len(tv.tentacle.tentacle_spec.build_variants) > 1:
-                    return f"{tv.tentacle.label_short}-unknown"
-
-            return f"{tv.tentacle.label_short}{tv.dash_variant}"
-
-        tentacles = ",".join([testid(tv) for tv in self.list_tentacle_variant])
-        return f"{self.testrun_spec.label}@{tentacles}"
+    @property
+    def testid_group(self) -> str:
+        """
+        For example: run-perfbench.py@2d2d-lolin_D1-ESP8266_GENERIC
+        This is used to group testruns to show flakiness.
+        """
+        return self.testrun_spec.label + DELIMITER_TENTACLE + self.tentacles_text
 
     @property
     @contextlib.contextmanager
@@ -87,6 +96,21 @@ class TestRun:
         finally:
             for t in self.tentacles:
                 t.infra.mcu_infra.active_led(on=False)
+
+    @property
+    def tentacles_text(self) -> str:
+        """
+        For example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
+        """
+
+        def testid(tv: TentacleVariant) -> str:
+            if self.flash_skip:
+                if len(tv.tentacle.tentacle_spec.build_variants) > 1:
+                    return f"{tv.tentacle.label_short}-unknown"
+
+            return f"{tv.tentacle.label_short}{tv.dash_variant}"
+
+        return ",".join([testid(tv) for tv in self.list_tentacle_variant])
 
     @property
     def debug_text(self) -> str:
@@ -140,6 +164,9 @@ class TestRunSpec:
     """
 
     label: str
+    """
+    Example: 'RUN-TESTS_EXTMOD_HARDWARE'
+    """
     helptext: str
     command: list[str]
     required_fut: EnumFut
@@ -149,6 +176,10 @@ class TestRunSpec:
     roles_tsvs_todo: RolesTentacleSpecVariants = dataclasses.field(
         default_factory=RolesTentacleSpecVariants
     )
+    testrun_idx0: int = 0
+    """
+    Example: 1, 2, 3
+    """
 
     def __post_init__(self) -> None:
         assert isinstance(self.label, str)
@@ -159,6 +190,14 @@ class TestRunSpec:
         assert isinstance(self.timeout_s, float)
         assert isinstance(self.testrun_class, type(TestRun))
         assert isinstance(self.roles_tsvs_todo, RolesTentacleSpecVariants)
+        assert isinstance(self.testrun_idx0, int)
+
+    @property
+    def label_testrun(self) -> str:
+        """
+        Example: 'RUN-TESTS_EXTMOD_HARDWARE#a'
+        """
+        return f"{self.label}{DELIMITER_TESTRUN}{chr(ord('a') + self.testrun_idx0)}"
 
     @property
     def tentacles_required(self) -> int:

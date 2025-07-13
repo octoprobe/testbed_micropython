@@ -37,14 +37,20 @@
 
 ## Failures
 
-{%- for group in data.summary_by_test %}
-### {{ group.testgroup.testgroup_markdown(result_context=result_context) }}
-{{ group.table_header_markup }}
-{{ group.table_delimiter_markup }}
-  {%- for outcomes_for_one_test in group %}
-| {{ outcomes_for_one_test.test_name_link_markup(result_context=result_context) -}}
-    {%- for tentacle_combination in group.tentacle_combinations -%}
-| {{ outcomes_for_one_test.outcome_link(tentacle_combination, fix_links) }}
+{%- for summary_by_test in data.summary_by_test %}
+### Group: {{ summary_by_test.testgroup.testgroup_markdown(result_context=result_context) }}
+
+{# Table header -#}
+{{ summary_by_test.table_header_markup }}
+{#- Table delimter #}
+{{ summary_by_test.table_delimiter_markup -}}
+  {#- Loop for each test -#}
+  {%- for outcomes_for_one_test in summary_by_test -%}
+    {#- Test name on the very left column #}
+|   {{ outcomes_for_one_test.test_name_link_markup(result_context=result_context) -}}
+    {%- for testid_tentacles in summary_by_test.testids_tentacles_sorted -%}
+      {#- Column with FAIL/PASS/FLAKY -#}
+|     {{ outcomes_for_one_test.outcome_link(testid_tentacles, fix_links) }}
     {%- endfor -%}
 |
   {%- endfor %}

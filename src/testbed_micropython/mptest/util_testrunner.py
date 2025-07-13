@@ -126,24 +126,23 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
         for testarg in testargs:
             assert isinstance(testarg, TestArg)
 
-        def factory_inner(testspec: TestArg, idx: int = 0) -> TestRunSpec:
+        def factory_inner(testspec: TestArg, idx0: int = 0) -> TestRunSpec:
             assert isinstance(testspec, TestArg)
-            assert isinstance(idx, int)
+            assert isinstance(idx0, int)
             s = DICT_TESTRUN_SPECS[testspec.testname]
-            label = f"{s.label}#{chr(ord('a') + idx)}"
             if testspec.has_args:
                 command = testspec.command.split(" ")
                 return dataclasses.replace(
                     s,
-                    label=label,
+                    testrun_idx0=idx0,
                     command=command,  # type: ignore[arg-type]
                 )
 
-            return dataclasses.replace(s, label=label)
+            return dataclasses.replace(s, testrun_idx0=idx0)
 
         return TestRunSpecs(
             [
-                factory_inner(testarg, idx=idx)
+                factory_inner(testarg, idx0=idx)
                 for idx in range(query.count)
                 for testarg in testargs
             ]
