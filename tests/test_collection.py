@@ -120,6 +120,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         directory_git_cache=constants.DIRECTORY_GIT_CACHE,
         directory_results=constants.DIRECTORY_TESTRESULTS_DEFAULT,
     )
+    args.firmware.flash_skip = False
     ctxtestrun = util_testrunner.CtxTestRun(connected_tentacles=connected_tentacles)
     repo_micropython_tests = pathlib.Path("/dummy_path")
 
@@ -152,7 +153,8 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             testrun_specs_.pytest_print(indent=1, file=file)
 
             possible_testruns = bartender.possible_testruns(
-                firmwares_built=firmwares_built
+                firmwares_built=firmwares_built,
+                flash_skip=args.firmware.flash_skip,
             )
             print(f"## {i}: possible_testruns", file=file)
             for possible_testrun in possible_testruns:

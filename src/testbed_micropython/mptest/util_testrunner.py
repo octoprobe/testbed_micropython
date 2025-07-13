@@ -551,9 +551,7 @@ class TestRunner:
         assert isinstance(target_ctx, util_multiprocessing.TargetCtx)
         assert len(async_target.testrun.list_tentacle_variant) > 0
 
-        logger.debug(
-            async_target.testrun.testid_patch(flash_skip=self.args.firmware.flash_skip)
-        )
+        logger.debug(async_target.testrun.testid)
 
         self._assign_firmware_specs(testrun=async_target.testrun)
 
@@ -579,14 +577,14 @@ def _target_run_one_test_async_b(
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
-    testid_patch: str,
+    testid: str,
     duration_text: typing.Callable,
 ) -> None:
     """
     This is a 'global' method and as such may be used within process or
     be called by the multiprocessing module.
     """
-    logger.info(f"TEST SETUP {duration_text(0.0)} {testid_patch}")
+    logger.info(f"TEST SETUP {duration_text(0.0)} {testid}")
 
     for tentacle in testrun.tentacles:
         ctxtestrun.function_prepare_dut(tentacle=tentacle)
@@ -604,7 +602,7 @@ def _target_run_one_test_async_b(
         futs=(testrun.testrun_spec.required_fut,),
         tentacles=testrun.tentacles,
     )
-    logger.info(f"TEST BEGIN {duration_text()} {testid_patch}")
+    logger.info(f"TEST BEGIN {duration_text()} {testid}")
 
     with testrun.active_led_on:
         testrun.test(
@@ -623,7 +621,7 @@ def _target_run_one_test_async_a(
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
-    testid_patch: str,
+    testid: str,
 ) -> bool:
     """
     return True on success
@@ -646,7 +644,7 @@ def _target_run_one_test_async_a(
             testrun=testrun,
             repo_micropython_tests=repo_micropython_tests,
             testresults_directory=testresults_directory,
-            testid_patch=testid_patch,
+            testid=testid,
             duration_text=duration_text,
         )
         report_test.write_ok()
@@ -657,23 +655,23 @@ def _target_run_one_test_async_a(
         SubprocessExitCodeException,
         subprocess.TimeoutExpired,
     ) as e:
-        msg = f"{testid_patch}: Terminating test due to: {e!r}"
+        msg = f"{testid}: Terminating test due to: {e!r}"
         logger.warning(msg)
         skipped = isinstance(e, OctoprobeTestSkipException)
         report_test.write_error(msg=msg, skipped=skipped)
         return False
     except Exception as e:
-        msg = f"{testid_patch}: Terminating test due to: {e!r}"
+        msg = f"{testid}: Terminating test due to: {e!r}"
         logger.error(msg, exc_info=e)
         report_test.write_error(msg=msg)
         return False
     finally:
-        logger.info(f"TEST TEARDOWN {duration_text()} {testid_patch}")
+        logger.info(f"TEST TEARDOWN {duration_text()} {testid}")
         try:
             ctxtestrun.function_teardown(active_tentacles=testrun.tentacles)
         except Exception as e:
             logger.exception(e)
-        logger.info(f"TEST END {duration_text()} {testid_patch}")
+        logger.info(f"TEST END {duration_text()} {testid}")
 
 
 def target_run_one_test_async(
@@ -685,14 +683,14 @@ def target_run_one_test_async(
 ) -> None:
     logfile = pathlib.Path("/here_is_the_logfile")
     success = False
-    testid_patch = testrun.testid_patch(flash_skip=args.firmware.flash_skip)
+    testid = testrun.testid
     try:
         arg1.initfunc(arg1=arg1)
 
         testresults_directory = ResultsDir(
             directory_top=args.directory_results,
-            test_name=testid_patch,
-            test_nodeid=testid_patch,
+            test_name=testid,
+            test_nodeid=testid,
         )
 
         with util_logging.Logs(testresults_directory.directory_test) as logs:
@@ -705,7 +703,7 @@ def target_run_one_test_async(
                 testrun=testrun,
                 repo_micropython_tests=repo_micropython_tests,
                 testresults_directory=testresults_directory,
-                testid_patch=testid_patch,
+                testid=testid,
             )
     finally:
         # We have to send a exit event before returing!
@@ -714,6 +712,6 @@ def target_run_one_test_async(
                 arg1.target_unique_name,
                 success=success,
                 logfile=logfile,
-                testid=testid_patch,
+                testid=testid,
             )
         )

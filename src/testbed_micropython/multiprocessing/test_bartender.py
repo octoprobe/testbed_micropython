@@ -70,11 +70,13 @@ class TestBartender:
     def possible_testruns(
         self,
         firmwares_built: set[str] | None,
+        flash_skip: bool,
     ) -> list[TestRun]:
         _possible_testruns = list(
             self.testrun_specs.generate(
                 available_tentacles=self.available_tentacles,
                 firmwares_built=firmwares_built,
+                flash_skip=flash_skip,
             )
         )
 
@@ -92,7 +94,10 @@ class TestBartender:
         assert isinstance(ctxtestrun, util_testrunner.CtxTestRun)
         assert isinstance(repo_micropython_tests, pathlib.Path)
 
-        possible_testruns = self.possible_testruns(firmwares_built=firmwares_built)
+        possible_testruns = self.possible_testruns(
+            firmwares_built=firmwares_built,
+            flash_skip=args.firmware.flash_skip,
+        )
         if len(possible_testruns) == 0:
             raise CurrentlyNoTestsException()
 

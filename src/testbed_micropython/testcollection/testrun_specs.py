@@ -37,10 +37,12 @@ MICROPYTHON_DIRECTORY_TESTS = "tests"
 class TestRun:
     testrun_spec: TestRunSpec
     list_tentacle_variant: list[TentacleVariant]
+    flash_skip: bool
 
     def __post_init__(self) -> None:
         assert isinstance(self.testrun_spec, TestRunSpec)
         assert isinstance(self.list_tentacle_variant, list)
+        assert isinstance(self.flash_skip, bool)
 
     def mark_as_done(self) -> None:
         self.testrun_spec.mark_as_done(testrun=self)
@@ -61,7 +63,16 @@ class TestRun:
         """
         For example: run-perfbench.py[2d2d-lolin_D1-ESP8266_GENERIC]
         """
-        return self.testid_patch(flash_skip=False)
+
+        def testid(tv: TentacleVariant) -> str:
+            if self.flash_skip:
+                if len(tv.tentacle.tentacle_spec.build_variants) > 1:
+                    return f"{tv.tentacle.label_short}-unknown"
+
+            return f"{tv.tentacle.label_short}{tv.dash_variant}"
+
+        tentacles = ",".join([testid(tv) for tv in self.list_tentacle_variant])
+        return f"{self.testrun_spec.label}@{tentacles}"
 
     @property
     @contextlib.contextmanager
@@ -76,19 +87,6 @@ class TestRun:
         finally:
             for t in self.tentacles:
                 t.infra.mcu_infra.active_led(on=False)
-
-    def testid_patch(self, flash_skip: bool) -> str:
-        assert isinstance(flash_skip, bool)
-
-        def testid(tv: TentacleVariant) -> str:
-            if flash_skip:
-                if len(tv.tentacle.tentacle_spec.build_variants) > 1:
-                    return f"{tv.tentacle.label_short}-unknown"
-
-            return f"{tv.tentacle.label_short}{tv.dash_variant}"
-
-        tentacles = ",".join([testid(tv) for tv in self.list_tentacle_variant])
-        return f"{self.testrun_spec.label}@{tentacles}"
 
     @property
     def debug_text(self) -> str:
@@ -213,6 +211,7 @@ class TestRunSpec:
         self,
         available_tentacles: list[TentacleMicropython],
         firmwares_built: set[str] | None,
+        flash_skip: bool,
     ) -> Iterator[TestRun]:
         def iter_tvs(tentacle: TentacleMicropython) -> typing.Iterator[TentacleVariant]:
             build_variants = tentacle.tentacle_spec.build_variants
@@ -237,6 +236,7 @@ class TestRunSpec:
                         yield self.testrun_class(
                             testrun_spec=self,
                             list_tentacle_variant=first_second,
+                            flash_skip=flash_skip,
                         )
             return
 
@@ -252,6 +252,7 @@ class TestRunSpec:
                                 yield self.testrun_class(
                                     testrun_spec=self,
                                     list_tentacle_variant=first_second,
+                                    flash_skip=flash_skip,
                                 )
             return
 

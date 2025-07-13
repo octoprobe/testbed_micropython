@@ -16,6 +16,7 @@ class TestRunSpecs(list[TestRunSpec]):
         self,
         available_tentacles: typing.Sequence[TentacleMicropython],
         firmwares_built: set[str] | None,
+        flash_skip: bool,
     ) -> Iterator[TestRun]:
         assert isinstance(available_tentacles, list)
 
@@ -28,6 +29,7 @@ class TestRunSpecs(list[TestRunSpec]):
             yield from testrun_spec.generate(
                 available_tentacles=applicable_tentacles,
                 firmwares_built=firmwares_built,
+                flash_skip=flash_skip,
             )
 
     @property
