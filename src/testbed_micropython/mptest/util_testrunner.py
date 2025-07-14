@@ -174,7 +174,11 @@ class Args:
     force_multiprocessing: bool
     query_test: ArgsQuery
     query_board: ArgsQuery
-
+    reference_board: str = constants.DEFAULT_REFERENCE_BOARD
+    """
+    The board to be used a reference for WLAN/Bluetooth tests.
+    Example: RPI_PICO_W
+    """
     def __post_init__(self) -> None:
         assert isinstance(self.mp_test, ArgsMpTest | None)
         assert isinstance(self.firmware, ArgsFirmware)
@@ -182,6 +186,7 @@ class Args:
         assert isinstance(self.force_multiprocessing, bool)
         assert isinstance(self.query_test, ArgsQuery)
         assert isinstance(self.query_board, ArgsQuery)
+        assert isinstance(self.reference_board, str)
 
     @staticmethod
     def get_default_args(

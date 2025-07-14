@@ -1,42 +1,51 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "../octoprobe"
-		},
-		{
-			"path": "../testbed_micropython_reports"
-		}
-	],
-	"settings": {
-		"[python]": {
-			"editor.formatOnSave": true,
-			"editor.defaultFormatter": "charliermarsh.ruff"
-		},
-		"ruff.enable": true,
-		"ruff.fixAll": true,
-		"ruff.lint.enable": true,
-		"mpremote.srcSubdirectory": "src",
-		"python.testing.pytestArgs": [
-			"-v",
-			"-s",
-			"tests"
-		],
-		"python.testing.cwd": "${workspaceFolder}",
-		"python.testing.unittestEnabled": false,
-		"python.testing.pytestEnabled": true
-	},
-	"extensions": {
-		"recommendations": [
-			"charliermarsh.ruff",
-			"njpwerner.autodocstring",
-			"hediet.vscode-drawio",
-			"swyddfa.esbonio",
-			"ms-python.python",
-			"lextudio.restructuredtext",
-			"trond-snekvik.simple-rst"
-		]
-	}
+    "folders": [
+        {
+            "name": "testbed_micropython",
+            "path": "."
+        },
+        {
+            "name": "octoprobe",
+            "path": "../octoprobe"
+        },
+        {
+            "name": "testbed_micropython_reports",
+            "path": "../testbed_micropython_reports"
+        }
+    ],
+    "settings": {
+        "[python]": {
+            "editor.formatOnSave": true,
+            "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "ruff.enable": true,
+        "ruff.fixAll": true,
+        "ruff.lint.enable": true,
+        "mpremote.srcSubdirectory": "src",
+        "python.testing.pytestArgs": [
+            "-v",
+            "-s",
+            "tests"
+        ],
+        "python.testing.cwd": "${workspaceFolder:testbed_micropython}",
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "search.exclude": {
+            "**/.venv": true
+        },
+        "files.exclude": {
+            "**/.venv": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "charliermarsh.ruff",
+            "njpwerner.autodocstring",
+            "hediet.vscode-drawio",
+            "swyddfa.esbonio",
+            "ms-python.python",
+            "lextudio.restructuredtext",
+            "trond-snekvik.simple-rst"
+        ]
+    }
 }

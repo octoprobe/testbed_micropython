@@ -231,6 +231,13 @@ def test(
             autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UP007
+    reference: TyperAnnotated[
+        str | None,
+        typer.Option(
+            help="The board to be used as WLAN/bluetooth reference",
+            autocompletion=complete_only_board,
+        ),
+    ] = constants.DEFAULT_REFERENCE_BOARD,  # noqa: UP007
     only_test: TyperAnnotated[
         list[str],
         typer.Option(help="Run this test only.", autocompletion=complete_only_test),
@@ -296,6 +303,7 @@ def test(
                 arg="board",
             ),
             force_multiprocessing=force_multiprocessing,
+            reference_board=reference,
         )
         testrunner = util_testrunner.TestRunner(args=args)
         logger.info(f"{' '.join(sys.argv)}")
