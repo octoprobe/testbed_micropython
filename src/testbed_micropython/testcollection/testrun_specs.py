@@ -34,7 +34,10 @@ class TestArgs:
 _ROLE_LABELS = ["First", "Second", "Third"]
 
 MICROPYTHON_DIRECTORY_TESTS = "tests"
-DELIMITER_TESTRUN = ";"
+DELIMITER_TESTRUN = ","
+"""
+RUN-TESTS_STANDARD_VIA_MPY,c@5f2a-ADA_ITSYBITSY_M0
+"""
 DELIMITER_TENTACLE = "@"
 # TODO: Find an merge other places where this ',' is used!
 DELIMITER_TENTACLES = ","
