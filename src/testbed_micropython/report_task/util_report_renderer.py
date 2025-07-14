@@ -10,7 +10,7 @@ import enum
 import html
 import typing
 
-from ..testreport.util_markdown2 import md_escape
+from ..report_test.util_markdown2 import md_escape
 
 
 @dataclasses.dataclass

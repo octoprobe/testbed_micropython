@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from logging import config
 from queue import Empty
 
-from .reports import util_report_tasks
+from .report_task import util_report_tasks
 from .tentacle_spec import TentacleMicropython
 
 logger = logging.getLogger(__file__)

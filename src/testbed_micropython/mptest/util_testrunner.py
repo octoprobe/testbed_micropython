@@ -32,16 +32,16 @@ from octoprobe.util_testbed_lock import TestbedLock
 
 from .. import constants, util_multiprocessing
 from ..mptest.util_common import ArgsMpTest
-from ..reports import util_report_renderer, util_report_tasks
+from ..report_task import util_report_renderer, util_report_tasks
+from ..report_test.util_testreport import (
+    ReportTestgroup,
+    ReportTests,
+)
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
-from ..testreport.util_testreport import (
-    ReportTestgroup,
-    ReportTests,
-)
 from ..testrunspecs import (
     multinet,
     perftest,

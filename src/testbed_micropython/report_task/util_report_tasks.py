@@ -4,7 +4,7 @@ import copy
 import dataclasses
 import typing
 
-from ..reports.util_report_renderer import (
+from ..report_task.util_report_renderer import (
     Align,
     RendererBase,
     Table,

@@ -22,7 +22,7 @@ from octoprobe.util_constants import DirectoryTag
 
 from .. import util_multiprocessing
 from ..mptest import util_testrunner
-from ..reports import util_report_tasks
+from ..report_task import util_report_tasks
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestRun

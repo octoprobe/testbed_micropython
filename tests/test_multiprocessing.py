@@ -20,8 +20,8 @@ import time
 from dataclasses import dataclass
 
 from testbed_micropython import util_multiprocessing as mp
-from testbed_micropython.reports.util_report_renderer import RendererMarkdown
-from testbed_micropython.reports.util_report_tasks import TaskReport, Tasks
+from testbed_micropython.report_task.util_report_renderer import RendererMarkdown
+from testbed_micropython.report_task.util_report_tasks import TaskReport, Tasks
 
 logger = logging.getLogger(__file__)
 
@@ -41,7 +41,9 @@ def target_showcase(arg1: mp.TargetArg1, duration_s: float, time_s: int) -> None
             raise ValueError(msg)
 
         # Demonstrate a simple log message sent to the main process
-        arg1.queue_log(f"Subprocess log: {time.monotonic()-duration_s:0.1f}s are over")
+        arg1.queue_log(
+            f"Subprocess log: {time.monotonic() - duration_s:0.1f}s are over"
+        )
         time.sleep(1.0)
 
         success = True

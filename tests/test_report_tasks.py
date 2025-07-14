@@ -3,8 +3,8 @@ from __future__ import annotations
 import pathlib
 import sys
 
-from testbed_micropython.reports import util_report_renderer
-from testbed_micropython.reports.util_report_tasks import (
+from testbed_micropython.report_task import util_report_renderer
+from testbed_micropython.report_task.util_report_tasks import (
     ReportTentacle,
     Task,
     TaskReport,

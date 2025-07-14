@@ -160,7 +160,7 @@ class ReportTests:
         self.result_context.time_end = now_formatted()
         self.write_context_json()
 
-        from .testreport import ReportRenderer
+        from ..report_test.testreport import ReportRenderer
 
         renderer = ReportRenderer(directory_results=self.testresults_directory)
         renderer.render()

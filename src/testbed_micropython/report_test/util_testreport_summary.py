@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 
-from testbed_micropython.testreport.util_baseclasses import (
+from testbed_micropython.report_test.util_baseclasses import (
     Outcome,
     ResultContext,
     ResultTestGroup,

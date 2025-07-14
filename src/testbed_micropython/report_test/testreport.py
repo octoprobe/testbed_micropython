@@ -7,8 +7,8 @@ import textwrap
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_jinja2 import JinjaEnv
 
-from testbed_micropython.testreport.util_markdown2 import markdown2html, md_escape
-from testbed_micropython.testreport.util_testreport import Data
+from testbed_micropython.report_test.util_markdown2 import markdown2html, md_escape
+from testbed_micropython.report_test.util_testreport import Data
 
 logger = logging.getLogger(__file__)
 
