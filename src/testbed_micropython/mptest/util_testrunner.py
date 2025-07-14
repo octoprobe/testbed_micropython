@@ -30,19 +30,20 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY, UdevFailException, UdevPolle
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
-from .. import constants
-from ..mptest.util_common import ArgsMpTest
-from ..multiprocessing import firmware_bartender, util_multiprocessing
-from ..multiprocessing.firmware_bartender import (
+from .. import constants, util_multiprocessing
+from ..bartenders.firmware_bartender import (
+    EventExitFirmware,
+    EventFirmwareSpec,
     FirmwareBartender,
     FirmwareBartenderBase,
     FirmwareBartenderSkipFlash,
 )
-from ..multiprocessing.test_bartender import (
+from ..bartenders.test_bartender import (
     AsyncTargetTest,
     CurrentlyNoTestsException,
     TestBartender,
 )
+from ..mptest.util_common import ArgsMpTest
 from ..reports import util_report_renderer, util_report_tasks
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 from ..tentacles_inventory import TENTACLES_INVENTORY
@@ -484,7 +485,7 @@ class TestRunner:
                         )
                         report_tasks.append(async_target_test.report_task)
 
-                    elif isinstance(event, firmware_bartender.EventFirmwareSpec):
+                    elif isinstance(event, EventFirmwareSpec):
                         logfile = DirectoryTag.R.render_relative_to(
                             top=self.args.directory_results, filename=event.logfile
                         )
@@ -501,7 +502,7 @@ class TestRunner:
                                 tentacles=[],
                             )
                         )
-                    elif isinstance(event, firmware_bartender.EventExitFirmware):
+                    elif isinstance(event, EventExitFirmware):
                         logger.debug(f"{event.target_unique_name}: Completed")
                         target_ctx.close_and_join(self.firmware_bartender.async_targets)
                         if not event.success:

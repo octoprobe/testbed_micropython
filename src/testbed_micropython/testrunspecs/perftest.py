@@ -6,7 +6,6 @@ from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
     MICROPYTHON_DIRECTORY_TESTS,
@@ -15,6 +14,7 @@ from ..testcollection.testrun_specs import (
     TestRun,
 )
 from ..testrunspecs.runtests import TestRunSpec
+from ..util_multiprocessing import EVENTLOGCALLBACK
 
 
 class TestRunPerfTest(TestRun):

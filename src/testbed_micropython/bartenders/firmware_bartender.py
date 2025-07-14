@@ -13,9 +13,8 @@ from octoprobe.util_firmware_spec import FirmwareBuildSpec, FirmwaresBuilt
 from octoprobe.util_micropython_boards import BoardVariant
 from octoprobe.util_pytest import util_logging
 
-from .. import util_firmware_mpbuild
+from .. import util_firmware_mpbuild, util_multiprocessing
 from ..mpbuild.build_api import MpbuildDockerException
-from ..multiprocessing import util_multiprocessing
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..util_mpycross import copy_mpycross
 

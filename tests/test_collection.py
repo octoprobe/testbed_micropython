@@ -12,8 +12,8 @@ from octoprobe.usb_tentacle.usb_tentacle import UsbPico, UsbTentacle
 from octoprobe.util_baseclasses import TentacleInstance
 
 from testbed_micropython import constants
+from testbed_micropython.bartenders import test_bartender
 from testbed_micropython.mptest import util_testrunner
-from testbed_micropython.multiprocessing import test_bartender
 from testbed_micropython.tentacle_spec import (
     TentacleMicropython,
     TentacleSpecMicropython,

@@ -20,8 +20,8 @@ import typing
 
 from octoprobe.util_constants import DirectoryTag
 
+from .. import util_multiprocessing
 from ..mptest import util_testrunner
-from ..multiprocessing import util_multiprocessing
 from ..reports import util_report_tasks
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles

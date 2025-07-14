@@ -26,10 +26,9 @@ from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT
 from testbed_micropython.testreport.testreport import ReportRenderer
 from testbed_micropython.testreport.util_push_testresults import TarAndHttpsPush
 
-from .. import constants
+from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
-from ..multiprocessing import util_multiprocessing
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from ..util_firmware_mpbuild_interface import ArgsFirmware

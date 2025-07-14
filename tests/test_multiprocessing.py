@@ -19,7 +19,7 @@ import sys
 import time
 from dataclasses import dataclass
 
-from testbed_micropython.multiprocessing import util_multiprocessing as mp
+from testbed_micropython import util_multiprocessing as mp
 from testbed_micropython.reports.util_report_renderer import RendererMarkdown
 from testbed_micropython.reports.util_report_tasks import TaskReport, Tasks
 

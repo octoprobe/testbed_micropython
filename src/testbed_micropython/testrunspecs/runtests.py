@@ -11,7 +11,6 @@ from testbed_micropython.util_mpycross import get_filename_mpycross
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
     MICROPYTHON_DIRECTORY_TESTS,
@@ -20,6 +19,7 @@ from ..testcollection.testrun_specs import (
     TestRun,
     TestRunSpec,
 )
+from ..util_multiprocessing import EVENTLOGCALLBACK
 
 logger = logging.getLogger(__file__)
 

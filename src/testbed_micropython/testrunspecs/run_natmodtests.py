@@ -15,7 +15,6 @@ from testbed_micropython import constants
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..multiprocessing.util_multiprocessing import EVENTLOGCALLBACK
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.testrun_specs import (
     TIMEOUT_FLASH_S,
@@ -23,6 +22,7 @@ from ..testcollection.testrun_specs import (
     TestRun,
     TestRunSpec,
 )
+from ..util_multiprocessing import EVENTLOGCALLBACK
 
 logger = logging.getLogger(__file__)
 
