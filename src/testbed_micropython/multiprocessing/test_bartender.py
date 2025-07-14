@@ -45,7 +45,9 @@ class TestBartender:
         self,
         connected_tentacles: ConnectedTentacles,
         testrun_specs: TestRunSpecs,
-        priority_sorter: typing.Callable[[list[TestRun]], list[TestRun]],
+        priority_sorter: typing.Callable[
+            [list[TestRun], ConnectedTentacles], list[TestRun]
+        ],
         directory_results: pathlib.Path,
     ) -> None:
         assert isinstance(connected_tentacles, ConnectedTentacles)
@@ -80,7 +82,7 @@ class TestBartender:
             )
         )
 
-        return self.priority_sorter(_possible_testruns)
+        return self.priority_sorter(_possible_testruns, self.connected_tentacles)
 
     def testrun_next(
         self,

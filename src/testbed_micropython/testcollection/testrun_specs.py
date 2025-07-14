@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import dataclasses
+import logging
 import pathlib
 import typing
 from collections.abc import Iterator
@@ -18,6 +19,8 @@ from ..testcollection.baseclasses_spec import (
 
 if typing.TYPE_CHECKING:
     from ..mptest.util_testrunner import ResultsDir
+
+logger = logging.getLogger(__name__)
 
 TIMEOUT_FLASH_S = 60.0
 
@@ -130,7 +133,9 @@ class TestRun:
         return sorted(testruns, key=f)
 
     @staticmethod
-    def priority_sorter(testruns: list[TestRun]) -> list[TestRun]:
+    def priority_sorter(
+        testruns: list[TestRun], connected_tentacles: ConnectedTentacles
+    ) -> list[TestRun]:
         """
         Order by priority.
         In the list, the first element has the highest priority.
@@ -141,11 +146,40 @@ class TestRun:
                 len(tentacle.tentacle_spec.build_variants)
                 for tentacle in testrun.tentacles
             )
+
+            def get_firmwares_already_flashed():
+                def get_variant(tentacle: TentacleMicropython) -> str | None:
+                    """
+                    If the firmware was flashed returns the board_variant
+                    For the PYBV11 this might be: 'PYBV11', 'PYBV11-DP', 'PYBV11-DP_THREAD', 'PYBV11-THREAD'
+
+                    Returns None if the flashed firmware is unknown.
+                    """
+
+                    for connected_tentacle in connected_tentacles:
+                        if connected_tentacle is tentacle:
+                            tentacle_state = connected_tentacle.tentacle_state
+                            if not tentacle_state.has_firmware_spec:
+                                return None
+                            return tentacle_state.firmware_spec.board_variant.name_normalized
+
+                    logger.warning(f"Tentacle '{tentacle.label_short}' not found!")
+                    return None
+
+                firmwares_already_flashed = 0
+                for tv in testrun.list_tentacle_variant:
+                    variant = get_variant(tv.tentacle)
+                    if variant == tv.board_variant:
+                        firmwares_already_flashed += 1
+                return firmwares_already_flashed
+
             priorities = (
                 # The more variants to compile, the higher the priority
                 -build_variants,
                 # The more tentacles involved, the higher the priority
                 -len(testrun.tentacles),
+                # To minimize reflashing, order by variant
+                -get_firmwares_already_flashed(),
                 # Finally, alphabetical order desc
                 testrun.testid,
             )
