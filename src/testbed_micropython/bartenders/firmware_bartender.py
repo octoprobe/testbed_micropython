@@ -128,7 +128,10 @@ class FirmwareTobeBuilt:
 
 class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
     @staticmethod
-    def factory(testrun_specs: TestRunSpecs) -> FirmwaresTobeBuilt:
+    def factory(
+        testrun_specs: TestRunSpecs,
+        reference_board: str,
+    ) -> FirmwaresTobeBuilt:
         """
         Example order:
             # The multivariant boards will require much time.
@@ -145,6 +148,7 @@ class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
 
         """
         assert isinstance(testrun_specs, TestRunSpecs)
+        assert isinstance(reference_board, str)
         board_variants: dict[str, set[str]] = defaultdict(set)
         for testrun_spec in testrun_specs:
             for tsvs in testrun_spec.roles_tsvs_todo:
@@ -155,6 +159,9 @@ class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
         firmwares = FirmwaresTobeBuilt()
         for board, variants in board_variants.items():
             for idx, variant in enumerate(sorted(variants)):
+                if board == reference_board:
+                    # The referenced_board should be compiled first: hightest priority!
+                    idx = -1000
                 firmwares.append(
                     FirmwareTobeBuilt(
                         firmware_build_spec=util_firmware_mpbuild.FirmwareBuildSpec(
@@ -183,6 +190,7 @@ class FirmwareBartenderSkipFlash:
         self,
         directory_mpbuild_artifacts: pathlib.Path,
         repo_micropython_firmware: pathlib.Path,
+        reference_board: str,
     ) -> AsyncTargetFirmware | None:
         return None
 
@@ -231,10 +239,14 @@ class FirmwareBartender(FirmwareBartenderSkipFlash):
         self,
         directory_mpbuild_artifacts: pathlib.Path,
         repo_micropython_firmware: pathlib.Path,
+        reference_board: str,
     ) -> AsyncTargetFirmware | None:
         async_target = AsyncTargetFirmware(
             directory_mpbuild_artifacts=directory_mpbuild_artifacts,
-            firmwares_build=FirmwaresTobeBuilt.factory(self._testrun_specs),
+            firmwares_build=FirmwaresTobeBuilt.factory(
+                self._testrun_specs,
+                reference_board=reference_board,
+            ),
             repo_micropython_firmware=repo_micropython_firmware,
         )
         self.async_targets.append(async_target)

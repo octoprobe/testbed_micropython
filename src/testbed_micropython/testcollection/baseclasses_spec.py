@@ -138,9 +138,19 @@ class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
-    def get_tsvs(self) -> TentacleSpecVariants:
+    def get_tsvs(
+        self,
+        include_board: str | None = None,
+        exclude_board: str | None = None,
+    ) -> TentacleSpecVariants:
         s = TentacleSpecVariants()
         for tentacle in self:
+            board = tentacle.tentacle_spec.board
+            if board == exclude_board:
+                continue
+            if include_board is not None:
+                if board != include_board:
+                    continue
             for tsv in tentacle_spec_2_tsvs(tentacle=tentacle):
                 s.add(tsv)
         return s

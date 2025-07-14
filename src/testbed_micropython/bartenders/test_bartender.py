@@ -73,12 +73,14 @@ class TestBartender:
         self,
         firmwares_built: set[str] | None,
         flash_skip: bool,
+        reference_board: str,
     ) -> list[TestRun]:
         _possible_testruns = list(
             self.testrun_specs.generate(
                 available_tentacles=self.available_tentacles,
                 firmwares_built=firmwares_built,
                 flash_skip=flash_skip,
+                reference_board=reference_board,
             )
         )
 
@@ -99,6 +101,7 @@ class TestBartender:
         possible_testruns = self.possible_testruns(
             firmwares_built=firmwares_built,
             flash_skip=args.firmware.flash_skip,
+            reference_board=args.reference_board,
         )
         if len(possible_testruns) == 0:
             raise CurrentlyNoTestsException()

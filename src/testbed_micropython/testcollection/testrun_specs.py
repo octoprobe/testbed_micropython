@@ -8,7 +8,7 @@ import pathlib
 import typing
 from collections.abc import Iterator
 
-from ..constants import EnumFut
+from .. import constants
 from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
     RolesTentacleSpecVariants,
@@ -206,7 +206,7 @@ class TestRunSpec:
     """
     helptext: str
     command: list[str]
-    required_fut: EnumFut
+    required_fut: constants.EnumFut
     required_tentacles_count: int
     timeout_s: float
     testrun_class: type[TestRun]
@@ -222,7 +222,7 @@ class TestRunSpec:
         assert isinstance(self.label, str)
         assert isinstance(self.helptext, str)
         assert isinstance(self.command, list)
-        assert isinstance(self.required_fut, EnumFut)
+        assert isinstance(self.required_fut, constants.EnumFut)
         assert isinstance(self.required_tentacles_count, int)
         assert isinstance(self.timeout_s, float)
         assert isinstance(self.testrun_class, type(TestRun))
@@ -248,7 +248,11 @@ class TestRunSpec:
     def command_args(self) -> list[str]:
         return self.command[1:]
 
-    def assign_tentacles(self, tentacles: ConnectedTentacles) -> None:
+    def assign_tentacles(
+        self,
+        tentacles: ConnectedTentacles,
+        reference_board: str,
+    ) -> None:
         """
         Assign tentacle-variants (board-variants) to be tested.
         """
@@ -259,10 +263,22 @@ class TestRunSpec:
             # Example: Just one Lolin is connected (FUT_WLAN)
             # But there is no other FUT_WLAN we could test against!
             return
-        tsvs_todo = selected_tentacles.get_tsvs()
-        self.roles_tsvs_todo = RolesTentacleSpecVariants(
-            [TentacleSpecVariants(tsvs_todo) for _ in range(self.tentacles_required)]
-        )
+        if self.tentacles_required == 1:
+            tsvs_todo = selected_tentacles.get_tsvs()
+            self.roles_tsvs_todo = RolesTentacleSpecVariants(
+                [TentacleSpecVariants(tsvs_todo)]
+            )
+        else:
+            assert self.tentacles_required == 2
+            tsvs_todo1 = selected_tentacles.get_tsvs(exclude_board=reference_board)
+            tsvs_todo2 = selected_tentacles.get_tsvs(include_board=reference_board)
+            self.roles_tsvs_todo = RolesTentacleSpecVariants(
+                [
+                    TentacleSpecVariants(tsvs_todo1),
+                    TentacleSpecVariants(tsvs_todo2),
+                ]
+            )
+
         self.roles_tsvs_todo.verify(required_tentacles_count=self.tentacles_required)
 
     def __repr__(self) -> str:
@@ -288,6 +304,7 @@ class TestRunSpec:
         available_tentacles: list[TentacleMicropython],
         firmwares_built: set[str] | None,
         flash_skip: bool,
+        reference_board: str,
     ) -> Iterator[TestRun]:
         def iter_tvs(tentacle: TentacleMicropython) -> typing.Iterator[TentacleVariant]:
             build_variants = tentacle.tentacle_spec.build_variants
@@ -318,7 +335,14 @@ class TestRunSpec:
 
         if self.tentacles_required == 2:
             for tentacle1 in available_tentacles:
+                if reference_board != constants.ANY_REFERENCE_BOARD:
+                    if tentacle1.tentacle_spec.board == reference_board:
+                        # The reference board shall NOT be tentacle1
+                        continue
                 for tentacle2 in available_tentacles:
+                    if reference_board != constants.ANY_REFERENCE_BOARD:
+                        if tentacle2.tentacle_spec.board != reference_board:
+                            continue
                     if tentacle1 is tentacle2:
                         continue
                     for tv1 in iter_tvs(tentacle1):
@@ -330,6 +354,7 @@ class TestRunSpec:
                                     list_tentacle_variant=first_second,
                                     flash_skip=flash_skip,
                                 )
+
             return
 
         raise ValueError(f"Not supported: {self.tentacles_required=}")

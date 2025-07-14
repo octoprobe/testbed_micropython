@@ -136,7 +136,7 @@ class Group(list[OutcomesForOneTest]):
                 Returns: ESP32_S3_DEVKIT-472b
                 """
                 serial, _, board = serial_board.partition(DELIMITER_SERIAL_BOARD)
-                return board + DELIMITER_SERIAL_BOARD + serial_board
+                return board + DELIMITER_SERIAL_BOARD + serial
 
             return DELIMITER_TENTACLES.join(
                 [swap(x) for x in testid_tentacles.split(DELIMITER_TENTACLES)]

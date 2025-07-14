@@ -97,7 +97,10 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     connected_tentacles = ConnectedTentacles(factory())
 
-    testrun_specs_.assign_tentacles(tentacles=connected_tentacles)
+    testrun_specs_.assign_tentacles(
+        tentacles=connected_tentacles,
+        reference_board=constants.DEFAULT_REFERENCE_BOARD,
+    )
 
     print("## testrun_specs", file=file)
     testrun_specs_.pytest_print(indent=1, file=file)
@@ -111,7 +114,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
     print(f"## START: test_todo={bartender.tests_todo}")
 
     firmwares_built: set[str] = {
-        "RPI_PICO",
+        constants.DEFAULT_REFERENCE_BOARD,
         "LOLIN_C3_MINI",
         "ESP8266_GENERIC",
         "ESP8266_GENERIC-FLASH_512K",
@@ -155,6 +158,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             possible_testruns = bartender.possible_testruns(
                 firmwares_built=firmwares_built,
                 flash_skip=args.firmware.flash_skip,
+                reference_board=constants.DEFAULT_REFERENCE_BOARD,
             )
             print(f"## {i}: possible_testruns", file=file)
             for possible_testrun in possible_testruns:

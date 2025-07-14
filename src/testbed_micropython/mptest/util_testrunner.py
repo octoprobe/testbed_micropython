@@ -31,18 +31,6 @@ from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
 from .. import constants, util_multiprocessing
-from ..bartenders.firmware_bartender import (
-    EventExitFirmware,
-    EventFirmwareSpec,
-    FirmwareBartender,
-    FirmwareBartenderBase,
-    FirmwareBartenderSkipFlash,
-)
-from ..bartenders.test_bartender import (
-    AsyncTargetTest,
-    CurrentlyNoTestsException,
-    TestBartender,
-)
 from ..mptest.util_common import ArgsMpTest
 from ..reports import util_report_renderer, util_report_tasks
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
@@ -65,6 +53,12 @@ from ..testrunspecs.run_natmodtests import NATMOD_EXAMPLES
 from ..testrunspecs.util_testarg import TestArg
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 from .util_baseclasses import ArgsQuery
+
+if typing.TYPE_CHECKING:
+    from ..bartenders.test_bartender import (
+        AsyncTargetTest,
+        TestBartender,
+    )
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
@@ -179,6 +173,7 @@ class Args:
     The board to be used a reference for WLAN/Bluetooth tests.
     Example: RPI_PICO_W
     """
+
     def __post_init__(self) -> None:
         assert isinstance(self.mp_test, ArgsMpTest | None)
         assert isinstance(self.firmware, ArgsFirmware)
@@ -260,9 +255,11 @@ class TestRunner:
         Clone github.
         """
         assert isinstance(args, Args)
+        from ..bartenders import firmware_bartender
+
         self.ctxtestrun: CtxTestRun
         self.test_bartender: TestBartender
-        self.firmware_bartender: FirmwareBartenderBase
+        self.firmware_bartender: firmware_bartender.FirmwareBartenderBase
         self.args = args
 
         util_logging.init_logging()
@@ -308,7 +305,7 @@ class TestRunner:
     def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
         self.report_testgroup.result_context.set_git_ref(tag=tag, git_ref=git_ref)
 
-    def init(self) -> None:
+    def init(self, reference_board: str) -> None:
         journalctl = JournalctlObserver(
             logfile=self.args.directory_results / "journalctl.txt"
         )
@@ -338,17 +335,26 @@ class TestRunner:
         selected_tentacles = connected_tentacles.query_boards(
             query=self.args.query_board
         )
-        testrun_specs.assign_tentacles(tentacles=selected_tentacles)
+        testrun_specs.assign_tentacles(
+            tentacles=selected_tentacles,
+            reference_board=reference_board,
+        )
+
+        from ..bartenders.test_bartender import TestBartender
+
         self.test_bartender = TestBartender(
             connected_tentacles=selected_tentacles,
             testrun_specs=testrun_specs,
             priority_sorter=TestRun.priority_sorter,
             directory_results=self.args.directory_results,
         )
+
+        from ..bartenders import firmware_bartender
+
         if self.args.firmware.flash_skip:
-            self.firmware_bartender = FirmwareBartenderSkipFlash()
+            self.firmware_bartender = firmware_bartender.FirmwareBartenderSkipFlash()
         else:
-            self.firmware_bartender = FirmwareBartender(
+            self.firmware_bartender = firmware_bartender.FirmwareBartender(
                 self.test_bartender.testrun_specs
             )
         if self.args.firmware.flash_force:
@@ -412,6 +418,7 @@ class TestRunner:
         async_target = self.firmware_bartender.build_firmwares(
             directory_mpbuild_artifacts=directory_mpbuild_artifacts,
             repo_micropython_firmware=self.args.firmware.repo_micropython_firmware,
+            reference_board=self.args.reference_board,
         )
         if async_target is not None:
             target_ctx.start(async_target=async_target)
@@ -435,6 +442,8 @@ class TestRunner:
                     report.report(renderer=cls_renderer(f))
 
         def run_all():
+            from ..bartenders.test_bartender import CurrentlyNoTestsException
+
             while True:
                 try:
                     async_target = self.test_bartender.testrun_next(
@@ -480,6 +489,8 @@ class TestRunner:
                     handle_event(event)
                     generate_task_report()
 
+                    from ..bartenders import firmware_bartender
+
                     if isinstance(event, util_multiprocessing.EventLog):
                         logger.info(
                             f"[COLOR_INFO]{event.target_unique_name}: {event.msg}"
@@ -490,7 +501,7 @@ class TestRunner:
                         )
                         report_tasks.append(async_target_test.report_task)
 
-                    elif isinstance(event, EventFirmwareSpec):
+                    elif isinstance(event, firmware_bartender.EventFirmwareSpec):
                         logfile = DirectoryTag.R.render_relative_to(
                             top=self.args.directory_results, filename=event.logfile
                         )
@@ -507,7 +518,7 @@ class TestRunner:
                                 tentacles=[],
                             )
                         )
-                    elif isinstance(event, EventExitFirmware):
+                    elif isinstance(event, firmware_bartender.EventExitFirmware):
                         logger.debug(f"{event.target_unique_name}: Completed")
                         target_ctx.close_and_join(self.firmware_bartender.async_targets)
                         if not event.success:
@@ -563,6 +574,8 @@ class TestRunner:
         :param testrun: The structure created by `testrun()`
         :type testrun: CtxTestRun
         """
+        from ..bartenders.test_bartender import AsyncTargetTest
+
         assert isinstance(async_target, AsyncTargetTest)
         assert isinstance(target_ctx, util_multiprocessing.TargetCtx)
         assert len(async_target.testrun.list_tentacle_variant) > 0

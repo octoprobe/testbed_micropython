@@ -21,6 +21,7 @@ TAG_BOARD = "board"
 
 TESTBED_NAME = "testbed_micropython"
 DEFAULT_REFERENCE_BOARD = "RPI_PICO_W"
+ANY_REFERENCE_BOARD = ""
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent

@@ -161,5 +161,5 @@ config = wlan.ifconfig()
         raise OctoprobeTestException(msg) from e
 
     config = dut.mp_remote.read_str("config")
-    connect_duration_ms = dut.mp_remote.read_int("connect_duration_ms")
-    logger.info(f"WLAN {connect_duration_ms=} {config=}")
+    connect_duration_s = dut.mp_remote.read_int("connect_duration_ms") / 1000.0
+    logger.info(f"WLAN {connect_duration_s=:0.1f} {config=}")
