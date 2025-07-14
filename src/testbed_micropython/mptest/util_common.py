@@ -10,9 +10,10 @@ import logging
 import os
 import pathlib
 import sys
+import time
 import typing
 
-from octoprobe.lib_mpremote import ExceptionCmdFailed
+from octoprobe.lib_mpremote import ExceptionCmdFailed, ExceptionTransport
 from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.lib_tentacle_dut import TentacleDut
 from octoprobe.util_baseclasses import (
@@ -135,22 +136,30 @@ def init_wlan(dut: TentacleDut) -> None:
     wlan_ssid = os.environ["WLAN_SSID"]
     wlan_key = os.environ["WLAN_PASS"]
     logger.info(f"{dut.label}: Try to connect to WLAN_SSID '{wlan_ssid}'")
+
     cmd = f"""
-import machine, network
+import machine, network, time
 wlan = network.WLAN()
 wlan.active(1)
-wlan.config(txpower=5)
+# wlan.config(txpower=5)
 wlan.connect('{wlan_ssid}', '{wlan_key}')
+
+begin_ms = time.ticks_ms()
 while not wlan.isconnected():
     machine.idle()
 
+connect_duration_ms = time.ticks_diff(time.ticks_ms(), begin_ms)
 config = wlan.ifconfig()
 """
+    begin_s = time.monotonic()
     try:
-        dut.mp_remote.exec_raw(cmd, timeout=10)
-    except TimeoutError as e:
-        msg = f"Timeout while connecting to WLAN_SSID '{wlan_ssid}'"
+        dut.mp_remote.exec_raw(cmd, timeout=20)
+    except (TimeoutError, ExceptionTransport) as e:
+        duration_s = time.monotonic() - begin_s
+        msg = f"Timeout after {duration_s:0.1f}s while connecting to WLAN_SSID '{wlan_ssid}'"
         logger.debug(msg, exc_info=e)
         raise OctoprobeTestException(msg) from e
+
     config = dut.mp_remote.read_str("config")
-    logger.info(f"WLAN {config=}")
+    connect_duration_ms = dut.mp_remote.read_int("connect_duration_ms")
+    logger.info(f"WLAN {connect_duration_ms=} {config=}")
