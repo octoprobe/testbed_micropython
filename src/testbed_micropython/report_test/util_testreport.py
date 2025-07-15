@@ -22,7 +22,7 @@ from .util_baseclasses import (
 from .util_testreport_summary import DataSummaryLine
 
 if typing.TYPE_CHECKING:
-    from .util_testreport_summary_by_test import SummaryByTest
+    from .util_testreport_by_test import SummaryByTest
 
 TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
 
@@ -60,7 +60,7 @@ class Data:
 
     @property
     def summary_by_test(self) -> SummaryByTest:
-        from .util_testreport_summary_by_test import SummaryByTest
+        from .util_testreport_by_test import SummaryByTest
 
         return SummaryByTest.factory(self.testgroups)
 
@@ -160,7 +160,7 @@ class ReportTests:
         self.result_context.time_end = now_formatted()
         self.write_context_json()
 
-        from ..report_test.testreport import ReportRenderer
+        from ..report_test.renderer import ReportRenderer
 
         renderer = ReportRenderer(directory_results=self.testresults_directory)
         renderer.render()

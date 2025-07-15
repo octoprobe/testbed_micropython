@@ -23,7 +23,7 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
 from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT
-from testbed_micropython.report_test.testreport import ReportRenderer
+from testbed_micropython.report_test.renderer import ReportRenderer
 from testbed_micropython.report_test.util_push_testresults import TarAndHttpsPush
 
 from .. import constants, util_multiprocessing
