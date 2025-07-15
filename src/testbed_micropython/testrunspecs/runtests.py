@@ -12,9 +12,12 @@ from testbed_micropython.util_mpycross import get_filename_mpycross
 from ..constants import EnumFut
 from ..mptest import util_common
 from ..testcollection.baseclasses_spec import TentacleVariant
-from ..testcollection.testrun_specs import (
+from ..testcollection.constants import (
+    ENV_PYTHONUNBUFFERED,
     MICROPYTHON_DIRECTORY_TESTS,
     TIMEOUT_FLASH_S,
+)
+from ..testcollection.testrun_specs import (
     TestArgs,
     TestRun,
     TestRunSpec,
@@ -53,7 +56,7 @@ class TestRunRunTests(TestRun):
         util_common.skip_if_no_filesystem(tentacle=tentacle)
 
         def env_for_mpycross() -> dict[str, str]:
-            env = util_common.ENV_PYTHONUNBUFFERED
+            env = ENV_PYTHONUNBUFFERED
 
             if "--via-mpy" not in self.testrun_spec.command_args:
                 return env

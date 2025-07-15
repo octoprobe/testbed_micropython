@@ -22,7 +22,7 @@ import typing
 from markupsafe import Markup
 from octoprobe.util_constants import DELIMITER_SERIAL_BOARD
 
-from testbed_micropython.testcollection.testrun_specs import DELIMITER_TENTACLES
+from testbed_micropython.testcollection.constants import DELIMITER_TENTACLES
 
 from .util_baseclasses import Outcome, ResultContext
 from .util_markdown2 import md_escape

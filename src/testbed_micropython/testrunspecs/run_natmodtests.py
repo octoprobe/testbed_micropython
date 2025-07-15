@@ -14,10 +14,12 @@ from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_ru
 from testbed_micropython import constants
 
 from ..constants import EnumFut
-from ..mptest import util_common
 from ..testcollection.baseclasses_spec import TentacleVariant
-from ..testcollection.testrun_specs import (
+from ..testcollection.constants import (
+    ENV_MICROPYTHON_TESTS,
     TIMEOUT_FLASH_S,
+)
+from ..testcollection.testrun_specs import (
     TestArgs,
     TestRun,
     TestRunSpec,
@@ -239,7 +241,7 @@ class TestRunRunTests(TestRun):
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / "tests",
-            env=util_common.ENV_PYTHONUNBUFFERED,
+            env=ENV_MICROPYTHON_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,
             # TODO: Remove the following line as soon returncode of 'run-natmodtests.py' is fixed.

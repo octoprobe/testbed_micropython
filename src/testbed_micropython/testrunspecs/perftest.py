@@ -5,11 +5,13 @@ import sys
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
-from ..mptest import util_common
 from ..testcollection.baseclasses_spec import TentacleVariant
-from ..testcollection.testrun_specs import (
+from ..testcollection.constants import (
+    ENV_MICROPYTHON_TESTS,
     MICROPYTHON_DIRECTORY_TESTS,
     TIMEOUT_FLASH_S,
+)
+from ..testcollection.testrun_specs import (
     TestArgs,
     TestRun,
 )
@@ -55,7 +57,7 @@ class TestRunPerfTest(TestRun):
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-            env=util_common.ENV_PYTHONUNBUFFERED,
+            env=ENV_MICROPYTHON_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,
             # TODO: Remove the following line as soon returncode of 'run-perfbench.py' is fixed.

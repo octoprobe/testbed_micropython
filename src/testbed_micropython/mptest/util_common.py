@@ -24,7 +24,7 @@ from octoprobe.util_baseclasses import (
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import is_url
-from ..testcollection.testrun_specs import MICROPYTHON_DIRECTORY_TESTS
+from ..testcollection.constants import ENV_PYTHONUNBUFFERED, MICROPYTHON_DIRECTORY_TESTS
 from ..util_firmware_mpbuild import CachedGitRepo
 
 if typing.TYPE_CHECKING:
@@ -32,7 +32,6 @@ if typing.TYPE_CHECKING:
 
 logger = logging.getLogger(__file__)
 
-ENV_PYTHONUNBUFFERED = {"PYTHONUNBUFFERED": "1"}
 
 
 @dataclasses.dataclass

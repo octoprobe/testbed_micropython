@@ -7,7 +7,7 @@ import pathlib
 from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DirectoryTag
 
-from ..testcollection.testrun_specs import MICROPYTHON_DIRECTORY_TESTS
+from ..testcollection.constants import MICROPYTHON_DIRECTORY_TESTS
 from .util_markdown2 import md_escape, md_link
 
 

@@ -16,13 +16,12 @@ from ..testcollection.baseclasses_spec import (
     TentacleSpecVariants,
     TentacleVariant,
 )
+from ..testcollection.constants import DELIMITER_TENTACLE, DELIMITER_TESTRUN
 
 if typing.TYPE_CHECKING:
     from ..mptest.util_testrunner import ResultsDir
 
 logger = logging.getLogger(__name__)
-
-TIMEOUT_FLASH_S = 60.0
 
 
 @dataclasses.dataclass(repr=True)
@@ -32,18 +31,6 @@ class TestArgs:
 
 
 _ROLE_LABELS = ["First", "Second", "Third"]
-
-MICROPYTHON_DIRECTORY_TESTS = "tests"
-DELIMITER_TESTRUN = ","
-"""
-RUN-TESTS_STANDARD_VIA_MPY,c@5f2a-ADA_ITSYBITSY_M0
-"""
-DELIMITER_TENTACLE = "@"
-# TODO: Find an merge other places where this ',' is used!
-DELIMITER_TENTACLES = ","
-"""
-Example: 8f34-PICO_W,23ad-LOLIN_C3
-"""
 
 
 @dataclasses.dataclass(slots=True, repr=True)
