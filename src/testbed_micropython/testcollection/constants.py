@@ -6,11 +6,6 @@ DELIMITER_TESTRUN = ","
 RUN-TESTS_STANDARD_VIA_MPY,c@5f2a-ADA_ITSYBITSY_M0
 """
 DELIMITER_TENTACLE = "@"
-# TODO: Find an merge other places where this ',' is used!
-DELIMITER_TENTACLES = ","
-"""
-Example: 8f34-PICO_W,23ad-LOLIN_C3
-"""
 DELIMITER_TESTROLE = "-"
 """
 Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC-first

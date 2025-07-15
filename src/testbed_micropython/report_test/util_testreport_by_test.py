@@ -22,8 +22,6 @@ import typing
 from markupsafe import Markup
 from octoprobe.util_constants import DELIMITER_SERIAL_BOARD
 
-from testbed_micropython.testcollection.constants import DELIMITER_TENTACLES
-
 from .util_baseclasses import Outcome, ResultContext
 from .util_markdown2 import md_escape
 from .util_testreport import ResultTestGroup, ResultTestOutcome
@@ -129,28 +127,9 @@ class Group(list[OutcomesForOneTest]):
 
     @property
     def testids_tentacles_sorted(self) -> list[str]:
-        def swap_serial(testid_tentacles: str) -> str:
-            """
-            Example 'testid_tentacles': 1830-LOLIN_C3_MINI,472b-ESP32_S3_DEVKIT
-            Returns: LOLIN_C3_MINI-1830,ESP32_S3_DEVKIT-472b
-            """
-
-            def swap(serial_board: str) -> str:
-                """
-                Example 'serial_board': 472b-ESP32_S3_DEVKIT
-                Returns: ESP32_S3_DEVKIT-472b
-                """
-                serial, _, board = serial_board.partition(DELIMITER_SERIAL_BOARD)
-                return board + DELIMITER_SERIAL_BOARD + serial
-
-            return DELIMITER_TENTACLES.join(
-                [swap(x) for x in testid_tentacles.split(DELIMITER_TENTACLES)]
-            )
-
         if self._testids_tentacles_sorted is None:
             self._testids_tentacles_sorted = sorted(
                 self.testids_tentacles,
-                key=swap_serial,
             )
 
         return self._testids_tentacles_sorted
@@ -188,9 +167,8 @@ class Group(list[OutcomesForOneTest]):
         def format_tentacle_combination(testid_tentacles: str) -> str:
             testid_tentacles = md_escape(testid_tentacles)
             return testid_tentacles.replace(
-                DELIMITER_TENTACLES,
-                DELIMITER_TENTACLES + "<br>",
-            ).replace(DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>", 1)
+                DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>", 1
+            )
 
         elems_header = [
             format_tentacle_combination(testid_tentacles)
