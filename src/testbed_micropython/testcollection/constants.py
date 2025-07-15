@@ -11,6 +11,12 @@ DELIMITER_TENTACLES = ","
 """
 Example: 8f34-PICO_W,23ad-LOLIN_C3
 """
+DELIMITER_TESTROLE = "-"
+"""
+Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC-first
+
+Hint: '-first'
+"""
 
 ENV_PYTHONUNBUFFERED: dict[str, str] = {"PYTHONUNBUFFERED": "1"}
 

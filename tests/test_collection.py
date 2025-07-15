@@ -107,6 +107,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     bartender = test_bartender.TestBartender(
         connected_tentacles=connected_tentacles,
+        tentacle_reference=None,
         testrun_specs=testrun_specs_,
         priority_sorter=baseclasses_run.TestRun.priority_sorter,
         directory_results=DIRECTORY_TESTRESULTS,

@@ -11,7 +11,7 @@ from testbed_micropython.util_mpycross import get_filename_mpycross
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..testcollection.baseclasses_spec import TentacleVariant
+from ..testcollection.baseclasses_spec import TentacleSpecVariant
 from ..testcollection.constants import (
     ENV_PYTHONUNBUFFERED,
     MICROPYTHON_DIRECTORY_TESTS,
@@ -41,7 +41,7 @@ class TestRunRunTests(TestRun):
 
     def test(self, testargs: TestArgs) -> None:
         tentacle_variant = self.tentacle_variant
-        assert isinstance(tentacle_variant, TentacleVariant)
+        assert isinstance(tentacle_variant, TentacleSpecVariant)
 
         for mocked_error in _LIST_MOCKED_ERRORS:
             if re.match(mocked_error, self.testid):
