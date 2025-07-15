@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 import contextlib
 import dataclasses
-import enum
 import logging
 import pathlib
 import typing
@@ -12,7 +11,6 @@ from collections.abc import Iterator
 from .. import constants
 from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
-    RolesTentacleSpecVariants,
     TentacleMicropython,
     TentacleSpecVariant,
     TentacleSpecVariants,

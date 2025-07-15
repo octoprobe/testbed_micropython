@@ -61,8 +61,6 @@ class TentacleSpecVariant:
         Returns:
          'RPI_PICO2' for a default variant
          'RPI_PICO2-RISCV' for a variant
-        #  'ESP8266_GENERIC' for a default variant
-        #  'ESP8266_GENERIC-FLASH_512K' for a variant
         """
         if self.variant == "":
             return self.board
@@ -148,21 +146,6 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
     @property
     def sorted_text(self) -> list[str]:
         return sorted([s.board_variant for s in self])
-
-
-class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
-    """
-    Assert: len(self) == required_tentacles_count
-    self[0]: Role WLAN-First
-    self[1]: Role WLAN-Second
-    """
-
-    def verify(self, required_tentacles_count: int) -> None:
-        assert len(self) == required_tentacles_count
-
-    @property
-    def tests_todo(self) -> int:
-        return sum(len(tsvs_todo) for tsvs_todo in self)
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
