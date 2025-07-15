@@ -7,8 +7,9 @@ from __future__ import annotations
 import typing
 from collections.abc import Iterator
 
+from ..tentacle_spec import TentacleMicropython
 from .baseclasses_spec import ConnectedTentacles
-from .testrun_specs import TentacleMicropython, TestRun, TestRunSpec
+from .testrun_specs import TestRun, TestRunSpec
 
 
 class TestRunSpecs(list[TestRunSpec]):
@@ -17,7 +18,7 @@ class TestRunSpecs(list[TestRunSpec]):
         available_tentacles: typing.Sequence[TentacleMicropython],
         firmwares_built: set[str] | None,
         flash_skip: bool,
-        reference_board: str,
+        tentacle_reference: TentacleMicropython,
     ) -> Iterator[TestRun]:
         assert isinstance(available_tentacles, list)
 
@@ -31,7 +32,7 @@ class TestRunSpecs(list[TestRunSpec]):
                 available_tentacles=applicable_tentacles,
                 firmwares_built=firmwares_built,
                 flash_skip=flash_skip,
-                reference_board=reference_board,
+                tentacle_reference=tentacle_reference,
             )
 
     @property
@@ -39,11 +40,14 @@ class TestRunSpecs(list[TestRunSpec]):
         return sum(testrun_spec.tests_todo for testrun_spec in self)
 
     def assign_tentacles(
-        self, tentacles: ConnectedTentacles, reference_board: str
+        self,
+        tentacles: ConnectedTentacles,
+        tentacle_reference: TentacleMicropython | None,
     ) -> None:
         for testrun_spec in self:
             testrun_spec.assign_tentacles(
-                tentacles=tentacles, reference_board=reference_board
+                tentacles=tentacles,
+                tentacle_reference=tentacle_reference,
             )
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:

@@ -23,9 +23,10 @@ from octoprobe.util_constants import DirectoryTag
 from .. import util_multiprocessing
 from ..mptest import util_testrunner
 from ..report_task import util_report_tasks
+from ..tentacle_spec import TentacleMicropython
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
-from ..testcollection.testrun_specs import TestRun
+from ..testcollection.testrun_specs import TestRun, TestRunSpec
 
 logger = logging.getLogger(__file__)
 
@@ -44,6 +45,7 @@ class TestBartender:
     def __init__(
         self,
         connected_tentacles: ConnectedTentacles,
+        tentacle_reference: TentacleMicropython | None,
         testrun_specs: TestRunSpecs,
         priority_sorter: typing.Callable[
             [list[TestRun], ConnectedTentacles], list[TestRun]
@@ -51,10 +53,12 @@ class TestBartender:
         directory_results: pathlib.Path,
     ) -> None:
         assert isinstance(connected_tentacles, ConnectedTentacles)
+        assert isinstance(tentacle_reference, TentacleMicropython | None)
         assert isinstance(testrun_specs, TestRunSpecs)
         assert isinstance(priority_sorter, typing.Callable)  # type: ignore[arg-type]
         assert isinstance(directory_results, pathlib.Path)
         self.connected_tentacles = connected_tentacles
+        self.tentacle_reference = tentacle_reference
         self.testrun_specs = testrun_specs
         self.available_tentacles = connected_tentacles.copy()
         self.async_targets = util_multiprocessing.AsyncTargets[AsyncTargetTest]()
@@ -73,14 +77,13 @@ class TestBartender:
         self,
         firmwares_built: set[str] | None,
         flash_skip: bool,
-        reference_board: str,
     ) -> list[TestRun]:
         _possible_testruns = list(
             self.testrun_specs.generate(
                 available_tentacles=self.available_tentacles,
                 firmwares_built=firmwares_built,
                 flash_skip=flash_skip,
-                reference_board=reference_board,
+                tentacle_reference=self.tentacle_reference,
             )
         )
 
@@ -101,7 +104,6 @@ class TestBartender:
         possible_testruns = self.possible_testruns(
             firmwares_built=firmwares_built,
             flash_skip=args.firmware.flash_skip,
-            reference_board=args.reference_board,
         )
         if len(possible_testruns) == 0:
             raise CurrentlyNoTestsException()
@@ -152,20 +154,14 @@ class TestBartender:
         assert isinstance(async_target, AsyncTargetTest)
         self.async_targets.append(async_target)
 
-        for tentacle in async_target.tentacles:
-            assert tentacle in self.available_tentacles
-            self.available_tentacles.remove(tentacle)
-
+        self.available_tentacles.remove(async_target.testrun.tentacle_variant.tentacle)
         async_target.testrun.mark_as_done()
 
     def _release(self, async_target: AsyncTargetTest) -> None:
         assert isinstance(async_target, AsyncTargetTest)
         assert async_target in self.async_targets
         self.async_targets.remove(async_target)
-
-        for tentacle in async_target.tentacles:
-            assert tentacle not in self.available_tentacles
-            self.available_tentacles.append(tentacle)
+        self.available_tentacles.append(async_target.testrun.tentacle_variant.tentacle)
 
     def handle_timeouts(self, report_tasks: util_report_tasks.Tasks) -> None:
         assert isinstance(report_tasks, util_report_tasks.Tasks)

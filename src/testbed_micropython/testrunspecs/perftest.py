@@ -28,8 +28,8 @@ class TestRunPerfTest(TestRun):
     """
 
     def test(self, testargs: TestArgs) -> None:
-        assert len(self.list_tentacle_variant) == 1
-        tentacle_variant = self.list_tentacle_variant[0]
+        assert len(self.tentacle_variant) == 1
+        tentacle_variant = self.tentacle_variant[0]
         assert isinstance(tentacle_variant, TentacleVariant)
         tentacle = tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
@@ -68,7 +68,7 @@ TESTRUNSPEC_PERFTEST = TestRunSpec(
     helptext="Run pertest on each board",
     command=["run-perfbench.py"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    required_tentacles_count=1,
+    requires_reference_tentacle=False,
     testrun_class=TestRunPerfTest,
     # TODO(hans): 2025-07-30: Lower von 10 to 4
     timeout_s=10 * 60.0 + TIMEOUT_FLASH_S,

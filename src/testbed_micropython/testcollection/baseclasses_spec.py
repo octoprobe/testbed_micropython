@@ -5,6 +5,7 @@ Classes required to define to specify the tests which have to run.
 from __future__ import annotations
 
 import dataclasses
+import enum
 import logging
 
 from ..constants import EnumFut
@@ -15,17 +16,38 @@ from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 logger = logging.getLogger(__file__)
 
 
+class TestRole(enum.StrEnum):
+    ROLE_FIRST = "first"
+    """
+    Could be WLAN-STAT
+    """
+    ROLE_SECOND = "second"
+    """
+    Could be WLAN-AP
+    """
+
+
 @dataclasses.dataclass(frozen=True, unsafe_hash=True, order=True)
 class TentacleSpecVariant:
     tentacle_spec: TentacleSpecMicropython
     variant: str
+    role: TestRole
 
     def __post_init__(self) -> None:
         assert isinstance(self.tentacle_spec, TentacleSpecMicropython)
         assert isinstance(self.variant, str)
+        assert isinstance(self.role, TestRole)
 
     def __repr__(self) -> str:
-        return self.board_variant
+        return f"{self.board_variant}({self.role.name})"
+
+    def equals(self, tentacle_variant: TentacleVariant) -> bool:
+        assert isinstance(tentacle_variant, TentacleVariant)
+        return (
+            (self.board == tentacle_variant.board)
+            and (self.variant == tentacle_variant.variant)
+            and (self.role == tentacle_variant.role)
+        )
 
     @property
     def board(self) -> str:
@@ -47,17 +69,21 @@ class TentacleSpecVariant:
         return f"{self.board}-{self.variant}"
 
 
-def tentacle_spec_2_tsvs(tentacle: TentacleMicropython) -> list[TentacleSpecVariant]:
+def tentacle_spec_2_tsvs(
+    tentacle: TentacleMicropython,
+    role: TestRole,
+) -> list[TentacleSpecVariant]:
     """
     ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
     """
     assert isinstance(tentacle, TentacleMicropython)
+    assert isinstance(role, TestRole)
 
     variants = tentacle.tentacle_spec.build_variants
     if tentacle.tentacle_state.variants_required is not None:
         variants = tentacle.tentacle_state.variants_required
     return [
-        TentacleSpecVariant(tentacle_spec=tentacle.tentacle_spec, variant=v)
+        TentacleSpecVariant(tentacle_spec=tentacle.tentacle_spec, variant=v, role=role)
         for v in variants
     ]
 
@@ -67,11 +93,13 @@ class TentacleVariant:
     tentacle: TentacleMicropython
     board: str
     variant: str
+    role: TestRole
 
     def __post_init__(self) -> None:
         assert isinstance(self.tentacle, TentacleMicropython)
         assert isinstance(self.board, str)
         assert isinstance(self.variant, str)
+        assert isinstance(self.role, TestRole)
 
     @property
     def board_variant(self) -> str:
@@ -92,7 +120,7 @@ class TentacleVariant:
         return "-" + self.variant
 
     def __repr__(self) -> str:
-        return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant}"
+        return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant} ({self.role.name})"
 
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
@@ -138,27 +166,46 @@ class RolesTentacleSpecVariants(list[TentacleSpecVariants]):
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
-    def get_tsvs(
-        self,
-        include_board: str | None = None,
-        exclude_board: str | None = None,
-    ) -> TentacleSpecVariants:
+    def get_tsvs(self, roles: list[TestRole]) -> TentacleSpecVariants:
         s = TentacleSpecVariants()
         for tentacle in self:
-            board = tentacle.tentacle_spec.board
-            if board == exclude_board:
-                continue
-            if include_board is not None:
-                if board != include_board:
-                    continue
-            for tsv in tentacle_spec_2_tsvs(tentacle=tentacle):
-                s.add(tsv)
+            for role in roles:
+                for tsv in tentacle_spec_2_tsvs(tentacle=tentacle, role=role):
+                    s.add(tsv)
         return s
+
+    def get_exclude_reference(
+        self,
+        exclude_reference: TentacleMicropython | None,
+    ) -> ConnectedTentacles:
+        if exclude_reference is None:
+            return self
+        assert isinstance(exclude_reference, TentacleMicropython)
+        return ConnectedTentacles([t for t in self if exclude_reference is not t])
 
     def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
         return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
 
+    def find_first_tentacle(self, board: str) -> TentacleMicropython | None:
+        """
+        Example 'board':
+         * "RPI_PICO_W" (DEFAULT_REFERENCE_BOARD)
+         * "" (ANY_REFERENCE_BOARD)
+
+        Finds the first tentacle corresponding to 'board' and returns its tentacle.
+        Returns None if not found.
+        """
+        assert isinstance(board, str)
+
+        for t in self:
+            if t.tentacle_spec.board == board:
+                return t
+
+        return None
+
     def query_boards(self, query: ArgsQuery) -> ConnectedTentacles:
+        assert isinstance(query, ArgsQuery)
+
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
 
         query_only = {BoardVariant.parse(o).board for o in query.only}

@@ -228,10 +228,10 @@ class SummaryByTest(list[Group]):
                     testgroup=testgroup,
                     test_name=test_outcome.name,
                 )
-                group.testids_tentacles.add(testgroup.testid_tentacles)
+                group.testids_tentacles.add(testgroup.testid_tentacle)
                 outcomes_for_one_test.append(
                     TestOutcome(
-                        testid_tentacles=testgroup.testid_tentacles,
+                        testid_tentacles=testgroup.testid_tentacle,
                         test_outcome=test_outcome,
                         testgroup=testgroup,
                     )

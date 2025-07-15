@@ -241,7 +241,7 @@ class ResultTestGroup:
     Example: RUN-TESTS_EXTMOD_HARDWARE@5f2c-RPI_PICO_W
     Used to group testsruns to show flakiness.
     """
-    testid_tentacles: str = ""
+    testid_tentacle: str = ""
     """
     Example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
     Used to group by tentacles.

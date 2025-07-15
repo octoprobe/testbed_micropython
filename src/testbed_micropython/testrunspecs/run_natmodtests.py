@@ -212,8 +212,8 @@ class TestRunRunTests(TestRun):
     """
 
     def test(self, testargs: TestArgs) -> None:
-        assert len(self.list_tentacle_variant) == 1
-        tentacle_variant = self.list_tentacle_variant[0]
+        assert len(self.tentacle_variant) == 1
+        tentacle_variant = self.tentacle_variant[0]
         assert isinstance(tentacle_variant, TentacleVariant)
         tentacle = tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
@@ -252,7 +252,7 @@ TESTRUNSPEC_RUN_NATMODTESTS = TestRunSpec(
     helptext="Run tests using native modules in external .mpy files",
     command=["run-natmodtests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    required_tentacles_count=1,
+    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=2 * 60.0 + TIMEOUT_FLASH_S,
 )

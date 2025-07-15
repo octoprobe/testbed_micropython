@@ -259,6 +259,7 @@ class TestRunner:
 
         self.ctxtestrun: CtxTestRun
         self.test_bartender: TestBartender
+        self.tentacle_reference: TentacleMicropython | None
         self.firmware_bartender: firmware_bartender.FirmwareBartenderBase
         self.args = args
 
@@ -305,7 +306,7 @@ class TestRunner:
     def set_git_ref(self, tag: DirectoryTag, git_ref: str) -> None:
         self.report_testgroup.result_context.set_git_ref(tag=tag, git_ref=git_ref)
 
-    def init(self, reference_board: str) -> None:
+    def init(self) -> None:
         journalctl = JournalctlObserver(
             logfile=self.args.directory_results / "journalctl.txt"
         )
@@ -335,15 +336,19 @@ class TestRunner:
         selected_tentacles = connected_tentacles.query_boards(
             query=self.args.query_board
         )
+        self.tentacle_reference = connected_tentacles.find_first_tentacle(
+            board=self.args.reference_board
+        )
         testrun_specs.assign_tentacles(
             tentacles=selected_tentacles,
-            reference_board=reference_board,
+            tentacle_reference=self.tentacle_reference,
         )
 
         from ..bartenders.test_bartender import TestBartender
 
         self.test_bartender = TestBartender(
             connected_tentacles=selected_tentacles,
+            tentacle_reference=self.tentacle_reference,
             testrun_specs=testrun_specs,
             priority_sorter=TestRun.priority_sorter,
             directory_results=self.args.directory_results,
@@ -578,7 +583,6 @@ class TestRunner:
 
         assert isinstance(async_target, AsyncTargetTest)
         assert isinstance(target_ctx, util_multiprocessing.TargetCtx)
-        assert len(async_target.testrun.list_tentacle_variant) > 0
 
         logger.debug(async_target.testrun.testid)
 
@@ -590,15 +594,22 @@ class TestRunner:
         """
         Assign firmware_spec to each tentacle
         """
-        for tentacle_variant in testrun.list_tentacle_variant:
-            tentacle = tentacle_variant.tentacle
-            tentacle_spec = tentacle.tentacle_spec
-            assert isinstance(tentacle_spec, TentacleSpecMicropython)
+
+        def assign(tentacle: TentacleMicropython, variant: str) -> None:
+            assert isinstance(tentacle, TentacleMicropython)
             tentacle.tentacle_state.firmware_spec = (
                 self.firmware_bartender.get_firmware_spec(
-                    board=tentacle_spec.board, variant=tentacle_variant.variant
+                    board=tentacle.tentacle_spec.board,
+                    variant=variant,
                 )
             )
+
+        assign(
+            tentacle=testrun.tentacle_variant.tentacle,
+            variant=testrun.tentacle_variant.variant,
+        )
+        if testrun.tentacle_reference is not None:
+            assign(tentacle=testrun.tentacle_reference, variant="")
 
 
 def _target_run_one_test_async_b(
@@ -629,7 +640,7 @@ def _target_run_one_test_async_b(
 
     ctxtestrun.setup_relays(
         futs=(testrun.testrun_spec.required_fut,),
-        tentacles=testrun.tentacles,
+        tentacles=list(testrun.tentacles),
     )
     logger.info(f"TEST BEGIN {duration_text()} {testid}")
 

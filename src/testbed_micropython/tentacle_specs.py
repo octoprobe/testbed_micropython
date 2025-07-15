@@ -574,8 +574,8 @@ Connections
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     # TODO: No RISCV variant. Why?
-    # tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
-    tags="build_variants=,mcu=rp2,programmer=picotool",
+    tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
+    # tags="build_variants=,mcu=rp2,programmer=picotool",
     mcu_config=McuConfig(),
 )
 

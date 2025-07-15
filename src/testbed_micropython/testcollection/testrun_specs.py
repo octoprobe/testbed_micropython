@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import contextlib
 import dataclasses
+import enum
 import logging
 import pathlib
 import typing
@@ -13,8 +14,10 @@ from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
     RolesTentacleSpecVariants,
     TentacleMicropython,
+    TentacleSpecVariant,
     TentacleSpecVariants,
     TentacleVariant,
+    TestRole,
 )
 from ..testcollection.constants import DELIMITER_TENTACLE, DELIMITER_TESTRUN
 
@@ -30,18 +33,32 @@ class TestArgs:
     repo_micropython_tests: pathlib.Path
 
 
+# TODO: Remove
 _ROLE_LABELS = ["First", "Second", "Third"]
 
 
 @dataclasses.dataclass(slots=True, repr=True)
 class TestRun:
     testrun_spec: TestRunSpec
-    list_tentacle_variant: list[TentacleVariant]
+    tentacle_variant: TentacleVariant
+    """
+    This includes
+    * tentacle
+    * variant
+    * role
+    """
+    tentacle_reference: TentacleMicropython | None
+    """
+    This is only set if subclass of 'class TestRunReference()' respective 'testrun_spec.requires_reference_tentacle'.
+    """
     flash_skip: bool
 
     def __post_init__(self) -> None:
         assert isinstance(self.testrun_spec, TestRunSpec)
-        assert isinstance(self.list_tentacle_variant, list)
+        assert isinstance(self.tentacle_variant, TentacleVariant)
+        assert isinstance(self.tentacle_reference, TentacleMicropython | None)
+        if self.testrun_spec.requires_reference_tentacle:
+            assert self.tentacle_reference is not None
         assert isinstance(self.flash_skip, bool)
 
     def mark_as_done(self) -> None:
@@ -55,18 +72,12 @@ class TestRun:
     def test(self, testargs: TestArgs) -> None: ...
 
     @property
-    def tentacles(self) -> list[TentacleMicropython]:
-        return [x.tentacle for x in self.list_tentacle_variant]
-
-    @property
     def testid(self) -> str:
         """
         For example: run-perfbench.py#a@2d2d-lolin_D1-ESP8266_GENERIC
         This is the unique id of the testrun.
         """
-        return (
-            self.testrun_spec.label_testrun + DELIMITER_TENTACLE + self.tentacles_text
-        )
+        return self.testrun_spec.label_testrun + DELIMITER_TENTACLE + self.tentacle_text
 
     @property
     def testid_group(self) -> str:
@@ -74,7 +85,13 @@ class TestRun:
         For example: run-perfbench.py@2d2d-lolin_D1-ESP8266_GENERIC
         This is used to group testruns to show flakiness.
         """
-        return self.testrun_spec.label + DELIMITER_TENTACLE + self.tentacles_text
+        return self.testrun_spec.label + DELIMITER_TENTACLE + self.tentacle_text
+
+    @property
+    def tentacles(self) -> Iterator[TentacleMicropython]:
+        yield self.tentacle_variant.tentacle
+        if self.tentacle_reference is not None:
+            yield self.tentacle_reference
 
     @property
     @contextlib.contextmanager
@@ -91,7 +108,7 @@ class TestRun:
                 t.infra.mcu_infra.active_led(on=False)
 
     @property
-    def tentacles_text(self) -> str:
+    def tentacle_text(self) -> str:
         """
         For example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
         """
@@ -103,11 +120,17 @@ class TestRun:
 
             return f"{tv.tentacle.label_short}{tv.dash_variant}"
 
-        return ",".join([testid(tv) for tv in self.list_tentacle_variant])
+        return testid(self.tentacle_variant)
+
+    @property
+    def firmware_already_flashed(self) -> bool:
+        a = self.tentacle_variant.board_variant
+        b = self.tentacle_variant.tentacle.board_variant_normalized
+        return a == b
 
     @property
     def debug_text(self) -> str:
-        board_variants = [bv.board_variant for bv in self.list_tentacle_variant]
+        board_variants = [bv.board_variant for bv in self.tentacle_variant]
         return f"TestRun({self.testrun_spec.label}, {', '.join(board_variants)})"
         # return self.testid
 
@@ -124,7 +147,8 @@ class TestRun:
 
     @staticmethod
     def priority_sorter(
-        testruns: list[TestRun], connected_tentacles: ConnectedTentacles
+        testruns: list[TestRun],
+        connected_tentacles: ConnectedTentacles,
     ) -> list[TestRun]:
         """
         Order by priority.
@@ -132,44 +156,15 @@ class TestRun:
         """
 
         def priority(testrun: TestRun) -> tuple:
-            build_variants = sum(
-                len(tentacle.tentacle_spec.build_variants)
-                for tentacle in testrun.tentacles
+            build_variants = len(
+                testrun.tentacle_variant.tentacle.tentacle_spec.build_variants
             )
-
-            def get_firmwares_already_flashed():
-                def get_variant(tentacle: TentacleMicropython) -> str | None:
-                    """
-                    If the firmware was flashed returns the board_variant
-                    For the PYBV11 this might be: 'PYBV11', 'PYBV11-DP', 'PYBV11-DP_THREAD', 'PYBV11-THREAD'
-
-                    Returns None if the flashed firmware is unknown.
-                    """
-
-                    for connected_tentacle in connected_tentacles:
-                        if connected_tentacle is tentacle:
-                            tentacle_state = connected_tentacle.tentacle_state
-                            if not tentacle_state.has_firmware_spec:
-                                return None
-                            return tentacle_state.firmware_spec.board_variant.name_normalized
-
-                    logger.warning(f"Tentacle '{tentacle.label_short}' not found!")
-                    return None
-
-                firmwares_already_flashed = 0
-                for tv in testrun.list_tentacle_variant:
-                    variant = get_variant(tv.tentacle)
-                    if variant == tv.board_variant:
-                        firmwares_already_flashed += 1
-                return firmwares_already_flashed
 
             priorities = (
                 # The more variants to compile, the higher the priority
                 -build_variants,
-                # The more tentacles involved, the higher the priority
-                -len(testrun.tentacles),
                 # To minimize reflashing, order by variant
-                -get_firmwares_already_flashed(),
+                -testrun.firmware_already_flashed,
                 # Finally, alphabetical order desc
                 testrun.testid,
             )
@@ -194,15 +189,16 @@ class TestRunSpec:
     helptext: str
     command: list[str]
     required_fut: constants.EnumFut
-    required_tentacles_count: int
+    requires_reference_tentacle: bool
     timeout_s: float
     testrun_class: type[TestRun]
-    roles_tsvs_todo: RolesTentacleSpecVariants = dataclasses.field(
-        default_factory=RolesTentacleSpecVariants
+    tsvs_todo: TentacleSpecVariants = dataclasses.field(
+        default_factory=TentacleSpecVariants
     )
     testrun_idx0: int = 0
     """
-    Example: 1, 2, 3
+    Example: 0, 1, 2
+    If '--count=3' is given, there will be a 'TestRunSpec' for each run!
     """
 
     def __post_init__(self) -> None:
@@ -210,10 +206,10 @@ class TestRunSpec:
         assert isinstance(self.helptext, str)
         assert isinstance(self.command, list)
         assert isinstance(self.required_fut, constants.EnumFut)
-        assert isinstance(self.required_tentacles_count, int)
+        assert isinstance(self.requires_reference_tentacle, bool)
         assert isinstance(self.timeout_s, float)
         assert isinstance(self.testrun_class, type(TestRun))
-        assert isinstance(self.roles_tsvs_todo, RolesTentacleSpecVariants)
+        assert isinstance(self.tsvs_todo, TentacleSpecVariants)
         assert isinstance(self.testrun_idx0, int)
 
     @property
@@ -222,10 +218,6 @@ class TestRunSpec:
         Example: 'RUN-TESTS_EXTMOD_HARDWARE#a'
         """
         return f"{self.label}{DELIMITER_TESTRUN}{chr(ord('a') + self.testrun_idx0)}"
-
-    @property
-    def tentacles_required(self) -> int:
-        return self.required_tentacles_count
 
     @property
     def command_executable(self) -> str:
@@ -238,35 +230,21 @@ class TestRunSpec:
     def assign_tentacles(
         self,
         tentacles: ConnectedTentacles,
-        reference_board: str,
+        tentacle_reference: TentacleMicropython | None,
     ) -> None:
         """
         Assign tentacle-variants (board-variants) to be tested.
         """
         assert isinstance(tentacles, ConnectedTentacles)
 
-        selected_tentacles = tentacles.get_by_fut(self.required_fut)
-        if len(selected_tentacles) < self.tentacles_required:
-            # Example: Just one Lolin is connected (FUT_WLAN)
-            # But there is no other FUT_WLAN we could test against!
-            return
-        if self.tentacles_required == 1:
-            tsvs_todo = selected_tentacles.get_tsvs()
-            self.roles_tsvs_todo = RolesTentacleSpecVariants(
-                [TentacleSpecVariants(tsvs_todo)]
-            )
-        else:
-            assert self.tentacles_required == 2
-            tsvs_todo1 = selected_tentacles.get_tsvs(exclude_board=reference_board)
-            tsvs_todo2 = selected_tentacles.get_tsvs(include_board=reference_board)
-            self.roles_tsvs_todo = RolesTentacleSpecVariants(
-                [
-                    TentacleSpecVariants(tsvs_todo1),
-                    TentacleSpecVariants(tsvs_todo2),
-                ]
-            )
+        _tentacles = tentacles.get_exclude_reference(tentacle_reference)
+        selected_tentacles = _tentacles.get_by_fut(self.required_fut)
 
-        self.roles_tsvs_todo.verify(required_tentacles_count=self.tentacles_required)
+        roles = [TestRole.ROLE_FIRST]
+        if self.requires_reference_tentacle:
+            roles = [TestRole.ROLE_FIRST, TestRole.ROLE_SECOND]
+
+        self.tsvs_todo = selected_tentacles.get_tsvs(roles=roles)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.label} {self.command_args})"
@@ -274,25 +252,41 @@ class TestRunSpec:
     def mark_as_done(self, testrun: TestRun) -> None:
         assert isinstance(testrun, TestRun)
 
-        assert len(self.roles_tsvs_todo) == len(testrun.list_tentacle_variant)
-        for tsvs, tentacle_variant in zip(
-            self.roles_tsvs_todo,
-            testrun.list_tentacle_variant,
-            strict=False,
-        ):
-            tsvs.remove_tentacle_variant(tentacle_variant=tentacle_variant)
+        for tsvs in self.tsvs_todo:
+            assert isinstance(tsvs, TentacleSpecVariant)
+            if tsvs.equals(testrun.tentacle_variant):
+                self.tsvs_todo.remove(tsvs)
+                return
 
     @property
     def tests_todo(self) -> int:
-        return self.roles_tsvs_todo.tests_todo
+        return len(self.tsvs_todo)
 
     def generate(
         self,
         available_tentacles: list[TentacleMicropython],
         firmwares_built: set[str] | None,
         flash_skip: bool,
-        reference_board: str,
+        tentacle_reference: TentacleMicropython,
     ) -> Iterator[TestRun]:
+        for tentacle in available_tentacles:
+            for tsv in self.tsvs_todo:
+                if tsv.board == tentacle.tentacle_spec.board:
+                    tentacle_variant = TentacleVariant(
+                        tentacle=tentacle,
+                        board=tsv.board,
+                        variant=tsv.variant,
+                        role=tsv.role,
+                    )
+                    yield self.testrun_class(
+                        testrun_spec=self,
+                        tentacle_variant=tentacle_variant,
+                        tentacle_reference=tentacle_reference,
+                        flash_skip=flash_skip,
+                    )
+
+        return
+
         def iter_tvs(tentacle: TentacleMicropython) -> typing.Iterator[TentacleVariant]:
             build_variants = tentacle.tentacle_spec.build_variants
             if tentacle.tentacle_state.variants_required is not None:
@@ -315,7 +309,7 @@ class TestRunSpec:
                     if self._matches(first_second):
                         yield self.testrun_class(
                             testrun_spec=self,
-                            list_tentacle_variant=first_second,
+                            tentacle_variant=first_second,
                             flash_skip=flash_skip,
                         )
             return
@@ -338,7 +332,7 @@ class TestRunSpec:
                             if self._matches(first_second):
                                 yield self.testrun_class(
                                     testrun_spec=self,
-                                    list_tentacle_variant=first_second,
+                                    tentacle_variant=first_second,
                                     flash_skip=flash_skip,
                                 )
 

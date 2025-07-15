@@ -99,7 +99,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     testrun_specs_.assign_tentacles(
         tentacles=connected_tentacles,
-        reference_board=constants.DEFAULT_REFERENCE_BOARD,
+        tentacle_reference=constants.DEFAULT_REFERENCE_BOARD,
     )
 
     print("## testrun_specs", file=file)
@@ -196,7 +196,7 @@ _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
     helptext="Run perftest on each board.",
     command=["perfbench.py", "run-perfbench.py"],
     required_fut=constants.EnumFut.FUT_MCU_ONLY,
-    required_tentacles_count=1,
+    requires_reference_tentacle=False,
     testrun_class=runtests.TestRunRunTests,
     timeout_s=60.0,
 )
@@ -205,7 +205,7 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
     required_fut=constants.EnumFut.FUT_WLAN,
-    required_tentacles_count=2,
+    requires_reference_tentacle=True,
     testrun_class=runtests.TestRunRunTests,
     timeout_s=5 * 60.0,
 )

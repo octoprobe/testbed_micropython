@@ -183,7 +183,7 @@ class ReportTestgroup:
         )
         self.report.testid_group = testrun.testid_group
         self.report.testid = testrun.testid
-        self.report.testid_tentacles = testrun.tentacles_text
+        self.report.testid_tentacle = testrun.tentacle_text
         self.report.commandline = " ".join(testrun.testrun_spec.command)
         self.report.log_output = DirectoryTag.R.render_relative_to(
             top=self.testresults_directory.directory_top,

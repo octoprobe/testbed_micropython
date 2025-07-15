@@ -181,7 +181,7 @@ def flash(
 
     testrunner = util_testrunner.TestRunner(args=args)
     try:
-        testrunner.init(reference_board=constants.DEFAULT_REFERENCE_BOARD)
+        testrunner.init(tentacle_reference=constants.DEFAULT_REFERENCE_BOARD)
     except MpbuildMpyDirectoryException as e:
         logger.warning(e)
         return
@@ -231,7 +231,7 @@ def test(
             autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UP007
-    reference: TyperAnnotated[
+    reference_board: TyperAnnotated[
         str | None,
         typer.Option(
             help=f"The board to be used as WLAN/bluetooth reference. Any board is used as reference if this parameter is set to '{constants.ANY_REFERENCE_BOARD}'.",
@@ -303,7 +303,7 @@ def test(
                 arg="board",
             ),
             force_multiprocessing=force_multiprocessing,
-            reference_board=reference,
+            reference_board=reference_board,
         )
         testrunner = util_testrunner.TestRunner(args=args)
         logger.info(f"{' '.join(sys.argv)}")
@@ -311,7 +311,7 @@ def test(
         logger.info(f"{count=}")
         logger.info(f"directory_results={args.directory_results}")
         try:
-            testrunner.init(reference_board=args.reference_board)
+            testrunner.init()
         except MpbuildMpyDirectoryException as e:
             logger.warning(e)
             return

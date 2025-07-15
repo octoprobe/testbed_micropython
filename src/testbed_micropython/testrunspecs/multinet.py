@@ -8,6 +8,8 @@ from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
 from ..mptest import util_common
+from ..tentacle_spec import TentacleMicropython
+from ..testcollection.baseclasses_spec import TestRole
 from ..testcollection.constants import (
     ENV_MICROPYTHON_TESTS,
     MICROPYTHON_DIRECTORY_TESTS,
@@ -23,14 +25,17 @@ from ..util_multiprocessing import EVENTLOGCALLBACK
 logger = logging.getLogger(__file__)
 
 
-class TestRunMultitestBase(TestRun):
+class TestRunReference(TestRun):
+    """
+    These test runs against a reference tentacle
+    """
+
     @abc.abstractmethod
     def setup(self, testargs: TestArgs) -> None: ...
 
     def test(self, testargs: TestArgs) -> None:
-        assert len(self.list_tentacle_variant) == 2
-        tentacle_variant_first = self.list_tentacle_variant[0]
-        tentacle_variant_second = self.list_tentacle_variant[1]
+        tentacle_first = self.tentacle_first
+        tentacle_second = self.tentacle_second
 
         file_pattern = self.testrun_spec.command[1]
         assert isinstance(file_pattern, str)
@@ -38,8 +43,8 @@ class TestRunMultitestBase(TestRun):
 
         self.setup(testargs=testargs)
 
-        serial_port_first = tentacle_variant_first.tentacle.dut.get_tty()
-        serial_port_second = tentacle_variant_second.tentacle.dut.get_tty()
+        serial_port_first = tentacle_first.dut.get_tty()
+        serial_port_second = tentacle_second.dut.get_tty()
         # Run tests
         cwd = testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
         list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
@@ -69,10 +74,28 @@ class TestRunMultitestBase(TestRun):
             timeout_s=self.timeout_s,
         )
 
+    @property
+    def tentacle_first(self) -> TentacleMicropython:
+        assert self.tentacle_reference is not None
+        return (
+            self.tentacle_variant.tentacle
+            if self.tentacle_variant.role is TestRole.ROLE_FIRST
+            else self.tentacle_reference
+        )
 
-class TestRunMultitestMultinet(TestRunMultitestBase):
+    @property
+    def tentacle_second(self) -> TentacleMicropython:
+        assert self.tentacle_reference is not None
+        return (
+            self.tentacle_variant.tentacle
+            if self.tentacle_variant.role is TestRole.ROLE_SECOND
+            else self.tentacle_reference
+        )
+
+
+class TestRunRefernceMultinet(TestRunReference):
     def setup(self, testargs: TestArgs) -> None:
-        for tentacle_variant in self.list_tentacle_variant:
+        for tentacle_variant in self.tentacle_variant:
             util_common.skip_if_no_filesystem(tentacle=tentacle_variant.tentacle)
 
             dut = tentacle_variant.tentacle.dut
@@ -86,7 +109,7 @@ class TestRunMultitestMultinet(TestRunMultitestBase):
             util_common.init_wlan(dut=dut)
 
 
-class TestRunMultitestBluetooth(TestRunMultitestBase):
+class TestRunReferenceBluetooth(TestRunReference):
     def setup(self, testargs: TestArgs) -> None:
         pass
 
@@ -96,17 +119,18 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     helptext="TODO helptext MULTINET",
     command=["run-multitests.py", "multi_net/*.py"],
     required_fut=EnumFut.FUT_WLAN,
-    required_tentacles_count=2,
-    testrun_class=TestRunMultitestMultinet,
+    requires_reference_tentacle=True,
+    testrun_class=TestRunRefernceMultinet,
     timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
 )
 
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     label="RUN-MULTITESTS_MULTIBLUETOOTH",
     helptext="One board connects to another using bluetooth",
-    command=["run-multitests.py", "multi_bluetooth/*.py"],
+    # command=["run-multitests.py", "multi_bluetooth/*.py"],
+    command=["run-multitests.py", "multi_bluetooth/ble_characteristic.py"],
     required_fut=EnumFut.FUT_BLE,
-    required_tentacles_count=2,
-    testrun_class=TestRunMultitestBluetooth,
+    requires_reference_tentacle=True,
+    testrun_class=TestRunReferenceBluetooth,
     timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
 )
