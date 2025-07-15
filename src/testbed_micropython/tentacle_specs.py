@@ -105,14 +105,10 @@ See: https://micropython.org/download/ADAFRUIT_ITSYBITSY_M0_EXPRESS/
 
 ARDUINO_NANO_33 = TentacleSpecMicropython(
     doc="""
-See: https://www.wemos.cc/en/latest/d1/d1_mini.html
-See: https://www.wemos.cc/en/latest/tutorials/d1/get_started_with_micropython_d1.html
-
-TODO: State of the board
-TODO: Programming (double tabbing the boot button) works but should be heavely tested
-TODO: RUN-TESTS_STANDARD: The board crashes
-TODO: RUN-TESTS_EXTMOD_HARDWARE: Not tested and no gpios connected
-Connections
+See: https://store.arduino.cc/products/arduino-nano-33-ble
+See: https://www.berrybase.ch/arduino-nano-33-ble-sense-rev2-ohne-header
+See: https://content.arduino.cc/assets/Nano_BLE_MCU-nRF52840_PS_v1.1.pdf
+See: https://content.arduino.cc/assets/Pinout-NANOble_latest.png
 
 * Bootmode
   * Board RESET  <=> Tentacle Relay 1b
@@ -122,12 +118,12 @@ Connections
   * Board GND <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * TODO
+  * Baord TX (P1.03) <=> Board RX (P1.10)
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board TODO
-  * Testpoint CH1/extmod_a <=> Board TODO
+  * Testpoint CH1/extmod_a <=> Baord TX (P1.03)
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ARDUINO_NANO_33",
