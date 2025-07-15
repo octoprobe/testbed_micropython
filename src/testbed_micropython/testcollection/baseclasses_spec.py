@@ -29,29 +29,27 @@ class TestRole(enum.StrEnum):
 
 @dataclasses.dataclass(frozen=True, unsafe_hash=True, order=True)
 class TentacleSpecVariant:
-    tentacle_spec: TentacleSpecMicropython
+    tentacle: TentacleMicropython
     variant: str
     role: TestRole
 
     def __post_init__(self) -> None:
-        assert isinstance(self.tentacle_spec, TentacleSpecMicropython)
+        assert isinstance(self.tentacle, TentacleMicropython)
         assert isinstance(self.variant, str)
         assert isinstance(self.role, TestRole)
 
     def __repr__(self) -> str:
         return f"{self.board_variant}({self.role.name})"
 
-    def equals(self, tentacle_variant: TentacleVariant) -> bool:
-        assert isinstance(tentacle_variant, TentacleVariant)
-        return (
-            (self.board == tentacle_variant.board)
-            and (self.variant == tentacle_variant.variant)
-            and (self.role == tentacle_variant.role)
+    def equals(self, tentacle_variant: TentacleSpecVariant) -> bool:
+        assert isinstance(tentacle_variant, TentacleSpecVariant)
+        return (self.board_variant == tentacle_variant.board_variant) and (
+            self.role == tentacle_variant.role
         )
 
     @property
     def board(self) -> str:
-        tentacle_spec = self.tentacle_spec
+        tentacle_spec = self.tentacle.tentacle_spec
         assert isinstance(tentacle_spec, TentacleSpecMicropython)
         return tentacle_spec.board
 
@@ -65,6 +63,15 @@ class TentacleSpecVariant:
         if self.variant == "":
             return self.board
         return f"{self.board}-{self.variant}"
+
+    @property
+    def dash_variant(self) -> str:
+        """
+        Example for RPI_PICO2: '' or '-RISCV'
+        """
+        if self.variant == "":
+            return ""
+        return "-" + self.variant
 
 
 def tentacle_spec_2_tsvs(
@@ -81,44 +88,8 @@ def tentacle_spec_2_tsvs(
     if tentacle.tentacle_state.variants_required is not None:
         variants = tentacle.tentacle_state.variants_required
     return [
-        TentacleSpecVariant(tentacle_spec=tentacle.tentacle_spec, variant=v, role=role)
-        for v in variants
+        TentacleSpecVariant(tentacle=tentacle, variant=v, role=role) for v in variants
     ]
-
-
-@dataclasses.dataclass(frozen=True, repr=True, unsafe_hash=True)
-class TentacleVariant:
-    tentacle: TentacleMicropython
-    board: str
-    variant: str
-    role: TestRole
-
-    def __post_init__(self) -> None:
-        assert isinstance(self.tentacle, TentacleMicropython)
-        assert isinstance(self.board, str)
-        assert isinstance(self.variant, str)
-        assert isinstance(self.role, TestRole)
-
-    @property
-    def board_variant(self) -> str:
-        """
-        Example: RPI_PICO2-RISCV
-        """
-        if self.variant == "":
-            return self.board
-        return f"{self.board}-{self.variant}"
-
-    @property
-    def dash_variant(self) -> str:
-        """
-        Example for RPI_PICO2: '' or '-RISCV'
-        """
-        if self.variant == "":
-            return ""
-        return "-" + self.variant
-
-    def __repr__(self) -> str:
-        return f"{self.tentacle.tentacle_serial_number[:4]}_{self.tentacle.tentacle_spec.tentacle_tag} variant={self.variant} ({self.role.name})"
 
 
 class TentacleSpecVariants(set[TentacleSpecVariant]):
@@ -129,9 +100,9 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
 
     def remove_tentacle_variant(
         self,
-        tentacle_variant: TentacleVariant,
+        tentacle_variant: TentacleSpecVariant,
     ) -> None:
-        assert isinstance(tentacle_variant, TentacleVariant)
+        assert isinstance(tentacle_variant, TentacleSpecVariant)
         for tsv in self:
             if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
                 if tsv.variant == tentacle_variant.variant:

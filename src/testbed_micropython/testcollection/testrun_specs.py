@@ -14,10 +14,13 @@ from ..testcollection.baseclasses_spec import (
     TentacleMicropython,
     TentacleSpecVariant,
     TentacleSpecVariants,
-    TentacleVariant,
     TestRole,
 )
-from ..testcollection.constants import DELIMITER_TENTACLE, DELIMITER_TESTRUN
+from ..testcollection.constants import (
+    DELIMITER_TENTACLE,
+    DELIMITER_TESTRUN,
+    DELIMITER_TESTROLE,
+)
 
 if typing.TYPE_CHECKING:
     from ..mptest.util_testrunner import ResultsDir
@@ -38,7 +41,7 @@ _ROLE_LABELS = ["First", "Second", "Third"]
 @dataclasses.dataclass(slots=True, repr=True)
 class TestRun:
     testrun_spec: TestRunSpec
-    tentacle_variant: TentacleVariant
+    tentacle_variant: TentacleSpecVariant
     """
     This includes
     * tentacle
@@ -53,7 +56,7 @@ class TestRun:
 
     def __post_init__(self) -> None:
         assert isinstance(self.testrun_spec, TestRunSpec)
-        assert isinstance(self.tentacle_variant, TentacleVariant)
+        assert isinstance(self.tentacle_variant, TentacleSpecVariant)
         assert isinstance(self.tentacle_reference, TentacleMicropython | None)
         if self.testrun_spec.requires_reference_tentacle:
             assert self.tentacle_reference is not None
@@ -72,10 +75,20 @@ class TestRun:
     @property
     def testid(self) -> str:
         """
-        For example: run-perfbench.py#a@2d2d-lolin_D1-ESP8266_GENERIC
+        Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC
+        If self.testrun_spec.requires_reference_tentacle:
+         Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC-first
         This is the unique id of the testrun.
         """
-        return self.testrun_spec.label_testrun + DELIMITER_TENTACLE + self.tentacle_text
+        elems = [
+            self.testrun_spec.label_testrun,
+            DELIMITER_TENTACLE,
+            self.tentacle_text,
+        ]
+        if self.testrun_spec.requires_reference_tentacle:
+            elems.append(DELIMITER_TESTROLE)
+            elems.append(self.tentacle_variant.role.value)
+        return "".join(elems)
 
     @property
     def testid_group(self) -> str:
@@ -111,7 +124,7 @@ class TestRun:
         For example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
         """
 
-        def testid(tv: TentacleVariant) -> str:
+        def testid(tv: TentacleSpecVariant) -> str:
             if self.flash_skip:
                 if len(tv.tentacle.tentacle_spec.build_variants) > 1:
                     return f"{tv.tentacle.label_short}-unknown"
@@ -251,7 +264,6 @@ class TestRunSpec:
         assert isinstance(testrun, TestRun)
 
         for tsvs in self.tsvs_todo:
-            assert isinstance(tsvs, TentacleSpecVariant)
             if tsvs.equals(testrun.tentacle_variant):
                 self.tsvs_todo.remove(tsvs)
                 return
@@ -265,14 +277,13 @@ class TestRunSpec:
         available_tentacles: list[TentacleMicropython],
         firmwares_built: set[str] | None,
         flash_skip: bool,
-        tentacle_reference: TentacleMicropython,
+        tentacle_reference: TentacleMicropython | None,
     ) -> Iterator[TestRun]:
         for tentacle in available_tentacles:
             for tsv in self.tsvs_todo:
                 if tsv.board == tentacle.tentacle_spec.board:
-                    tentacle_variant = TentacleVariant(
+                    tentacle_variant = TentacleSpecVariant(
                         tentacle=tentacle,
-                        board=tsv.board,
                         variant=tsv.variant,
                         role=tsv.role,
                     )
@@ -282,75 +293,6 @@ class TestRunSpec:
                         tentacle_reference=tentacle_reference,
                         flash_skip=flash_skip,
                     )
-
-        return
-
-        def iter_tvs(tentacle: TentacleMicropython) -> typing.Iterator[TentacleVariant]:
-            build_variants = tentacle.tentacle_spec.build_variants
-            if tentacle.tentacle_state.variants_required is not None:
-                build_variants = tentacle.tentacle_state.variants_required
-            for variant in build_variants:
-                tv = TentacleVariant(
-                    tentacle=tentacle,
-                    board=tentacle.tentacle_spec.board,
-                    variant=variant,
-                )
-                if firmwares_built is not None:
-                    if tv.board_variant not in firmwares_built:
-                        continue
-                yield tv
-
-        if self.tentacles_required == 1:
-            for tentacle in available_tentacles:
-                for tv in iter_tvs(tentacle):
-                    first_second = [tv]
-                    if self._matches(first_second):
-                        yield self.testrun_class(
-                            testrun_spec=self,
-                            tentacle_variant=first_second,
-                            flash_skip=flash_skip,
-                        )
-            return
-
-        if self.tentacles_required == 2:
-            for tentacle1 in available_tentacles:
-                if reference_board != constants.ANY_REFERENCE_BOARD:
-                    if tentacle1.tentacle_spec.board == reference_board:
-                        # The reference board shall NOT be tentacle1
-                        continue
-                for tentacle2 in available_tentacles:
-                    if reference_board != constants.ANY_REFERENCE_BOARD:
-                        if tentacle2.tentacle_spec.board != reference_board:
-                            continue
-                    if tentacle1 is tentacle2:
-                        continue
-                    for tv1 in iter_tvs(tentacle1):
-                        for tv2 in iter_tvs(tentacle2):
-                            first_second = [tv1, tv2]
-                            if self._matches(first_second):
-                                yield self.testrun_class(
-                                    testrun_spec=self,
-                                    tentacle_variant=first_second,
-                                    flash_skip=flash_skip,
-                                )
-
-            return
-
-        raise ValueError(f"Not supported: {self.tentacles_required=}")
-
-    def _matches(self, tvs: list[TentacleVariant]) -> bool:
-        """
-        Return True if at lease 1 role matches.
-        Example tvs: Tentacle A is WLAN-First <-> Tentacle B is WLAN-Second.
-        """
-        assert len(tvs) == len(self.roles_tsvs_todo)
-        for tentacle_variant, tsvs in zip(tvs, self.roles_tsvs_todo, strict=False):
-            assert isinstance(tentacle_variant, TentacleVariant)
-            assert isinstance(tsvs, TentacleSpecVariants)
-            for tsv in tsvs:
-                if tentacle_variant.board_variant == tsv.board_variant:
-                    return True
-        return False
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
         for idx0_role, role_tsvs_todo in enumerate(self.roles_tsvs_todo):

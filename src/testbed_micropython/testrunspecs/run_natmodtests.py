@@ -14,7 +14,7 @@ from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_ru
 from testbed_micropython import constants
 
 from ..constants import EnumFut
-from ..testcollection.baseclasses_spec import TentacleVariant
+from ..testcollection.baseclasses_spec import TentacleSpecVariant
 from ..testcollection.constants import (
     ENV_MICROPYTHON_TESTS,
     TIMEOUT_FLASH_S,
@@ -214,7 +214,7 @@ class TestRunRunTests(TestRun):
     def test(self, testargs: TestArgs) -> None:
         assert len(self.tentacle_variant) == 1
         tentacle_variant = self.tentacle_variant[0]
-        assert isinstance(tentacle_variant, TentacleVariant)
+        assert isinstance(tentacle_variant, TentacleSpecVariant)
         tentacle = tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None

@@ -18,7 +18,7 @@ class TestRunSpecs(list[TestRunSpec]):
         available_tentacles: typing.Sequence[TentacleMicropython],
         firmwares_built: set[str] | None,
         flash_skip: bool,
-        tentacle_reference: TentacleMicropython,
+        tentacle_reference: TentacleMicropython | None,
     ) -> Iterator[TestRun]:
         assert isinstance(available_tentacles, list)
 
