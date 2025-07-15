@@ -75,22 +75,27 @@ class OutcomesForOneTest(list[TestOutcome]):
         def get_decoration(outcomes: list[TestOutcome]) -> tuple[str, str]:
             has_failed = False
             has_passed = False
+            has_skipped = False
             for outcome in outcomes:
                 if outcome.test_outcome.outcome == Outcome.FAILED.value:
                     has_failed = True
                 if outcome.test_outcome.outcome == Outcome.PASSED.value:
                     has_passed = True
+                if outcome.test_outcome.outcome == Outcome.SKIPPED.value:
+                    has_skipped = True
 
-            if not has_failed:
-                # All success: subscript italic
-                return ("<sub>*", "*</sub>")
+            if has_failed + has_passed + has_skipped == 1:
+                # Exactly one is true:
+                if has_failed:
+                    # all failed: bold
+                    return ("**", "**")
 
-            if has_passed and has_failed:
-                # Flaky: italic
-                return ("*", "*")
+                if has_passed:
+                    # all passed: subscript italic
+                    return ("<sub>*", "*</sub>")
 
-            # all failed: bold
-            return ("**", "**")
+            # Flaky: italic
+            return ("*", "*")
 
         decoration_begin, decoration_end = get_decoration(outcomes)
 

@@ -61,5 +61,5 @@ class DataSummaryLine:
             total_line.tests_failed += line.tests_failed
             total_line.tests_skipped += line.tests_skipped
             total_line.tests_passed += line.tests_passed
-        lines.insert(0, total_line)
+        lines.append(total_line)
         return lines
