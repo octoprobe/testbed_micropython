@@ -243,16 +243,28 @@ class ResultTestGroup:
     """
     testid_tentacle: str = ""
     """
-    Example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
+    Example: 5f2c-RPI_PICO_W
     Used to group by tentacles.
     """
     commandline: str = ""
     """
     Example: RUN-TESTS_STANDARD
     """
-    tentacles: list[str] = dataclasses.field(default_factory=list)
+    tentacle: str = ""
     """
-    Example: ['5f2c-RPI_PICO_W']
+    Example: 5f2c-RPI_PICO_W
+    """
+    tentacle_role: str = ""
+    """
+    Example: second
+    """
+    tentacle_mcu: str = ""
+    """
+    Example: rp2,esp32
+    """
+    tentacle_reference: str = ""
+    """
+    Example: 5f2c-RPI_PICO_W
     """
     time_start: str = ""
     """

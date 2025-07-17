@@ -323,11 +323,12 @@ class LegendTasks:
         for legend_task in self.legend_tasks:
             if legend_task.task.label == board_variant:
                 return legend_task.task_id
-        tasks_text = ",".join(t.task.label for t in self.legend_tasks)
-        logger.warning(
-            f"Failed to lookup '{board_variant}' in legend_tasks: {tasks_text}"
-        )
-        return f"<lookup-failed={board_variant}>"
+        # tasks_text = ",".join(t.task.label for t in self.legend_tasks)
+        # logger.debug(
+        #     f"Failed to lookup '{board_variant}' in legend_tasks: {tasks_text}"
+        # )
+        # return f"<lookup-failed={board_variant}>"
+        return "skip flash"
 
     def add(self, task: Task) -> None:
         if task.is_mpbuild:

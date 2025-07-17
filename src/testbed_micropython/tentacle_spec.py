@@ -51,6 +51,20 @@ class TentacleSpecMicropython(TentacleSpecBase):
             return [""]
         return variants.split(":")
 
+    @property
+    def board_build_variants(self) -> list[str]:
+        """
+        Example for PICO: ["PICO", "PICO-RISCV"]
+        Example for ESP8266_GENERIC: ["ESP8266_GENERIC"]
+        """
+
+        def join(variant: str) -> str:
+            if variant == "":
+                return self.board
+            return self.board + VARIANT_SEPARATOR + variant
+
+        return [join(variant) for variant in self.build_variants]
+
     def get_first_last_variant(self, last: bool) -> str:
         """
         Return "" for the first (default) variant.

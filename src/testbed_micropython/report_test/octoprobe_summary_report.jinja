@@ -40,6 +40,11 @@
 {%- for summary_by_test in data.summary_by_test %}
 ### Group: {{ summary_by_test.testgroup.testgroup_markdown(result_context=result_context) }}
 
+{% if summary_by_test.tentacle_reference -%}
+Reference: {{ summary_by_test.tentacle_reference }}
+{%- endif %}
+
+
 {# Table header -#}
 {{ summary_by_test.table_header_markup }}
 {#- Table delimter #}

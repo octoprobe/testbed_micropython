@@ -9,7 +9,7 @@ import sys
 import time
 import typing
 
-from octoprobe.util_constants import DirectoryTag
+from octoprobe.util_constants import DirectoryTag, TAG_MCU
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from ..testcollection.testrun_specs import TestRun
@@ -189,7 +189,13 @@ class ReportTestgroup:
             top=self.testresults_directory.directory_top,
             filename=logfile,
         )
-        self.report.tentacles = sorted([t.label_short for t in testrun.tentacles])
+        self.report.tentacle = testrun.tentacle_variant.tentacle.label_short
+        self.report.tentacle_role = testrun.tentacle_variant.role.value
+        self.report.tentacle_mcu = (
+            testrun.tentacle_variant.tentacle.tentacle_spec.get_tag_mandatory(TAG_MCU)
+        )
+        if testrun.tentacle_reference is not None:
+            self.report.tentacle_reference = testrun.tentacle_reference.label_short
 
         # Write the file for the case that it will never finish (timeout/crash).
         self._write()

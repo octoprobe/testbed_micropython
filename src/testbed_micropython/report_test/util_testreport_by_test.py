@@ -114,6 +114,12 @@ class OutcomesForOneTest(list[TestOutcome]):
         return False
 
 
+@dataclasses.dataclass(slots=True, frozen=True, order=True, unsafe_hash=True)
+class OutcomesColumn:
+    mcu: str = dataclasses.field(compare=True)
+    tentacle: str = dataclasses.field(compare=True)
+
+
 @dataclasses.dataclass(slots=True)
 class Group(list[OutcomesForOneTest]):
     testgroup: ResultTestGroup
@@ -122,15 +128,24 @@ class Group(list[OutcomesForOneTest]):
     The group is related to many 'ResultTestGroup's.
     'testgroup' just references just one.
     """
-    testids_tentacles: set[str] = dataclasses.field(default_factory=set)
-    _testids_tentacles_sorted: list[str] | None = None
+    testids_tentacles: set[OutcomesColumn] = dataclasses.field(default_factory=set)
+    """
+    The columns headers of the table.
+    Example: 2d2d-LOLIN_D1_MINI,2d2a-ESP32_DEVKIT
+    """
+    _testids_tentacles_sorted: list[OutcomesColumn] | None = None
+    """
+    The columns headers of the table but sorted.
+    """
+
+    def __post_init__(self) -> None:
+        assert isinstance(self.testids_tentacles, set)
+        assert isinstance(self._testids_tentacles_sorted, list | None)
 
     @property
-    def testids_tentacles_sorted(self) -> list[str]:
+    def testids_tentacles_sorted(self) -> list[OutcomesColumn]:
         if self._testids_tentacles_sorted is None:
-            self._testids_tentacles_sorted = sorted(
-                self.testids_tentacles,
-            )
+            self._testids_tentacles_sorted = sorted(self.testids_tentacles)
 
         return self._testids_tentacles_sorted
 
@@ -158,17 +173,22 @@ class Group(list[OutcomesForOneTest]):
         return self.testgroup.testgroup
 
     @property
+    def tentacle_reference(self) -> str:
+        return self.testgroup.tentacle_reference
+
+    @property
     def table_header_markup(self) -> Markup:
         """
         | Test | RPI_PICO_W | ESP32_DEVKIT |
         | :- | - | - |
         """
 
-        def format_tentacle_combination(testid_tentacles: str) -> str:
-            testid_tentacles = md_escape(testid_tentacles)
-            return testid_tentacles.replace(
-                DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>", 1
+        def format_tentacle_combination(testid_tentacles: OutcomesColumn) -> str:
+            tentacle = md_escape(testid_tentacles.tentacle).replace(
+                DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>"
             )
+            mcu = md_escape(testid_tentacles.mcu)
+            return mcu + "<br>" + tentacle
 
         elems_header = [
             format_tentacle_combination(testid_tentacles)
@@ -206,7 +226,12 @@ class SummaryByTest(list[Group]):
                     testgroup=testgroup,
                     test_name=test_outcome.name,
                 )
-                group.testids_tentacles.add(testgroup.testid_tentacle)
+                group.testids_tentacles.add(
+                    OutcomesColumn(
+                        mcu=testgroup.tentacle_mcu,
+                        tentacle=testgroup.testid_tentacle,
+                    )
+                )
                 outcomes_for_one_test.append(
                     TestOutcome(
                         testid_tentacles=testgroup.testid_tentacle,

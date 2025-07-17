@@ -20,7 +20,7 @@ TENTACLES_INVENTORY = (
             (
                 "e46414481355-552b",
                 "v1.0",
-                tentacle_specs.RPI_PICO_W,
+                tentacle_specs.RPI_PICO2,
             ),  # TODO: This is a RPI_PICO2_W!
             ("e46414481342-1830", "v1.0", tentacle_specs.LOLIN_C3_MINI),
             ("e4641448133e-5d21", "v1.0", tentacle_specs.ESP32_DEVKIT),
