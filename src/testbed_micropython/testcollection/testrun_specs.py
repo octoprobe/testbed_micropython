@@ -8,6 +8,8 @@ import pathlib
 import typing
 from collections.abc import Iterator
 
+from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
+
 from .. import constants
 from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
@@ -18,8 +20,8 @@ from ..testcollection.baseclasses_spec import (
 )
 from ..testcollection.constants import (
     DELIMITER_TENTACLE,
-    DELIMITER_TESTRUN,
     DELIMITER_TESTROLE,
+    DELIMITER_TESTRUN,
 )
 
 if typing.TYPE_CHECKING:
@@ -32,10 +34,6 @@ logger = logging.getLogger(__name__)
 class TestArgs:
     testresults_directory: ResultsDir
     repo_micropython_tests: pathlib.Path
-
-
-# TODO: Remove
-_ROLE_LABELS = ["First", "Second", "Third"]
 
 
 @dataclasses.dataclass(slots=True, repr=True)
@@ -66,6 +64,10 @@ class TestRun:
         self.testrun_spec.mark_as_done(testrun=self)
 
     @property
+    def requires_reference_tentacle(self) -> bool:
+        return self.testrun_spec.requires_reference_tentacle
+
+    @property
     def timeout_s(self) -> float:
         return self.testrun_spec.timeout_s
 
@@ -73,36 +75,32 @@ class TestRun:
     def test(self, testargs: TestArgs) -> None: ...
 
     @property
+    def label_testrun(self) -> str:
+        """
+        Example: 'RUN-TESTS_EXTMOD_HARDWARE#a'
+        """
+        return f"{self.testrun_spec.label}{DELIMITER_TESTRUN}{self.tentacle_variant.testrun_idx_text}"
+
+    @property
     def testid(self) -> str:
         """
-        Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC
-        If self.testrun_spec.requires_reference_tentacle:
-         Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC-first
+        Example: run-perfbench.py,a@2d2d-RPI_PICO2-RISCV_GENERIC
         This is the unique id of the testrun.
         """
-        elems = [
-            self.testrun_spec.label_testrun,
-            DELIMITER_TENTACLE,
-            self.tentacle_text,
-        ]
-        if self.testrun_spec.requires_reference_tentacle:
-            elems.append(DELIMITER_TESTROLE)
-            elems.append(self.tentacle_variant.role.value)
-        return "".join(elems)
+        return "".join(
+            [
+                self.label_testrun,
+                DELIMITER_TENTACLE,
+                self.tentacle_variant_role_text,
+            ]
+        )
 
     @property
-    def testid_group(self) -> str:
-        """
-        For example: run-perfbench.py@2d2d-lolin_D1-ESP8266_GENERIC
-        This is used to group testruns to show flakiness.
-        """
-        return self.testrun_spec.label + DELIMITER_TENTACLE + self.tentacle_text
-
-    @property
-    def tentacles(self) -> Iterator[TentacleMicropython]:
-        yield self.tentacle_variant.tentacle
+    def tentacles(self) -> list[TentacleMicropython]:
+        _tentacles = [self.tentacle_variant.tentacle]
         if self.tentacle_reference is not None:
-            yield self.tentacle_reference
+            _tentacles.append(self.tentacle_reference)
+        return _tentacles
 
     @property
     @contextlib.contextmanager
@@ -119,30 +117,47 @@ class TestRun:
                 t.infra.mcu_infra.active_led(on=False)
 
     @property
-    def tentacle_text(self) -> str:
+    def tentacle_variant_text(self) -> str:
         """
-        For example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
+        For example: 5f2c-RPI_PICO_W-unknown
         """
+        text = self.tentacle_variant.tentacle.label_short
+        if self.tentacle_variant.variant != "":
+            text += VARIANT_SEPARATOR + self.tentacle_variant.variant
+        return text
 
-        def testid(tv: TentacleSpecVariant) -> str:
-            if self.flash_skip:
-                if len(tv.tentacle.tentacle_spec.build_variants) > 1:
-                    return f"{tv.tentacle.label_short}-unknown"
-
-            return f"{tv.tentacle.label_short}{tv.dash_variant}"
-
-        return testid(self.tentacle_variant)
+    @property
+    def tentacle_variant_role_text(self) -> str:
+        """
+        For example: 5f2c-RPI_PICO_W-unknown-first
+        """
+        text = self.tentacle_variant_text
+        if self.testrun_spec.requires_reference_tentacle:
+            text += DELIMITER_TESTROLE + self.tentacle_variant.role.value
+        return text
 
     @property
     def firmware_already_flashed(self) -> bool:
-        a = self.tentacle_variant.board_variant
-        b = self.tentacle_variant.tentacle.board_variant_normalized
+        if self.flash_skip:
+            return True
+
+        tentacle_variant = self.tentacle_variant
+        tentacle_state = tentacle_variant.tentacle.tentacle_state
+        if not tentacle_state.has_firmware_spec:
+            # We do not have a firmware_spec, thus the tentacle hast not been flashed yet
+            return False
+
+        a = tentacle_variant.board_variant
+        b = tentacle_variant.tentacle.tentacle_state.firmware_spec.board_variant.name_normalized
+        assert isinstance(a, str)
+        assert isinstance(b, str)
         return a == b
 
     @property
     def debug_text(self) -> str:
-        board_variants = [bv.board_variant for bv in self.tentacle_variant]
-        return f"TestRun({self.testrun_spec.label}, {', '.join(board_variants)})"
+        return (
+            f"TestRun({self.testrun_spec.label}, {self.tentacle_variant.board_variant})"
+        )
         # return self.testid
 
     def pytest_print(self, indent: int, file=typing.TextIO) -> None:
@@ -184,7 +199,7 @@ class TestRun:
         return sorted(testruns, key=priority)
 
 
-@dataclasses.dataclass(slots=True, repr=True)
+@dataclasses.dataclass(slots=True, order=True)
 class TestRunSpec:
     """
     Tentacle_WLA_STA connects to Tentacle_WLAN_AP.
@@ -206,11 +221,6 @@ class TestRunSpec:
     tsvs_todo: TentacleSpecVariants = dataclasses.field(
         default_factory=TentacleSpecVariants
     )
-    testrun_idx0: int = 0
-    """
-    Example: 0, 1, 2
-    If '--count=3' is given, there will be a 'TestRunSpec' for each run!
-    """
 
     def __post_init__(self) -> None:
         assert isinstance(self.label, str)
@@ -221,14 +231,6 @@ class TestRunSpec:
         assert isinstance(self.timeout_s, float)
         assert isinstance(self.testrun_class, type(TestRun))
         assert isinstance(self.tsvs_todo, TentacleSpecVariants)
-        assert isinstance(self.testrun_idx0, int)
-
-    @property
-    def label_testrun(self) -> str:
-        """
-        Example: 'RUN-TESTS_EXTMOD_HARDWARE#a'
-        """
-        return f"{self.label}{DELIMITER_TESTRUN}{chr(ord('a') + self.testrun_idx0)}"
 
     @property
     def command_executable(self) -> str:
@@ -242,6 +244,8 @@ class TestRunSpec:
         self,
         tentacles: ConnectedTentacles,
         tentacle_reference: TentacleMicropython | None,
+        count: int,
+        flash_skip: bool,
     ) -> None:
         """
         Assign tentacle-variants (board-variants) to be tested.
@@ -255,7 +259,11 @@ class TestRunSpec:
         if self.requires_reference_tentacle:
             roles = [TestRole.ROLE_FIRST, TestRole.ROLE_SECOND]
 
-        self.tsvs_todo = selected_tentacles.get_tsvs(roles=roles)
+        self.tsvs_todo = selected_tentacles.get_tsvs(
+            roles=roles,
+            count=count,
+            flash_skip=flash_skip,
+        )
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.label} {self.command_args})"
@@ -267,6 +275,8 @@ class TestRunSpec:
             if tsvs.equals(testrun.tentacle_variant):
                 self.tsvs_todo.remove(tsvs)
                 return
+
+        logger.warning(f"testrun not found: '{testrun.testrun_spec.label}")
 
     @property
     def tests_todo(self) -> int:
@@ -281,11 +291,16 @@ class TestRunSpec:
     ) -> Iterator[TestRun]:
         for tentacle in available_tentacles:
             for tsv in self.tsvs_todo:
+                if firmwares_built is not None:
+                    if tsv.board_variant not in firmwares_built:
+                        continue
+
                 if tsv.board == tentacle.tentacle_spec.board:
                     tentacle_variant = TentacleSpecVariant(
                         tentacle=tentacle,
                         variant=tsv.variant,
                         role=tsv.role,
+                        testrun_idx0=tsv.testrun_idx0,
                     )
                     yield self.testrun_class(
                         testrun_spec=self,
@@ -295,6 +310,5 @@ class TestRunSpec:
                     )
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
-        for idx0_role, role_tsvs_todo in enumerate(self.roles_tsvs_todo):
-            label = _ROLE_LABELS[idx0_role]
-            print(indent * "  " + f"{label:} {role_tsvs_todo.sorted_text!r}", file=file)
+        for tsv in self.tsvs_todo:
+            print(indent * "  " + repr(tsv), file=file)

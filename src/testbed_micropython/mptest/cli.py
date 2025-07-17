@@ -30,7 +30,6 @@ from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
 from ..tentacles_inventory import TENTACLES_INVENTORY
-from ..testcollection.baseclasses_spec import tentacle_spec_2_tsvs
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 from .util_baseclasses import ArgsQuery
 from .util_testbootmode import do_debugbootmode, get_programmer_labels
@@ -121,7 +120,7 @@ def list_() -> None:
     print("Connected")
     for tentacle in connected_tentacles:
         print(f"  {tentacle.label}")
-        variants = ",".join(f"{tsv!r}" for tsv in tentacle_spec_2_tsvs(tentacle))
+        variants = ",".join(tentacle.tentacle_spec.board_build_variants)
         print(f"    variants={variants}")
         futs = ",".join([fut.name for fut in tentacle.tentacle_spec.futs])
         print(f"    futs={futs}")
@@ -136,8 +135,8 @@ def list_() -> None:
         print(f"    required_fut={testrun_spec.required_fut.name}")
         print(f"    tests_todo={testrun_spec.tests_todo}")
         print("    tests")
-        for tsvs in testrun_spec.roles_tsvs_todo:
-            print(f"      {tsvs}")
+        for tsv in testrun_spec.tsvs_todo:
+            print(f"      {tsv}")
 
 
 @app.command(help="Flashes all tentacles without running any tests")
@@ -181,7 +180,7 @@ def flash(
 
     testrunner = util_testrunner.TestRunner(args=args)
     try:
-        testrunner.init(tentacle_reference=constants.DEFAULT_REFERENCE_BOARD)
+        testrunner.init()
     except MpbuildMpyDirectoryException as e:
         logger.warning(e)
         return

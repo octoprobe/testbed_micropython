@@ -49,6 +49,8 @@ class Ttestparam:
     label: str
     specs: list[TentacleSpecMicropython]
     testrun_specs: baseclasses_run.TestRunSpecs
+    count: int = 1
+    flash_skip: bool = False
 
     @property
     def pytest_id(self) -> str:
@@ -70,7 +72,8 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
     specs = testparam.specs
     testrun_specs_ = testparam.testrun_specs
 
-    def factory() -> typing.Iterator[TentacleMicropython]:
+    def factory() -> list[TentacleMicropython]:
+        tentacle_list = []
         for i, spec in enumerate(specs):
             serial = f"1c4{i}"
             tentacle_instance = TentacleInstance(
@@ -80,26 +83,33 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                 testbed_name="testbed_micropython",
                 testbed_instance="ch_hans_1",
             )
-            yield TentacleMicropython(
-                tentacle_instance=tentacle_instance,
-                tentacle_serial_number=serial,
-                usb_tentacle=UsbTentacle(
-                    hub4_location=Location(3, [1, i]),
-                    pico_infra=UsbPico(
-                        location=Location(bus=1, path=[]),
-                        serial=None,
-                        serial_port=None,
+            tentacle_list.append(
+                TentacleMicropython(
+                    tentacle_instance=tentacle_instance,
+                    tentacle_serial_number=serial,
+                    usb_tentacle=UsbTentacle(
+                        hub4_location=Location(3, [1, i]),
+                        pico_infra=UsbPico(
+                            location=Location(bus=1, path=[]),
+                            serial=None,
+                            serial_port=None,
+                        ),
+                        pico_probe=None,
+                        tentacle_version=TENTACLE_VERSION_V03,
                     ),
-                    pico_probe=None,
-                    tentacle_version=TENTACLE_VERSION_V03,
-                ),
+                )
             )
+        # Sort tentacles by their serial for deterministic output
+        tentacle_list.sort(key=lambda t: t.tentacle_serial_number)
+        return tentacle_list
 
     connected_tentacles = ConnectedTentacles(factory())
 
     testrun_specs_.assign_tentacles(
         tentacles=connected_tentacles,
-        tentacle_reference=constants.DEFAULT_REFERENCE_BOARD,
+        tentacle_reference=None,
+        flash_skip=testparam.flash_skip,
+        count=testparam.count,
     )
 
     print("## testrun_specs", file=file)
@@ -159,7 +169,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             possible_testruns = bartender.possible_testruns(
                 firmwares_built=firmwares_built,
                 flash_skip=args.firmware.flash_skip,
-                reference_board=constants.DEFAULT_REFERENCE_BOARD,
             )
             print(f"## {i}: possible_testruns", file=file)
             for possible_testrun in possible_testruns:
@@ -206,7 +215,7 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
     required_fut=constants.EnumFut.FUT_WLAN,
-    requires_reference_tentacle=True,
+    requires_reference_tentacle=False,
     testrun_class=runtests.TestRunRunTests,
     timeout_s=5 * 60.0,
 )

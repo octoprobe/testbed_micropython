@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import logging
 import typing
 
 from ..report_task.util_report_renderer import (
@@ -18,14 +19,25 @@ _TENTACLE_NONE = "."
 # _QUANTIZE_FACTOR =  5  # 200ms
 _QUANTIZE_FACTOR = 2  # 500ms
 
+logger = logging.getLogger(__file__)
+
 
 @dataclasses.dataclass
 class ReportTentacle:
     label: str
+    """
+    Example: 552b-RPI_PICO2_W
+    """
     board_variant: str
+    """
+    Example: RPI_PICO_W
+    """
 
     @property
     def text(self) -> str:
+        """
+        Example: 552b-RPI_PICO2_W(RPI_PICO_W)
+        """
         return f"{self.label}({self.board_variant})"
 
 
@@ -34,6 +46,9 @@ class Task:
     start_s: float
     end_s: float
     label: str
+    """
+    Example: RPI_PICO_W
+    """
     tentacles: typing.Sequence[ReportTentacle] = dataclasses.field(default_factory=list)
     """
     For mpbuild: This is an empty list
@@ -57,6 +72,10 @@ class Task:
 
     @property
     def label_with_mpbuild_or_test(self) -> str:
+        """
+        Example: Build RPI_PICO_W
+        Example: Test RUN-MULTITESTS_MULTIBLUETOOTH,a@3c2a-ARDUINO_NANO_33,5f2c-RPI_PICO_W
+        """
         if self.is_mpbuild:
             return f"Build {self.label}"
         return f"Test {self.label}"
@@ -288,12 +307,15 @@ class LegendTasks:
 
     @property
     def legend_tasks_sorted(self) -> list[LegendTask]:
-        def key(task: LegendTask) -> tuple[bool, str]:
+        def key(task: LegendTask) -> tuple[bool, str | int]:
             """
             First: characters before numbers
             Second: alphabetically ascending
             """
-            return task.task_id.isdigit(), task.task_id
+            try:
+                return False, int(task.task_id)
+            except ValueError:
+                return True, task.task_id
 
         return sorted(self.legend_tasks, key=key)
 
@@ -303,7 +325,12 @@ class LegendTasks:
         for legend_task in self.legend_tasks:
             if legend_task.task.label == board_variant:
                 return legend_task.task_id
-        return f"<lookup-failed={board_variant}>"
+        # tasks_text = ",".join(t.task.label for t in self.legend_tasks)
+        # logger.debug(
+        #     f"Failed to lookup '{board_variant}' in legend_tasks: {tasks_text}"
+        # )
+        # return f"<lookup-failed={board_variant}>"
+        return "skip flash"
 
     def add(self, task: Task) -> None:
         if task.is_mpbuild:
@@ -338,6 +365,8 @@ class LegendTasks:
 
 
 class TaskReport:
+    __slots__ = ("tasks", "legend_tasks", "legend_tentacles", "rows")
+
     def __init__(self, tasks: Tasks) -> None:
         self.tasks = copy.deepcopy(tasks)
         self.tasks.quantize_times()
@@ -354,7 +383,7 @@ class TaskReport:
 
         self.rows = self._append_rows()
 
-    def _append_rows(self):
+    def _append_rows(self) -> ReportRows:
         timestamps = set()
         for task in self.tasks:
             timestamps.add(task.start_s)

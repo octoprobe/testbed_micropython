@@ -40,6 +40,11 @@
 {%- for summary_by_test in data.summary_by_test %}
 ### Group: {{ summary_by_test.testgroup.testgroup_markdown(result_context=result_context) }}
 
+{% if summary_by_test.tentacle_reference -%}
+Reference: {{ summary_by_test.tentacle_reference }}
+{%- endif %}
+
+
 {# Table header -#}
 {{ summary_by_test.table_header_markup }}
 {#- Table delimter #}
@@ -48,9 +53,9 @@
   {%- for outcomes_for_one_test in summary_by_test -%}
     {#- Test name on the very left column #}
 |   {{ outcomes_for_one_test.test_name_link_markup(result_context=result_context) -}}
-    {%- for testid_tentacles in summary_by_test.testids_tentacles_sorted -%}
+    {%- for outcome_column in summary_by_test.outcome_columns_sorted -%}
       {#- Column with FAIL/PASS/FLAKY -#}
-|     {{ outcomes_for_one_test.outcome_link(testid_tentacles, fix_links) }}
+|     {{ outcomes_for_one_test.outcome_link(outcome_column, fix_links) }}
     {%- endfor -%}
 |
   {%- endfor %}

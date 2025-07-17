@@ -233,26 +233,35 @@ class ResultTestGroup:
     """
     testid: str = ""
     """
-    Example: RUN-TESTS_EXTMOD_HARDWARE#b@5f2c-RPI_PICO_W
+    Example: RUN-TESTS_EXTMOD_HARDWARE#b@5f2c-RPI_PICO2-RISCV-second
     Unique id of a testrun
     """
-    testid_group: str = ""
+    tentacle_variant: str = ""
     """
-    Example: RUN-TESTS_EXTMOD_HARDWARE@5f2c-RPI_PICO_W
-    Used to group testsruns to show flakiness.
+    Example: 5f2c-RPI_PICO2-RISCV
+    Used to group by tentacles.
     """
-    testid_tentacle: str = ""
+    tentacle_variant_role: str = ""
     """
-    Example: 5f2c-RPI_PICO_W,2d2d-lolin_D1-ESP8266_GENERIC
+    Example: 5f2c-RPI_PICO2-RISCV-first
     Used to group by tentacles.
     """
     commandline: str = ""
     """
     Example: RUN-TESTS_STANDARD
     """
-    tentacles: list[str] = dataclasses.field(default_factory=list)
+
+    # tentacle_role: str = ""
+    # """
+    # Example: second
+    # """
+    tentacle_mcu: str = ""
     """
-    Example: ['5f2c-RPI_PICO_W']
+    Example: rp2,esp32
+    """
+    tentacle_reference: str = ""
+    """
+    Example: 5f2c-RPI_PICO_W
     """
     time_start: str = ""
     """
@@ -292,6 +301,11 @@ class ResultTestGroup:
     @property
     def results_success(self) -> list[ResultTestOutcome]:
         return self._result_count(Outcome.PASSED)
+
+    # @property
+    # def tentacle_role(self) -> str:
+    #     1 / 0
+    #     return self._result_count(Outcome.PASSED)
 
     def _result_count(self, outcome: Outcome) -> list[ResultTestOutcome]:
         test_results = [r for r in self.outcomes if r.outcome == outcome]

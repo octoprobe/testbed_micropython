@@ -43,12 +43,18 @@ class TestRunSpecs(list[TestRunSpec]):
         self,
         tentacles: ConnectedTentacles,
         tentacle_reference: TentacleMicropython | None,
+        count: int,
+        flash_skip: bool,
     ) -> None:
         for testrun_spec in self:
             testrun_spec.assign_tentacles(
                 tentacles=tentacles,
                 tentacle_reference=tentacle_reference,
+                count=count,
+                flash_skip=flash_skip,
             )
+
+        self.sort()
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
         for testrunspec in self:

@@ -26,7 +26,7 @@ from ..report_task import util_report_tasks
 from ..tentacle_spec import TentacleMicropython
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
-from ..testcollection.testrun_specs import TestRun, TestRunSpec
+from ..testcollection.testrun_specs import TestRun
 
 logger = logging.getLogger(__file__)
 
@@ -154,14 +154,20 @@ class TestBartender:
         assert isinstance(async_target, AsyncTargetTest)
         self.async_targets.append(async_target)
 
-        self.available_tentacles.remove(async_target.testrun.tentacle_variant.tentacle)
+        for tentacle in async_target.tentacles:
+            assert tentacle in self.available_tentacles
+            self.available_tentacles.remove(tentacle)
+
         async_target.testrun.mark_as_done()
 
     def _release(self, async_target: AsyncTargetTest) -> None:
         assert isinstance(async_target, AsyncTargetTest)
         assert async_target in self.async_targets
         self.async_targets.remove(async_target)
-        self.available_tentacles.append(async_target.testrun.tentacle_variant.tentacle)
+
+        for tentacle in async_target.tentacles:
+            assert tentacle not in self.available_tentacles
+            self.available_tentacles.append(tentacle)
 
     def handle_timeouts(self, report_tasks: util_report_tasks.Tasks) -> None:
         assert isinstance(report_tasks, util_report_tasks.Tasks)

@@ -11,8 +11,13 @@ from testbed_micropython.report_task.util_report_tasks import (
     Tasks,
 )
 
+DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
+FILENAME_OF_THIS_FILE = pathlib.Path(__file__).name
+DIRECTORY_RESULTS = DIRECTORY_OF_THIS_FILE / "test_report_tasks_testresults"
+DIRECTORY_RESULTS.mkdir(parents=True, exist_ok=True)
 
-def main():
+
+def test_report_tasks():
     tasks = Tasks(
         [
             Task(4.6, 12.1, "PICO2_RISCV"),
@@ -49,9 +54,9 @@ def main():
         (".md", util_report_renderer.RendererMarkdown),
         (".html", util_report_renderer.RendererHtml),
     ):
-        with pathlib.Path(__file__).with_suffix(suffix).open("w") as f:
+        with (DIRECTORY_RESULTS / f"test_report{suffix}").open("w") as f:
             report.report(renderer=cls_renderer(f))
 
 
 if __name__ == "__main__":
-    main()
+    test_report_tasks()

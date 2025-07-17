@@ -32,10 +32,8 @@ class TestRunRunTests(TestRun):
     """
 
     def test(self, testargs: TestArgs) -> None:
-        assert len(self.tentacle_variant) == 1
-        tentacle_variant = self.tentacle_variant[0]
-        assert isinstance(tentacle_variant, TentacleSpecVariant)
-        tentacle = tentacle_variant.tentacle
+        assert isinstance(self.tentacle_variant, TentacleSpecVariant)
+        tentacle = self.tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 

@@ -8,6 +8,8 @@ import dataclasses
 import enum
 import logging
 
+from octoprobe.util_micropython_boards import VARIANT_UNKNOWN
+
 from ..constants import EnumFut
 from ..mpbuild.build_api import BoardVariant
 from ..mptest.util_baseclasses import ArgsQuery
@@ -32,20 +34,35 @@ class TentacleSpecVariant:
     tentacle: TentacleMicropython
     variant: str
     role: TestRole
+    testrun_idx0: int = 0
+    """
+    Example: 0, 1, 2
+    If '--count=3' is given, there will be a 'TestRunSpec' for each run!
+    """
 
     def __post_init__(self) -> None:
         assert isinstance(self.tentacle, TentacleMicropython)
         assert isinstance(self.variant, str)
         assert isinstance(self.role, TestRole)
+        assert isinstance(self.testrun_idx0, int)
 
     def __repr__(self) -> str:
-        return f"{self.board_variant}({self.role.name})"
+        return f"{self.board_variant}({self.testrun_idx0}, {self.role.name})"
 
     def equals(self, tentacle_variant: TentacleSpecVariant) -> bool:
         assert isinstance(tentacle_variant, TentacleSpecVariant)
-        return (self.board_variant == tentacle_variant.board_variant) and (
-            self.role == tentacle_variant.role
+        return (
+            (self.testrun_idx0 == tentacle_variant.testrun_idx0)
+            and (self.board_variant == tentacle_variant.board_variant)
+            and (self.role == tentacle_variant.role)
         )
+
+    @property
+    def testrun_idx_text(self) -> str:
+        """
+        Example: 'a'
+        """
+        return chr(ord("a") + self.testrun_idx0)
 
     @property
     def board(self) -> str:
@@ -77,42 +94,34 @@ class TentacleSpecVariant:
 def tentacle_spec_2_tsvs(
     tentacle: TentacleMicropython,
     role: TestRole,
+    count: int,
+    flash_skip: bool,
 ) -> list[TentacleSpecVariant]:
     """
     ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
     """
     assert isinstance(tentacle, TentacleMicropython)
     assert isinstance(role, TestRole)
+    assert isinstance(count, int)
 
     variants = tentacle.tentacle_spec.build_variants
     if tentacle.tentacle_state.variants_required is not None:
         variants = tentacle.tentacle_state.variants_required
+    if (len(variants) > 1) and flash_skip:
+        # This board supports multiple variants: If we do not flash, we do not know the variant...
+        variants = [VARIANT_UNKNOWN]
     return [
-        TentacleSpecVariant(tentacle=tentacle, variant=v, role=role) for v in variants
+        TentacleSpecVariant(tentacle=tentacle, variant=v, role=role, testrun_idx0=idx0)
+        for v in variants
+        for idx0 in range(count)
     ]
 
 
-class TentacleSpecVariants(set[TentacleSpecVariant]):
+class TentacleSpecVariants(list[TentacleSpecVariant]):
     def __repr__(self) -> str:
         board_variants = [tsv.board_variant for tsv in self]
         boards_variants_text = ", ".join(board_variants)
         return f"TentacleSpecVariants({boards_variants_text})"
-
-    def remove_tentacle_variant(
-        self,
-        tentacle_variant: TentacleSpecVariant,
-    ) -> None:
-        assert isinstance(tentacle_variant, TentacleSpecVariant)
-        for tsv in self:
-            if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
-                if tsv.variant == tentacle_variant.variant:
-                    assert tsv in self
-                    self.remove(tsv)
-                    return
-
-        logger.warning(
-            f"remove_tentacle_variant(): Could not remove as not found: {tentacle_variant.board_variant}"
-        )
 
     @property
     def sorted_text(self) -> list[str]:
@@ -120,13 +129,23 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
-    def get_tsvs(self, roles: list[TestRole]) -> TentacleSpecVariants:
-        s = TentacleSpecVariants()
+    def get_tsvs(
+        self,
+        roles: list[TestRole],
+        count: int,
+        flash_skip: bool,
+    ) -> TentacleSpecVariants:
+        s: set[TentacleSpecVariant] = set()
         for tentacle in self:
             for role in roles:
-                for tsv in tentacle_spec_2_tsvs(tentacle=tentacle, role=role):
+                for tsv in tentacle_spec_2_tsvs(
+                    tentacle=tentacle,
+                    role=role,
+                    count=count,
+                    flash_skip=flash_skip,
+                ):
                     s.add(tsv)
-        return s
+        return TentacleSpecVariants(sorted(s))
 
     def get_exclude_reference(
         self,

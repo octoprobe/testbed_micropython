@@ -31,9 +31,15 @@ logger = logging.getLogger(__file__)
 
 @dataclasses.dataclass(repr=True, slots=True)
 class TestOutcome:
-    testid_tentacles: str
+    tentacle_role: str
+    """
+    Example: 3c2a-ARDUINO_NANO_33-second
+    """
     test_outcome: ResultTestOutcome
     testgroup: ResultTestGroup
+
+    def __post_init__(self) -> None:
+        pass
 
     @property
     def logfile_markdown(self) -> str:
@@ -60,11 +66,14 @@ class OutcomesForOneTest(list[TestOutcome]):
 
     def outcome_link(
         self,
-        testid_tentacles: str,
+        outcome_column: OutcomeColumn,
         fix_links: typing.Callable[[str], str],
     ) -> str:
+        assert isinstance(outcome_column, OutcomeColumn)
         outcomes = [
-            outcome for outcome in self if outcome.testid_tentacles == testid_tentacles
+            outcome
+            for outcome in self
+            if outcome.tentacle_role == outcome_column.tentacle_variant_role
         ]
         if len(outcomes) == 0:
             return ""
@@ -114,6 +123,21 @@ class OutcomesForOneTest(list[TestOutcome]):
         return False
 
 
+@dataclasses.dataclass(slots=True, frozen=True, order=True, unsafe_hash=True)
+class OutcomeColumn:
+    mcu: str = dataclasses.field(compare=True)
+    """
+    Example: rp2,nrf
+    """
+    tentacle_variant_role: str = dataclasses.field(compare=True)
+    """
+    Example: 3c2a-RPI_PICO2-RISCV-second
+    """
+
+    def __post_init__(self) -> None:
+        pass
+
+
 @dataclasses.dataclass(slots=True)
 class Group(list[OutcomesForOneTest]):
     testgroup: ResultTestGroup
@@ -122,17 +146,26 @@ class Group(list[OutcomesForOneTest]):
     The group is related to many 'ResultTestGroup's.
     'testgroup' just references just one.
     """
-    testids_tentacles: set[str] = dataclasses.field(default_factory=set)
-    _testids_tentacles_sorted: list[str] | None = None
+    outcome_columns: set[OutcomeColumn] = dataclasses.field(default_factory=set)
+    """
+    The columns headers of the table.
+    Example: 2d2d-LOLIN_D1_MINI,2d2a-ESP32_DEVKIT
+    """
+    _outcome_columns_sorted: list[OutcomeColumn] | None = None
+    """
+    The columns headers of the table but sorted.
+    """
+
+    def __post_init__(self) -> None:
+        assert isinstance(self.outcome_columns, set)
+        assert isinstance(self._outcome_columns_sorted, list | None)
 
     @property
-    def testids_tentacles_sorted(self) -> list[str]:
-        if self._testids_tentacles_sorted is None:
-            self._testids_tentacles_sorted = sorted(
-                self.testids_tentacles,
-            )
+    def outcome_columns_sorted(self) -> list[OutcomeColumn]:
+        if self._outcome_columns_sorted is None:
+            self._outcome_columns_sorted = sorted(self.outcome_columns)
 
-        return self._testids_tentacles_sorted
+        return self._outcome_columns_sorted
 
     def find_or_new(
         self,
@@ -158,21 +191,26 @@ class Group(list[OutcomesForOneTest]):
         return self.testgroup.testgroup
 
     @property
+    def tentacle_reference(self) -> str:
+        return self.testgroup.tentacle_reference
+
+    @property
     def table_header_markup(self) -> Markup:
         """
         | Test | RPI_PICO_W | ESP32_DEVKIT |
         | :- | - | - |
         """
 
-        def format_tentacle_combination(testid_tentacles: str) -> str:
-            testid_tentacles = md_escape(testid_tentacles)
-            return testid_tentacles.replace(
-                DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>", 1
+        def format_tentacle_combination(testid_tentacles: OutcomeColumn) -> str:
+            tentacle = md_escape(testid_tentacles.tentacle_variant_role).replace(
+                DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>"
             )
+            mcu = md_escape(testid_tentacles.mcu)
+            return mcu + "<br>" + tentacle
 
         elems_header = [
             format_tentacle_combination(testid_tentacles)
-            for testid_tentacles in self.testids_tentacles_sorted
+            for testid_tentacles in self.outcome_columns_sorted
         ]
         return Markup(f"| Test | {' | '.join(elems_header)} |")
 
@@ -182,7 +220,7 @@ class Group(list[OutcomesForOneTest]):
         | Test | RPI_PICO_W | ESP32_DEVKIT |
         | :-: | - | - |
         """
-        elems_header = [":-:" for x in self.testids_tentacles_sorted]
+        elems_header = [":-:" for x in self.outcome_columns_sorted]
         return Markup(f"| :- | {' | '.join(elems_header)} |")
 
 
@@ -206,10 +244,15 @@ class SummaryByTest(list[Group]):
                     testgroup=testgroup,
                     test_name=test_outcome.name,
                 )
-                group.testids_tentacles.add(testgroup.testid_tentacle)
+                group.outcome_columns.add(
+                    OutcomeColumn(
+                        mcu=testgroup.tentacle_mcu,
+                        tentacle_variant_role=testgroup.tentacle_variant_role,
+                    )
+                )
                 outcomes_for_one_test.append(
                     TestOutcome(
-                        testid_tentacles=testgroup.testid_tentacle,
+                        tentacle_role=testgroup.tentacle_variant_role,
                         test_outcome=test_outcome,
                         testgroup=testgroup,
                     )

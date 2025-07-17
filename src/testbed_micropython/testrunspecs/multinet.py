@@ -95,18 +95,17 @@ class TestRunReference(TestRun):
 
 class TestRunRefernceMultinet(TestRunReference):
     def setup(self, testargs: TestArgs) -> None:
-        for tentacle_variant in self.tentacle_variant:
-            util_common.skip_if_no_filesystem(tentacle=tentacle_variant.tentacle)
+        util_common.skip_if_no_filesystem(tentacle=self.tentacle_variant.tentacle)
 
-            dut = tentacle_variant.tentacle.dut
-            util_common.copy_certificates(
-                dut=dut,
-                src=testargs.repo_micropython_tests
-                / MICROPYTHON_DIRECTORY_TESTS
-                / "multi_net",
-            )
+        dut = self.tentacle_variant.tentacle.dut
+        util_common.copy_certificates(
+            dut=dut,
+            src=testargs.repo_micropython_tests
+            / MICROPYTHON_DIRECTORY_TESTS
+            / "multi_net",
+        )
 
-            util_common.init_wlan(dut=dut)
+        util_common.init_wlan(dut=dut)
 
 
 class TestRunReferenceBluetooth(TestRunReference):

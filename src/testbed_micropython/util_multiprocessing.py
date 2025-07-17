@@ -117,11 +117,13 @@ class AsyncTarget:
     def __init__(
         self,
         target_unique_name: str,
-        tentacles: typing.Sequence[TentacleMicropython],
+        tentacles: list[TentacleMicropython],
         func: typing.Callable,
         func_args: list[typing.Any],
         timeout_s: float,
     ) -> None:
+        assert isinstance(tentacles, list)
+
         # Fail early: If the arguments can't be pickled, the
         # async call be fail which might be tricky to debug.
         # We take the pickle overhead and pickle now to force early fail.
@@ -147,7 +149,7 @@ class AsyncTarget:
         report_tentacles = [
             util_report_tasks.ReportTentacle(
                 label=t.label_short,
-                board_variant=t.board_variant_normalized,
+                board_variant=t.unknown_board_variant_normalized,
             )
             for t in self.tentacles
         ]
