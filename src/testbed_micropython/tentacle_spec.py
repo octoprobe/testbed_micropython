@@ -97,38 +97,37 @@ class TentacleMicropython(TentacleBase):
         return tentacle_spec_base
 
     @property
-    def variant(self) -> str:
+    def unknown_variant(self) -> str:
         """
         The variant which is to be flashed to the tentacle.
 
         Examples for RPI_PICO2_W
-        Example: ""
-        Example: "-RISCV"
-        Example: "-unknown"
+            Example: ""
+            Example: "-RISCV"
+            Example: "-unknown"
         """
         build_variant = self.tentacle_spec.build_variants[0]
-        if self.tentacle_state.has_firmware_spec is None:
+        if not self.tentacle_state.has_firmware_spec:
             if len(self.tentacle_spec.build_variants) > 1:
                 return VARIANT_SEPARATOR + VARIANT_UNKNOWN
-            assert build_variant == self.tentacle_state.firmware_spec.board_variant
         if build_variant == "":
             return build_variant
         return VARIANT_SEPARATOR + build_variant
 
     @property
-    def board_variant_normalized(self) -> str:
+    def unknown_board_variant_normalized(self) -> str:
         """
-        Example: RPI_PICO2_W
-        Example: RPI_PICO2_W-RISCV
-        Example: RPI_PICO2_W-unknown
+        Example: RPI_PICO2_W\n
+        Example: RPI_PICO2_W-RISCV\n
+        Example: RPI_PICO2_W-unknown\n
         """
-        return f"{self.tentacle_spec_base.tentacle_tag}{self.variant}"
+        return f"{self.tentacle_spec_base.tentacle_tag}{self.unknown_variant}"
 
-    @property
-    def serial_board_variant(self) -> str:
-        """
-        Example: 5f2c-RPI_PICO2_W
-        Example: 5f2c-RPI_PICO2_W-RISCV
-        Example: 5f2c-RPI_PICO2_W-unknown
-        """
-        return f"{self.label_short}{self.variant}"
+    # @property
+    # def serial_board_variant(self) -> str:
+    #     """
+    #     Example: 5f2c-RPI_PICO2_W
+    #     Example: 5f2c-RPI_PICO2_W-RISCV
+    #     Example: 5f2c-RPI_PICO2_W-unknown
+    #     """
+    #     return f"{self.label_short}{self.variant}"

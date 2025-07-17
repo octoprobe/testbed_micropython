@@ -151,10 +151,9 @@ class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
         assert isinstance(reference_board, str)
         board_variants: dict[str, set[str]] = defaultdict(set)
         for testrun_spec in testrun_specs:
-            for tsvs in testrun_spec.roles_tsvs_todo:
-                for tsv in tsvs:
-                    variants = board_variants[tsv.board]
-                    variants.add(tsv.variant)
+            for tsv in testrun_spec.tsvs_todo:
+                variants = board_variants[tsv.board]
+                variants.add(tsv.variant)
 
         firmwares = FirmwaresTobeBuilt()
         for board, variants in board_variants.items():

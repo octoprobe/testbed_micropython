@@ -121,27 +121,19 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
         for testarg in testargs:
             assert isinstance(testarg, TestArg)
 
-        def factory_inner(testspec: TestArg, idx0: int = 0) -> TestRunSpec:
+        def factory_inner(testspec: TestArg) -> TestRunSpec:
             assert isinstance(testspec, TestArg)
-            assert isinstance(idx0, int)
             s = DICT_TESTRUN_SPECS[testspec.testname]
             if testspec.has_args:
                 command = testspec.command.split(" ")
                 return dataclasses.replace(
                     s,
-                    testrun_idx0=idx0,
                     command=command,  # type: ignore[arg-type]
                 )
 
-            return dataclasses.replace(s, testrun_idx0=idx0)
+            return s
 
-        return TestRunSpecs(
-            [
-                factory_inner(testarg, idx0=idx)
-                for idx in range(query.count)
-                for testarg in testargs
-            ]
-        )
+        return TestRunSpecs([factory_inner(testarg) for testarg in testargs])
 
     if len(query_skip) > 0:
         selected_tests = set(DICT_TESTRUN_SPECS.keys()) - query.skip
@@ -342,6 +334,8 @@ class TestRunner:
         testrun_specs.assign_tentacles(
             tentacles=selected_tentacles,
             tentacle_reference=self.tentacle_reference,
+            count=self.args.query_test.count,
+            flash_skip=self.args.firmware.flash_skip,
         )
 
         from ..bartenders.test_bartender import TestBartender
