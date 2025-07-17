@@ -49,6 +49,8 @@ class Ttestparam:
     label: str
     specs: list[TentacleSpecMicropython]
     testrun_specs: baseclasses_run.TestRunSpecs
+    count: int = 1
+    flash_skip: bool = False
 
     @property
     def pytest_id(self) -> str:
@@ -99,7 +101,9 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     testrun_specs_.assign_tentacles(
         tentacles=connected_tentacles,
-        tentacle_reference=constants.DEFAULT_REFERENCE_BOARD,
+        tentacle_reference=None,
+        flash_skip=testparam.flash_skip,
+        count=testparam.count,
     )
 
     print("## testrun_specs", file=file)
@@ -159,7 +163,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             possible_testruns = bartender.possible_testruns(
                 firmwares_built=firmwares_built,
                 flash_skip=args.firmware.flash_skip,
-                reference_board=constants.DEFAULT_REFERENCE_BOARD,
             )
             print(f"## {i}: possible_testruns", file=file)
             for possible_testrun in possible_testruns:

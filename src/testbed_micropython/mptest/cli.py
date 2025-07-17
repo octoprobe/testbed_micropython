@@ -180,7 +180,7 @@ def flash(
 
     testrunner = util_testrunner.TestRunner(args=args)
     try:
-        testrunner.init(tentacle_reference=constants.DEFAULT_REFERENCE_BOARD)
+        testrunner.init()
     except MpbuildMpyDirectoryException as e:
         logger.warning(e)
         return
