@@ -84,29 +84,15 @@ class TestRun:
     @property
     def testid(self) -> str:
         """
-        Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC
-        If self.testrun_spec.requires_reference_tentacle:
-         Example: run-perfbench.py,a@2d2d-lolin_D1-ESP8266_GENERIC-first
+        Example: run-perfbench.py,a@2d2d-RPI_PICO2-RISCV_GENERIC
         This is the unique id of the testrun.
         """
         return "".join(
             [
                 self.label_testrun,
                 DELIMITER_TENTACLE,
-                self.tentacle_variant_text,
+                self.tentacle_variant_role_text,
             ]
-        )
-
-    @property
-    def testid_group(self) -> str:
-        """
-        For example: run-perfbench.py@2d2d-lolin_D1-ESP8266_GENERIC
-        This is used to group testruns to show flakiness.
-        """
-        return (
-            self.testrun_spec.label
-            + DELIMITER_TENTACLE
-            + self.tentacle_variant_role_text
         )
 
     @property

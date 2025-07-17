@@ -233,13 +233,8 @@ class ResultTestGroup:
     """
     testid: str = ""
     """
-    Example: RUN-TESTS_EXTMOD_HARDWARE#b@5f2c-RPI_PICO_W
+    Example: RUN-TESTS_EXTMOD_HARDWARE#b@5f2c-RPI_PICO2-RISCV-second
     Unique id of a testrun
-    """
-    testid_group: str = ""
-    """
-    Example: RUN-TESTS_EXTMOD_HARDWARE@5f2c-RPI_PICO_W
-    Used to group testsruns to show flakiness.
     """
     tentacle_variant: str = ""
     """

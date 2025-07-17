@@ -181,7 +181,6 @@ class ReportTestgroup:
         self.report.directory_relative = (
             self.testresults_directory.directory_test_relative
         )
-        self.report.testid_group = testrun.testid_group
         self.report.testid = testrun.testid
         self.report.tentacle_variant = testrun.tentacle_variant_text
         self.report.tentacle_variant_role = testrun.tentacle_variant_role_text
