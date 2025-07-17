@@ -96,10 +96,11 @@ class TestRun:
         )
 
     @property
-    def tentacles(self) -> Iterator[TentacleMicropython]:
-        yield self.tentacle_variant.tentacle
+    def tentacles(self) -> list[TentacleMicropython]:
+        _tentacles = [self.tentacle_variant.tentacle]
         if self.tentacle_reference is not None:
-            yield self.tentacle_reference
+            _tentacles.append(self.tentacle_reference)
+        return _tentacles
 
     @property
     @contextlib.contextmanager
