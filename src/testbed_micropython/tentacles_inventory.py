@@ -17,11 +17,7 @@ TENTACLES_INVENTORY = (
             # testbed micropython
             ("e46340474b59-2d2d", "v0.1", tentacle_specs.LOLIN_D1_MINI),
             ("e4641448132c-5f2c", "v1.0", tentacle_specs.RPI_PICO_W),
-            (
-                "e46414481355-552b",
-                "v1.0",
-                tentacle_specs.RPI_PICO2,
-            ),  # TODO: This is a RPI_PICO2_W!
+            ("e46414481355-552b", "v1.0", tentacle_specs.RPI_PICO2_W),
             ("e46414481342-1830", "v1.0", tentacle_specs.LOLIN_C3_MINI),
             ("e4641448133e-5d21", "v1.0", tentacle_specs.ESP32_DEVKIT),
             ("e46414481346-0c30", "v1.0", tentacle_specs.ESP32_C3_DEVKIT),
