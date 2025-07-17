@@ -93,7 +93,7 @@ class TestRun:
             [
                 self.label_testrun,
                 DELIMITER_TENTACLE,
-                self.tentacle_text,
+                self.tentacle_variant_text,
             ]
         )
 
@@ -103,7 +103,11 @@ class TestRun:
         For example: run-perfbench.py@2d2d-lolin_D1-ESP8266_GENERIC
         This is used to group testruns to show flakiness.
         """
-        return self.testrun_spec.label + DELIMITER_TENTACLE + self.tentacle_text
+        return (
+            self.testrun_spec.label
+            + DELIMITER_TENTACLE
+            + self.tentacle_variant_role_text
+        )
 
     @property
     def tentacles(self) -> Iterator[TentacleMicropython]:
@@ -126,36 +130,24 @@ class TestRun:
                 t.infra.mcu_infra.active_led(on=False)
 
     @property
-    def tentacle_text(self) -> str:
+    def tentacle_variant_text(self) -> str:
         """
-        For example: 5f2c-RPI_PICO_W-unknown-first
+        For example: 5f2c-RPI_PICO_W-unknown
         """
         text = self.tentacle_variant.tentacle.label_short
         if self.tentacle_variant.variant != "":
             text += VARIANT_SEPARATOR + self.tentacle_variant.variant
+        return text
+
+    @property
+    def tentacle_variant_role_text(self) -> str:
+        """
+        For example: 5f2c-RPI_PICO_W-unknown-first
+        """
+        text = self.tentacle_variant_text
         if self.testrun_spec.requires_reference_tentacle:
             text += DELIMITER_TESTROLE + self.tentacle_variant.role.value
         return text
-        # serial_board_variant = self.tentacle_variant.tentacle.serial_board_variant
-        # if self.testrun_spec.requires_reference_tentacle:
-        #     return f"{serial_board_variant}{DELIMITER_TESTROLE}{self.tentacle_variant.role.value}"
-        # return serial_board_variant
-
-    # @property
-    # def tentacle_text(self) -> str:
-    #     """
-    #     For example: 5f2c-RPI_PICO_W-first
-    #     """
-    #     serial_board_variant = self.tentacle_variant.tentacle.serial_board_variant
-    #     if self.testrun_spec.requires_reference_tentacle:
-    #         return f"{serial_board_variant}{DELIMITER_TESTROLE}{self.tentacle_variant.role.value}"
-    #     return serial_board_variant
-
-    # @property
-    # def firmware_already_flashed(self) -> bool:
-    #     a = self.tentacle_variant.board_variant
-    #     b = self.tentacle_variant.tentacle.board_variant_normalized
-    #     return a == b
 
     @property
     def firmware_already_flashed(self) -> bool:

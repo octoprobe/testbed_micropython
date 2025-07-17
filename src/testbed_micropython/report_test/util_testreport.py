@@ -183,14 +183,13 @@ class ReportTestgroup:
         )
         self.report.testid_group = testrun.testid_group
         self.report.testid = testrun.testid
-        self.report.testid_tentacle = testrun.tentacle_text
+        self.report.tentacle_variant = testrun.tentacle_variant_text
+        self.report.tentacle_variant_role = testrun.tentacle_variant_role_text
         self.report.commandline = " ".join(testrun.testrun_spec.command)
         self.report.log_output = DirectoryTag.R.render_relative_to(
             top=self.testresults_directory.directory_top,
             filename=logfile,
         )
-        self.report.tentacle = testrun.tentacle_variant.tentacle.label_short
-        self.report.tentacle_role = testrun.tentacle_variant.role.value
         self.report.tentacle_mcu = (
             testrun.tentacle_variant.tentacle.tentacle_spec.get_tag_mandatory(TAG_MCU)
         )
