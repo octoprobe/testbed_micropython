@@ -47,7 +47,7 @@ class TentacleSpecVariant:
         assert isinstance(self.testrun_idx0, int)
 
     def __repr__(self) -> str:
-        return f"{self.board_variant}({self.role.name})"
+        return f"{self.board_variant}({self.testrun_idx0}, {self.role.name})"
 
     def equals(self, tentacle_variant: TentacleSpecVariant) -> bool:
         assert isinstance(tentacle_variant, TentacleSpecVariant)

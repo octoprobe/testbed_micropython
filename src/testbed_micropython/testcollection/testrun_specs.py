@@ -244,7 +244,7 @@ class TestRunSpec:
         tentacles: ConnectedTentacles,
         tentacle_reference: TentacleMicropython | None,
         count: int,
-        flash_skip: int,
+        flash_skip: bool,
     ) -> None:
         """
         Assign tentacle-variants (board-variants) to be tested.
@@ -275,6 +275,8 @@ class TestRunSpec:
                 self.tsvs_todo.remove(tsvs)
                 return
 
+        logger.warning(f"testrun not found: '{testrun.testrun_spec.label}")
+
     @property
     def tests_todo(self) -> int:
         return len(self.tsvs_todo)
@@ -297,6 +299,7 @@ class TestRunSpec:
                         tentacle=tentacle,
                         variant=tsv.variant,
                         role=tsv.role,
+                        testrun_idx0=tsv.testrun_idx0,
                     )
                     yield self.testrun_class(
                         testrun_spec=self,
