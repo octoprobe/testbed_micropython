@@ -123,22 +123,6 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
         boards_variants_text = ", ".join(board_variants)
         return f"TentacleSpecVariants({boards_variants_text})"
 
-    def remove_tentacle_variant(
-        self,
-        tentacle_variant: TentacleSpecVariant,
-    ) -> None:
-        assert isinstance(tentacle_variant, TentacleSpecVariant)
-        for tsv in self:
-            if tsv.tentacle_spec == tentacle_variant.tentacle.tentacle_spec:
-                if tsv.variant == tentacle_variant.variant:
-                    assert tsv in self
-                    self.remove(tsv)
-                    return
-
-        logger.warning(
-            f"remove_tentacle_variant(): Could not remove as not found: {tentacle_variant.board_variant}"
-        )
-
     @property
     def sorted_text(self) -> list[str]:
         return sorted([s.board_variant for s in self])
@@ -146,7 +130,7 @@ class TentacleSpecVariants(set[TentacleSpecVariant]):
 
 class ConnectedTentacles(list[TentacleMicropython]):
     def get_tsvs(
-        self, roles: list[TestRole], count: int, flash_skip: bool
+        self, roles: list[TestRole], count: int, flash_skip: bool,
     ) -> TentacleSpecVariants:
         s = TentacleSpecVariants()
         for tentacle in self:

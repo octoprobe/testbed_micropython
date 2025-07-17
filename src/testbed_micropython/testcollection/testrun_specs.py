@@ -155,8 +155,7 @@ class TestRun:
 
     @property
     def debug_text(self) -> str:
-        board_variants = [bv.board_variant for bv in self.tentacle_variant]
-        return f"TestRun({self.testrun_spec.label}, {', '.join(board_variants)})"
+        return f"TestRun({self.testrun_spec.label}, {self.tentacle_variant.board_variant})"
         # return self.testid
 
     def pytest_print(self, indent: int, file=typing.TextIO) -> None:
@@ -310,4 +309,4 @@ class TestRunSpec:
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
         for tsv in self.tsvs_todo:
-            print(indent * "  " + f"{tsv.role.name:} {tsv.sorted_text!r}", file=file)
+            print(indent * "  " + repr(tsv), file=file)
