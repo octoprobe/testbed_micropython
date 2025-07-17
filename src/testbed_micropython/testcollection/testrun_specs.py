@@ -58,6 +58,8 @@ class TestRun:
         assert isinstance(self.tentacle_reference, TentacleMicropython | None)
         if self.testrun_spec.requires_reference_tentacle:
             assert self.tentacle_reference is not None
+        else:
+            self.tentacle_reference = None
         assert isinstance(self.flash_skip, bool)
 
     def mark_as_done(self) -> None:

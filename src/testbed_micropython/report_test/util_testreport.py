@@ -86,10 +86,6 @@ class Data:
             ):
                 json_text = filename.read_text()
                 json_dict = json.loads(json_text)
-                # TODO(hans): Remove after 2025-06-31
-                if "results" in json_dict:
-                    json_dict["outcomes"] = json_dict["results"]
-                    del json_dict["results"]
                 testgroup = ResultTestGroup(**json_dict)
 
                 testgroup.outcomes = [

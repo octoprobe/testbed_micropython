@@ -110,7 +110,6 @@ class TestRunRunTests(TestRun):
 TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
     label="RUN-TESTS_STANDARD",
     helptext="Run the standard set of tests",
-    # TODO: Allow overwrite by command line
     command=["run-tests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
     requires_reference_tentacle=False,
