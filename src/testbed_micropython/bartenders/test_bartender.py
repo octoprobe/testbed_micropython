@@ -26,7 +26,7 @@ from ..report_task import util_report_tasks
 from ..tentacle_spec import TentacleMicropython
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
-from ..testcollection.testrun_specs import TestRun, TestRunSpec
+from ..testcollection.testrun_specs import TestRun
 
 logger = logging.getLogger(__file__)
 

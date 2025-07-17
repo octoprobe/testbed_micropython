@@ -30,7 +30,6 @@ from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
 from ..tentacles_inventory import TENTACLES_INVENTORY
-from ..testcollection.baseclasses_spec import TestRole, tentacle_spec_2_tsvs
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 from .util_baseclasses import ArgsQuery
 from .util_testbootmode import do_debugbootmode, get_programmer_labels

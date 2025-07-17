@@ -307,13 +307,15 @@ class LegendTasks:
 
     @property
     def legend_tasks_sorted(self) -> list[LegendTask]:
-        def key(task: LegendTask) -> tuple[bool, str]:
+        def key(task: LegendTask) -> tuple[bool, str | int]:
             """
             First: characters before numbers
             Second: alphabetically ascending
-            TODO: Sort by number is any
             """
-            return task.task_id.isdigit(), task.task_id
+            try:
+                return False, int(task.task_id)
+            except ValueError:
+                return True, task.task_id
 
         return sorted(self.legend_tasks, key=key)
 
