@@ -291,6 +291,11 @@ class TestRunSpec:
         flash_skip: bool,
         tentacle_reference: TentacleMicropython | None,
     ) -> Iterator[TestRun]:
+        if self.requires_reference_tentacle:
+            assert tentacle_reference is not None
+            if tentacle_reference not in available_tentacles:
+                return
+
         for tentacle in available_tentacles:
             for tsv in self.tsvs_todo:
                 if firmwares_built is not None:
