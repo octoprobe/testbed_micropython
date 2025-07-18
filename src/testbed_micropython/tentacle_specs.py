@@ -394,7 +394,7 @@ Board setup:
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_pyboard.NUCLEO_WB55_USB_ID,
-    tags="build_variants=:DP:THREAD:DP_THREAD,mcu=stm32,programmer=dfu-util",
+    tags="mcu=stm32,programmer=dfu-util",
     mcu_config=McuConfig(),
 )
 
