@@ -26,19 +26,22 @@ logger = logging.getLogger(__file__)
 class ReportTentacle:
     label: str
     """
-    Example: 552b-RPI_PICO2_W
+    Example: 5d21-ESP32_DEVKIT
     """
-    board_variant: str
+    board: str
     """
-    Example: RPI_PICO_W
+    Example: ESP32_GENERIC
     """
+
+    def __post_init__(self) -> None:
+        pass
 
     @property
     def text(self) -> str:
         """
-        Example: 552b-RPI_PICO2_W(RPI_PICO_W)
+        Example: 5d21-ESP32_DEVKIT(ESP32_GENERIC)
         """
-        return f"{self.label}({self.board_variant})"
+        return f"{self.label}({self.board})"
 
 
 @dataclasses.dataclass(repr=True)
@@ -321,15 +324,10 @@ class LegendTasks:
 
     def get_task_id(self, report_tentacle: ReportTentacle) -> str:
         assert isinstance(report_tentacle, ReportTentacle)
-        board_variant = report_tentacle.board_variant
+        board = report_tentacle.board
         for legend_task in self.legend_tasks:
-            if legend_task.task.label == board_variant:
+            if legend_task.task.label == board:
                 return legend_task.task_id
-        # tasks_text = ",".join(t.task.label for t in self.legend_tasks)
-        # logger.debug(
-        #     f"Failed to lookup '{board_variant}' in legend_tasks: {tasks_text}"
-        # )
-        # return f"<lookup-failed={board_variant}>"
         return "skip flash"
 
     def add(self, task: Task) -> None:
