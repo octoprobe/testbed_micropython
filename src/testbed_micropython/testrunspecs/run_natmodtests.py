@@ -242,6 +242,8 @@ class TestRunRunTests(TestRun):
             env=ENV_MICROPYTHON_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+            success_returncodes=[0, 1],
         )
 
 
