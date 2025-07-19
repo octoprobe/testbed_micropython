@@ -43,9 +43,9 @@ from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from ..testrunspecs import (
-    multinet,
-    perftest,
+    run_multinet,
     run_natmodtests,
+    run_perftest,
     runtests,
     runtests_net_inet,
 )
@@ -74,9 +74,9 @@ class EventExitRunOneTest(util_multiprocessing.EventExit):
 
 
 _TESTRUN_SPECS = [
-    multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
-    multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
-    perftest.TESTRUNSPEC_PERFTEST,
+    run_multinet.TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH,
+    run_multinet.TESTRUNSPEC_RUNTESTS_MULTINET,
+    run_perftest.TESTRUNSPEC_PERFTEST,
     runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_HOSTED,
     runtests_net_inet.TESTRUNSPEC_RUNTESTS_NET_INET,
     runtests.TESTRUNSPEC_RUNTESTS_STANDARD,

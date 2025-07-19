@@ -95,7 +95,7 @@ class TestRunReference(TestRun):
         )
 
 
-class TestRunRefernceMultinet(TestRunReference):
+class TestRunReferenceMultinet(TestRunReference):
     def setup(self, testargs: TestArgs) -> None:
         util_common.skip_if_no_filesystem(tentacle=self.tentacle_variant.tentacle)
 
@@ -121,7 +121,7 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     command=["run-multitests.py", "multi_net/*.py"],
     required_fut=EnumFut.FUT_WLAN,
     requires_reference_tentacle=True,
-    testrun_class=TestRunRefernceMultinet,
+    testrun_class=TestRunReferenceMultinet,
     timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
 )
 
