@@ -316,9 +316,9 @@ class LegendTasks:
             Second: alphabetically ascending
             """
             try:
-                return False, int(task.task_id)
+                return True, int(task.task_id)
             except ValueError:
-                return True, task.task_id
+                return False, task.task_id
 
         return sorted(self.legend_tasks, key=key)
 
