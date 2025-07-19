@@ -72,6 +72,18 @@ DUT rpi_pico: format crashed filesystem
     import vfs, rp2
     vfs.VfsLfs2.mkfs(rp2.Flash(), progsize=256)
 
+DUT pyboard: format crashed filesystem
+----------------------------------------
+
+See: https://docs.micropython.org/en/latest/reference/filesystem.html
+
+.. code-block:: python
+
+    vfs.umount('/flash')
+    vfs.VfsLfs2.mkfs(pyb.Flash(start=0))
+    vfs.mount(pyb.Flash(start=0), '/flash')
+    os.chdir('/flash')
+
 
 DUT NUCLEO_WB55: Remotely flash bluetooth stack
 ---------------------------------------------------
