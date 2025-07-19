@@ -41,7 +41,7 @@
 ### Group: {{ summary_by_test.testgroup.testgroup_markdown(result_context=result_context) }}
 
 {% if summary_by_test.tentacle_reference -%}
-Reference: {{ summary_by_test.tentacle_reference }}
+Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 {%- endif %}
 
 
