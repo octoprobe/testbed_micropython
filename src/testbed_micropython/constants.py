@@ -9,7 +9,10 @@ import pathlib
 import typing
 
 from octoprobe.util_baseclasses import TENTACLE_TYPE_MCU
-from octoprobe.util_constants import DIRECTORY_OCTOPROBE_GIT_CACHE
+from octoprobe.util_constants import (
+    DIRECTORY_OCTOPROBE_DOWNLOADS,
+    DIRECTORY_OCTOPROBE_GIT_CACHE,
+)
 
 if typing.TYPE_CHECKING:
     from octoprobe.lib_tentacle import TentacleBase
@@ -24,11 +27,14 @@ DEFAULT_REFERENCE_BOARD = "RPI_PICO_W"
 ANY_REFERENCE_BOARD = ""
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
-DIRECTORY_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
-# assert (DIRECTORY_REPO / "src" / "testbed_micropython").is_dir()
-DIRECTORY_DOWNLOADS = DIRECTORY_REPO / "downloads"
-DIRECTORY_NAME_TESTRESULTS = "testresults"
-DIRECTORY_TESTRESULTS_DEFAULT = DIRECTORY_REPO / DIRECTORY_NAME_TESTRESULTS
+DIRECTORY_GIT_REPO = DIRECTORY_OF_THIS_FILE.parent.parent
+if (DIRECTORY_GIT_REPO / ".git").is_dir():
+    DIRECTORY_RESULTS_PARENT = DIRECTORY_GIT_REPO
+else:
+    # If we have been installed into 'site-packages', the default will be ~/octoprobe_downloads/testresults
+    DIRECTORY_RESULTS_PARENT = DIRECTORY_OCTOPROBE_DOWNLOADS
+DIRECTORY_TESTRESULTS_DEFAULT = DIRECTORY_RESULTS_PARENT / "testresults"
+
 DIRECTORY_GIT_CACHE = DIRECTORY_OCTOPROBE_GIT_CACHE
 FILENAME_TESTBED_LOCK = pathlib.Path("/tmp/octoprobe/testbed.lock")
 """

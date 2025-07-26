@@ -18,7 +18,7 @@ import typer
 import typing_extensions
 from mpbuild.board_database import MpbuildMpyDirectoryException
 from octoprobe.scripts.commissioning import init_logging
-from octoprobe.util_constants import ExitCode
+from octoprobe.util_constants import DIRECTORY_OCTOPROBE_DOWNLOADS, ExitCode
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
@@ -82,7 +82,7 @@ def assert_valid_testresults(testresults: str) -> pathlib.Path:
 
 @app.command(help="Create a pdf with lables for the bolzone_due")
 def labels() -> None:
-    filename = constants.DIRECTORY_DOWNLOADS / "testbed_labels.pdf"
+    filename = DIRECTORY_OCTOPROBE_DOWNLOADS / "testbed_labels.pdf"
     label_renderer.create_report(
         filename=filename,
         layout=label_renderer.RendererLabelBolzoneDuo(),

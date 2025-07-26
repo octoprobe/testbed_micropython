@@ -11,6 +11,8 @@ The user `optoprobe` is used when working interactively. The user `githubrunner`
 Software to be installed as root
 ----------------------------------
 
+These software packages are required by octoprobe.
+
 .. code::
 
     sudo apt update
@@ -22,8 +24,13 @@ Software to be installed as root
 Installation: Users
 -------------------
 
-Octoprobe user: `octoprobe`
-Github runner user: `githubrunner`
+These users are referenced in `/etc/udev/rules.d/*`!
+
++----------------------+-------------------+
+| Octoprobe user       | ``octoprobe``     |
++----------------------+-------------------+
+| Github runner user   | ``githubrunner``  |
++----------------------+-------------------+
 
 .. code::
 
@@ -44,29 +51,56 @@ You might want to config git:
 
 
 
-git clone testbed_micropython
-------------------------------------
+Python - **without venv**
+----------------------------------------------------------------------
+
+You may use below command to run `mptest` or `op` without any venv.
+
+.. code:: 
+
+  uvx --python=3.13.5 --from=git+https://github.com/octoprobe/testbed_micropython.git -- mptest --help
+
+
+Python - variant **without** `git clone testbed_micropython`
+----------------------------------------------------------------------
+
+Use this if you **do not plan** to change the sources of `testbed_micropython`.
+
+.. code:: 
+
+  mkdir ~/testbed_micropython
+  cd ~/testbed_micropython
+  uv venv --python=3.13.5
+  uv pip install --upgrade git+https://github.com/octoprobe/testbed_micropython.git
+  source .venv/bin/activate
+
+
+Python - variant **with** `git clone testbed_micropython`
+----------------------------------------------------------------------
+
+Use this if you **plan** to change the sources of `testbed_micropython`.
 
 .. code::
 
     git clone https://github.com/octoprobe/testbed_micropython.git ~/testbed_micropython
-    git checkout v0.1-release    
-
-python
-------
-
-.. code::
-
     cd ~/testbed_micropython
-
-    uv venv --python 3.13.3
-
+    uv venv --python=3.13.5
     source .venv/bin/activate
     uv pip install --upgrade -e .
 
+
+Initial setup
+---------------------------
+
+Enable venv in ~/.bashrc
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Skip this step if you prefer to activate the venv manually.
+
+.. code::
+
     echo 'source ~/testbed_micropython/.venv/bin/activate' >> ~/.profile
     # Log out and in again
-
 
 .. code::
 
@@ -78,7 +112,7 @@ Later, you just might want to update: `uv pip install --upgrade -e ~/testbed_mic
 
 
 Install udev rules
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As we comminicate heavely with usb devices, we have to give rights by installing udev-rules.
 
@@ -123,4 +157,9 @@ Start the tests
 
 .. note::
 
-  This now will compile the required firmware, flash it and run the tests. The testresults will be written to ~/testbed_micropython/results.
+  This now will compile the required firmware, flash it and run the tests.
+  
+  The testresults will be written to
+
+     ~/testbed_micropython/testresults - if you cloned the git repo
+     ~/octoprobe_downloads/testresults - if you did NOT clone the git repo
