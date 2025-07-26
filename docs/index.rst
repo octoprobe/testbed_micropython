@@ -26,6 +26,12 @@ This testbed is used to release test the micropython firmware.
     :glob:
     :maxdepth: 2
 
+    /fixes_for_known_problems/index
+
+.. toctree::
+    :glob:
+    :maxdepth: 2
+
     /design/index
 
 

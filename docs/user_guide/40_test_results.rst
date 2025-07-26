@@ -137,35 +137,36 @@ There is a folder for every firmware variant.
 `RUN-xxx` test results
 ------------------------------------------------------------------------------------------
 
-There is a folder for every firmware variant.
+There is a folder for every testgroup. A testgroup is one call of `run-tests.py` which is uniquly identified by the `testid`.
 
 The `testid` is:
 
 * `RUN-MULTITESTS_MULTIBLUETOOTH`: The name of the test.
-* `1830-LOLIN_C3_MINI`: The first associated tentacle. `1830` is the tentacle serial number.
-* `3c2a-ARDUINO_NANO_33`: The second associated tentacle. `3c2a` is the tentacle serial number.
+* `,a`: If `--count=3` this will be `,a`, `,b` and `,c`.
+* `1830-LOLIN_C3_MINI`: The tentacle under test. `1830` is the tentacle serial number.
+* `-first` / `-second`: Tests with `MULTI` in there name defines roles, for example `-first` for `WLAN-STA` and `-second` for `WLAN-AP`.
 
 `testresults.txt` is the output of the testprogram and may be followed in real time (tail -f testresults.txt).
 
 .. code:: 
 
-    ├── RUN-MULTITESTS_MULTIBLUETOOTH[1830-LOLIN_C3_MINI,3c2a-ARDUINO_NANO_33]
+    ├── RUN-MULTITESTS_MULTIBLUETOOTH,a@1830-LOLIN_C3_MINI-first
     │   ├── logger_10_debug.log
     │   ├── logger_20_info.log
     │   ├── logger_40_error.log
     │   └── testresults.txt
-    ├── RUN-MULTITESTS_MULTIBLUETOOTH[1830-LOLIN_C3_MINI,552b-RPI_PICO2_W]
+    ├── RUN-MULTITESTS_MULTIBLUETOOTH,a@1830-LOLIN_C3_MINI-second
     │   ├── logger_10_debug.log
     │   ├── logger_20_info.log
     │   ├── logger_40_error.log
     │   └── testresults.txt
-    ├── RUN-PERFBENCH[2731-RPI_PICO2-RISCV]
+    ├── RUN-PERFBENCH,a@2731-RPI_PICO2-RISCV
     │   ├── flashing_stout.txt
     │   ├── logger_10_debug.log
     │   ├── logger_20_info.log
     │   ├── logger_40_error.log
     │   └── testresults.txt
-    ├── RUN-PERFBENCH[2731-RPI_PICO2]
+    ├── RUN-PERFBENCH,a@2731-RPI_PICO2
     │   ├── flashing_stout.txt
     │   ├── logger_10_debug.log
     │   ├── logger_20_info.log

@@ -27,6 +27,14 @@ Features to support testing
 
   Every tentacle is identified by its serial number. A inventory lookup will provide the required information about that tentacle.
 
+* Detect flakiness `--count`
+
+  Specifying `--count=3` will run every test 3 times. In the Summary Report, the 3 results will be presented aside (for example: pass fail pass).
+
+* Specify reference tentacle using `--reference=ESP32_C3_DEVKIT`
+
+  WLAN and BLE tests run always against a reference tentacle. The hardcoded default is `RPI_PICO_W`. However this may be overriden using `--reference=ESP32_C3_DEVKIT`. Watch out to select a tentacle which supports WLAN and BLE!
+
 * Tab completion
 
   `mptest test --only-board / --only-test` provide tab completion.
