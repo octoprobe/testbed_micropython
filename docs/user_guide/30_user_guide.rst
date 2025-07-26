@@ -47,7 +47,7 @@ Automated Regression Test - full coverage
   
 .. code::
 
-    mptest test --micropython-tests=<git/branch>  --firmware-build=<git/branch> --flash-force --git-clean
+    mptest test --micropython-tests=<git/branch>  --firmware-build=<git/branch>
 
 * `mptest` will:
 
@@ -123,4 +123,4 @@ This will take a few minutes.
     # Run the tests
     mptest test --flash-skip
 
-This is fast - the tests immediately!
+This is fast - the tests will be started immediately!
