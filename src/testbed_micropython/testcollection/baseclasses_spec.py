@@ -19,13 +19,13 @@ logger = logging.getLogger(__file__)
 
 
 class TestRole(enum.StrEnum):
-    ROLE_FIRST = "first"
+    ROLE_INSTANCE0 = "instance0"
     """
-    Could be WLAN-STAT
+    See the test script, could be WLAN-STAT.
     """
-    ROLE_SECOND = "second"
+    ROLE_INSTANCE1 = "instance1"
     """
-    Could be WLAN-AP
+    See the test script, could be WLAN-AP.
     """
 
 

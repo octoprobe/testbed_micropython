@@ -81,7 +81,7 @@ class TestRunReference(TestRun):
         assert self.tentacle_reference is not None
         return (
             self.tentacle_variant.tentacle
-            if self.tentacle_variant.role is TestRole.ROLE_FIRST
+            if self.tentacle_variant.role is TestRole.ROLE_INSTANCE0
             else self.tentacle_reference
         )
 
@@ -90,7 +90,7 @@ class TestRunReference(TestRun):
         assert self.tentacle_reference is not None
         return (
             self.tentacle_variant.tentacle
-            if self.tentacle_variant.role is TestRole.ROLE_SECOND
+            if self.tentacle_variant.role is TestRole.ROLE_INSTANCE1
             else self.tentacle_reference
         )
 

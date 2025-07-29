@@ -259,9 +259,9 @@ class TestRunSpec:
             _tentacles = tentacles.get_exclude_reference(tentacle_reference)
         selected_tentacles = _tentacles.get_by_fut(self.required_fut)
 
-        roles = [TestRole.ROLE_FIRST]
+        roles = [TestRole.ROLE_INSTANCE0]
         if self.requires_reference_tentacle:
-            roles = [TestRole.ROLE_FIRST, TestRole.ROLE_SECOND]
+            roles = [TestRole.ROLE_INSTANCE0, TestRole.ROLE_INSTANCE1]
 
         self.tsvs_todo = selected_tentacles.get_tsvs(
             roles=roles,
