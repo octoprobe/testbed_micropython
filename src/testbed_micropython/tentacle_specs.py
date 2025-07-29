@@ -130,7 +130,9 @@ See: https://content.arduino.cc/assets/Pinout-NANOble_latest.png
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_BLE,
+        # Nordic Bluetooth stack needs to be updated
+        # Currently not working properly
+        # EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_nrf.ARDUINO_NANO_33_USB_ID,
     tags="board=ARDUINO_NANO_33_BLE_SENSE,mcu=nrf,programmer=bossac",
