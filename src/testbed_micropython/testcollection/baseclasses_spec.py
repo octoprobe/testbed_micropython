@@ -176,8 +176,13 @@ class ConnectedTentacles(list[TentacleMicropython]):
 
         return None
 
-    def query_boards(self, query: ArgsQuery) -> ConnectedTentacles:
+    def query_boards(
+        self,
+        query: ArgsQuery,
+        tentacle_reference: TentacleMicropython | None = None,
+    ) -> ConnectedTentacles:
         assert isinstance(query, ArgsQuery)
+        assert isinstance(tentacle_reference, TentacleMicropython | None)
 
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
 
@@ -199,6 +204,7 @@ class ConnectedTentacles(list[TentacleMicropython]):
         if len(query.skip) > 0:
             selected_boards.difference_update(query.skip)
 
+        # TODO(hans): Why has `connected_tentacles` to be evaluated here? We have the same variable in the outer context.
         connected_tentacles = [
             t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)
         ]
@@ -216,5 +222,9 @@ class ConnectedTentacles(list[TentacleMicropython]):
                             connected_tentacle.tentacle_state.set_variants_required(
                                 [board_variant.variant]
                             )
+
+        if tentacle_reference is not None:
+            if tentacle_reference not in connected_tentacles:
+                connected_tentacles.append(tentacle_reference)
 
         return ConnectedTentacles(connected_tentacles)

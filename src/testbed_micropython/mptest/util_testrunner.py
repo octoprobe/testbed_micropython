@@ -325,11 +325,14 @@ class TestRunner:
         # _testrun.session_powercycle_tentacles()
 
         testrun_specs = get_testrun_specs(query=self.args.query_test)
-        selected_tentacles = connected_tentacles.query_boards(
-            query=self.args.query_board
-        )
         self.tentacle_reference = connected_tentacles.find_first_tentacle(
             board=self.args.reference_board
+        )
+        selected_tentacles = connected_tentacles.query_boards(
+            query=self.args.query_board,
+            tentacle_reference=self.tentacle_reference
+            if testrun_specs.requires_reference_tentacle
+            else None,
         )
         testrun_specs.assign_tentacles(
             tentacles=selected_tentacles,
