@@ -140,6 +140,13 @@ class OutcomeColumn:
 
 @dataclasses.dataclass(slots=True)
 class Group(list[OutcomesForOneTest]):
+    """
+    In the summary report, a group is a table with:
+    * Rows: the tests
+    * Columns: the tentacles
+    * Cell: List of outcomes (fail, pass, pass)
+    """
+
     testgroup: ResultTestGroup
     """
     Example: RUN-TESTS_STANDARD_NATIVE
@@ -260,15 +267,18 @@ class SummaryByTest(list[Group]):
 
         # Just keep interesting tests. Purge tests with only pass/skip.
         for group in groups:
+            assert isinstance(group, Group)
+
             tobe_removed: list[OutcomesForOneTest] = []
             for outcomes_for_one_test in group:
                 if not outcomes_for_one_test.interesting:
                     tobe_removed.append(outcomes_for_one_test)
+
             for x in tobe_removed:
                 group.remove(x)
 
         # Just keep the groups which have outcomes.
-        groups = SummaryByTest(g for g in groups if len(group) > 0)
+        groups = SummaryByTest(g for g in groups if len(g) > 0)
 
         groups.sort(key=lambda g: g.group_name)
         groups.print()
