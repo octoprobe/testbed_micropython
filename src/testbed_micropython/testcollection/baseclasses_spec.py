@@ -7,6 +7,7 @@ from __future__ import annotations
 import dataclasses
 import enum
 import logging
+import typing
 
 from octoprobe.util_micropython_boards import VARIANT_UNKNOWN
 
@@ -14,6 +15,9 @@ from ..constants import EnumFut
 from ..mpbuild.build_api import BoardVariant
 from ..mptest.util_baseclasses import ArgsQuery
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
+
+if typing.TYPE_CHECKING:
+    from ..testcollection.baseclasses_run import TestRunSpecs
 
 logger = logging.getLogger(__file__)
 
@@ -179,9 +183,11 @@ class ConnectedTentacles(list[TentacleMicropython]):
     def query_boards(
         self,
         query: ArgsQuery,
+        testrun_specs: TestRunSpecs,
         tentacle_reference: TentacleMicropython | None = None,
     ) -> ConnectedTentacles:
         assert isinstance(query, ArgsQuery)
+        # assert isinstance(testrun_specs, TestRunSpecs)
         assert isinstance(tentacle_reference, TentacleMicropython | None)
 
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
@@ -224,7 +230,8 @@ class ConnectedTentacles(list[TentacleMicropython]):
                             )
 
         if tentacle_reference is not None:
-            if tentacle_reference not in connected_tentacles:
-                connected_tentacles.append(tentacle_reference)
+            if testrun_specs.requires_reference_tentacle(connected_tentacles):
+                if tentacle_reference not in connected_tentacles:
+                    connected_tentacles.append(tentacle_reference)
 
         return ConnectedTentacles(connected_tentacles)

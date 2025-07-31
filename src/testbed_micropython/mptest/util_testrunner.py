@@ -313,7 +313,10 @@ class TestRunner:
             logger.warning("No tentacles discovered!")
             raise SystemExit(0)
 
-        connected_tentacles = connected_tentacles.query_boards(query=ArgsQuery())
+        connected_tentacles = connected_tentacles.query_boards(
+            query=ArgsQuery(),
+            testrun_specs=TestRunSpecs(),
+        )
 
         self.ctxtestrun = CtxTestRun(connected_tentacles=connected_tentacles)
         CachedGitRepo.clean_directory_work_repo(
@@ -330,9 +333,8 @@ class TestRunner:
         )
         selected_tentacles = connected_tentacles.query_boards(
             query=self.args.query_board,
-            tentacle_reference=self.tentacle_reference
-            if testrun_specs.requires_reference_tentacle
-            else None,
+            tentacle_reference=self.tentacle_reference,
+            testrun_specs=testrun_specs,
         )
         testrun_specs.assign_tentacles(
             tentacles=selected_tentacles,

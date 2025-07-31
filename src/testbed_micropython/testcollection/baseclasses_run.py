@@ -39,14 +39,20 @@ class TestRunSpecs(list[TestRunSpec]):
     def tests_todo(self) -> int:
         return sum(testrun_spec.tests_todo for testrun_spec in self)
 
-    @property
-    def requires_reference_tentacle(self) -> bool:
+    def requires_reference_tentacle(self, tentacles: list[TentacleMicropython]) -> bool:
         """
         Returns True if at least one test requires the reference tentacle
         """
+        assert isinstance(tentacles, list)
+        for tentacle in tentacles:
+            assert isinstance(tentacle, TentacleMicropython)
+
         for testrun_spec in self:
             if testrun_spec.requires_reference_tentacle:
-                return True
+                for tentacle in tentacles:
+                    if testrun_spec.required_fut in tentacle.tentacle_spec.futs:
+                        return True
+
         return False
 
     def assign_tentacles(
