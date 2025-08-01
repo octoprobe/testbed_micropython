@@ -34,6 +34,18 @@ logger = logging.getLogger(__name__)
 class TestArgs:
     testresults_directory: ResultsDir
     repo_micropython_tests: pathlib.Path
+    debug_skip_tests: bool
+
+    def __post_init__(self) -> None:
+        # assert isinstance(self.testresults_directory, ResultsDir)
+        assert isinstance(self.repo_micropython_tests, pathlib.Path)
+        assert isinstance(self.debug_skip_tests, bool)
+
+    @property
+    def debug_skip_tests_with_message(self) -> bool:
+        if self.debug_skip_tests:
+            logger.info("debug_skip_tests: Skip test!")
+        return self.debug_skip_tests
 
 
 @dataclasses.dataclass(slots=True, repr=True)
@@ -61,6 +73,8 @@ class TestRun:
         else:
             self.tentacle_reference = None
         assert isinstance(self.flash_skip, bool)
+
+        assert self.tentacle_variant.tentacle != self.tentacle_reference
 
     def mark_as_done(self) -> None:
         self.testrun_spec.mark_as_done(testrun=self)
@@ -317,6 +331,9 @@ class TestRunSpec:
                         role=tsv.role,
                         testrun_idx0=tsv.testrun_idx0,
                     )
+                    if tentacle_variant.tentacle == tentacle_reference:
+                        # A tentacle can not be its reference
+                        continue
                     yield self.testrun_class(
                         testrun_spec=self,
                         tentacle_variant=tentacle_variant,

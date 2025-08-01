@@ -22,7 +22,7 @@ from octoprobe.util_constants import DIRECTORY_OCTOPROBE_DOWNLOADS, ExitCode
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
-from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT
+from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT, EnumFut
 from testbed_micropython.report_test.renderer import ReportRenderer
 from testbed_micropython.report_test.util_push_testresults import TarAndHttpsPush
 
@@ -51,6 +51,10 @@ app = typer.Typer(pretty_exceptions_enable=False)
 def complete_only_test():
     testrun_specs = util_testrunner.get_testrun_specs()
     return sorted([x.label for x in testrun_specs])
+
+
+def complete_only_fut():
+    return sorted([fut.name for fut in EnumFut])
 
 
 def complete_only_board():
@@ -176,6 +180,7 @@ def flash(
         query_board=ArgsQuery(),
         query_test=ArgsQuery(),
         force_multiprocessing=False,
+        debug_skip_tests=False,
     )
 
     testrunner = util_testrunner.TestRunner(args=args)
@@ -245,6 +250,18 @@ def test(
         list[str],
         typer.Option(help="Skip this test.", autocompletion=complete_only_test),
     ] = None,  # noqa: UP007
+    only_fut: TyperAnnotated[
+        list[str],
+        typer.Option(
+            help="Run this FUT (feature under test).", autocompletion=complete_only_fut
+        ),
+    ] = None,  # noqa: UP007
+    skip_fut: TyperAnnotated[
+        list[str],
+        typer.Option(
+            help="Skip this FUT (feature under test).", autocompletion=complete_only_fut
+        ),
+    ] = None,  # noqa: UP007
     flash_force: TyperAnnotated[
         bool | None,
         typer.Option(help="Will flash all firmware and run tests."),
@@ -275,6 +292,10 @@ def test(
         int | None,
         typer.Option(help="Run every test multiple times to detect flakiness"),
     ] = 1,  # noqa: UP007
+    debug_skip_tests: TyperAnnotated[
+        bool | None,
+        typer.Option(help="Skip the test execution"),
+    ] = False,  # noqa: UP007
 ) -> None:
     try:
         directory_results = assert_valid_testresults(testresults)
@@ -291,17 +312,22 @@ def test(
             ),
             directory_results=directory_results,
             query_test=ArgsQuery.factory(
-                only=only_test,
-                skip=skip_test,
+                only_test=only_test,
+                skip_test=skip_test,
+                only_fut=only_fut,
+                skip_fut=skip_fut,
                 arg="tests",
                 count=count,
             ),
             query_board=ArgsQuery.factory(
-                only=only_board,
-                skip=skip_board,
+                only_test=only_board,
+                skip_test=skip_board,
+                only_fut=only_fut,
+                skip_fut=skip_fut,
                 arg="board",
             ),
             force_multiprocessing=force_multiprocessing,
+            debug_skip_tests=debug_skip_tests,
             reference_board=reference_board,
         )
         testrunner = util_testrunner.TestRunner(args=args)

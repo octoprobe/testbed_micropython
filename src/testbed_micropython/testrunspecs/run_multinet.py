@@ -34,6 +34,9 @@ class TestRunReference(TestRun):
     def setup(self, testargs: TestArgs) -> None: ...
 
     def test(self, testargs: TestArgs) -> None:
+        if testargs.debug_skip_tests_with_message:
+            return
+
         tentacle_instance0 = self.tentacle_instance0
         tentacle_instance1 = self.tentacle_instance1
 
