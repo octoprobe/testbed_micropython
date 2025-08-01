@@ -461,7 +461,7 @@ class TestRunner:
                     # Run test
                     #
                     logger.info(
-                        f"[COLOR_INFO]{async_target.target_unique_name}: Started"
+                        f"[COLOR_INFO]{async_target.target_unique_name}: Started test {self.test_bartender.testrun_specs.tests_progress}"
                     )
                     self.run_one_test(
                         async_target=async_target,
@@ -471,8 +471,6 @@ class TestRunner:
                     logger.debug(
                         "CurrentlyNoTestsException: Wait for firmware to be built or tentacles to be freed!"
                     )
-                    # TODO: Remove '.tests_todo'
-                    # if self.test_bartender.tests_todo == 0:
                     if target_ctx.done(self.test_bartender.async_targets):
                         if target_ctx.done(self.firmware_bartender.async_targets):
                             logger.info(f"Done in {target_ctx.duration_text}")

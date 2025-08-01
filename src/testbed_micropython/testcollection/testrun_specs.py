@@ -223,6 +223,7 @@ class TestRunSpec:
     tsvs_todo: TentacleSpecVariants = dataclasses.field(
         default_factory=TentacleSpecVariants
     )
+    tsvs_total_count: int = -1
 
     def __post_init__(self) -> None:
         assert isinstance(self.label, str)
@@ -245,6 +246,7 @@ class TestRunSpec:
     def assign_tentacles(
         self,
         tentacles: ConnectedTentacles,
+        # TODO: Remove tentacle_reference
         tentacle_reference: TentacleMicropython | None,
         count: int,
         flash_skip: bool,
@@ -273,6 +275,7 @@ class TestRunSpec:
             count=count,
             flash_skip=flash_skip,
         )
+        self.tsvs_total_count = len(self.tsvs_todo)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.label} {self.command_args})"

@@ -39,6 +39,11 @@ class TestRunSpecs(list[TestRunSpec]):
     def tests_todo(self) -> int:
         return sum(testrun_spec.tests_todo for testrun_spec in self)
 
+    @property
+    def tests_progress(self) -> str:
+        tests_total_count = sum(testrun_spec.tsvs_total_count for testrun_spec in self)
+        return f"{self.tests_todo + 1}({tests_total_count})"
+
     def requires_reference_tentacle(self, tentacles: list[TentacleMicropython]) -> bool:
         """
         Returns True if at least one test requires the reference tentacle
