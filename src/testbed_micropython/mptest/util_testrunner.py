@@ -160,6 +160,7 @@ class Args:
     force_multiprocessing: bool
     query_test: ArgsQuery
     query_board: ArgsQuery
+    debug_skip_tests: bool
     reference_board: str = constants.DEFAULT_REFERENCE_BOARD
     """
     The board to be used a reference for WLAN/Bluetooth tests.
@@ -173,6 +174,7 @@ class Args:
         assert isinstance(self.force_multiprocessing, bool)
         assert isinstance(self.query_test, ArgsQuery)
         assert isinstance(self.query_board, ArgsQuery)
+        assert isinstance(self.debug_skip_tests, bool)
         assert isinstance(self.reference_board, str)
 
     @staticmethod
@@ -195,6 +197,7 @@ class Args:
             query_board=ArgsQuery(),
             query_test=ArgsQuery(),
             force_multiprocessing=False,
+            debug_skip_tests=False,
         )
 
 
@@ -615,6 +618,7 @@ def _target_run_one_test_async_b(
     testresults_directory: ResultsDir,
     testid: str,
     duration_text: typing.Callable,
+    debug_skip_tests: bool,
 ) -> None:
     """
     This is a 'global' method and as such may be used within process or
@@ -645,6 +649,7 @@ def _target_run_one_test_async_b(
             testargs=TestArgs(
                 testresults_directory=testresults_directory,
                 repo_micropython_tests=repo_micropython_tests,
+                debug_skip_tests=debug_skip_tests,
             )
         )
         logger.info("Test SUCCESS")
@@ -682,6 +687,7 @@ def _target_run_one_test_async_a(
             testresults_directory=testresults_directory,
             testid=testid,
             duration_text=duration_text,
+            debug_skip_tests=args.debug_skip_tests,
         )
         report_test.write_ok()
         return True

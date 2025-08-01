@@ -176,6 +176,7 @@ def flash(
         query_board=ArgsQuery(),
         query_test=ArgsQuery(),
         force_multiprocessing=False,
+        debug_skip_tests=False,
     )
 
     testrunner = util_testrunner.TestRunner(args=args)
@@ -275,6 +276,10 @@ def test(
         int | None,
         typer.Option(help="Run every test multiple times to detect flakiness"),
     ] = 1,  # noqa: UP007
+    debug_skip_tests: TyperAnnotated[
+        bool | None,
+        typer.Option(help="Skip the test execution"),
+    ] = False,  # noqa: UP007
 ) -> None:
     try:
         directory_results = assert_valid_testresults(testresults)
@@ -302,6 +307,7 @@ def test(
                 arg="board",
             ),
             force_multiprocessing=force_multiprocessing,
+            debug_skip_tests=debug_skip_tests,
             reference_board=reference_board,
         )
         testrunner = util_testrunner.TestRunner(args=args)

@@ -212,6 +212,9 @@ class TestRunRunTests(TestRun):
     """
 
     def test(self, testargs: TestArgs) -> None:
+        if testargs.debug_skip_tests_with_message:
+            return
+
         assert isinstance(self.tentacle_variant, TentacleSpecVariant)
         tentacle = self.tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
