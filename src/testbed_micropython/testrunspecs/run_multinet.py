@@ -34,8 +34,8 @@ class TestRunReference(TestRun):
     def setup(self, testargs: TestArgs) -> None: ...
 
     def test(self, testargs: TestArgs) -> None:
-        tentacle_first = self.tentacle_first
-        tentacle_second = self.tentacle_second
+        tentacle_instance0 = self.tentacle_instance0
+        tentacle_instance1 = self.tentacle_instance1
 
         file_pattern = self.testrun_spec.command[1]
         assert isinstance(file_pattern, str)
@@ -43,8 +43,8 @@ class TestRunReference(TestRun):
 
         self.setup(testargs=testargs)
 
-        serial_port_first = tentacle_first.dut.get_tty()
-        serial_port_second = tentacle_second.dut.get_tty()
+        serial_port_instance0 = tentacle_instance0.dut.get_tty()
+        serial_port_instance1 = tentacle_instance1.dut.get_tty()
         # Run tests
         cwd = testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
         list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
@@ -61,8 +61,8 @@ class TestRunReference(TestRun):
             sys.executable,
             self.testrun_spec.command_executable,
             f"--result-dir={testargs.testresults_directory.directory_test}",
-            f"--instance=pyb:{serial_port_first}",
-            f"--instance=pyb:{serial_port_second}",
+            f"--instance=pyb:{serial_port_instance0}",
+            f"--instance=pyb:{serial_port_instance1}",
             *list_tests,
         ]
         subprocess_run(
@@ -77,7 +77,7 @@ class TestRunReference(TestRun):
         )
 
     @property
-    def tentacle_first(self) -> TentacleMicropython:
+    def tentacle_instance0(self) -> TentacleMicropython:
         assert self.tentacle_reference is not None
         return (
             self.tentacle_variant.tentacle
@@ -86,7 +86,7 @@ class TestRunReference(TestRun):
         )
 
     @property
-    def tentacle_second(self) -> TentacleMicropython:
+    def tentacle_instance1(self) -> TentacleMicropython:
         assert self.tentacle_reference is not None
         return (
             self.tentacle_variant.tentacle
@@ -99,15 +99,17 @@ class TestRunReferenceMultinet(TestRunReference):
     def setup(self, testargs: TestArgs) -> None:
         util_common.skip_if_no_filesystem(tentacle=self.tentacle_variant.tentacle)
 
-        dut = self.tentacle_variant.tentacle.dut
-        util_common.copy_certificates(
-            dut=dut,
-            src=testargs.repo_micropython_tests
-            / MICROPYTHON_DIRECTORY_TESTS
-            / "multi_net",
-        )
+        assert self.tentacle_reference is not None
 
-        util_common.init_wlan(dut=dut)
+        for dut in (self.tentacle_variant.tentacle.dut, self.tentacle_reference.dut):
+            util_common.copy_certificates(
+                dut=dut,
+                src=testargs.repo_micropython_tests
+                / MICROPYTHON_DIRECTORY_TESTS
+                / "multi_net",
+            )
+
+            util_common.init_wlan(dut=dut)
 
 
 class TestRunReferenceBluetooth(TestRunReference):
