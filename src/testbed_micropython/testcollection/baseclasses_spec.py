@@ -192,7 +192,7 @@ class ConnectedTentacles(list[TentacleMicropython]):
 
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
 
-        query_only = {BoardVariant.parse(o).board for o in query.only}
+        query_only = {BoardVariant.parse(o).board for o in query.only_test}
 
         def board_not_connected_warning(boards: set[str]) -> None:
             for board in boards:
@@ -202,13 +202,13 @@ class ConnectedTentacles(list[TentacleMicropython]):
                     )
 
         board_not_connected_warning(boards=query_only)
-        board_not_connected_warning(boards=query.skip)
+        board_not_connected_warning(boards=query.skip_test)
 
         selected_boards = connected_boards
         if len(query_only) > 0:
             selected_boards.intersection_update(query_only)
-        if len(query.skip) > 0:
-            selected_boards.difference_update(query.skip)
+        if len(query.skip_test) > 0:
+            selected_boards.difference_update(query.skip_test)
 
         # TODO(hans): Why has `connected_tentacles` to be evaluated here? We have the same variable in the outer context.
         connected_tentacles = [
@@ -218,7 +218,7 @@ class ConnectedTentacles(list[TentacleMicropython]):
             # If a board with variant was specified. Example: --only-board=RPI_PICO2-RISCV
             # Then 'RISCV' has to be stored in the 'tentacle_state'.
             for connected_tentacle in connected_tentacles:
-                for _board_variant in query.only:
+                for _board_variant in query.only_test:
                     board_variant = BoardVariant.parse(_board_variant)
                     if board_variant.has_variant_separator:
                         if (

@@ -101,10 +101,17 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
         query = ArgsQuery()
     assert isinstance(query, ArgsQuery)
 
-    assert (len(query.only) == 0) or (len(query.skip) == 0)
+    query_count = sum(
+        len(a) > 0
+        for a in (query.only_test, query.skip_test, query.only_fut, query.skip_fut)
+    )
+    if query_count > 1:
+        raise ValueError(
+            "--only-test, --skip-test, --only-fut, --skip-fut are exclusive!"
+        )
 
-    query_only = [TestArg.parse(t) for t in query.only]
-    query_skip = [TestArg.parse(t) for t in query.skip]
+    query_only_test = [TestArg.parse(t) for t in query.only_test]
+    query_skip_test = [TestArg.parse(t) for t in query.skip_test]
 
     def assert_valid_tests(testargs: list[TestArg]) -> None:
         for testarg in testargs:
@@ -113,8 +120,8 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
                     f"Test '{testarg.testname}' not found. Valid tests are {','.join(sorted(DICT_TESTRUN_SPECS.keys()))}"
                 )
 
-    assert_valid_tests(testargs=query_only)
-    assert_valid_tests(testargs=query_skip)
+    assert_valid_tests(testargs=query_only_test)
+    assert_valid_tests(testargs=query_skip_test)
 
     def factory(testargs: list[TestArg]) -> TestRunSpecs:
         assert isinstance(testargs, list)
@@ -135,21 +142,37 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
 
         return TestRunSpecs([factory_inner(testarg) for testarg in testargs])
 
-    if len(query_skip) > 0:
-        selected_tests = set(DICT_TESTRUN_SPECS.keys()) - query.skip
+    if len(query.skip_fut) > 0:
+        test_specs = [
+            spec
+            for spec in DICT_TESTRUN_SPECS.values()
+            if spec.required_fut not in query.skip_fut
+        ]
+        return TestRunSpecs(test_specs)
+
+    if len(query.only_fut) > 0:
+        test_specs = [
+            spec
+            for spec in DICT_TESTRUN_SPECS.values()
+            if spec.required_fut in query.only_fut
+        ]
+        return TestRunSpecs(test_specs)
+
+    if len(query_skip_test) > 0:
+        selected_tests = set(DICT_TESTRUN_SPECS.keys()) - query.skip_test
         return factory([TestArg.parse(t) for t in selected_tests])
 
-    if len(query_only) == 0:
+    if len(query_only_test) == 0:
         # Run all tests
         return factory([TestArg.parse(t) for t in DICT_TESTRUN_SPECS.keys()])
 
-    if len(query_only) > 1:
-        if len([q for q in query_only if q.has_args]) >= 1:
+    if len(query_only_test) > 1:
+        if len([q for q in query_only_test if q.has_args]) >= 1:
             raise ValueError(
-                f"'--test-only' with arguments may not be used once: {' '.join(query.only)}:"
+                f"'--test-only' with arguments may not be used once: {' '.join(query.only_test)}:"
             )
 
-    return factory(query_only)
+    return factory(query_only_test)
 
 
 @dataclasses.dataclass

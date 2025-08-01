@@ -84,6 +84,16 @@ class EnumFut(enum.StrEnum):
     FUT_WLAN = enum.auto()
     FUT_BLE = enum.auto()
 
+    @staticmethod
+    def factory(fut: str) -> EnumFut:
+        try:
+            return EnumFut[fut]
+        except KeyError as e:
+            names = sorted([f.name for f in EnumFut])
+            raise KeyError(
+                f"'{fut}' not found. Valid values are: {','.join(names)}"
+            ) from e
+
 
 def is_url(filename: str) -> bool:
     assert isinstance(filename, str)
