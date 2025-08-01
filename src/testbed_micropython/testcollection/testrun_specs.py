@@ -246,8 +246,6 @@ class TestRunSpec:
     def assign_tentacles(
         self,
         tentacles: ConnectedTentacles,
-        # TODO: Remove tentacle_reference
-        tentacle_reference: TentacleMicropython | None,
         count: int,
         flash_skip: bool,
     ) -> None:

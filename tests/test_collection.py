@@ -107,7 +107,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     testrun_specs_.assign_tentacles(
         tentacles=connected_tentacles,
-        tentacle_reference=None,
         flash_skip=testparam.flash_skip,
         count=testparam.count,
     )

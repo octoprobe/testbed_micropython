@@ -338,7 +338,6 @@ class TestRunner:
         )
         testrun_specs.assign_tentacles(
             tentacles=selected_tentacles,
-            tentacle_reference=self.tentacle_reference,
             count=self.args.query_test.count,
             flash_skip=self.args.firmware.flash_skip,
         )
