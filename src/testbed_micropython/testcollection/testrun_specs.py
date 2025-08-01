@@ -254,10 +254,15 @@ class TestRunSpec:
         """
         assert isinstance(tentacles, ConnectedTentacles)
 
-        _tentacles = tentacles
-        if self.requires_reference_tentacle:
-            _tentacles = tentacles.get_exclude_reference(tentacle_reference)
-        selected_tentacles = _tentacles.get_by_fut(self.required_fut)
+        # _tentacles = tentacles
+        # if not self.requires_reference_tentacle:
+        #     if tentacle_reference is not None:
+        #         # This test does not require a reference tentacle
+        #         # but the reference tentacle is specified.
+        #         # Remove the reference tentacle from the test
+        #         _tentacles = tentacles.get_exclude_reference(tentacle_reference)
+        # selected_tentacles = _tentacles.get_by_fut(self.required_fut)
+        selected_tentacles = tentacles.get_by_fut(self.required_fut)
 
         roles = [TestRole.ROLE_INSTANCE0]
         if self.requires_reference_tentacle:
