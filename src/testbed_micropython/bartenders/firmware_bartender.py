@@ -156,9 +156,6 @@ class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
                 variants = board_variants[board]
                 variants.add(variant)
 
-            if testrun_spec.requires_reference_tentacle:
-                add_board_variant(board=reference_board, variant="")
-
             for tsv in testrun_spec.tsvs_todo:
                 add_board_variant(board=tsv.board, variant=tsv.variant)
 
@@ -166,7 +163,7 @@ class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
         for board, variants in board_variants.items():
             for idx, variant in enumerate(sorted(variants)):
                 if board == reference_board:
-                    # The referenced_board should be compiled first: hightest priority!
+                    # The referenced_board should be compiled first: highest priority!
                     idx = -1000
                 firmwares.append(
                     FirmwareTobeBuilt(
