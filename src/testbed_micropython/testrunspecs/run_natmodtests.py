@@ -72,7 +72,7 @@ ARCHS = [
     ),
     Arch(
         arch="xtensawin",
-        container="espressif/idf:v5.4.1",
+        container="espressif/idf:v5.4.2",
     ),
 ]
 
