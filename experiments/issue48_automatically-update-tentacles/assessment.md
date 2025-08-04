@@ -107,3 +107,8 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+
+
+## Tests in micropython directory
+
+tests/run-multitests.py
