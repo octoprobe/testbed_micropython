@@ -126,14 +126,12 @@ class TestRunMultiI2C(TestRun):
         tentacle = self.tentacle_variant.tentacle
         assert isinstance(tentacle, TentacleMicropython)
 
-        # serial_port_infra = tentacle.infra.get_tty()
         with tentacle.infra.borrow_tty() as serial_port_infra:
             serial_port_dut = tentacle.dut.get_tty()
             print(f"Go for it! {serial_port_dut} {serial_port_infra}")
-        # tentacle.infra.mpremote_reconnect(serial_port_infra)
 
     def test(self, testargs: TestArgs) -> None:
-        self.test_using_mpremote(testargs=testargs)
+        self.test_using_dev(testargs=testargs)
 
 
 TESTRUNSPEC_RUNTESTS_MULTI2C = TestRunSpec(
