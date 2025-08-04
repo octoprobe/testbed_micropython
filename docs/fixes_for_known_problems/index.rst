@@ -40,7 +40,7 @@ If you prefer to use `picotool`:
     [492023.002484] usb 1-3.1.4.3: Manufacturer: Raspberry Pi
     [492023.002494] usb 1-3.1.4.3: SerialNumber: E0C9125B0D9B
 
-    picotool erase --all --bus 1 --address 113
+    picotool erase --all --bus 1 --address 89
     or
     wget https://github.com/dwelch67/raspberrypi-pico/blob/main/flash_nuke.uf2
     picotool load flash_nuke.uf2 --bus 1 --address 89
@@ -60,7 +60,7 @@ See: https://docs.micropython.org/en/latest/reference/filesystem.html
 
 .. code-block:: python
 
-    import vfs, pyb
+    import vfs, pyb, os
     vfs.umount('/flash')
     vfs.VfsLfs2.mkfs(pyb.Flash(start=0))
     vfs.mount(pyb.Flash(start=0), '/flash')
