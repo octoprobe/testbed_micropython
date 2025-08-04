@@ -210,14 +210,13 @@ class ConnectedTentacles(list[TentacleMicropython]):
         if len(query.skip_test) > 0:
             selected_boards.difference_update(query.skip_test)
 
-        # TODO(hans): Why has `connected_tentacles` to be evaluated here? We have the same variable in the outer context.
-        connected_tentacles = [
+        selected_tentacles = [
             t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)
         ]
         if len(query_only) > 0:
             # If a board with variant was specified. Example: --only-board=RPI_PICO2-RISCV
             # Then 'RISCV' has to be stored in the 'tentacle_state'.
-            for connected_tentacle in connected_tentacles:
+            for connected_tentacle in selected_tentacles:
                 for _board_variant in query.only_test:
                     board_variant = BoardVariant.parse(_board_variant)
                     if board_variant.has_variant_separator:
@@ -230,8 +229,8 @@ class ConnectedTentacles(list[TentacleMicropython]):
                             )
 
         if tentacle_reference is not None:
-            if testrun_specs.requires_reference_tentacle(connected_tentacles):
-                if tentacle_reference not in connected_tentacles:
-                    connected_tentacles.append(tentacle_reference)
+            if testrun_specs.requires_reference_tentacle(selected_tentacles):
+                if tentacle_reference not in selected_tentacles:
+                    selected_tentacles.append(tentacle_reference)
 
-        return ConnectedTentacles(connected_tentacles)
+        return ConnectedTentacles(selected_tentacles)

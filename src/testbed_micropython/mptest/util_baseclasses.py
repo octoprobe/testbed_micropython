@@ -37,7 +37,7 @@ class ArgsQuery:
             self.skip_fut,
         ):
             assert isinstance(elements1, set)
-            for element1 in elements0:
+            for element1 in elements1:
                 assert isinstance(element1, EnumFut)
 
     @staticmethod

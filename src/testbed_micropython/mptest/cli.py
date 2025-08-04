@@ -347,8 +347,7 @@ def test(
             else util_multiprocessing.init_empty
         )
         with util_multiprocessing.TargetCtx(
-            multiprocessing=multiprocessing,
-            initfunc=initfunc,
+            multiprocessing=multiprocessing, initfunc=initfunc
         ) as target_ctx:
             testrunner.run_all_in_sequence(target_ctx=target_ctx)
     except util_testrunner.OctoprobeAppExitException as e:

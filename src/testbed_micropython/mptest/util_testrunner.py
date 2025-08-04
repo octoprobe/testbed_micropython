@@ -101,78 +101,80 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
         query = ArgsQuery()
     assert isinstance(query, ArgsQuery)
 
-    query_count = sum(
-        len(a) > 0
-        for a in (query.only_test, query.skip_test, query.only_fut, query.skip_fut)
-    )
-    if query_count > 1:
-        raise ValueError(
-            "--only-test, --skip-test, --only-fut, --skip-fut are exclusive!"
-        )
+    query_count_test = sum(len(a) > 0 for a in (query.only_test, query.skip_test))
+    if query_count_test > 1:
+        raise ValueError("--only-test and --skip-test are exclusive!")
+    query_count_fut = sum(len(a) > 0 for a in (query.only_fut, query.skip_fut))
+    if query_count_fut > 1:
+        raise ValueError("--only-fut and --skip-fut are exclusive!")
 
-    query_only_test = [TestArg.parse(t) for t in query.only_test]
-    query_skip_test = [TestArg.parse(t) for t in query.skip_test]
+    test_specs = list(DICT_TESTRUN_SPECS.values())
 
-    def assert_valid_tests(testargs: list[TestArg]) -> None:
-        for testarg in testargs:
-            if testarg.testname not in DICT_TESTRUN_SPECS:
+    if len(query.only_test) > 0:
+        query_only_test = [TestArg.parse(t) for t in query.only_test]
+
+        def assert_valid_tests(testargs: list[TestArg]) -> None:
+            for testarg in testargs:
+                if testarg.testname not in DICT_TESTRUN_SPECS:
+                    raise ValueError(
+                        f"Test '{testarg.testname}' not found. Valid tests are {','.join(sorted(DICT_TESTRUN_SPECS.keys()))}"
+                    )
+
+        assert_valid_tests(testargs=query_only_test)
+
+        query_only_tests_with_args = len([q for q in query_only_test if q.has_args])
+        if query_only_tests_with_args >= 1:
+            # A argument has been provided.
+            # Example: --only-test='RUN-TESTS_STANDARD:run-tests.py --test-dirs=micropython'
+            if query_count_fut:
                 raise ValueError(
-                    f"Test '{testarg.testname}' not found. Valid tests are {','.join(sorted(DICT_TESTRUN_SPECS.keys()))}"
+                    "'--only-test' with arguments may not be combined with --only-fut and --skip-fut"
                 )
 
-    assert_valid_tests(testargs=query_only_test)
-    assert_valid_tests(testargs=query_skip_test)
+            raise ValueError(
+                f"'--only-test' with arguments may not be used once: {' '.join(query.only_test)}"
+            )
 
-    def factory(testargs: list[TestArg]) -> TestRunSpecs:
-        assert isinstance(testargs, list)
-        for testarg in testargs:
-            assert isinstance(testarg, TestArg)
+        if query_only_tests_with_args > 0:
 
-        def factory_inner(testspec: TestArg) -> TestRunSpec:
-            assert isinstance(testspec, TestArg)
-            s = DICT_TESTRUN_SPECS[testspec.testname]
-            if testspec.has_args:
-                command = testspec.command.split(" ")
-                return dataclasses.replace(
-                    s,
-                    command=command,  # type: ignore[arg-type]
-                )
+            def factory(testargs: list[TestArg]) -> TestRunSpecs:
+                assert isinstance(testargs, list)
+                for testarg in testargs:
+                    assert isinstance(testarg, TestArg)
 
-            return s
+                def factory_inner(testspec: TestArg) -> TestRunSpec:
+                    assert isinstance(testspec, TestArg)
+                    s = DICT_TESTRUN_SPECS[testspec.testname]
+                    if testspec.has_args:
+                        command = testspec.command.split(" ")
+                        return dataclasses.replace(
+                            s,
+                            command=command,  # type: ignore[arg-type]
+                        )
 
-        return TestRunSpecs([factory_inner(testarg) for testarg in testargs])
+                    return s
+
+                return TestRunSpecs([factory_inner(testarg) for testarg in testargs])
+
+            return factory(query_only_test)
+
+        assert len(query.only_test) > 0
+        test_specs = [spec for spec in test_specs if spec.label in query.only_test]
+
+    if len(query.skip_test) > 0:
+        test_specs = [spec for spec in test_specs if spec.label not in query.skip_test]
 
     if len(query.skip_fut) > 0:
         test_specs = [
-            spec
-            for spec in DICT_TESTRUN_SPECS.values()
-            if spec.required_fut not in query.skip_fut
+            spec for spec in test_specs if spec.required_fut not in query.skip_fut
         ]
-        return TestRunSpecs(test_specs)
 
     if len(query.only_fut) > 0:
         test_specs = [
-            spec
-            for spec in DICT_TESTRUN_SPECS.values()
-            if spec.required_fut in query.only_fut
+            spec for spec in test_specs if spec.required_fut in query.only_fut
         ]
-        return TestRunSpecs(test_specs)
 
-    if len(query_skip_test) > 0:
-        selected_tests = set(DICT_TESTRUN_SPECS.keys()) - query.skip_test
-        return factory([TestArg.parse(t) for t in selected_tests])
-
-    if len(query_only_test) == 0:
-        # Run all tests
-        return factory([TestArg.parse(t) for t in DICT_TESTRUN_SPECS.keys()])
-
-    if len(query_only_test) > 1:
-        if len([q for q in query_only_test if q.has_args]) >= 1:
-            raise ValueError(
-                f"'--test-only' with arguments may not be used once: {' '.join(query.only_test)}:"
-            )
-
-    return factory(query_only_test)
+    return TestRunSpecs(test_specs)
 
 
 @dataclasses.dataclass
@@ -329,12 +331,9 @@ class TestRunner:
             logfile=self.args.directory_results / "journalctl.txt"
         )
         journalctl.start_observer_thread()
-        # TODO: Is the name 'query_result_tentacles' correct?
-        query_result_tentacles = CtxTestRun.session_powercycle_tentacles()
+        usb_tentacles = CtxTestRun.session_powercycle_tentacles()
 
-        connected_tentacles = instantiate_tentacles(
-            usb_tentacles=query_result_tentacles
-        )
+        connected_tentacles = instantiate_tentacles(usb_tentacles=usb_tentacles)
         if len(connected_tentacles) == 0:
             logger.warning("No tentacles discovered!")
             raise SystemExit(0)
