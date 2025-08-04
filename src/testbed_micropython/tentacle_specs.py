@@ -41,8 +41,8 @@ Assignments
   CH1: extmod_a (signals for FUT_EXTMOD_HARDWARE)
   CH2: extmod_b (signals for FUT_EXTMOD_HARDWARE)
   CH3: extmod_c (signals for FUT_EXTMOD_HARDWARE)
-  CH4: SCL toward PICO-Infra
-  CH5: SDA toward PICO-Infra
+  CH4: SCL toward PICO-Infra, used by EnumFut.FUT_I2C
+  CH5: SDA toward PICO-Infra, used by EnumFut.FUT_I2C
 """
 
 from __future__ import annotations
@@ -495,7 +495,7 @@ RPI_PICO = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO",
@@ -513,7 +513,7 @@ RPI_PICO_W = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO_W",
@@ -533,7 +533,7 @@ RPI_PICO2 = TentacleSpecMicropython(
     doc="""
 See: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#raspberry-pi-pico-2-w24
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2",
@@ -569,7 +569,7 @@ Connections
   * Testpoint CH0/trigger <=> Board GP2
   * Testpoint CH1/extmod_a <=> Board GP0
 
-* I2C towards PICO-infra
+* I2C towards PICO-infra, required by EnumFut.FUT_I2C
   * Board GP10 (SDA) - Tentacle GPIO10
   * Board GP11 (SCL) - Tentacle GPIO11
   * Board GP10 (SDA) - R4k7 (Pullup) - Board 3V3 (pin 36)
