@@ -41,6 +41,8 @@ Assignments
   CH1: extmod_a (signals for FUT_EXTMOD_HARDWARE)
   CH2: extmod_b (signals for FUT_EXTMOD_HARDWARE)
   CH3: extmod_c (signals for FUT_EXTMOD_HARDWARE)
+  CH4: SCL toward PICO-Infra
+  CH5: SDA toward PICO-Infra
 """
 
 from __future__ import annotations
@@ -563,6 +565,14 @@ Connections
   * Testpoint GND <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board GP2
   * Testpoint CH1/extmod_a <=> Board GP0
+
+* I2C towards PICO-infra
+  * Board GP10 (SDA) - Tentacle GPIO10
+  * Board GP11 (SCL) - Tentacle GPIO11
+  * Board GP10 (SDA) - R4k7 (Pullup) - Board 3V3 (pin 36)
+  * Board GP11 (SCL) - R4k7 (Pullup) - Board 3V3 (pin 36)
+  * Testpoint CH4/SCL <=> Board GP11
+  * Testpoint CH5/SDA <=> Board GP10
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2_W",
