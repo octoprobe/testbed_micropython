@@ -83,6 +83,7 @@ class EnumFut(enum.StrEnum):
     """
     FUT_WLAN = enum.auto()
     FUT_BLE = enum.auto()
+    FUT_I2C = enum.auto()
 
     @staticmethod
     def factory(fut: str) -> EnumFut:

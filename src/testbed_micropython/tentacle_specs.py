@@ -502,6 +502,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_I2C,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
@@ -521,6 +522,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
+        EnumFut.FUT_I2C,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
@@ -538,6 +540,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_I2C,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
@@ -581,6 +584,7 @@ Connections
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
+        EnumFut.FUT_I2C,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     # TODO: No RISCV variant for the RPI_PICO2_W.
