@@ -117,7 +117,6 @@ TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
     helptext="Run the standard set of tests",
     command=["run-tests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
@@ -127,7 +126,6 @@ TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
     helptext="Run the standard set of tests via .mpy",
     command=["run-tests.py", "--via-mpy"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
@@ -137,7 +135,6 @@ TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
     helptext="Run the standard set of tests with the native emitter",
     command=["run-tests.py", "--via-mpy", "--emit", "native"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )

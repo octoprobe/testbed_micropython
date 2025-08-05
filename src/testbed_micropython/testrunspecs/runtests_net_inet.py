@@ -88,7 +88,6 @@ TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
     helptext="TODO: help net inet",
     command=["run-tests.py", "--test-dirs=net_inet"],
     required_fut=EnumFut.FUT_WLAN,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60.0 + TIMEOUT_FLASH_S,
 )
@@ -98,7 +97,6 @@ TESTRUNSPEC_RUNTESTS_NET_HOSTED = TestRunSpec(
     helptext="TODO: help net hosted",
     command=["run-tests.py", "--test-dirs=net_hosted"],
     required_fut=EnumFut.FUT_WLAN,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60.0 + TIMEOUT_FLASH_S,
 )

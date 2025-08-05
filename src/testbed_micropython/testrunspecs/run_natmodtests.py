@@ -255,7 +255,6 @@ TESTRUNSPEC_RUN_NATMODTESTS = TestRunSpec(
     helptext="Run tests using native modules in external .mpy files",
     command=["run-natmodtests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=2 * 60.0 + TIMEOUT_FLASH_S,
 )

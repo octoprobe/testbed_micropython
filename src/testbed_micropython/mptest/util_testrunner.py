@@ -43,7 +43,7 @@ from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from ..testrunspecs import (
-    run_mult_i2c_external,
+    run_multi_i2c_external,
     run_multinet,
     run_natmodtests,
     run_perftest,
@@ -86,7 +86,7 @@ _TESTRUN_SPECS = [
     runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
     runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE,
     run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS,
-    run_mult_i2c_external.TESTRUNSPEC_RUNTESTS_MULTI2C,
+    run_multi_i2c_external.TESTRUNSPEC_RUNTESTS_MULTI2C,
 ]
 DICT_TESTRUN_SPECS = {s.label: s for s in _TESTRUN_SPECS}
 
