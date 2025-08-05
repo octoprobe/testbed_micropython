@@ -70,7 +70,7 @@ See: https://docs.micropython.org/en/latest/reference/filesystem.html
 DUT NUCLEO_WB55: Remotely flash bluetooth stack
 ---------------------------------------------------
 
-This will bring the PICO into boot mode and.
+This will bring the NUCLEO_WB55 into boot mode.
 
 .. code-block:: bash
 

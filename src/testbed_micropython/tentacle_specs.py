@@ -353,6 +353,7 @@ NUCLEO_WB55 = TentacleSpecMicropython(
 See: https://micropython.org/download/NUCLEO_WB55/
 See: https://www.st.com/en/evaluation-tools/p-nucleo-wb55.html
 See: https://www.st.com/en/evaluation-tools/nucleo-wb55rg.html
+See: https://stm32python.gitlab.io/en/docs/Micropython/stm32wb55
 See headers: https://os.mbed.com/platforms/ST-Nucleo-WB55RG/
 See - old doc rev1, but detailed: https://fcc.report/FCC-ID/YCP-MB1355002/5777411.pdf
 See - old doc rev2, but detailed: https://community.st.com/ysqtg83639/attachments/ysqtg83639/mcu-wireless-forum/22082/1/P-NUCLEO-WB55%20User%20Manual%20UM2435%20Rev%202%20April%202019.pdf

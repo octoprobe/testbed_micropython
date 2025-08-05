@@ -21,6 +21,7 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestSkipException,
     assert_micropython_repo,
 )
+from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import is_url
@@ -31,7 +32,6 @@ if typing.TYPE_CHECKING:
     from ..testcollection.testrun_specs import TestArgs
 
 logger = logging.getLogger(__file__)
-
 
 
 @dataclasses.dataclass
@@ -150,14 +150,23 @@ while not wlan.isconnected():
 connect_duration_ms = time.ticks_diff(time.ticks_ms(), begin_ms)
 config = wlan.ifconfig()
 """
-    begin_s = time.monotonic()
-    try:
-        dut.mp_remote.exec_raw(cmd, timeout=20)
-    except (TimeoutError, ExceptionTransport) as e:
-        duration_s = time.monotonic() - begin_s
-        msg = f"Timeout after {duration_s:0.1f}s while connecting to WLAN_SSID '{wlan_ssid}'"
-        logger.debug(msg, exc_info=e)
-        raise OctoprobeTestException(msg) from e
+    retry = 0
+    while True:
+        retry += 1
+        begin_s = time.monotonic()
+        try:
+            dut.mp_remote.exec_raw(cmd, timeout=20)
+        except (TimeoutError, ExceptionTransport) as e:
+            duration_s = time.monotonic() - begin_s
+            msg = f"retry {retry}: Timeout after {duration_s:0.1f}s while connecting to WLAN_SSID '{wlan_ssid}'"
+            logger.debug(msg, exc_info=e)
+            if retry >= 5:
+                raise OctoprobeTestException(msg) from e
+            logger.warning(msg)
+            dut.dut_power_cycle(udev=UDEV_POLLER_LAZY.udev_poller)
+            continue
+
+        break
 
     config = dut.mp_remote.read_str("config")
     connect_duration_s = dut.mp_remote.read_int("connect_duration_ms") / 1000.0
