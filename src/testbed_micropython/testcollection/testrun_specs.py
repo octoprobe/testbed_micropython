@@ -203,6 +203,7 @@ class TestRun:
             )
 
             priorities = (
+                -testrun.testrun_spec.priority,
                 # The more variants to compile, the higher the priority
                 -build_variants,
                 # To minimize reflashing, order by variant
@@ -231,13 +232,19 @@ class TestRunSpec:
     helptext: str
     command: list[str]
     required_fut: constants.EnumFut
-    requires_reference_tentacle: bool
     timeout_s: float
     testrun_class: type[TestRun]
     tsvs_todo: TentacleSpecVariants = dataclasses.field(
         default_factory=TentacleSpecVariants
     )
     tsvs_total_count: int = -1
+    requires_reference_tentacle: bool = False
+    priority: int = 0
+    """
+    priority for the test scheduler.
+    0: low
+    10: high
+    """
 
     def __post_init__(self) -> None:
         assert isinstance(self.label, str)
