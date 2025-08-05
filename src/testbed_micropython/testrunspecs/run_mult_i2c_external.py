@@ -16,7 +16,7 @@ This requires, that the tests should NOT break the PICO-infra NOR leave state li
 This may probably be accomplished by doing a soft- or hard-reset after every test.
 
 The tests require
-* A FUT to be set. For example `EnumFut.FUT_I2C`
+* A FUT to be set. For example `EnumFut.FUT_I2C_EXTERNAL`
 * Electrical connections corresponding this FUT. These connections are specified in `src/testbed_micropython/tentacle_specs.py`
 """
 
@@ -70,6 +70,7 @@ class TestRunMultiI2C(TestRun):
                 f"--result-dir={testargs.testresults_directory.directory_test}",
                 f"--instance=pyb:{serial_port_dut}",
                 f"--instance=pyb:{serial_port_infra}",
+                "-p2",  # 2 permuations
                 *list_tests,
             ]
             subprocess_run(
@@ -85,10 +86,10 @@ class TestRunMultiI2C(TestRun):
 
 
 TESTRUNSPEC_RUNTESTS_MULTI2C = TestRunSpec(
-    label="RUN-MULTITESTS_I2C",
+    label="RUN-MULTITESTS_I2C_EXTERNAL",
     helptext="See https://github.com/octoprobe/testbed_micropython/issues/57",
     command=["run-multitests.py", "multi_i2c/*.py"],
-    required_fut=EnumFut.FUT_I2C,
+    required_fut=EnumFut.FUT_I2C_EXTERNAL,
     requires_reference_tentacle=False,
     testrun_class=TestRunMultiI2C,
     timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,

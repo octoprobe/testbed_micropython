@@ -1,33 +1,36 @@
 """
-*: Board suggested for testbed_ch_hans_1
+Requirements for every board
 
-class EnumTentacleTag(enum.StrEnum):
-    # esp32
-    ESP32_GENERIC = enum.auto()
-*   ESP32_GENERIC_C3 = enum.auto()  # Lolin C3 Mini
-    #ESP32_GENERIC_C6 = enum.auto() TODO
-    UM_FEATHERS2 = enum.auto()
-*   ESP32_GENERIC_S3 = enum.auto()  # ESP32-S3-DevKitC-1-N8R8
-    # esp8266
-*   LOLIN_D1_MINI = enum.auto()
-    # mimxrt
-*   TEENSY40 = enum.auto()
-    # nrf
-*   ARDUINO_NANO_33_BLE_SENSE = enum.auto()
-    # renesas-ra
-    #EK_RA6M # (with UART REPL on P411/P410)
-    # rp2
-*   RPI_PICO = enum.auto()
-    RPI_PICO_W = enum.auto()                WLAN BLE
-*   RPI_PICO2 = enum.auto() RISCV
-*   RPI_PICO2_W = enum.auto() RISCV         WLAN BLE
-    # samd
-*   ADAFRUIT_ITSYBITSY_M0_EXPRESS = enum.auto()
-    # stm32
-*   PYBV11 = enum.auto()
-    PYBLITEV10 = enum.auto()
-    PYBD_SF2 = enum.auto()
-    PYBD_SF6 = enum.auto()
+ * EnumFut.FUT_MCU_ONLY
+   * Boards: One board
+   * No requirement
+ * EnumFut.FUT_WLAN
+   * Boards: One or two boards
+   * Requirement: The board support for WLAN
+ * EnumFut.FUT_BLE
+   * Boards: One or two boards
+   * Requirement: The board support for BLE
+ * EnumFut.FUT_EXTMOD_HARDWARE
+   * Boards: One board
+   * Description: rx-tx loopback: Data is sent via the loopback wire and read on the other side.
+   * Description: gpio/pwm loopback: PWM is generated on one pin and read from the other pion
+   * Description: i2c loopback: 2 pins are used as a I2C controller, 2 pins are used as a I2C target. Both communicate.
+   * Requirement: The electrical loopback wires is required
+ * EnumFut.FUT_I2C_EXTERNAL
+   * Boards: Two boards
+   * Description: Two boards supporting FUT_I2C_EXTERNAL are connected together to communicate over I2C
+   * Description: For octoprobe: The tentacle PICO-infra is used to play the role of one board
+   * Requirement: Two electrical wires for I2C SCL and I2C SDA
+   * Requirement: Pull up resistors: SCL-R4k7-3V3, SDA-R4k7-3V3.
+   * Remark: Pull up resistors: Use 3V3 from the board and NOT from the infra to avoid the DUT-cpu
+     beeing powered by the pull up resistors and not beeing reset during powercycles.
+   * Remark: When two FUT_I2C_EXTERNAL boards are connected, at lease 1 needs pull up resistors.
+   * Octoprobe: All DUTs require pull up resistors but the PICO-infra does not.
+ * EnumFut.FUT_UART_EXTERNAL
+   * Future use
+ * EnumFut.FUT_SPI_EXTERNAL
+   * Future use. Can't probably not be used on octoprobe due to conflicting pins.
+
 
 12pin Testpoints
 ----------------
@@ -41,8 +44,13 @@ Assignments
   CH1: extmod_a (signals for FUT_EXTMOD_HARDWARE)
   CH2: extmod_b (signals for FUT_EXTMOD_HARDWARE)
   CH3: extmod_c (signals for FUT_EXTMOD_HARDWARE)
-  CH4: SCL toward PICO-Infra, used by EnumFut.FUT_I2C
-  CH5: SDA toward PICO-Infra, used by EnumFut.FUT_I2C
+  CH4: SCL used by EnumFut.FUT_EXTMOD_HARDWARE
+  CH5: SDA used by EnumFut.FUT_EXTMOD_HARDWARE
+  CH6: SCL toward PICO-Infra, used by EnumFut.FUT_I2C_EXTERNAL
+  CH7: SDA toward PICO-Infra, used by EnumFut.FUT_I2C_EXTERNAL
+  CH8: TX used by EnumFut.FUT_UART_EXTERNAL
+  CH9: RX used by EnumFut.FUT_UART_EXTERNAL
+
 """
 
 from __future__ import annotations
@@ -502,7 +510,7 @@ Connections: The same as RPI_PICO2_W
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_I2C,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
@@ -522,7 +530,7 @@ Connections: The same as RPI_PICO2_W
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
-        EnumFut.FUT_I2C,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
@@ -540,7 +548,7 @@ Connections: The same as RPI_PICO2_W
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_I2C,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
@@ -561,21 +569,36 @@ Connections
 * GND
   * Board GND <=> Tentacle GND
 
-* FUT_EXTMOD_HARDWARE
+* FUT_EXTMOD_HARDWARE (tx/rx,pwm loopback)
   * Board GP0 <=> Board GP1
+
+* FUT_EXTMOD_HARDWARE (I2C loopback)
+  * Board GP4 (SDA) <=> Board GP6 (SDA)
+  * Board GP5 (SCL) <=> Board GP7 (SCL)
+  * Board GP4 (SDA) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+  * Board GP5 (SCL) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+
+* FUT_I2C_EXTERNAL (I2C towards PICO-infra)
+  * Board GP10 (SDA) <=> Tentacle GPIO10 (SDA)
+  * Board GP11 (SCL) <=> Tentacle GPIO11 (SCL)
+  * Board GP10 (SDA) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+  * Board GP11 (SCL) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+
+* FUT_UART_EXTERNAL (UART towards PICO-infra)
+  * Board GP12 (TX) <=> Tentacle GPIO13 (RX)
+  * Board GP13 (RX) <=> Tentacle GPIO12 (TX)
 
 * Testpoints
   * Testpoint GND <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board GP2
   * Testpoint CH1/extmod_a <=> Board GP0
+  * Testpoint CH4/SDA <=> Board GP4 (SDA)
+  * Testpoint CH5/SCL <=> Board GP5 (SCL)
+  * Testpoint CH6/SCL <=> Board GP11 (SCL)
+  * Testpoint CH7/SDA <=> Board GP10 (SDA)
+  * Testpoint CH8/TX <=> Board GP12 (TX)
+  * Testpoint CH9/RX <=> Board GP13 (RX)
 
-* I2C towards PICO-infra, required by EnumFut.FUT_I2C
-  * Board GP10 (SDA) - Tentacle GPIO10
-  * Board GP11 (SCL) - Tentacle GPIO11
-  * Board GP10 (SDA) - R4k7 (Pullup) - Board 3V3 (pin 36)
-  * Board GP11 (SCL) - R4k7 (Pullup) - Board 3V3 (pin 36)
-  * Testpoint CH4/SCL <=> Board GP11
-  * Testpoint CH5/SDA <=> Board GP10
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2_W",
@@ -584,7 +607,7 @@ Connections
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
-        EnumFut.FUT_I2C,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     # TODO: No RISCV variant for the RPI_PICO2_W.

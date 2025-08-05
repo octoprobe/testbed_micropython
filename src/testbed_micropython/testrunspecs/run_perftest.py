@@ -69,7 +69,6 @@ TESTRUNSPEC_PERFTEST = TestRunSpec(
     helptext="Run pertest on each board",
     command=["run-perfbench.py"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    requires_reference_tentacle=False,
     testrun_class=TestRunPerfTest,
     timeout_s=4 * 60.0 + TIMEOUT_FLASH_S,
 )
