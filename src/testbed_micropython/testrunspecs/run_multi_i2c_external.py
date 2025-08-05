@@ -44,7 +44,7 @@ from ..util_multiprocessing import EVENTLOGCALLBACK
 logger = logging.getLogger(__file__)
 
 
-class TestRunMultiI2C(TestRun):
+class TestRunMultiI2cExternal(TestRun):
     def test(self, testargs: TestArgs) -> None:
         tentacle = self.tentacle_variant.tentacle
         assert isinstance(tentacle, TentacleMicropython)
@@ -70,7 +70,6 @@ class TestRunMultiI2C(TestRun):
                 f"--result-dir={testargs.testresults_directory.directory_test}",
                 f"--instance=pyb:{serial_port_dut}",
                 f"--instance=pyb:{serial_port_infra}",
-                "-p2",  # 2 permuations
                 *list_tests,
             ]
             subprocess_run(
@@ -90,7 +89,7 @@ TESTRUNSPEC_RUNTESTS_MULTI2C = TestRunSpec(
     helptext="See https://github.com/octoprobe/testbed_micropython/issues/57",
     command=["run-multitests.py", "multi_i2c/*.py"],
     required_fut=EnumFut.FUT_I2C_EXTERNAL,
-    requires_reference_tentacle=False,
-    testrun_class=TestRunMultiI2C,
+    requires_reference_infra_pico=True,
+    testrun_class=TestRunMultiI2cExternal,
     timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
 )
