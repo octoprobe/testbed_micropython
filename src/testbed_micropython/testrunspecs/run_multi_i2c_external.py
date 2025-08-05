@@ -29,6 +29,7 @@ from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
 from ..tentacle_spec import TentacleMicropython
+from ..testcollection.baseclasses_spec import TestRole
 from ..testcollection.constants import (
     ENV_MICROPYTHON_TESTS,
     MICROPYTHON_DIRECTORY_TESTS,
@@ -45,7 +46,14 @@ logger = logging.getLogger(__file__)
 
 
 class TestRunMultiI2cExternal(TestRun):
+    """
+    These test runs against the tentacle PICO-infra
+    """
+
     def test(self, testargs: TestArgs) -> None:
+        if testargs.debug_skip_tests_with_message:
+            return
+
         tentacle = self.tentacle_variant.tentacle
         assert isinstance(tentacle, TentacleMicropython)
 
@@ -55,19 +63,19 @@ class TestRunMultiI2cExternal(TestRun):
 
         with tentacle.infra.borrow_tty() as serial_port_infra:
             serial_port_dut = tentacle.dut.get_tty()
-            print(f"Go for it! {serial_port_dut} {serial_port_infra}")
 
             # Run tests
             cwd = testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
             list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
-            logfile = testargs.testresults_directory("testresults.txt").filename
             EVENTLOGCALLBACK.log(
-                msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+                msg=f"Logfile: {testargs.testresults_directory.render_relative(testargs.logfile)}"
             )
+            if self.tentacle_variant.role == TestRole.ROLE_INSTANCE1:
+                serial_port_infra, serial_port_dut = serial_port_dut, serial_port_infra
             args = [
                 sys.executable,
                 self.testrun_spec.command_executable,
-                f"--result-dir={testargs.testresults_directory.directory_test}",
+                f"--result-dir={testargs.directory_test}",
                 f"--instance=pyb:{serial_port_dut}",
                 f"--instance=pyb:{serial_port_infra}",
                 *list_tests,
@@ -76,8 +84,7 @@ class TestRunMultiI2cExternal(TestRun):
                 args=args,
                 cwd=cwd,
                 env=ENV_MICROPYTHON_TESTS,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
+                logfile=testargs.logfile,
                 timeout_s=self.timeout_s,
                 # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
                 success_returncodes=[0, 1],
@@ -87,9 +94,9 @@ class TestRunMultiI2cExternal(TestRun):
 TESTRUNSPEC_RUNTESTS_MULTI2C = TestRunSpec(
     label="RUN-MULTITESTS_I2C_EXTERNAL",
     helptext="See https://github.com/octoprobe/testbed_micropython/issues/57",
-    command=["run-multitests.py", "multi_i2c/*.py"],
+    command=["run-multitests.py", "multi_extmod/*.py"],
     required_fut=EnumFut.FUT_I2C_EXTERNAL,
     requires_reference_infra_pico=True,
     testrun_class=TestRunMultiI2cExternal,
-    timeout_s=4 * 60.0 + 2 * TIMEOUT_FLASH_S,
+    timeout_s=20.0 + TIMEOUT_FLASH_S,
 )
