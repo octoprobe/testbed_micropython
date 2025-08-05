@@ -47,6 +47,17 @@ class TestArgs:
             logger.info("debug_skip_tests: Skip test!")
         return self.debug_skip_tests
 
+    @property
+    def logfile(self) -> pathlib.Path:
+        """
+        The absolute file name.
+        """
+        return self.testresults_directory("testresults.txt").filename
+
+    @property
+    def directory_test(self) -> pathlib.Path:
+        return self.testresults_directory.directory_test
+
 
 @dataclasses.dataclass(slots=True, repr=True)
 class TestRun:
