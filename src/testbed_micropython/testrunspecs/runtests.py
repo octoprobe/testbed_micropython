@@ -166,7 +166,6 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     helptext="Run hardware specific tests",
     command=["run-tests.py", "--test-dirs=extmod_hardware"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=30.0 + TIMEOUT_FLASH_S,
 )
@@ -182,7 +181,6 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE = TestRunSpec(
         "--test-dirs=extmod_hardware",
     ],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=30.0 + TIMEOUT_FLASH_S,
 )

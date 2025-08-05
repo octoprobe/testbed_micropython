@@ -80,10 +80,20 @@ class EnumFut(enum.StrEnum):
     FUT_EXTMOD_HARDWARE = enum.auto()
     """
     rx-tx loopback connection
+    gpio/pwm loopback connection
+    I2C SCL and SDA loopback connection
     """
     FUT_WLAN = enum.auto()
     FUT_BLE = enum.auto()
-    FUT_I2C = enum.auto()
+    FUT_I2C_EXTERNAL = enum.auto()
+    FUT_UART_EXTERNAL = enum.auto()
+    """
+    Future - not used yet!
+    """
+    FUT_SPI_EXTERNAL = enum.auto()
+    """
+    Future - not used yet!
+    """
 
     @staticmethod
     def factory(fut: str) -> EnumFut:
