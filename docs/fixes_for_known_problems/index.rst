@@ -70,7 +70,7 @@ See: https://docs.micropython.org/en/latest/reference/filesystem.html
 DUT NUCLEO_WB55: Remotely flash bluetooth stack
 ---------------------------------------------------
 
-This will bring the NUCLEO_WB55 into boot mode.
+This will bring the NUCLEO_WB55 into programming mode.
 
 .. code-block:: bash
 
@@ -90,7 +90,8 @@ Flash bluetooth stack
 
 .. code-block:: bash
 
-    dfu-util -a 0 -D micropy_nucleo_wb55.dfu
+    wget https://micropython.org/resources/micropy_nucleowb55_fuwwsinstaller.dfu
+    dfu-util -a 0 -D micropy_nucleowb55_fuwwsinstaller.dfu
 
 Read bluetooth stack version
 
