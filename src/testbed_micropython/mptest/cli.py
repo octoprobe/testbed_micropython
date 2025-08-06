@@ -296,6 +296,12 @@ def test(
         bool | None,
         typer.Option(help="Skip the test execution"),
     ] = False,  # noqa: UP007
+    debug_skip_usb_error: TyperAnnotated[
+        bool | None,
+        typer.Option(
+            help="The tests aborts if an error appears in journalctl. Setting this option will just print a warning but the test will continue."
+        ),
+    ] = False,  # noqa: UP007
 ) -> None:
     try:
         directory_results = assert_valid_testresults(testresults)
@@ -328,6 +334,7 @@ def test(
             ),
             force_multiprocessing=force_multiprocessing,
             debug_skip_tests=debug_skip_tests,
+            debug_skip_usb_error=debug_skip_usb_error,
             reference_board=reference_board,
         )
         testrunner = util_testrunner.TestRunner(args=args)

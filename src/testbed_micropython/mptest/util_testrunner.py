@@ -188,6 +188,7 @@ class Args:
     query_test: ArgsQuery
     query_board: ArgsQuery
     debug_skip_tests: bool
+    debug_skip_usb_error: bool = False
     reference_board: str = constants.DEFAULT_REFERENCE_BOARD
     """
     The board to be used a reference for WLAN/Bluetooth tests.
@@ -202,6 +203,7 @@ class Args:
         assert isinstance(self.query_test, ArgsQuery)
         assert isinstance(self.query_board, ArgsQuery)
         assert isinstance(self.debug_skip_tests, bool)
+        assert isinstance(self.debug_skip_usb_error, bool)
         assert isinstance(self.reference_board, str)
 
     @staticmethod
@@ -225,6 +227,7 @@ class Args:
             query_test=ArgsQuery(),
             force_multiprocessing=False,
             debug_skip_tests=False,
+            debug_skip_usb_error=False,
         )
 
 
@@ -330,7 +333,8 @@ class TestRunner:
 
     def init(self) -> None:
         journalctl = JournalctlObserver(
-            logfile=self.args.directory_results / "journalctl.txt"
+            logfile=self.args.directory_results / "journalctl.txt",
+            debug_skip_usb_error=self.args.debug_skip_usb_error,
         )
         journalctl.start_observer_thread()
         usb_tentacles = CtxTestRun.session_powercycle_tentacles()
