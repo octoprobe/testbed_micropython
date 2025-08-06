@@ -1,0 +1,10 @@
+set -euox pipefail
+
+(
+cd /tmp
+uv venv --clear
+. /tmp/.venv/bin/activate
+uv pip install pyudev
+)
+. /tmp/.venv/bin/activate
+python pydev_observer.py

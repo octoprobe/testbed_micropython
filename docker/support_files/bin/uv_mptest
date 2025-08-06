@@ -1,0 +1,3 @@
+set -euox pipefail
+
+uv tool run --from=git+https://github.com/octoprobe/testbed_micropython_reports.git mptest $@
