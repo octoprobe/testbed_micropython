@@ -1,34 +1,4 @@
 """
-*: Board suggested for testbed_ch_hans_1
-
-class EnumTentacleTag(enum.StrEnum):
-    # esp32
-    ESP32_GENERIC = enum.auto()
-*   ESP32_GENERIC_C3 = enum.auto()  # Lolin C3 Mini
-    #ESP32_GENERIC_C6 = enum.auto() TODO
-    UM_FEATHERS2 = enum.auto()
-*   ESP32_GENERIC_S3 = enum.auto()  # ESP32-S3-DevKitC-1-N8R8
-    # esp8266
-*   LOLIN_D1_MINI = enum.auto()
-    # mimxrt
-*   TEENSY40 = enum.auto()
-    # nrf
-*   ARDUINO_NANO_33_BLE_SENSE = enum.auto()
-    # renesas-ra
-    #EK_RA6M # (with UART REPL on P411/P410)
-    # rp2
-*   RPI_PICO = enum.auto()
-    RPI_PICO_W = enum.auto()                WLAN BLE
-*   RPI_PICO2 = enum.auto() RISCV
-*   RPI_PICO2_W = enum.auto() RISCV         WLAN BLE
-    # samd
-*   ADAFRUIT_ITSYBITSY_M0_EXPRESS = enum.auto()
-    # stm32
-*   PYBV11 = enum.auto()
-    PYBLITEV10 = enum.auto()
-    PYBD_SF2 = enum.auto()
-    PYBD_SF6 = enum.auto()
-
 12pin Testpoints
 ----------------
 These connectors match with https://github.com/WeActStudio/LogicAnalyzerV1.
@@ -46,6 +16,7 @@ Assignments
 from __future__ import annotations
 
 from octoprobe import (
+    util_mcu_esp,
     util_mcu_mimxrt,
     util_mcu_nrf,
     util_mcu_pico,
@@ -151,12 +122,18 @@ Connections
 * GND
   * Board GND <=> Tentacle GND
 
+* Bootmode
+  * Board GPIO0  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
 * FUT_EXTMOD_HARDWARE
   * Board 5/U0RXD/RX <=> 4/U0TXD/TX
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
+
+v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_DEVKIT",
@@ -166,6 +143,7 @@ Connections
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
+    mcu_usb_id=util_mcu_esp.ESP32_USB_ID,
     tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool",
     programmer_args=[
         "--chip=esp32",
@@ -173,6 +151,8 @@ Connections
         "--before=default-reset",
         "--after=hard-reset",
         "write-flash",
+        "--no-progress",
+        "--compress",
         "0x1000",
     ],
     power_on_delay_s=1.0,
@@ -181,8 +161,6 @@ Connections
 
 ESP32_C3_DEVKIT = TentacleSpecMicropython(
     doc="""
-TODO: Remove: ESP32_GENERIC_C3 firmware on Lolin C3 Mini
-TODO: Remove: See: https://www.wemos.cc/en/latest/c3/c3_mini.html
 See: ESP32-C3-DevKitC-02
 See: https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/hw-reference/esp32c3/user-guide-devkitc-02.html
 See: http://adafru.it/5337
@@ -192,12 +170,18 @@ Connections
 * GND
   * Board GND <=> Tentacle GND
 
+* Bootmode
+  * Board GPIO0  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
 * FUT_EXTMOD_HARDWARE
   * Board 5/U0RXD/RX <=> 4/U0TXD/TX
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
+
+v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C3_DEVKIT",
@@ -207,6 +191,7 @@ Connections
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
+    mcu_usb_id=util_mcu_esp.ESP32_C3_USB_ID,
     tags="board=ESP32_GENERIC_C3,mcu=esp32,programmer=esptool",
     programmer_args=[
         "--chip=esp32c3",
@@ -234,6 +219,10 @@ Connections
 * GND
   * Board GND <=> Tentacle GND
 
+* Bootmode
+  * Board GPIO0  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> Board GPIO5
 
@@ -242,8 +231,9 @@ Connections
   * Testpoint CH0/trigger <=> Board GPIO6
   * Testpoint CH1/extmod_a <=> Board GPIO4
 
-  v1.0: USB DUT is connected to 'UART'
-  v1.1: USB DUT is connected to 'USB'
+v1.0: USB DUT is connected to 'UART'
+v1.1: USB DUT is connected to 'USB'
+v1.2: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_S3_DEVKIT",
@@ -253,6 +243,7 @@ Connections
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
+    mcu_usb_id=util_mcu_esp.ESP32_S3_USB_ID,
     # TODO: board=ESP32_GENERIC_S3:UM_FEATHERS3
     tags="board=ESP32_GENERIC_S3,mcu=esp32,programmer=esptool",
     # https://micropython.org/download/ESP32_GENERIC_S3/
@@ -277,6 +268,10 @@ Connections
 * GND
   * Board GND <=> Tentacle GND
 
+* Bootmode
+  * Board Button 9 close to edge  <=> Tentacle Relay 1a
+  * Board Button 9 close to VBUS <=> Tentacle Relay 1b
+
 * FUT_EXTMOD_HARDWARE
   * Board 5/U0RXD/RX <=> 4/U0TXD/TX
 
@@ -284,6 +279,8 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board 1
   * Testpoint CH1/extmod_a <=> Board 5/U0RXD/RX
+
+v1.1: Use relais to allow octoprobe to press boot button
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="LOLIN_C3_MINI",
@@ -293,6 +290,7 @@ Connections
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
+    mcu_usb_id=util_mcu_esp.LOLIN_C3_MINI_USB_ID,
     tags="board=LOLIN_C3_MINI,mcu=esp32,programmer=esptool",
     programmer_args=[
         "--chip=esp32c3",
