@@ -8,6 +8,7 @@ import pathlib
 import typing
 from collections.abc import Iterator
 
+from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 
 from .. import constants
@@ -214,6 +215,14 @@ class TestRun:
             return priorities
 
         return sorted(testruns, key=priority)
+
+    def skip_if_no_filesystem(self) -> None:
+        tentacle = self.tentacle_variant.tentacle
+        filesystem_present = tentacle.dut.mpremote_success("import os; os.listdir('/')")
+        if not filesystem_present:
+            msg = f"{tentacle.label_short}: No filesystem: Skip Test!"
+            logger.warning(msg)
+            raise OctoprobeTestSkipException(msg)
 
 
 @dataclasses.dataclass(slots=True, order=True)

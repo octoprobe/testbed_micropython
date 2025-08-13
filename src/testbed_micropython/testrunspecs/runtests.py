@@ -55,8 +55,6 @@ class TestRunRunTests(TestRun):
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 
-        util_common.skip_if_no_filesystem(tentacle=tentacle)
-
         def env_for_mpycross() -> dict[str, str]:
             env = ENV_PYTHONUNBUFFERED
 
@@ -75,15 +73,21 @@ class TestRunRunTests(TestRun):
             env["MICROPY_MPYCROSS"] = str(filename_mpycross)
             return env
 
+        # LOLIN_D1_MINI 512k: 'unittest' is included frozen into the firmware
+        unittest_already_installed = tentacle.dut.mpremote_success("import unittest")
+        if not unittest_already_installed:
+            self.skip_if_no_filesystem()
+
         serial_port = tentacle.dut.get_tty()
 
         # Install mip
-        util_common.mip_install(
-            testargs=testargs,
-            tentacle=tentacle,
-            serial_port=serial_port,
-            mip_package="unittest",
-        )
+        if not unittest_already_installed:
+            util_common.mip_install(
+                testargs=testargs,
+                tentacle=tentacle,
+                serial_port=serial_port,
+                mip_package="unittest",
+            )
 
         # Run tests
         logfile = testargs.testresults_directory("testresults.txt").filename

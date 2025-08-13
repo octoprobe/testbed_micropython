@@ -40,7 +40,7 @@ class TestRunRunTests(TestRun):
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 
-        util_common.skip_if_no_filesystem(tentacle=tentacle)
+        self.skip_if_no_filesystem()
 
         # for tests 'net_hosted', this call is irrelevant
         util_common.copy_certificates(

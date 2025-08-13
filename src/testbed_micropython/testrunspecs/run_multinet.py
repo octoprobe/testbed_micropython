@@ -100,7 +100,7 @@ class TestRunReference(TestRun):
 
 class TestRunReferenceMultinet(TestRunReference):
     def setup(self, testargs: TestArgs) -> None:
-        util_common.skip_if_no_filesystem(tentacle=self.tentacle_variant.tentacle)
+        self.skip_if_no_filesystem()
 
         assert self.tentacle_reference is not None
 

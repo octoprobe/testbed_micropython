@@ -13,12 +13,11 @@ import sys
 import time
 import typing
 
-from octoprobe.lib_mpremote import ExceptionCmdFailed, ExceptionTransport
+from octoprobe.lib_mpremote import ExceptionTransport
 from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.lib_tentacle_dut import TentacleDut
 from octoprobe.util_baseclasses import (
     OctoprobeTestException,
-    OctoprobeTestSkipException,
     assert_micropython_repo,
 )
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
@@ -70,16 +69,6 @@ class ArgsMpTest:
         # un_monkey_patch()
 
         return _directory
-
-
-def skip_if_no_filesystem(tentacle: TentacleBase) -> None:
-    assert isinstance(tentacle, TentacleBase)
-    try:
-        _ret = tentacle.dut.mp_remote.exec_raw("import os; os.listdir('/')")
-    except ExceptionCmdFailed as e:
-        msg = f"{tentacle.label_short}: No filesystem: Skip Test!"
-        logger.warning(msg)
-        raise OctoprobeTestSkipException(msg) from e
 
 
 def mip_install(
