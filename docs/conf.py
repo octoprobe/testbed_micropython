@@ -10,17 +10,17 @@ assert (_DIRECTORY_REPO / ".git").is_dir(), _DIRECTORY_REPO
 sys.path.insert(0, str(_DIRECTORY_REPO))
 sys.path.insert(0, str(_DIRECTORY_REPO / "src"))
 
-# TODO(hansm): Include the correct version
-from sphinx.locale import _
-from sphinx_rtd_theme import (
-    __version__ as theme_version,
-    __version_full__ as theme_version_full,
-)
+# # TODO(hansm): Include the correct version
+# from sphinx.locale import _
+# from sphinx_rtd_theme import (
+#     __version__ as theme_version,
+#     __version_full__ as theme_version_full,
+# )
 
 project = "Octoprobe"
 slug = re.sub(r"\W+", "-", project.lower())
-version = theme_version
-release = theme_version_full
+# version = theme_version
+# release = theme_version_full
 author = "Hans Märki"
 copyright = "2024,2025 Hans Märki"
 language = "en"
@@ -106,7 +106,7 @@ if "READTHEDOCS" not in os.environ:
 html_favicon = "_static/shortcut-icon.png"
 html_logo = "_static/octoprobe-horizontal.png"
 html_show_sourcelink = True
-html_title = f"Octoprobe Documentation ({version})"
+html_title = "Octoprobe Documentation"
 
 
 htmlhelp_basename = slug
@@ -135,14 +135,14 @@ def setup(app):
         doc_field_types=[
             PyField(
                 "type",
-                label=_("Type"),
+                label="Type",
                 has_arg=False,
                 names=("type",),
                 bodyrolename="class",
             ),
             Field(
                 "default",
-                label=_("Default"),
+                label="Default",
                 has_arg=False,
                 names=("default",),
             ),
