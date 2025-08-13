@@ -287,8 +287,9 @@ v1.1: Use relais to allow octoprobe to press boot button
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
-        EnumFut.FUT_WLAN,
-        EnumFut.FUT_BLE,
+        # WLAN and BLE do not work reliably
+        # EnumFut.FUT_WLAN,
+        # EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp.LOLIN_C3_MINI_USB_ID,
     tags="board=LOLIN_C3_MINI,mcu=esp32,programmer=esptool",
