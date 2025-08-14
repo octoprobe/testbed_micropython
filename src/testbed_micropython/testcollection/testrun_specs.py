@@ -220,9 +220,7 @@ class TestRun:
         tentacle = self.tentacle_variant.tentacle
         filesystem_present = tentacle.dut.mpremote_success("import os; os.listdir('/')")
         if not filesystem_present:
-            msg = f"{tentacle.label_short}: No filesystem: Skip Test!"
-            logger.warning(msg)
-            raise OctoprobeTestSkipException(msg)
+            raise OctoprobeTestSkipException("No filesystem")
 
 
 @dataclasses.dataclass(slots=True, order=True)
