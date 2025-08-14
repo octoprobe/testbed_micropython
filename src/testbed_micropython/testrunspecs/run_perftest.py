@@ -43,14 +43,13 @@ class TestRunPerfTest(TestRun):
         assert isinstance(perftest_args[0], str)
         assert isinstance(perftest_args[1], str)
 
-        logfile = testargs.testresults_directory("testresults.txt").filename
         EVENTLOGCALLBACK.log(
-            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+            msg=f"Logfile: {testargs.testresults_directory.render_relative(testargs.logfile)}"
         )
         args = [
             sys.executable,
             *self.testrun_spec.command,
-            f"--result-dir={testargs.testresults_directory.directory_test}",
+            f"--result-dir={testargs.directory_test}",
             "--pyboard",
             f"--device={tentacle.dut.get_tty()}",
             *perftest_args,
@@ -59,7 +58,7 @@ class TestRunPerfTest(TestRun):
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             env=ENV_MICROPYTHON_TESTS,
-            logfile=logfile,
+            logfile=testargs.logfile,
             timeout_s=self.timeout_s,
         )
 
@@ -69,7 +68,6 @@ TESTRUNSPEC_PERFTEST = TestRunSpec(
     helptext="Run pertest on each board",
     command=["run-perfbench.py"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    requires_reference_tentacle=False,
     testrun_class=TestRunPerfTest,
     timeout_s=4 * 60.0 + TIMEOUT_FLASH_S,
 )

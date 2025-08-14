@@ -71,13 +71,12 @@ class TestRunRunTests(TestRun):
             *self.testrun_spec.command,
             f"-t=port:{serial_port}",
             "--jobs=1",
-            f"--result-dir={testargs.testresults_directory.directory_test}",
+            f"--result-dir={testargs.directory_test}",
         ]
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             env=ENV_MICROPYTHON_TESTS,
-            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,
         )
@@ -88,7 +87,6 @@ TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
     helptext="TODO: help net inet",
     command=["run-tests.py", "--test-dirs=net_inet"],
     required_fut=EnumFut.FUT_WLAN,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60.0 + TIMEOUT_FLASH_S,
 )
@@ -98,7 +96,6 @@ TESTRUNSPEC_RUNTESTS_NET_HOSTED = TestRunSpec(
     helptext="TODO: help net hosted",
     command=["run-tests.py", "--test-dirs=net_hosted"],
     required_fut=EnumFut.FUT_WLAN,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60.0 + TIMEOUT_FLASH_S,
 )

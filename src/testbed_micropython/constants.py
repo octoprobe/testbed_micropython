@@ -80,9 +80,23 @@ class EnumFut(enum.StrEnum):
     FUT_EXTMOD_HARDWARE = enum.auto()
     """
     rx-tx loopback connection
+    gpio/pwm loopback connection
+    I2C SCL and SDA loopback connection
     """
     FUT_WLAN = enum.auto()
     FUT_BLE = enum.auto()
+    FUT_I2C_EXTERNAL = enum.auto()
+    FUT_UART_EXTERNAL = enum.auto()
+    """
+    Future - not used yet!
+    """
+    FUT_SPI_EXTERNAL = enum.auto()
+    """
+    Future - not used yet!
+    Will probable not be feasable for implementation as
+    the octoprobe tentacle v0.3 does not support sufficient
+    gpios.
+    """
 
     @staticmethod
     def factory(fut: str) -> EnumFut:

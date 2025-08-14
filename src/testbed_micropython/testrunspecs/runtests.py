@@ -105,14 +105,13 @@ class TestRunRunTests(TestRun):
             )
 
         # Run tests
-        logfile = testargs.testresults_directory("testresults.txt").filename
         EVENTLOGCALLBACK.log(
-            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+            msg=f"Logfile: {testargs.testresults_directory.render_relative(testargs.logfile)}"
         )
         args = [
             sys.executable,
             *self.testrun_spec.command,
-            f"--result-dir={testargs.testresults_directory.directory_test}",
+            f"--result-dir={testargs.directory_test}",
             f"-t=port:{serial_port}",
             # f"--target={target}",
             "--jobs=1",
@@ -123,8 +122,7 @@ class TestRunRunTests(TestRun):
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             env=env,
-            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=logfile,
+            logfile=testargs.logfile,
             timeout_s=self.timeout_s,
             # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
             success_returncodes=[0, 1],
@@ -136,7 +134,6 @@ TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
     helptext="Run the standard set of tests",
     command=["run-tests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
@@ -146,7 +143,6 @@ TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
     helptext="Run the standard set of tests via .mpy",
     command=["run-tests.py", "--via-mpy"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
@@ -156,7 +152,6 @@ TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
     helptext="Run the standard set of tests with the native emitter",
     command=["run-tests.py", "--via-mpy", "--emit", "native"],
     required_fut=EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=60 * 60.0 + TIMEOUT_FLASH_S,
 )
@@ -166,7 +161,6 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     helptext="Run hardware specific tests",
     command=["run-tests.py", "--test-dirs=extmod_hardware"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=30.0 + TIMEOUT_FLASH_S,
 )
@@ -182,7 +176,6 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE = TestRunSpec(
         "--test-dirs=extmod_hardware",
     ],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
-    requires_reference_tentacle=False,
     testrun_class=TestRunRunTests,
     timeout_s=30.0 + TIMEOUT_FLASH_S,
 )

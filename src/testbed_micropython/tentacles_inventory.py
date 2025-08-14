@@ -9,15 +9,31 @@ TENTACLES_INVENTORY = (
         testbed_instance="ch_hans_1",
         tentacles=[
             # testbed showcase
-            ("e46340474b4c-2731", "v1.1", tentacle_specs.RPI_PICO2),
-            ("e46340474b4e-1831", "v1.1", tentacle_specs.RPI_PICO2),
+            (
+                "e46340474b4c-2731",
+                "v1.1",
+                tentacle_specs.RPI_PICO2,
+            ),  # TODO: Upgrade to v1.1
+            (
+                "e46340474b4e-1831",
+                "v1.1",
+                tentacle_specs.RPI_PICO2,
+            ),  # TODO: Upgrade to v1.1
             ("de646cc20b92-5425", "v1.1", tentacle_specs.RPI_PICO_W),  # v0.4
             # ("e46340474b17-4429", "v1.0", tentacle_specs.PYBV11), This is for testbed_showcase
             ("e46414481338-3a21", "v1.0", tentacle_specs.PYBV11),
             # testbed micropython
             ("e46340474b59-2d2d", "v0.1", tentacle_specs.LOLIN_D1_MINI),
-            ("e4641448132c-5f2c", "v1.0", tentacle_specs.RPI_PICO_W),
-            ("e46414481355-552b", "v1.0", tentacle_specs.RPI_PICO2_W),
+            (
+                "e4641448132c-5f2c",
+                "v1.0",
+                tentacle_specs.RPI_PICO_W,
+            ),  # TODO: Upgrade to v1.1
+            (
+                "e46414481355-552b",
+                "v1.0",
+                tentacle_specs.RPI_PICO2_W,
+            ),  # TODO: Upgrade to v1.1
             ("e46414481342-1830", "v1.1", tentacle_specs.LOLIN_C3_MINI),
             ("e4641448133e-5d21", "v1.1", tentacle_specs.ESP32_DEVKIT),
             ("e46414481346-0c30", "v1.1", tentacle_specs.ESP32_C3_DEVKIT),
@@ -36,16 +52,32 @@ TENTACLES_INVENTORY = (
                 "e46340474b19-2629",
                 "v0.1",
                 tentacle_specs.LOLIN_C3_MINI,
-            ),  # Upgrade to v1.1
+            ),  # TODO: Upgrade to v1.1
             (
                 "e46340474b58-3521",
                 "v0.1",
                 tentacle_specs.LOLIN_C3_MINI,
-            ),  # Upgrade to v1.1
-            ("e46414481349-1521", "v1.0", tentacle_specs.RPI_PICO),
-            ("e4641448133e-3a21", "v1.0", tentacle_specs.RPI_PICO_W),
-            ("e46340474b14-1c29", "v1.0", tentacle_specs.RPI_PICO2),
-            ("e46414481318-3d2c", "v1.0", tentacle_specs.RPI_PICO2_W),
+            ),  # TODO: Upgrade to v1.1
+            (
+                "e46414481349-1521",
+                "v1.0",
+                tentacle_specs.RPI_PICO,
+            ),  # TODO: Upgrade to v1.1
+            (
+                "e4641448133e-3a21",
+                "v1.0",
+                tentacle_specs.RPI_PICO_W,
+            ),  # TODO: Upgrade to v1.1
+            (
+                "e46340474b14-1c29",
+                "v1.0",
+                tentacle_specs.RPI_PICO2,
+            ),  # TODO: Upgrade to v1.1
+            (
+                "e46414481318-3d2c",
+                "v1.0",
+                tentacle_specs.RPI_PICO2_W,
+            ),  # TODO: Upgrade to v1.1
             ("e46414481310-2d2a", "v1.1", tentacle_specs.ESP32_DEVKIT),
             (
                 "e46414481355-442b",
@@ -81,7 +113,11 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="it_alessandro_1",
         tentacles=[
-            ("e46414481340-1d36", "v1.0", tentacle_specs.RPI_PICO2_W),
+            (
+                "e46414481340-1d36",
+                "v1.0",
+                tentacle_specs.RPI_PICO2_W,
+            ),  # TODO: Upgrade to v1.1
             (
                 "e4641448132c-352c",
                 "v1.0",
@@ -94,7 +130,7 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="ch_greenliff_1",
         tentacles=[
-            ("e46340474b55-1722", "v1.0", tentacle_specs.RPI_PICO),
+            ("e46340474b55-1722", "v1.1", tentacle_specs.RPI_PICO),
         ],
     )
 ).inventory
