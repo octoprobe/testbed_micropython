@@ -156,6 +156,9 @@ ESP32_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-DevKitC V4
 See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html
+See: https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/hw-reference/esp32/get-started-devkitc.html
+See: https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/esp32-devkitC-v4-pinout.png
+See: https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf
 
 Connections
 
@@ -166,14 +169,36 @@ Connections
   * Board GPIO0  <=> Tentacle Relay 1b
   * Tentacle Relay 1a <=> Tentacle GND
 
-* FUT_EXTMOD_HARDWARE
-  * Board 5/U0RXD/RX <=> 4/U0TXD/TX
+* FUT_EXTMOD_HARDWARE (UART loopback)
+  * Board GPIO5<silkscreen 5>/U0RXD/RX <=> GPIO4<silkscreen 4>/U0TXD/TX
+
+* FUT_EXTMOD_HARDWARE (I2C loopback)
+  * Board GPIO5<silkscreen 5> (SDA) <=> Board GPIO9<silkscreen D2> (SDA)
+  * Board GPIO6<silkscreen CLK> (SCL) <=> Board GPIO8<silkscreen D1> (SCL)
+  * Board GPIO5<silkscreen 5> (SDA) <=> R4k7 (Pullup) <=> Board 3V3
+  * Board GPIO6<silkscreen CLK> (SCL) <=> R4k7 (Pullup) <=> Board 3V3
+
+* FUT_I2C_EXTERNAL (I2C towards PICO-infra)
+  * Board GPIO9<silkscreen D2> (SDA) <=> Tentacle GPIO10 (SDA)
+  * Board GPIO8<silkscreen D1> (SCL) <=> Tentacle GPIO11 (SCL)
+
+* Summary of the connection above:
+  * Board 4, 5, D2, pullup, Tentacle GPIO10, Testpoint "extmod"
+  * Board D1, CLK, pullup, Tentacle GPIO11
+
+* FUT_UART_EXTERNAL (UART towards PICO-infra) TODO
+  * Board GP12 (TX) <=> Tentacle GPIO13 (RX) TODO
+  * Board GP13 (RX) <=> Tentacle GPIO12 (TX) TODO
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
+  * Not supported yet - too lazy to solder and test
 
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
+v1.2: Add wires for FUT_I2C_EXTERNAL.
+      Add wires for FUT_EXTMOD_HARDWARE (I2C loopback).
+      FUT_UART_EXTERNAL not wired yet!
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_DEVKIT",
@@ -182,6 +207,7 @@ v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_esp.ESP32_USB_ID,
     tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool",

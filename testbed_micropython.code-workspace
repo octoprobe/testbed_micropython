@@ -9,8 +9,8 @@
             "path": "../octoprobe"
         },
         {
-            "name": "testbed_micropython_reports",
-            "path": "../testbed_micropython_reports"
+            "name": "fork_micropython",
+            "path": "/home/maerki/gits/fork_micropython"
         }
     ],
     "settings": {
