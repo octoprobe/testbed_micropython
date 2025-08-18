@@ -10,6 +10,7 @@ import time
 import typing
 
 from octoprobe.octoprobe import CtxTestRun
+from octoprobe.usb_tentacle.usb_constants import UsbPlugs
 from octoprobe.usb_tentacle.usb_tentacle import (
     UsbTentacles,
     assert_serialdelimtied_valid,
@@ -338,7 +339,8 @@ class TestRunner:
         )
         journalctl.start_observer_thread()
         usb_tentacles = CtxTestRun.session_powercycle_tentacles()
-
+        # Power off everything but PICO infra
+        usb_tentacles.set_plugs(UsbPlugs.default_infra_on())
         connected_tentacles = instantiate_tentacles(usb_tentacles=usb_tentacles)
         if len(connected_tentacles) == 0:
             logger.warning("No tentacles discovered!")
