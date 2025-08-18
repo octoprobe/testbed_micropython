@@ -43,8 +43,6 @@ logger = logging.getLogger(__file__)
 # This should eventually be pushed upstream into mpbuild.
 # BUILD_CONTAINERS["esp32"] = "hmaerki/build-micropython-esp32"
 BUILD_CONTAINERS["dummyarch"] = "dummycontainer"
-# https://github.com/mattytrentini/mpbuild/pull/88/files
-BUILD_CONTAINERS["esp32"] = "espressif/idf:v5.4.2"
 
 
 class MpbuildException(Exception):
