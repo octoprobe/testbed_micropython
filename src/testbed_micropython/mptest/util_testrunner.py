@@ -134,9 +134,10 @@ def get_testrun_specs(query: ArgsQuery | None = None) -> TestRunSpecs:
                     "'--only-test' with arguments may not be combined with --only-fut and --skip-fut"
                 )
 
-            raise ValueError(
-                f"'--only-test' with arguments may not be used once: {' '.join(query.only_test)}"
-            )
+            if query_only_tests_with_args > 1:
+                raise ValueError(
+                    f"'--only-test' with arguments may not be used once: {' '.join(query.only_test)}"
+                )
 
         if query_only_tests_with_args > 0:
 
