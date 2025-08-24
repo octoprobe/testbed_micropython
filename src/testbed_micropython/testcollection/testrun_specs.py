@@ -217,10 +217,27 @@ class TestRun:
         return sorted(testruns, key=priority)
 
     def skip_if_no_filesystem(self) -> None:
-        tentacle = self.tentacle_variant.tentacle
-        filesystem_present = tentacle.dut.mpremote_success("import os; os.listdir('/')")
+        dut = self.tentacle_variant.tentacle.dut
+
+        filesystem_present = dut.mpremote_success("import os; os.listdir('/')")
         if not filesystem_present:
             raise OctoprobeTestSkipException("No filesystem")
+
+    def skip_missing_support_native(self) -> None:
+        mp_remote = self.tentacle_variant.tentacle.dut.mp_remote
+        support_native = mp_remote.exec_bool(
+            "import sys; print(bool(getattr(sys.implementation, '_mpy', 0) >> 10))"
+        )
+        if not support_native:
+            raise OctoprobeTestSkipException("Board does not support native code!")
+
+    def skip_missing_support_mpy(self) -> None:
+        mp_remote = self.tentacle_variant.tentacle.dut.mp_remote
+        support_mpy = mp_remote.exec_bool(
+            "import sys; print(hasattr(sys.implementation, '_mpy'))"
+        )
+        if not support_mpy:
+            raise OctoprobeTestSkipException("Board does not support mpy!")
 
 
 @dataclasses.dataclass(slots=True, order=True)

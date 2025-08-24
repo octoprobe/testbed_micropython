@@ -4,7 +4,6 @@ import logging
 import re
 import sys
 
-from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed_micropython import constants
@@ -80,18 +79,10 @@ class TestRunRunTests(TestRun):
             self.skip_if_no_filesystem()
 
         if "native" in self.testrun_spec.command_args:
-            support_native = tentacle.dut.mp_remote.exec_bool(
-                "import sys; print(bool(getattr(sys.implementation, '_mpy', 0) >> 10))"
-            )
-            if not support_native:
-                raise OctoprobeTestSkipException("Board does not support native code!")
+            self.skip_missing_support_native()
 
         if "--via-mpy" in self.testrun_spec.command_args:
-            support_mpy = tentacle.dut.mp_remote.exec_bool(
-                "import sys; print(hasattr(sys.implementation, '_mpy'))"
-            )
-            if not support_mpy:
-                raise OctoprobeTestSkipException("Board does not support mpy!")
+            self.skip_missing_support_mpy()
 
         serial_port = tentacle.dut.get_tty()
 

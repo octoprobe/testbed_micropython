@@ -220,6 +220,9 @@ class TestRunRunTests(TestRun):
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 
+        self.skip_missing_support_native()
+        self.skip_missing_support_mpy()
+
         # Work out which tests can be run.
         tests_extmod_dir = testargs.repo_micropython_tests / "tests" / "extmod"
         tests_natmod = [
