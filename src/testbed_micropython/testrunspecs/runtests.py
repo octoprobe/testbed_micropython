@@ -78,11 +78,8 @@ class TestRunRunTests(TestRun):
         if not unittest_already_installed:
             self.skip_if_no_filesystem()
 
-        if "native" in self.testrun_spec.command_args:
-            self.skip_missing_support_native()
-
-        if "--via-mpy" in self.testrun_spec.command_args:
-            self.skip_missing_support_mpy()
+        self.skip_missing_support_native()
+        self.skip_missing_support_mpy()
 
         serial_port = tentacle.dut.get_tty()
 
