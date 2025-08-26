@@ -32,31 +32,15 @@ TENTACLES_INVENTORY = (
         testbed_instance="au_damien_1",
         tentacles=[
             ("e46340474b60-452b", "v0.1", tentacle_specs.LOLIN_D1_MINI),
-            (
-                "e46340474b19-2629",
-                "v0.1",
-                tentacle_specs.LOLIN_C3_MINI,
-            ),  # Upgrade to v1.1
-            (
-                "e46340474b58-3521",
-                "v0.1",
-                tentacle_specs.LOLIN_C3_MINI,
-            ),  # Upgrade to v1.1
+            ("e46340474b19-2629", "v1.1", tentacle_specs.LOLIN_C3_MINI),
+            ("e46340474b58-3521", "v1.1", tentacle_specs.LOLIN_C3_MINI),
             ("e46414481349-1521", "v1.0", tentacle_specs.RPI_PICO),
             ("e4641448133e-3a21", "v1.0", tentacle_specs.RPI_PICO_W),
             ("e46340474b14-1c29", "v1.0", tentacle_specs.RPI_PICO2),
             ("e46414481318-3d2c", "v1.0", tentacle_specs.RPI_PICO2_W),
             ("e46414481310-2d2a", "v1.1", tentacle_specs.ESP32_DEVKIT),
-            (
-                "e46414481355-442b",
-                "v1.0",
-                tentacle_specs.ESP32_C3_DEVKIT,
-            ),  # TODO: Upgrade to v1.1
-            (
-                "e46414481348-1930",
-                "v1.1",
-                tentacle_specs.ESP32_S3_DEVKIT,
-            ),  # TODO: Upgrade to v1.2
+            ("e46414481355-442b", "v1.1", tentacle_specs.ESP32_C3_DEVKIT),
+            ("e46414481348-1930", "v1.2", tentacle_specs.ESP32_S3_DEVKIT),
             ("e46414481337-1c2a", "v0.0", tentacle_specs.ARDUINO_NANO_33),
             ("e46414481312-292a", "v1.0", tentacle_specs.ADA_ITSYBITSY_M0),
             ("e46414481336-3e2a", "v1.0", tentacle_specs.TEENSY40),
