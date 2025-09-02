@@ -109,8 +109,25 @@ def debugbootmode(
     do_debugbootmode(programmer=programmer)
 
 
-@app.command(name="list", help="List tests and connected tentacles")
-def list_() -> None:
+@app.command(help="List supportet tests")
+def list_tests() -> None:
+    # args = util_testrunner.Args.get_default_args()
+    # testrunner = util_testrunner.TestRunner(args=args)
+    init_logging()
+    for testrun_spec in util_testrunner.get_testrun_specs():
+        print(f"  {testrun_spec.label}")
+        print(f"    help={testrun_spec.helptext}")
+        print(f"    executable={testrun_spec.command_executable}")
+        print(f"      args={testrun_spec.command_args}")
+        print(f"    required_fut={testrun_spec.required_fut.name}")
+        print(f"    tests_todo={testrun_spec.tests_todo}")
+        print("    tests")
+        for tsv in testrun_spec.tsvs_todo:
+            print(f"      {tsv}")
+
+
+@app.command(help="List connected tentacles")
+def list_tentacles() -> None:
     # args = util_testrunner.Args.get_default_args()
     # testrunner = util_testrunner.TestRunner(args=args)
     init_logging()
@@ -124,23 +141,17 @@ def list_() -> None:
     print("Connected")
     for tentacle in connected_tentacles:
         print(f"  {tentacle.label}")
+        print(
+            f"      infra: {tentacle.infra.usb_location_infra} {tentacle.infra.usb_tentacle.pico_infra.serial_port}"
+        )
+        print(
+            f"      dut:   {tentacle.infra.usb_location_dut} {tentacle.infra.usb_tentacle.usb_port_dut.device_text}"
+        )
+
         variants = ",".join(tentacle.tentacle_spec.board_build_variants)
         print(f"    variants={variants}")
         futs = ",".join([fut.name for fut in tentacle.tentacle_spec.futs])
         print(f"    futs={futs}")
-
-    print("")
-    print("Tests")
-    for testrun_spec in util_testrunner.get_testrun_specs():
-        print(f"  {testrun_spec.label}")
-        print(f"    help={testrun_spec.helptext}")
-        print(f"    executable={testrun_spec.command_executable}")
-        print(f"      args={testrun_spec.command_args}")
-        print(f"    required_fut={testrun_spec.required_fut.name}")
-        print(f"    tests_todo={testrun_spec.tests_todo}")
-        print("    tests")
-        for tsv in testrun_spec.tsvs_todo:
-            print(f"      {tsv}")
 
 
 @app.command(help="Flashes all tentacles without running any tests")
