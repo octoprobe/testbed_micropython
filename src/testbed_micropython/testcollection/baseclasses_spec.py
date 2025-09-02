@@ -9,6 +9,7 @@ import enum
 import logging
 import typing
 
+from octoprobe.lib_tentacle import TentacleUsbPort
 from octoprobe.util_micropython_boards import VARIANT_UNKNOWN
 
 from ..constants import EnumFut
@@ -234,3 +235,9 @@ class ConnectedTentacles(list[TentacleMicropython]):
                     selected_tentacles.append(tentacle_reference)
 
         return ConnectedTentacles(selected_tentacles)
+
+    @property
+    def usb_ports_with_label(self) -> dict[str, TentacleUsbPort]:
+        return {
+            u.usb_port.usb_location: u for t in self for u in t.usb_ports_with_label
+        }

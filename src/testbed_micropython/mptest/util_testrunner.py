@@ -351,6 +351,7 @@ class TestRunner:
             query=ArgsQuery(),
             testrun_specs=TestRunSpecs(),
         )
+        journalctl.assign_usb_locations_dut(connected_tentacles.usb_ports_with_label)
 
         self.ctxtestrun = CtxTestRun(connected_tentacles=connected_tentacles)
         CachedGitRepo.clean_directory_work_repo(
