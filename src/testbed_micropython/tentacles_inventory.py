@@ -66,11 +66,7 @@ TENTACLES_INVENTORY = (
         testbed_instance="it_alessandro_1",
         tentacles=[
             ("e46414481340-1d36", "v1.0", tentacle_specs.RPI_PICO2_W),
-            (
-                "e4641448132c-352c",
-                "v1.0",
-                tentacle_specs.ESP32_C3_DEVKIT,
-            ),  # TODO: Upgrade to v1.1
+            ("e4641448132c-352c", "v1.1", tentacle_specs.ESP32_C3_DEVKIT),
             ("e46414481310-422a", "v1.0", tentacle_specs.AA_UNASSEMBLED),
             ("e46414481310-462c", "v1.0", tentacle_specs.AA_UNASSEMBLED),
         ],
