@@ -30,7 +30,7 @@ def flash_format():
     if sys.platform == "pyboard":
         if "WB55" in sys.implementation._machine:
             import os, vfs, pyb
-            vfs.VfsFat.mkfs(pyb.Flash(start=0))
+            vfs.VfsLfs2.mkfs(pyb.Flash(start=0))
             os.sync()
         else:
             import os, vfs, pyb
