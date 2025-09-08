@@ -51,8 +51,7 @@ class TestRunPerfTest(TestRun):
             sys.executable,
             *self.testrun_spec.command,
             f"--result-dir={testargs.testresults_directory.directory_test}",
-            "--pyboard",
-            f"--device={tentacle.dut.get_tty()}",
+            f"--test-instance=port:{tentacle.dut.get_tty()}",
             *perftest_args,
         ]
         subprocess_run(

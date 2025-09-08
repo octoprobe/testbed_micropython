@@ -232,15 +232,13 @@ class TestRunRunTests(TestRun):
         ]
 
         # Run tests
-        serial_port = tentacle.dut.get_tty()
         logfile = testargs.testresults_directory("testresults.txt").filename
         EVENTLOGCALLBACK.log(msg=f"Logfile: {relative_cwd(logfile)}")
         args = [
             sys.executable,
             *self.testrun_spec.command,
             f"--result-dir={testargs.testresults_directory.directory_test}",
-            "--pyboard",
-            f"--device={serial_port}",
+            f"--test-instance=port:{tentacle.dut.get_tty()}",
         ] + tests_natmod
         subprocess_run(
             args=args,

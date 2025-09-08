@@ -46,8 +46,6 @@ class TestRunReference(TestRun):
 
         self.setup(testargs=testargs)
 
-        serial_port_instance0 = tentacle_instance0.dut.get_tty()
-        serial_port_instance1 = tentacle_instance1.dut.get_tty()
         # Run tests
         cwd = testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
         list_tests = [str(f.relative_to(cwd)) for f in cwd.glob(file_pattern)]
@@ -64,8 +62,8 @@ class TestRunReference(TestRun):
             sys.executable,
             self.testrun_spec.command_executable,
             f"--result-dir={testargs.testresults_directory.directory_test}",
-            f"--instance=pyb:{serial_port_instance0}",
-            f"--instance=pyb:{serial_port_instance1}",
+            f"--test-instance=port:{tentacle_instance0.dut.get_tty()}",
+            f"--test-instance=port:{tentacle_instance1.dut.get_tty()}",
             *list_tests,
         ]
         subprocess_run(
