@@ -101,8 +101,7 @@ class TestRunRunTests(TestRun):
             sys.executable,
             *self.testrun_spec.command,
             f"--result-dir={testargs.testresults_directory.directory_test}",
-            f"-t=port:{serial_port}",
-            # f"--target={target}",
+            f"--test-instance=port:{serial_port}",
             "--jobs=1",
             # "misc/cexample_class.py",
         ]

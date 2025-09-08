@@ -69,7 +69,7 @@ class TestRunRunTests(TestRun):
         args = [
             sys.executable,
             *self.testrun_spec.command,
-            f"-t=port:{serial_port}",
+            f"--test-instance=port:{serial_port}",
             "--jobs=1",
             f"--result-dir={testargs.testresults_directory.directory_test}",
         ]
