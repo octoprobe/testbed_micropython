@@ -71,13 +71,12 @@ class TestRunRunTests(TestRun):
             *self.testrun_spec.command,
             f"--test-instance=port:{serial_port}",
             "--jobs=1",
-            f"--result-dir={testargs.testresults_directory.directory_test}",
+            f"--result-dir={testargs.directory_test}",
         ]
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             env=ENV_MICROPYTHON_TESTS,
-            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
             timeout_s=self.timeout_s,
         )

@@ -205,7 +205,6 @@ _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
     helptext="Run perftest on each board.",
     command=["perfbench.py", "run-perfbench.py"],
     required_fut=constants.EnumFut.FUT_MCU_ONLY,
-    requires_reference_tentacle=False,
     testrun_class=runtests.TestRunRunTests,
     timeout_s=60.0,
 )
@@ -214,7 +213,6 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
     required_fut=constants.EnumFut.FUT_WLAN,
-    requires_reference_tentacle=False,
     testrun_class=runtests.TestRunRunTests,
     timeout_s=5 * 60.0,
 )

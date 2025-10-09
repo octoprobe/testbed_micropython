@@ -48,6 +48,17 @@ class TestArgs:
             logger.info("debug_skip_tests: Skip test!")
         return self.debug_skip_tests
 
+    @property
+    def logfile(self) -> pathlib.Path:
+        """
+        The absolute file name.
+        """
+        return self.testresults_directory("testresults.txt").filename
+
+    @property
+    def directory_test(self) -> pathlib.Path:
+        return self.testresults_directory.directory_test
+
 
 @dataclasses.dataclass(slots=True, repr=True)
 class TestRun:
@@ -149,7 +160,7 @@ class TestRun:
         For example: 5f2c-RPI_PICO_W-unknown-first
         """
         text = self.tentacle_variant_text
-        if self.testrun_spec.requires_reference_tentacle:
+        if self.testrun_spec.requires_reference:
             text += DELIMITER_TESTROLE + self.tentacle_variant.role.value
         return text
 
@@ -261,8 +272,9 @@ class TestRunSpec:
     tsvs_todo: TentacleSpecVariants = dataclasses.field(
         default_factory=TentacleSpecVariants
     )
-    tsvs_total_count: int = -1
     requires_reference_tentacle: bool = False
+    requires_reference_infra_pico: bool = False
+    tsvs_total_count: int = -1
     priority: int = 0
     """
     priority for the test scheduler.
@@ -276,9 +288,14 @@ class TestRunSpec:
         assert isinstance(self.command, list)
         assert isinstance(self.required_fut, constants.EnumFut)
         assert isinstance(self.requires_reference_tentacle, bool)
+        assert isinstance(self.requires_reference_infra_pico, bool)
         assert isinstance(self.timeout_s, float)
         assert isinstance(self.testrun_class, type(TestRun))
         assert isinstance(self.tsvs_todo, TentacleSpecVariants)
+
+    @property
+    def requires_reference(self) -> bool:
+        return self.requires_reference_tentacle or self.requires_reference_infra_pico
 
     @property
     def command_executable(self) -> str:
@@ -302,7 +319,7 @@ class TestRunSpec:
         selected_tentacles = tentacles.get_by_fut(self.required_fut)
 
         roles = [TestRole.ROLE_INSTANCE0]
-        if self.requires_reference_tentacle:
+        if self.requires_reference:
             roles = [TestRole.ROLE_INSTANCE0, TestRole.ROLE_INSTANCE1]
 
         self.tsvs_todo = selected_tentacles.get_tsvs(

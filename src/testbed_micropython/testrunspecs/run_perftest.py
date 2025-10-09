@@ -43,9 +43,8 @@ class TestRunPerfTest(TestRun):
         assert isinstance(perftest_args[0], str)
         assert isinstance(perftest_args[1], str)
 
-        logfile = testargs.testresults_directory("testresults.txt").filename
         EVENTLOGCALLBACK.log(
-            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+            msg=f"Logfile: {testargs.testresults_directory.render_relative(testargs.logfile)}"
         )
         args = [
             sys.executable,
@@ -58,7 +57,7 @@ class TestRunPerfTest(TestRun):
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             env=ENV_MICROPYTHON_TESTS,
-            logfile=logfile,
+            logfile=testargs.logfile,
             timeout_s=self.timeout_s,
         )
 

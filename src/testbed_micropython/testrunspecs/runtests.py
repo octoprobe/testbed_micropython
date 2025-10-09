@@ -93,25 +93,22 @@ class TestRunRunTests(TestRun):
             )
 
         # Run tests
-        logfile = testargs.testresults_directory("testresults.txt").filename
         EVENTLOGCALLBACK.log(
-            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+            msg=f"Logfile: {testargs.testresults_directory.render_relative(testargs.logfile)}"
         )
         args = [
             sys.executable,
             *self.testrun_spec.command,
-            f"--result-dir={testargs.testresults_directory.directory_test}",
+            f"--result-dir={testargs.directory_test}",
             f"--test-instance=port:{serial_port}",
             "--jobs=1",
-            # "misc/cexample_class.py",
         ]
         env = env_for_mpycross()
         subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
             env=env,
-            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=logfile,
+            logfile=testargs.logfile,
             timeout_s=self.timeout_s,
             # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
             success_returncodes=[0, 1],

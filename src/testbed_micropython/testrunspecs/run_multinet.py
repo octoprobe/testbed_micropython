@@ -25,7 +25,7 @@ from ..util_multiprocessing import EVENTLOGCALLBACK
 logger = logging.getLogger(__file__)
 
 
-class TestRunReference(TestRun):
+class TestRunReferenceTentacle(TestRun):
     """
     These test runs against a reference tentacle
     """
@@ -54,9 +54,8 @@ class TestRunReference(TestRun):
             list_tests.remove("multi_bluetooth/stress_deepsleep_reconnect.py")
         except ValueError:
             pass
-        logfile = testargs.testresults_directory("testresults.txt").filename
         EVENTLOGCALLBACK.log(
-            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
+            msg=f"Logfile: {testargs.testresults_directory.render_relative(testargs.logfile)}"
         )
         args = [
             sys.executable,
@@ -70,8 +69,7 @@ class TestRunReference(TestRun):
             args=args,
             cwd=cwd,
             env=ENV_MICROPYTHON_TESTS,
-            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=logfile,
+            logfile=testargs.logfile,
             timeout_s=self.timeout_s,
             # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
             success_returncodes=[0, 1],
@@ -96,7 +94,7 @@ class TestRunReference(TestRun):
         )
 
 
-class TestRunReferenceMultinet(TestRunReference):
+class TestRunReferenceMultinet(TestRunReferenceTentacle):
     def setup(self, testargs: TestArgs) -> None:
         self.skip_if_no_filesystem()
 
@@ -113,7 +111,7 @@ class TestRunReferenceMultinet(TestRunReference):
             util_common.init_wlan(dut=dut)
 
 
-class TestRunReferenceBluetooth(TestRunReference):
+class TestRunReferenceBluetooth(TestRunReferenceTentacle):
     def setup(self, testargs: TestArgs) -> None:
         pass
 
