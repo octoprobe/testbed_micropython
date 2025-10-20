@@ -1,4 +1,40 @@
 """
+Requirements for every board
+
+ * EnumFut.FUT_MCU_ONLY
+   * Boards: One board
+   * No requirement
+ * EnumFut.FUT_WLAN
+   * Boards: One or two boards
+   * Requirement: The board support for WLAN
+ * EnumFut.FUT_BLE
+   * Boards: One or two boards
+   * Requirement: The board support for BLE
+ * EnumFut.FUT_EXTMOD_HARDWARE
+   * Boards: One board
+   * Description: rx-tx loopback: Data is sent via the loopback wire and read on the other side.
+   * Description: gpio/pwm loopback: PWM is generated on one pin and read from the other pion
+   * Description: i2c loopback: 2 pins are used as a I2C controller, 2 pins are used as a I2C target. Both communicate.
+   * Requirement: The electrical loopback wires is required
+ * EnumFut.FUT_I2C_EXTERNAL
+   * Remark: Required to run tests `machine_i2c_target*.py` in https://github.com/micropython/micropython/tree/master/tests/multi_extmod
+   * Description: Two cpu supporting FUT_I2C_EXTERNAL are connected together to communicate over I2C
+   * Without octoprobe
+     * Boards: Two boards
+     * Requirement: Two electrical wires for I2C SCL and I2C SDA
+     * Requirement: Pull up resistors: SCL-R4k7-3V3, SDA-R4k7-3V3.
+     * Remark: When two FUT_I2C_EXTERNAL boards are connected, at lease 1 needs pull up resistors.
+   * With octoprobe
+     * Description: Only one Tentacle is required. The DUT is communicating against the PICO-infra.
+     * Description: The tentacle PICO-infra may be I2C controller(master) AND target(slave)
+     * Remark: Pull up resistors: Use 3V3 from the DUT-board and NOT from the infra to avoid the DUT-cpu
+       beeing powered by the pull up resistors and not beeing reset during powercycles.
+ * EnumFut.FUT_UART_EXTERNAL
+   * Future use
+ * EnumFut.FUT_SPI_EXTERNAL
+   * Future use. Can't probably not be used on octoprobe due to conflicting pins.
+
+
 12pin Testpoints
 ----------------
 These connectors match with https://github.com/WeActStudio/LogicAnalyzerV1.
@@ -11,6 +47,13 @@ Assignments
   CH1: extmod_a (signals for FUT_EXTMOD_HARDWARE)
   CH2: extmod_b (signals for FUT_EXTMOD_HARDWARE)
   CH3: extmod_c (signals for FUT_EXTMOD_HARDWARE)
+  CH4: SCL used by EnumFut.FUT_EXTMOD_HARDWARE
+  CH5: SDA used by EnumFut.FUT_EXTMOD_HARDWARE
+  CH6: SCL toward PICO-Infra, used by EnumFut.FUT_I2C_EXTERNAL
+  CH7: SDA toward PICO-Infra, used by EnumFut.FUT_I2C_EXTERNAL
+  CH8: TX used by EnumFut.FUT_UART_EXTERNAL
+  CH9: RX used by EnumFut.FUT_UART_EXTERNAL
+
 """
 
 from __future__ import annotations
@@ -116,6 +159,9 @@ ESP32_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-DevKitC V4
 See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html
+See: https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/hw-reference/esp32/get-started-devkitc.html
+See: https://docs.espressif.com/projects/esp-idf/en/v4.4/esp32/_images/esp32-devkitC-v4-pinout.png
+See: https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf
 
 Connections
 
@@ -126,14 +172,36 @@ Connections
   * Board GPIO0  <=> Tentacle Relay 1b
   * Tentacle Relay 1a <=> Tentacle GND
 
-* FUT_EXTMOD_HARDWARE
-  * Board 5/U0RXD/RX <=> 4/U0TXD/TX
+* FUT_EXTMOD_HARDWARE (UART loopback)
+  * Board GPIO5<silkscreen 5>/U0RXD/RX <=> GPIO4<silkscreen 4>/U0TXD/TX
+
+# * FUT_EXTMOD_HARDWARE (I2C loopback)
+#   * Board GPIO5<silkscreen 5> (SDA) <=> Board GPIO9<silkscreen D2> (SDA)
+#   * Board GPIO6<silkscreen CLK> (SCL) <=> Board GPIO8<silkscreen D1> (SCL)
+#   * Board GPIO5<silkscreen 5> (SDA) <=> R4k7 (Pullup) <=> Board 3V3
+#   * Board GPIO6<silkscreen CLK> (SCL) <=> R4k7 (Pullup) <=> Board 3V3
+
+# * FUT_I2C_EXTERNAL (I2C towards PICO-infra)
+#   * Board GPIO9<silkscreen D2> (SDA) <=> Tentacle GPIO10 (SDA)
+#   * Board GPIO8<silkscreen D1> (SCL) <=> Tentacle GPIO11 (SCL)
+
+# * Summary of the connection above:
+#   * Board 4, 5, D2, pullup, Tentacle GPIO10, Testpoint "extmod"
+#   * Board D1, CLK, pullup, Tentacle GPIO11
+
+# * FUT_UART_EXTERNAL (UART towards PICO-infra) TODO
+#   * Board GP12 (TX) <=> Tentacle GPIO13 (RX) TODO
+#   * Board GP13 (RX) <=> Tentacle GPIO12 (TX) TODO
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
+  * Not supported yet - too lazy to solder and test
 
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
+v1.2: Add wires for FUT_I2C_EXTERNAL.
+      Add wires for FUT_EXTMOD_HARDWARE (I2C loopback).
+      FUT_UART_EXTERNAL not wired yet!
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_DEVKIT",
@@ -142,6 +210,7 @@ v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_esp.ESP32_USB_ID,
     tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool",
@@ -493,13 +562,14 @@ RPI_PICO = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
@@ -510,7 +580,7 @@ RPI_PICO_W = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO_W",
@@ -519,6 +589,7 @@ Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="mcu=rp2,programmer=picotool",
@@ -529,13 +600,14 @@ RPI_PICO2 = TentacleSpecMicropython(
     doc="""
 See: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#raspberry-pi-pico-2-w24
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
@@ -556,13 +628,40 @@ Connections
 * GND
   * Board GND <=> Tentacle GND
 
-* FUT_EXTMOD_HARDWARE
+* FUT_EXTMOD_HARDWARE (tx/rx,pwm loopback)
   * Board GP0 <=> Board GP1
+
+TODO: Keep?
+* FUT_EXTMOD_HARDWARE (I2C loopback)
+  * Board GP4 (SDA) <=> Board GP6 (SDA)
+  * Board GP5 (SCL) <=> Board GP7 (SCL)
+  * Board GP4 (SDA) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+  * Board GP5 (SCL) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+
+* FUT_I2C_EXTERNAL (I2C towards PICO-infra)
+  * Board GP8 (SDA) <=> Tentacle GPIO10 (SDA)
+  * Board GP9 (SCL) <=> Tentacle GPIO11 (SCL)
+  * Board GP8 (SDA) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+  * Board GP9 (SCL) <=> R4k7 (Pullup) <=> Board 3V3 (pin 36)
+
+* FUT_UART_EXTERNAL (UART towards PICO-infra)
+  * Board GP12 (TX) <=> Tentacle GPIO13 (RX)
+  * Board GP13 (RX) <=> Tentacle GPIO12 (TX)
 
 * Testpoints
   * Testpoint GND <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board GP2
   * Testpoint CH1/extmod_a <=> Board GP0
+  * Testpoint CH4/SDA <=> Board GP4 (SDA)
+  * Testpoint CH5/SCL <=> Board GP5 (SCL)
+  * Testpoint CH6/SCL <=> Board GP11 (SCL)
+  * Testpoint CH7/SDA <=> Board GP10 (SDA)
+  * Testpoint CH8/TX <=> Board GP12 (TX)
+  * Testpoint CH9/RX <=> Board GP13 (RX)
+
+v1.1: Add wires for FUT_I2C_EXTERNAL.
+      Add wires for FUT_EXTMOD_HARDWARE (I2C loopback).
+      FUT_UART_EXTERNAL not wired yet!
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2_W",
@@ -571,6 +670,7 @@ Connections
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
+        EnumFut.FUT_I2C_EXTERNAL,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     # TODO: No RISCV variant for the RPI_PICO2_W.

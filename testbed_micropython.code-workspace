@@ -8,9 +8,13 @@
             "name": "octoprobe",
             "path": "../octoprobe"
         },
+        // {
+        //     "name": "testbed_micropython_reports",
+        //     "path": "../testbed_micropython_reports"
+        // },
         {
-            "name": "testbed_micropython_reports",
-            "path": "../testbed_micropython_reports"
+            "name": "fork_micropython",
+            "path": "../fork_micropython"
         }
     ],
     "settings": {

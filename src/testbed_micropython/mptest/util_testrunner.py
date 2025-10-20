@@ -45,6 +45,7 @@ from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from ..testrunspecs import (
     run_flash_format,
+    run_multi_i2c_external,
     run_multinet,
     run_natmodtests,
     run_perftest,
@@ -88,6 +89,7 @@ _TESTRUN_SPECS = [
     runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE,
     run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS,
     run_flash_format.TESTRUNSPEC_RUN_FLASH_FORMAT,
+    run_multi_i2c_external.TESTRUNSPEC_RUNTESTS_MULTI2C,
 ]
 DICT_TESTRUN_SPECS = {s.label: s for s in _TESTRUN_SPECS}
 
@@ -600,7 +602,7 @@ class TestRunner:
         * powercycle the tentacles
         * Turns on the 'active' LED on the tentacles involved
         * Flash firmware
-        * Set the relays according to `@pytest.mark.required_futs(EnumFut.FUT_I2C)`.
+        * Set the relays according to `@pytest.mark.required_futs(EnumFut.FUT_I2C_EXTERNAL)`.
 
         * yields to the test function
         * Teardown

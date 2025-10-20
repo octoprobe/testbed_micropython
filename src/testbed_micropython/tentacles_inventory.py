@@ -74,7 +74,7 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="ch_greenliff_1",
         tentacles=[
-            ("e46340474b55-1722", "v1.0", tentacle_specs.RPI_PICO),
+            ("e46340474b55-1722", "v1.1", tentacle_specs.RPI_PICO),
         ],
     )
 ).inventory
