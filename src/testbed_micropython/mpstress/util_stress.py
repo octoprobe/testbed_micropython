@@ -15,6 +15,8 @@ from ..testcollection.constants import (
     ENV_PYTHONUNBUFFERED,
 )
 
+DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
+
 logger = logging.getLogger(__file__)
 
 
@@ -33,15 +35,6 @@ class EnumScenario(enum.StrEnum):
     """
     13 tentacles
 
-        timeout_s = 240.0 * 1.5
-        files = []
-
-    --> no error!
-    """
-    SUBPROCESS_INFRA_MPREMOTE = enum.auto()
-    """
-    13 tentacles
-
         timeout_s = 13.0 * 1.5
         files = [
             "--include=basics/(b|int_)",
@@ -49,6 +42,34 @@ class EnumScenario(enum.StrEnum):
         ]
 
     --> error after 20s
+
+    ------------------
+
+    5 tentacles
+
+        timeout_s = 240.0 * 1.5
+        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
+
+    --> no error!
+    """
+    SUBPROCESS_INFRA_MPREMOTE = enum.auto()
+    """
+    13 tentacles
+
+        timeout_s = 240.0 * 1.5
+        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
+
+    --> no error!
+    """
+    SUBPROCESS_INFRA_MPREMOTE_C = enum.auto()
+    """
+    13 tentacles
+
+        timeout_s = 240.0 * 1.5
+        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
+
+    mpremote_c was called 3147 times!
+    --> no error!
     """
 
 
@@ -83,13 +104,38 @@ class StressThread(threading.Thread):
 
         if self._scenario is EnumScenario.INFRA_MPREMOTE:
             return self._scenario_INFRA_MPREMOTE()
+
         if self._scenario is EnumScenario.SUBPROCESS_INFRA_MPREMOTE:
             return self._scenario_SUBPROCESS_INFRA_MPREMOTE()
+
+        if self._scenario is EnumScenario.SUBPROCESS_INFRA_MPREMOTE_C:
+            return self._scenario_SUBPROCESS_INFRA_MPREMOTE_C()
 
         assert False
 
     def _scenario_NONE(self) -> None:
         return
+
+    def _scenario_SUBPROCESS_INFRA_MPREMOTE_C(self) -> None:
+        i = 0
+        while True:
+            print("cycle")
+            for t in self._tentacles_stress:
+                if self._stopping:
+                    return
+                i += 1
+                args = [
+                    str(DIRECTORY_OF_THIS_FILE / "c" / "mpremote_c"),
+                    t.infra.usb_tentacle.serial_port,
+                ]
+                env = ENV_PYTHONUNBUFFERED
+                subprocess_run(
+                    args=args,
+                    cwd=self._directory_results,
+                    env=env,
+                    logfile=self._directory_results / f"mpremote_c_{i:04d}.txt",
+                    timeout_s=1.0,
+                )
 
     def _scenario_SUBPROCESS_INFRA_MPREMOTE(self) -> None:
         i = 0
@@ -113,8 +159,7 @@ class StressThread(threading.Thread):
                     args=args,
                     cwd=self._directory_results,
                     env=env,
-                    # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                    logfile=self._directory_results / f"mpremote_{i:03d}.txt",
+                    logfile=self._directory_results / f"mpremote_{i:04d}.txt",
                     timeout_s=5.0,
                 )
 

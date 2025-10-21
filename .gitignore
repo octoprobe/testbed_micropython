@@ -15,3 +15,4 @@ src/testbed_micropython/mpbuild/docker-build-micropython-esp32/esp-idf
 src/testbed/experiments/*
 testresults*/**
 src/testbed_micropython/mpstress/testresults/
+src/testbed_micropython/mpstress/c/mpremote_c
