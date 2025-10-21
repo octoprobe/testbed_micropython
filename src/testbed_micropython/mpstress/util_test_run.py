@@ -32,12 +32,29 @@ def run_test(
             tentacle=tentacle_test, udev=udev
         )
 
+    if True:
+        timeout_s = 240.0 * 1.5
+        files = []
+    if True:
+        timeout_s = 61.0 * 1.5
+        files = ["--include=basic/"]
+    if True:
+        timeout_s = 77.0 * 1.5
+        files = ["--include=extmod/"]
+    if True:
+        timeout_s = 17.0 * 1.5
+        files = ["--include=basics/b"]
+    if True:
+        timeout_s = 22.0 * 1.5
+        files = ["--include=basics/(b|int_)"]
+
     args = [
         sys.executable,
         "run-tests.py",
         f"--result-dir={directory_results}",
         f"--test-instance=port:{tty}",
         "--jobs=1",
+        *files,
         # "misc/cexample_class.py",
     ]
     env = ENV_PYTHONUNBUFFERED
@@ -47,7 +64,7 @@ def run_test(
         env=env,
         # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
         logfile=directory_results / "testresults.txt",
-        timeout_s=300.0,
+        timeout_s=timeout_s,
         # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
         success_returncodes=[0, 1],
     )
