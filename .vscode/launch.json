@@ -214,7 +214,7 @@
             "subProcess": false,
         },
         {
-            "name": "mpstress stress",
+            "name": "mpstress",
             "type": "debugpy",
             "request": "launch",
             "module": "testbed_micropython.mpstress.cli",
