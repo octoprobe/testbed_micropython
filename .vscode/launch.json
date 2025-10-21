@@ -227,6 +227,7 @@
                 // "--scenario=DUT_ON_OFF",
                 "--scenario=INFRA_MPREMOTE",
                 // "--scenario=SUBPROCESS_INFRA_MPREMOTE",
+                // "--scenario=SUBPROCESS_INFRA_MPREMOTE_C",
                 // "--tentacle=1722",
                 "--tentacle=5f2c",
             ],
