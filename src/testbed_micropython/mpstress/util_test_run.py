@@ -34,19 +34,27 @@ def run_test(
 
     if True:
         timeout_s = 240.0 * 1.5
-        files = []
+        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
     if True:
         timeout_s = 61.0 * 1.5
-        files = ["--include=basic/"]
+        files = ["--include=basics/*"]
     if True:
         timeout_s = 77.0 * 1.5
-        files = ["--include=extmod/"]
+        files = ["--include=extmod/*"]
     if True:
         timeout_s = 17.0 * 1.5
         files = ["--include=basics/b"]
     if True:
         timeout_s = 22.0 * 1.5
-        files = ["--include=basics/(b|int_)"]
+        files = [
+            "--include=basics/(b|int_)",
+        ]
+    if True:
+        timeout_s = 13.0 * 1.5
+        files = [
+            "--include=basics/(b|int_)",
+            "--exclude=basics/builtin_pow",
+        ]
 
     args = [
         sys.executable,

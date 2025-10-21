@@ -42,6 +42,8 @@ app = typer.Typer(pretty_exceptions_enable=False)
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_RESULTS = DIRECTORY_OF_THIS_FILE / "testresults"
 DIRECTORY_RESULTS.mkdir(parents=True, exist_ok=True)
+[f.unlink(missing_ok=True) for f in DIRECTORY_RESULTS.glob("*.txt")]
+[f.unlink(missing_ok=True) for f in DIRECTORY_RESULTS.glob("*.out")]
 
 
 def complete_scenario():
