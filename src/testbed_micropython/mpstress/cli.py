@@ -24,7 +24,7 @@ from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacl
 from .. import constants
 from ..mptest import util_testrunner
 from .util_stress import EnumScenario, StressThread
-from .util_test_run import run_test
+from .util_test_run import run_test, EnumTest
 
 logger = logging.getLogger(__file__)
 
@@ -48,6 +48,10 @@ DIRECTORY_RESULTS.mkdir(parents=True, exist_ok=True)
 
 def complete_scenario():
     return sorted([scenario.name for scenario in EnumScenario])
+
+
+def complete_test():
+    return sorted([test.name for test in EnumTest])
 
 
 def complete_only_tentacle():
@@ -80,9 +84,13 @@ def stress(
     scenario: TyperAnnotated[
         str,
         typer.Option(
-            help="Run this FUT (feature under test).", autocompletion=complete_scenario
+            help="Run this stress scenario.", autocompletion=complete_scenario
         ),
     ] = EnumScenario.DUT_ON_OFF,
+    test: TyperAnnotated[
+        str,
+        typer.Option(help="Use these test arguments.", autocompletion=complete_test),
+    ] = EnumTest.RUN_TESTS_BASIC_B_INT_POW,
 ) -> None:
     init_logging()
 
@@ -113,6 +121,7 @@ def stress(
             tentacle_test=tentacle_test,
             repo_micropython_tests=repo_micropython_tests,
             directory_results=DIRECTORY_RESULTS,
+            test=EnumTest[test],
         )
         st.stop()
 

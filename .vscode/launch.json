@@ -228,6 +228,7 @@
                 "--scenario=INFRA_MPREMOTE",
                 // "--scenario=SUBPROCESS_INFRA_MPREMOTE",
                 // "--scenario=SUBPROCESS_INFRA_MPREMOTE_C",
+                "--test=RUN_TESTS_BASIC_B_INT_POW",
                 // "--tentacle=1722",
                 "--tentacle=5f2c",
             ],
