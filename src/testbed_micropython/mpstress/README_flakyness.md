@@ -1,0 +1,51 @@
+# Testresults
+
+### --scenario=NONE --test=RUN_TESTS_ALL
+
+12 tentacles
+--> no error!
+
+### --scenario=DUT_ON_OFF --test=RUN_TESTS_ALL
+
+12 tentacles
+--> no error!
+
+### --scenario=INFRA_MPREMOTE --test=RUN_TESTS_BASIC_B_INT_POW
+
+12 tentacles
+--> error after 20s - sometimes
+
+### --scenario=INFRA_MPREMOTE --test=RUN_TESTS_BASIC_B_INT_POW --stress-tentacle-count=5
+
+5 tentacles
+--> no error!
+
+### --scenario=SUBPROCESS_INFRA_MPREMOTE --test=RUN_TESTS_ALL
+
+12 tentacles
+--> no error!
+
+### --scenario=SUBPROCESS_INFRA_MPREMOTE_C --test=RUN_TESTS_ALL
+
+12 tentacles
+--> no error!
+
+### --scenario=INFRA_MPREMOTE --test=SERIAL_TEST
+
+12 tentacles
+--> error after 3s
+
+### --scenario=INFRA_MPREMOTE --test=SERIAL_TEST --stress-tentacle-count=10
+
+10 tentacles
+--> error after 1.5s, 2s, 8s
+
+### --scenario=INFRA_MPREMOTE --test=SERIAL_TEST --stress-tentacle-count=7
+
+7 tentacles
+--> error after 8s, 14s, 26s
+
+### --scenario=INFRA_MPREMOTE --test=SERIAL_TEST --stress-tentacle-count=6
+
+6 tentacles
+--> no error!

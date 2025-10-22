@@ -7,13 +7,12 @@ import sys
 import threading
 import time
 
+from octoprobe.usb_tentacle.usb_tentacle import serial_short_from_delimited
 from octoprobe.util_subprocess import subprocess_run
 
 from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacles
 
-from ..testcollection.constants import (
-    ENV_PYTHONUNBUFFERED,
-)
+from ..testcollection.constants import ENV_PYTHONUNBUFFERED
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
@@ -23,79 +22,41 @@ logger = logging.getLogger(__file__)
 class EnumScenario(enum.StrEnum):
     NONE = enum.auto()
     DUT_ON_OFF = enum.auto()
-    """
-    13 tentacles
-
-        timeout_s = 240.0 * 1.5
-        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
-
-    --> no error!
-    """
     INFRA_MPREMOTE = enum.auto()
-    """
-    13 tentacles
-
-        timeout_s = 13.0 * 1.5
-        files = [
-            "--include=basics/(b|int_)",
-            "--exclude=basics/builtin_pow",
-        ]
-
-    --> error after 20s
-
-    ------------------
-
-    5 tentacles
-
-        timeout_s = 240.0 * 1.5
-        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
-
-    --> no error!
-    """
     SUBPROCESS_INFRA_MPREMOTE = enum.auto()
-    """
-    13 tentacles
-
-        timeout_s = 240.0 * 1.5
-        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
-
-    --> no error!
-    """
     SUBPROCESS_INFRA_MPREMOTE_C = enum.auto()
-    """
-    13 tentacles
-
-        timeout_s = 240.0 * 1.5
-        files = ["--exclude=ports/rp2/rp2_lightsleep_thread.py"]  # Broken test
-
-    mpremote_c was called 3147 times!
-    --> no error!
-    """
 
 
 class StressThread(threading.Thread):
     def __init__(
         self,
         scenario: EnumScenario,
+        stress_tentacle_count: int,
         tentacles_stress: ConnectedTentacles,
         directory_results: pathlib.Path,
     ):
         assert isinstance(scenario, EnumScenario)
+        assert isinstance(stress_tentacle_count, int)
         assert isinstance(tentacles_stress, ConnectedTentacles)
         assert isinstance(directory_results, pathlib.Path)
         super().__init__(daemon=True, name="stress")
         self._stopping = False
+        self._stress_tentacle_count = stress_tentacle_count
         self._scenario = scenario
-        self._tentacles_stress = tentacles_stress
         self._directory_results = directory_results
+        print(
+            f"Found {len(tentacles_stress)} tentacle to create stress. stress_tentacle_count={self._stress_tentacle_count}."
+        )
+        self._tentacles_stress = tentacles_stress[: self._stress_tentacle_count]
+        print(
+            f"Tentacles to generate stress: {[serial_short_from_delimited(t.tentacle_instance.serial) for t in self._tentacles_stress]}"
+        )
 
     def run(self) -> None:
         """
         Power up all duts on all tentacles.
         Now loop over all tentacles and power down dut for a short time
         """
-        print(f"Found {len(self._tentacles_stress)} tentacle to create stress.")
-
         if self._scenario is EnumScenario.NONE:
             return self._scenario_NONE()
 
@@ -179,16 +140,19 @@ class StressThread(threading.Thread):
                 #     continue
                 serial_closed = t.infra.mp_remote_close()
                 t.infra.connect_mpremote_if_needed()
-                print(
-                    i,
+                fds = (
                     t.infra._mp_remote.state.transport.serial.fd,
                     t.infra._mp_remote.state.transport.serial.pipe_abort_read_r,
                     t.infra._mp_remote.state.transport.serial.pipe_abort_read_w,
                     t.infra._mp_remote.state.transport.serial.pipe_abort_write_r,
                     t.infra._mp_remote.state.transport.serial.pipe_abort_write_w,
-                    end="",
                 )
-                print(" ", serial_closed, t.infra.mp_remote._tty)
+                print(
+                    f"count={i:03d}",
+                    f"pyserial.fds:{fds}",
+                    f"close:{serial_closed}",
+                    f"open:{t.infra.mp_remote._tty}",
+                )
                 rc = t.infra.mp_remote.exec_raw("print('Hello')")
                 assert rc == "Hello\r\n"
                 # print(rc)

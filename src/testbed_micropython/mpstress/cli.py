@@ -24,7 +24,7 @@ from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacl
 from .. import constants
 from ..mptest import util_testrunner
 from .util_stress import EnumScenario, StressThread
-from .util_test_run import run_test, EnumTest
+from .util_test_run import EnumTest, run_test
 
 logger = logging.getLogger(__file__)
 
@@ -81,6 +81,12 @@ def stress(
             autocompletion=complete_only_tentacle,
         ),
     ] = None,  # noqa: UP007
+    stress_tentacle_count: TyperAnnotated[
+        int,
+        typer.Option(
+            help="Use that many tentacles to generate stress. May be less if less tentacles are connected.",
+        ),
+    ] = 99,  # noqa: UP007
     scenario: TyperAnnotated[
         str,
         typer.Option(
@@ -113,6 +119,7 @@ def stress(
 
         st = StressThread(
             scenario=EnumScenario[scenario],
+            stress_tentacle_count=stress_tentacle_count,
             tentacles_stress=tentacles_load,
             directory_results=DIRECTORY_RESULTS,
         )
