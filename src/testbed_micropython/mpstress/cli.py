@@ -114,7 +114,7 @@ def stress(
         for t in connected_tentacles:
             t.power.set_default_infra_on()
 
-        repo_micropython_tests = pathlib.Path(micropython_tests).resolve()
+        repo_micropython_tests = pathlib.Path(micropython_tests).expanduser().resolve()
         assert repo_micropython_tests.is_dir(), repo_micropython_tests
 
         st = StressThread(
