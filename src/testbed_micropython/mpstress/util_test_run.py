@@ -16,6 +16,8 @@ from ..testcollection.constants import (
     MICROPYTHON_DIRECTORY_TESTS,
 )
 
+DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
+
 logger = logging.getLogger(__file__)
 
 
@@ -27,6 +29,7 @@ class EnumTest(enum.StrEnum):
     RUN_TESTS_BASIC_B_INT_POW = enum.auto()
     RUN_TESTS_EXTMOD = enum.auto()
     SERIAL_TEST = enum.auto()
+    SIMPLE_SERIAL_WRITE = enum.auto()
 
     @property
     def test_params(self) -> TestArgs:
@@ -85,6 +88,12 @@ class EnumTest(enum.StrEnum):
                 timeout_s=90.0 * 1.5,
                 files=[],
             )
+        if self is EnumTest.SIMPLE_SERIAL_WRITE:
+            return TestArgs(
+                program=["simple_serial_write.py", "--count=1000000"],
+                timeout_s=340.0 * 1.5,
+                files=[],
+            )
         raise ValueError(self)
 
 
@@ -116,8 +125,13 @@ def run_test(
 
     if test == EnumTest.SERIAL_TEST:
         args_aux = []
+        cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
+    if test == EnumTest.SIMPLE_SERIAL_WRITE:
+        args_aux = []
+        cwd = DIRECTORY_OF_THIS_FILE
     else:
         args_aux = [f"--result-dir={directory_results}"]
+        cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
     args = [
         sys.executable,
         *test_params.program,
@@ -129,7 +143,7 @@ def run_test(
     env = ENV_PYTHONUNBUFFERED
     subprocess_run(
         args=args,
-        cwd=repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+        cwd=cwd,
         env=env,
         # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
         logfile=directory_results / "testresults.txt",

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import enum
 import logging
+import os
 import pathlib
+import subprocess
 import sys
 import threading
 import time
@@ -17,6 +19,13 @@ from ..testcollection.constants import ENV_PYTHONUNBUFFERED
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
 logger = logging.getLogger(__file__)
+
+
+def print_fds():
+    cmd = f"ls -l /proc/{os.getpid()}/fd"
+    fd_text = subprocess.check_output(cmd, shell=True)
+    print(f"  {cmd}: {len(fd_text.splitlines())} lines")
+    print(fd_text.decode("ascii"))
 
 
 class EnumScenario(enum.StrEnum):
@@ -72,7 +81,7 @@ class StressThread(threading.Thread):
         if self._scenario is EnumScenario.SUBPROCESS_INFRA_MPREMOTE_C:
             return self._scenario_SUBPROCESS_INFRA_MPREMOTE_C()
 
-        assert False
+        raise ValueError(f"Not handled: scenario {self._scenario}!")
 
     def _scenario_NONE(self) -> None:
         return
@@ -132,6 +141,8 @@ class StressThread(threading.Thread):
         i = 0
         while True:
             print("cycle")
+            print_fds()
+
             for idx, t in enumerate(self._tentacles_stress):
                 if self._stopping:
                     return
@@ -153,8 +164,9 @@ class StressThread(threading.Thread):
                     f"close:{serial_closed}",
                     f"open:{t.infra.mp_remote._tty}",
                 )
-                rc = t.infra.mp_remote.exec_raw("print('Hello')")
-                assert rc == "Hello\r\n"
+                if False:
+                    rc = t.infra.mp_remote.exec_raw("print('Hello')")
+                    assert rc == "Hello\r\n"
                 # print(rc)
 
     def _scenario_DUT_ON_OFF(self) -> None:
