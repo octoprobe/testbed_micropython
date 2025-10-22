@@ -26,31 +26,45 @@ class EnumTest(enum.StrEnum):
     RUN_TESTS_BASIC_B_INT = enum.auto()
     RUN_TESTS_BASIC_B_INT_POW = enum.auto()
     RUN_TESTS_EXTMOD = enum.auto()
+    SERIAL_TEST = enum.auto()
 
     @property
     def test_params(self) -> TestArgs:
         if self is EnumTest.RUN_TESTS_ALL:
             return TestArgs(
                 timeout_s=240.0 * 1.5,
-                files=["--exclude=ports/rp2/rp2_lightsleep_thread.py"],  # Broken test
+                program=["run-tests.py", "--jobs=1"],
+                files=[
+                    "--exclude=ports/rp2/rp2_lightsleep_thread.py",  # Broken test
+                ],
             )
         if self is EnumTest.RUN_TESTS_BASIC:
             return TestArgs(
                 timeout_s=61.0 * 1.5,
-                files=["--include=basics/*"],
+                program=["run-tests.py", "--jobs=1"],
+                files=[
+                    "--include=basics/*",
+                ],
             )
         if self is EnumTest.RUN_TESTS_EXTMOD:
             return TestArgs(
                 timeout_s=77.0 * 1.5,
-                files=["--include=extmod/*"],
+                program=["run-tests.py", "--jobs=1"],
+                files=[
+                    "--include=extmod/*",
+                ],
             )
         if self is EnumTest.RUN_TESTS_BASIC_B:
             return TestArgs(
+                program=["run-tests.py", "--jobs=1"],
                 timeout_s=17.0 * 1.5,
-                files=["--include=basics/b"],
+                files=[
+                    "--include=basics/b",
+                ],
             )
         if self is EnumTest.RUN_TESTS_BASIC_B_INT:
             return TestArgs(
+                program=["run-tests.py", "--jobs=1"],
                 timeout_s=22.0 * 1.5,
                 files=[
                     "--include=basics/(b|int_)",
@@ -58,17 +72,25 @@ class EnumTest(enum.StrEnum):
             )
         if self is EnumTest.RUN_TESTS_BASIC_B_INT_POW:
             return TestArgs(
+                program=["run-tests.py", "--jobs=1"],
                 timeout_s=13.0 * 1.5,
                 files=[
                     "--include=basics/(b|int_)",
                     "--exclude=basics/builtin_pow",
                 ],
             )
+        if self is EnumTest.SERIAL_TEST:
+            return TestArgs(
+                program=["serial_test.py", "--time-per-subtest=10"],
+                timeout_s=90.0 * 1.5,
+                files=[],
+            )
         raise ValueError(self)
 
 
 @dataclasses.dataclass(repr=True, frozen=True)
 class TestArgs:
+    program: list[str]
     timeout_s: float
     files: list[str]
 
@@ -92,12 +114,15 @@ def run_test(
 
     test_params = test.test_params
 
+    if test == EnumTest.SERIAL_TEST:
+        args_aux = []
+    else:
+        args_aux = [f"--result-dir={directory_results}"]
     args = [
         sys.executable,
-        "run-tests.py",
-        f"--result-dir={directory_results}",
+        *test_params.program,
         f"--test-instance=port:{tty}",
-        "--jobs=1",
+        *args_aux,
         *test_params.files,
         # "misc/cexample_class.py",
     ]
@@ -110,5 +135,5 @@ def run_test(
         logfile=directory_results / "testresults.txt",
         timeout_s=test_params.timeout_s,
         # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-        success_returncodes=[0, 1],
+        # success_returncodes=[0, 1],
     )
