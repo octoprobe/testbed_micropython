@@ -52,6 +52,8 @@
 
 ### --scenario=INFRA_MPREMOTE --test=SIMPLE_SERIAL_WRITE
 
+`mpstress --scenario=INFRA_MPREMOTE --test=SIMPLE_SERIAL_WRITE --tentacle=5f2c --micropython-tests=/home/octoprobe/gits/micropython`
+
 12 tentacles
 --> error after 4s
     006000: 197kBytes/s
@@ -88,3 +90,21 @@
 
 12 tentacles
 --> no error
+
+
+
+### --scenario=INFRA_MPREMOTE --test=SIMPLE_SERIAL_WRITE
+
+==> 5f2c connected to RHS B7
+`mpstress --scenario=INFRA_MPREMOTE --test=SIMPLE_SERIAL_WRITE --tentacle=5f2c --micropython-tests=/home/octoprobe/gits/micropython`
+
+12 tentacles
+--> error after 4s
+
+==> 5f2c connected to USB on computer rear
+
+`mpstress --scenario=INFRA_MPREMOTE --test=SIMPLE_SERIAL_WRITE --tentacle=5f2c --micropython-tests=/home/octoprobe/gits/micropython`
+
+12 tentacles
+--> error after 120s, 35s
+--> no error 340s, 340s
