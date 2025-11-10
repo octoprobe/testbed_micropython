@@ -32,7 +32,7 @@ AA_UNASSEMBLED = TentacleSpecMicropython(
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="",
     futs=[],
-    tags="",
+    tags="mcu=rp2,programmer=picotool",
 )
 
 ADA_ITSYBITSY_M0 = TentacleSpecMicropython(
