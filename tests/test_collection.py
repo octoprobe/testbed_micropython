@@ -18,7 +18,11 @@ from testbed_micropython.tentacle_spec import (
     TentacleMicropython,
     TentacleSpecMicropython,
 )
-from testbed_micropython.tentacle_specs import LOLIN_C3_MINI, LOLIN_D1_MINI, RPI_PICO
+from testbed_micropython.tentacle_specs import (
+    ESP32_C3_DEVKIT,
+    LOLIN_D1_MINI,
+    RPI_PICO,
+)
 from testbed_micropython.testcollection import baseclasses_run, testrun_specs
 from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacles
 from testbed_micropython.testrunspecs import runtests
@@ -125,7 +129,9 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     firmwares_built: set[str] = {
         constants.DEFAULT_REFERENCE_BOARD,
-        "LOLIN_C3_MINI",
+        "RPI_PICO",
+        "ESP32_C3_DEVKIT",
+        "ESP32_GENERIC_C3",
         "ESP8266_GENERIC",
         "ESP8266_GENERIC-FLASH_512K",
     }
@@ -222,22 +228,22 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
 
 _TESTPARAM_WLAN_ASYMMETRICAL = Ttestparam(
     label="wlan_asymmetrical",
-    specs=[LOLIN_D1_MINI, LOLIN_C3_MINI],
+    specs=[LOLIN_D1_MINI, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
 _TESTPARAM_WLAN_SYMMETRICAL2 = Ttestparam(
     label="wlan_symmetrical2",
-    specs=[LOLIN_C3_MINI, LOLIN_C3_MINI],
+    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
 _TESTPARAM_WLAN_SYMMETRICAL3 = Ttestparam(
     label="wlan_symmetrical3",
-    specs=[LOLIN_C3_MINI, LOLIN_C3_MINI, LOLIN_C3_MINI],
+    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
 )
 _TESTPARAM_POTPOURRY = Ttestparam(
     label="potpourry",
-    specs=[RPI_PICO, RPI_PICO, LOLIN_D1_MINI, LOLIN_C3_MINI],
+    specs=[RPI_PICO, RPI_PICO, LOLIN_D1_MINI, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs(
         [_TESTRUNSPEC_WLAN, _TESTRUNSPEC_PERFBENCH]
     ),

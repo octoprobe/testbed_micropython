@@ -22,13 +22,13 @@
 ## Legend: Tasks
 | Task-ID | Task | Tentacle | Duration |
 | -: | :- | :- | -: |
+| a | Build PICO2 |  | 3.5s |
+| b | Build PICO2\_RISCV |  | 7.5s |
+| c | Build ESP8266 |  | 6.5s |
 | 1 | Test X | PICO(PICO2) | 8.5s |
 | 2 | Test Test X | PICO2(PICO2\_RISCV), Lolin(ESP8266) | 3.5s |
 | 3 | Test Y | PICO(PICO2\_RISCV) | 2.5s |
 | 4 | Test Test Y | PICO2(PICO2\_RISCV), Lolin(ESP8266) | 3.5s |
-| a | Build PICO2 |  | 3.5s |
-| b | Build PICO2\_RISCV |  | 7.5s |
-| c | Build ESP8266 |  | 6.5s |
 
 ## Report input data
 | Start | End | Duration | Task | Tentacles |

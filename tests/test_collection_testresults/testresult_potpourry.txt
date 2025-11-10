@@ -1,267 +1,170 @@
 ## testrun_specs
   testrunspec['TESTPERF'] tests_todo=5
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
   testrunspec['TESTWLAN'] tests_todo=3
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
 ## 0: testrun_specs
   testrunspec['TESTPERF'] tests_todo=5
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
   testrunspec['TESTWLAN'] tests_todo=3
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
 ## 0: possible_testruns
   TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF,a@1c42-LOLIN_D1_MINI
   TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
   TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN,a@1c42-LOLIN_D1_MINI
   TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K) / TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
-  TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF,a@1c43-LOLIN_C3_MINI
-  TestRun(TESTWLAN, LOLIN_C3_MINI) / TESTWLAN,a@1c43-LOLIN_C3_MINI
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c40-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c40-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c41-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c41-RPI_PICO
+  TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF,a@1c43-ESP32_C3_DEVKIT
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN,a@1c43-ESP32_C3_DEVKIT
 ### 0: fake_start:7 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF,a@1c42-LOLIN_D1_MINI
 ### actual_testruns
       TESTPERF,a@1c42-LOLIN_D1_MINI
 ## 1: testrun_specs
   testrunspec['TESTPERF'] tests_todo=4
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
   testrunspec['TESTWLAN'] tests_todo=3
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
 ## 1: possible_testruns
-  TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF,a@1c43-LOLIN_C3_MINI
-  TestRun(TESTWLAN, LOLIN_C3_MINI) / TESTWLAN,a@1c43-LOLIN_C3_MINI
-### 1: fake_start:6 testrun_next: TestRun(TESTPERF, LOLIN_C3_MINI) / TESTPERF,a@1c43-LOLIN_C3_MINI
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c40-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c40-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c41-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c41-RPI_PICO
+  TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF,a@1c43-ESP32_C3_DEVKIT
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN,a@1c43-ESP32_C3_DEVKIT
+### 1: fake_start:6 testrun_next: TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c40-RPI_PICO
 ### actual_testruns
+      TESTPERF,a@1c40-RPI_PICO
       TESTPERF,a@1c42-LOLIN_D1_MINI
-      TESTPERF,a@1c43-LOLIN_C3_MINI
 ## 2: testrun_specs
   testrunspec['TESTPERF'] tests_todo=3
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+    RPI_PICO(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
   testrunspec['TESTWLAN'] tests_todo=3
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
 ## 2: possible_testruns
-###  testrun_done: TESTPERF,a@1c43-LOLIN_C3_MINI
-## 3: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=3
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=3
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-    LOLIN_C3_MINI(0, ROLE_FIRST)
-## 3: possible_testruns
-  TestRun(TESTWLAN, LOLIN_C3_MINI) / TESTWLAN,a@1c43-LOLIN_C3_MINI
-### 3: fake_start:5 testrun_next: TestRun(TESTWLAN, LOLIN_C3_MINI) / TESTWLAN,a@1c43-LOLIN_C3_MINI
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c41-RPI_PICO
+  TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF,a@1c43-ESP32_C3_DEVKIT
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN,a@1c43-ESP32_C3_DEVKIT
+### 2: fake_start:5 testrun_next: TestRun(TESTPERF, RPI_PICO) / TESTPERF,a@1c41-RPI_PICO
 ### actual_testruns
+      TESTPERF,a@1c40-RPI_PICO
+      TESTPERF,a@1c41-RPI_PICO
       TESTPERF,a@1c42-LOLIN_D1_MINI
-      TESTWLAN,a@1c43-LOLIN_C3_MINI
+###  testrun_done: TESTPERF,a@1c41-RPI_PICO
+## 3: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=2
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=3
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
+## 3: possible_testruns
+  TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF,a@1c43-ESP32_C3_DEVKIT
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN,a@1c43-ESP32_C3_DEVKIT
+### 3: fake_start:4 testrun_next: TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF,a@1c43-ESP32_C3_DEVKIT
+### actual_testruns
+      TESTPERF,a@1c40-RPI_PICO
+      TESTPERF,a@1c42-LOLIN_D1_MINI
+      TESTPERF,a@1c43-ESP32_C3_DEVKIT
+###  testrun_done: TESTPERF,a@1c43-ESP32_C3_DEVKIT
 ## 4: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=3
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=2
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+  testrunspec['TESTPERF'] tests_todo=1
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=3
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(0, ROLE_INSTANCE0)
 ## 4: possible_testruns
-###  testrun_done: TESTWLAN,a@1c43-LOLIN_C3_MINI
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN,a@1c43-ESP32_C3_DEVKIT
+### 4: fake_start:3 testrun_next: TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN,a@1c43-ESP32_C3_DEVKIT
+### actual_testruns
+      TESTPERF,a@1c40-RPI_PICO
+      TESTPERF,a@1c42-LOLIN_D1_MINI
+      TESTWLAN,a@1c43-ESP32_C3_DEVKIT
+###  testrun_done: TESTWLAN,a@1c43-ESP32_C3_DEVKIT
 ## 5: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=3
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+  testrunspec['TESTPERF'] tests_todo=1
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
   testrunspec['TESTWLAN'] tests_todo=2
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
 ## 5: possible_testruns
-###  testrun_done: TESTPERF,a@1c42-LOLIN_D1_MINI
+###  testrun_done: TESTPERF,a@1c40-RPI_PICO
 ## 6: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=3
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+  testrunspec['TESTPERF'] tests_todo=1
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
   testrunspec['TESTWLAN'] tests_todo=2
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
 ## 6: possible_testruns
+###  testrun_done: TESTPERF,a@1c42-LOLIN_D1_MINI
+## 7: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=1
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+## 7: possible_testruns
   TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
   TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN,a@1c42-LOLIN_D1_MINI
   TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K) / TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
-### 6: fake_start:4 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
+### 7: fake_start:2 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC-FLASH_512K) / TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
 ### actual_testruns
       TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
-## 7: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=2
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-## 7: possible_testruns
-###  testrun_done: TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
 ## 8: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
+  testrunspec['TESTPERF'] tests_todo=0
   testrunspec['TESTWLAN'] tests_todo=2
-    ESP8266_GENERIC(0, ROLE_FIRST)
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
 ## 8: possible_testruns
+###  testrun_done: TESTPERF,a@1c42-LOLIN_D1_MINI-FLASH_512K
+## 9: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP8266_GENERIC(0, ROLE_INSTANCE0)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+## 9: possible_testruns
   TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN,a@1c42-LOLIN_D1_MINI
   TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K) / TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
-### 8: fake_start:3 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN,a@1c42-LOLIN_D1_MINI
+### 9: fake_start:1 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN,a@1c42-LOLIN_D1_MINI
 ### actual_testruns
       TESTWLAN,a@1c42-LOLIN_D1_MINI
-## 9: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=1
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
-## 9: possible_testruns
-###  testrun_done: TESTWLAN,a@1c42-LOLIN_D1_MINI
 ## 10: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
+  testrunspec['TESTPERF'] tests_todo=0
   testrunspec['TESTWLAN'] tests_todo=1
-    ESP8266_GENERIC-FLASH_512K(0, ROLE_FIRST)
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
 ## 10: possible_testruns
+###  testrun_done: TESTWLAN,a@1c42-LOLIN_D1_MINI
+## 11: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=1
+    ESP8266_GENERIC-FLASH_512K(0, ROLE_INSTANCE0)
+## 11: possible_testruns
   TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K) / TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
-### 10: fake_start:2 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K) / TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
+### 11: fake_start:0 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC-FLASH_512K) / TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
 ### actual_testruns
       TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
-## 11: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 11: possible_testruns
-###  testrun_done: TESTWLAN,a@1c42-LOLIN_D1_MINI-FLASH_512K
-## 12: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 12: possible_testruns
-## 13: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 13: possible_testruns
-## 14: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 14: possible_testruns
-## 15: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 15: possible_testruns
-## 16: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 16: possible_testruns
-## 17: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 17: possible_testruns
-## 18: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 18: possible_testruns
-## 19: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 19: possible_testruns
-## 20: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 20: possible_testruns
-## 21: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 21: possible_testruns
-## 22: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 22: possible_testruns
-## 23: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 23: possible_testruns
-## 24: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 24: possible_testruns
-## 25: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 25: possible_testruns
-## 26: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 26: possible_testruns
-## 27: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 27: possible_testruns
-## 28: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 28: possible_testruns
-## 29: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
-    RPI_PICO(0, ROLE_FIRST)
-    RPI_PICO(0, ROLE_FIRST)
-  testrunspec['TESTWLAN'] tests_todo=0
-## 29: possible_testruns
-ERROR: should never get here!
