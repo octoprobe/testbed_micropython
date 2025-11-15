@@ -493,7 +493,7 @@ RPI_PICO = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO",
@@ -510,7 +510,7 @@ RPI_PICO_W = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO_W",
@@ -529,7 +529,7 @@ RPI_PICO2 = TentacleSpecMicropython(
     doc="""
 See: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#raspberry-pi-pico-2-w24
 
-Connections: The same as EnumTentacleTag.MCU_RPI_PICO2_W
+Connections: The same as RPI_PICO2_W
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2",
