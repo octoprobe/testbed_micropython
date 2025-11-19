@@ -9,7 +9,7 @@ import pathlib
 
 from mpbuild.board_database import Database
 
-from ...mpbuild.build_api import build_by_variant_normalized
+from testbed_micropython.mpbuild.build_api import build_by_variant_normalized
 
 THIS_FILE = pathlib.Path(__file__)
 RESULTS_DIRECTORY = THIS_FILE.parent / "testresults"
@@ -19,14 +19,13 @@ MICROPY_DIR = "MICROPY_DIR"
 
 _VARIANTS_TO_TEST = (
     # Standard case
-    "RPI_PICO2",
+    "RPI_PICO",
     # Special case: Variant uses another build container
     "RPI_PICO2-RISCV",
     # Standard case
     "PYBV11",
     "ESP8266_GENERIC",
     "ESP8266_GENERIC-FLASH_512K",
-    # "ESP32_GENERIC_S3" # Build fails on 1.24.1
     # Special case: Variant
     "PYBV11-THREAD",
     # Special case: Unix
