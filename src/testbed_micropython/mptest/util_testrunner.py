@@ -10,7 +10,7 @@ import time
 import typing
 
 from octoprobe.octoprobe import CtxTestRun
-from octoprobe.usb_tentacle.usb_constants import UsbPlugs
+from octoprobe.usb_tentacle.usb_baseclasses import HubPortNumber
 from octoprobe.usb_tentacle.usb_tentacle import (
     UsbTentacles,
     assert_serialdelimtied_valid,
@@ -341,7 +341,10 @@ class TestRunner:
         journalctl.start_observer_thread()
         usb_tentacles = CtxTestRun.session_powercycle_tentacles()
         # Power off everything but PICO infra
-        usb_tentacles.set_plugs(UsbPlugs.default_infra_on())
+        usb_tentacles.set_power(hub_port=HubPortNumber.PORT3_DUT, on=False)
+        usb_tentacles.set_power(hub_port=HubPortNumber.PORT2_INFRABOOT, on=True)
+        usb_tentacles.set_power(hub_port=HubPortNumber.PORT4_PROBE_LEDERROR, on=False)
+        usb_tentacles.set_power(hub_port=HubPortNumber.PORT1_INFRA, on=True)
         connected_tentacles = instantiate_tentacles(usb_tentacles=usb_tentacles)
         if len(connected_tentacles) == 0:
             logger.warning("No tentacles discovered!")
@@ -659,11 +662,11 @@ def _target_run_one_test_async_b(
     logger.info(f"TEST SETUP {duration_text(0.0)} {testid}")
 
     for tentacle in testrun.tentacles:
-        ctxtestrun.function_prepare_dut(tentacle=tentacle)
         ctxtestrun.function_setup_infra(
             udev_poller=UDEV_POLLER_LAZY.udev_poller,
             tentacle=tentacle,
         )
+        ctxtestrun.function_prepare_dut(tentacle=tentacle)
         ctxtestrun.function_setup_dut_flash(
             udev_poller=UDEV_POLLER_LAZY.udev_poller,
             tentacle=tentacle,

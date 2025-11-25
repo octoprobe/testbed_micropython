@@ -111,6 +111,31 @@ See: https://content.arduino.cc/assets/Pinout-NANOble_latest.png
     mcu_config=McuConfig(),
 )
 
+NRF52840_USB_DONGLE = TentacleSpecMicropython(
+    doc="""
+See: https://www.nordicsemi.com/Products/Development-hardware/nRF52840-Dongle
+See: https://micropython.org/download/PCA10059/
+
+This dongle uses SWD from PICO_PROBE for programming. This has not been implemented yet
+
+* Bootmode
+  * TODO: Wiring
+""",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ARDUINO_NANO_33",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        # Nordic Bluetooth stack needs to be updated
+        # Currently not working properly
+        # EnumFut.FUT_BLE,
+    ],
+    mcu_usb_id=util_mcu_nrf.ARDUINO_NANO_33_USB_ID,
+    tags="board=pca10059,mcu=nrf,programmer=picoprobe",
+    programmer_args=[""],
+    mcu_config=McuConfig(),
+)
+
 
 ESP32_DEVKIT = TentacleSpecMicropython(
     doc="""
@@ -133,6 +158,7 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
 
+v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
@@ -181,6 +207,7 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 5/U0RXD/RX
 
+v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
@@ -280,6 +307,7 @@ Connections
   * Testpoint CH0/trigger <=> Board 1
   * Testpoint CH1/extmod_a <=> Board 5/U0RXD/RX
 
+v1.0: initial
 v1.1: Use relais to allow octoprobe to press boot button
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
@@ -322,6 +350,8 @@ Connections
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board D1/5/rx
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="LOLIN_D1_MINI",
@@ -387,6 +417,8 @@ Board setup:
 * JP4: closed
 * JP5: all closend. But "GND" open.
 * JP6: closed
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="NUCLEO_WB55",
@@ -420,6 +452,8 @@ Connections
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board TODO
   * Testpoint CH1/extmod_a <=> Board X1
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBV11",
@@ -563,6 +597,8 @@ Connections
   * Testpoint GND <=> Tentacle GND
   * Testpoint CH0/trigger <=> Board GP2
   * Testpoint CH1/extmod_a <=> Board GP0
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2_W",
@@ -605,6 +641,8 @@ Connections
   * Testpoint CH1/extmod_a <=> Board D0
   * Testpoint CH1/extmod_b <=> Board D2
   * Testpoint CH1/extmod_c <=> Board D11
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="TEENSY40",
@@ -637,6 +675,8 @@ Connections
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 4
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="UM_TINYPICO",
@@ -676,6 +716,8 @@ Connections
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 4
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="UM_FEATHERS2",
@@ -712,6 +754,8 @@ Connections
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
   * Testpoint "extmod" <=> Board 4
+
+v1.0: initial
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="UM_FEATHERS3",

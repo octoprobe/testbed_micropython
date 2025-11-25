@@ -7,7 +7,8 @@ import sys
 import typing
 
 import pytest
-from octoprobe.usb_tentacle.usb_baseclasses import Location, TENTACLE_VERSION_V03
+from octoprobe.usb_tentacle.usb_baseclasses import Location
+from octoprobe.usb_tentacle.usb_constants import HwVersion
 from octoprobe.usb_tentacle.usb_tentacle import UsbPico, UsbTentacle
 from octoprobe.util_baseclasses import TentacleInstance
 
@@ -83,7 +84,8 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             tentacle_instance = TentacleInstance(
                 serial=serial,
                 tentacle_spec=spec,
-                hw_version="1.0",
+                hw_version_expected=HwVersion.V03,
+                solder_version="1.0",
                 testbed_name="testbed_micropython",
                 testbed_instance="ch_hans_1",
             )
@@ -98,8 +100,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                             serial=None,
                             serial_port=None,
                         ),
-                        pico_probe=None,
-                        tentacle_version=TENTACLE_VERSION_V03,
                     ),
                 )
             )
