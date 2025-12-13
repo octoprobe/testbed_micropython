@@ -115,11 +115,24 @@ NRF52840_USB_DONGLE = TentacleSpecMicropython(
     doc="""
 See: https://www.nordicsemi.com/Products/Development-hardware/nRF52840-Dongle
 See: https://micropython.org/download/PCA10059/
+See: https://docs-be.nordicsemi.com/bundle/ug_nrf52840_dongle/page/UG/nrf52840_Dongle/Images/nRF52840_dongle_front.svg
+See: https://docs-be.nordicsemi.com/bundle/ug_nrf52840_dongle/page/UG/nrf52840_Dongle/Images/nRF52840_dongle_back.svg
+See: https://www.octoprobe.org/testbed_micropython/tentacle_inventory/tentacle_spec_NRF52840_USB_DONGLE.md
 
 This dongle uses SWD from PICO_PROBE for programming. This has not been implemented yet
 
+* SWD
+  * Board SWDCL <=> Tentacle GPIO_LEVELSHIFTER_2
+  * Board SWDIO <=> Tentacle GPIO_LEVELSHIFTER_3
+  * Board VDD <=> Tentacle GPIO_LEVELSHIFTER_VDUT
+  * Tentacle GPIO_LEVELSHIFTER_VDUT <=> Tentacle GPIO_LEVELSHIFTER_OE
+
+* UART
+  * Board D.13 <=> Tentacle GPIO_LEVELSHIFTER_4
+  * Board D.15 <=> Tentacle GPIO_LEVELSHIFTER_5
+
 * Bootmode
-  * TODO: Wiring
+  * no wiring
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ARDUINO_NANO_33",

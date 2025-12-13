@@ -53,8 +53,9 @@ TENTACLES_INVENTORY = (
             ("e46414481354-1133", HwVersion.V03, "v1.0", tentacle_specs.TEENSY40),
             ("e4641448130f-2f2c", HwVersion.V03, "v1.1", tentacle_specs.NUCLEO_WB55),
             (
-                "de64d401df88-1f31",
-                HwVersion.V05,
+                # Replaced R1503 0R with 1K
+                "de6528b3cb48-3038",
+                HwVersion.V06,
                 "v0.1",
                 tentacle_specs.NRF52840_USB_DONGLE,
             ),
@@ -131,7 +132,7 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="nl_jan_1",
         tentacles=[
-            ("de64d401df5f-0d33", HwVersion.V05, "v1.0", tentacle_specs.RPI_PICO_W),
+            ("de6528b3cb15-6c34", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO_W),
         ],
     )
     .add_testbed_instance(

@@ -8,4 +8,5 @@ testbed_micropython
     /user_guide/index
     /developer_guide/index
     /fixes_for_known_problems/index
+    /tentacle_design/index
     /design/index
