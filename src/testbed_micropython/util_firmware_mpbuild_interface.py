@@ -4,13 +4,13 @@ import dataclasses
 import pathlib
 import typing
 
+from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.util_firmware_spec import (
     FirmwareDownloadSpec,
     MICROPYTHON_FULL_VERSION_TEXT_FORCE,
 )
 
 if typing.TYPE_CHECKING:
-    from .constants import TentacleBase
     from .util_firmware_mpbuild import FirmwareBuilderBase
 
 

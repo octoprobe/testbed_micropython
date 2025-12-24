@@ -17,6 +17,7 @@ import sys
 import typer
 import typing_extensions
 from mpbuild.board_database import MpbuildMpyDirectoryException
+from octoprobe import util_baseclasses
 from octoprobe.scripts.commissioning import init_logging
 from octoprobe.util_constants import DIRECTORY_OCTOPROBE_DOWNLOADS, ExitCode
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
@@ -48,16 +49,16 @@ TyperAnnotated = typing_extensions.Annotated
 app = typer.Typer(pretty_exceptions_enable=False)
 
 
-def complete_only_test():
+def complete_only_test() -> list[str]:
     testrun_specs = util_testrunner.get_testrun_specs()
     return sorted([x.label for x in testrun_specs])
 
 
-def complete_only_fut():
+def complete_only_fut() -> list[str]:
     return sorted([fut.name for fut in EnumFut])
 
 
-def complete_only_board():
+def complete_only_board() -> list[str]:
     if False:
         args = util_testrunner.Args.get_default_args(
             pathlib.Path.cwd(), pathlib.Path.cwd()
@@ -368,8 +369,9 @@ def test(
             multiprocessing=multiprocessing,
             initfunc=initfunc,
         ) as target_ctx:
+            assert target_ctx is not None
             testrunner.run_all_in_sequence(target_ctx=target_ctx)
-    except util_testrunner.OctoprobeAppExitException as e:
+    except util_baseclasses.OctoprobeAppExitException as e:
         logger.info(f"Terminating test due to OctoprobeAppExitException: {e}")
         raise typer.Exit(1) from e
 

@@ -47,7 +47,7 @@ class ArgsQuery:
         only_fut: list[str] | None,
         skip_fut: list[str] | None,
         arg: str,
-        count=0,
+        count: int = 0,
     ) -> ArgsQuery:
         if (only_test is not None) and (skip_test is not None):
             logger.error(

@@ -44,7 +44,7 @@ def get_db() -> Database:
         ) from e
 
 
-def main():
+def main() -> None:
     db = get_db()
 
     for variant_normalized in _VARIANTS_TO_TEST:

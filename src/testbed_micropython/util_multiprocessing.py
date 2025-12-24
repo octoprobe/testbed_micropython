@@ -34,7 +34,7 @@ logger = logging.getLogger(__file__)
 class EventLogCallback:
     def __init__(self) -> None:
         self._arg1: TargetArg1 | None = None
-        self._callback: typing.Callable = self._callback_empty
+        self._callback: typing.Callable[..., None] = self._callback_empty
 
     def init(self, arg1: TargetArg1) -> None:
         assert isinstance(arg1, TargetArg1)
@@ -118,7 +118,7 @@ class AsyncTarget:
         self,
         target_unique_name: str,
         tentacles: list[TentacleMicropython],
-        func: typing.Callable,
+        func: typing.Callable[..., typing.Any],
         func_args: list[typing.Any],
         timeout_s: float,
     ) -> None:
@@ -134,7 +134,7 @@ class AsyncTarget:
         )
         self.target_unique_name = target_unique_name
         self.tentacles = tentacles
-        self.target_func: typing.Callable = func
+        self.target_func: typing.Callable[..., typing.Any] = func
         self.target_args: list[typing.Any] = func_args
         self.timeout_s = timeout_s
 
@@ -191,6 +191,7 @@ class AsyncTarget:
 
 
 T = typing.TypeVar("T", bound=AsyncTarget)
+AT = typing.TypeVar("AT", bound=AsyncTarget)
 
 
 class AsyncTargets(list[T]):
@@ -225,8 +226,8 @@ class AsyncTargets(list[T]):
 @dataclass(repr=True)
 class TargetArg1:
     target_unique_name: str
-    queue: mp.Queue
-    initfunc: typing.Callable
+    queue: mp.Queue[EventBase]
+    initfunc: typing.Callable[..., typing.Any]
 
     def queue_put(self, event: EventBase) -> None:
         assert isinstance(event, EventBase)
@@ -242,7 +243,7 @@ class TargetArg1:
         return TargetArg1(
             target_unique_name="dummy",
             queue=mp.Queue(),
-            initfunc=lambda f: f,
+            initfunc=lambda f: None,
         )
 
 
@@ -347,7 +348,9 @@ class Target:
 
 
 class TargetCtx:
-    def __init__(self, multiprocessing: bool, initfunc: typing.Callable) -> None:
+    def __init__(
+        self, multiprocessing: bool, initfunc: typing.Callable[..., typing.Any]
+    ) -> None:
         """
         is_multiprocessing == False: This will call the target directly, eg. in the same
         process. This is useful for debugging.
@@ -357,15 +360,17 @@ class TargetCtx:
 
         self.multiprocessing = multiprocessing
         self.ctx = mp.get_context("spawn")
-        self.queue = self.ctx.Queue()
+        self.queue: mp.Queue[EventBase] = self.ctx.Queue()
         self.bartender_token: typing.Any = None
         self.initfunc = initfunc
         self.begin_s = time.monotonic()
 
-    def __enter__(self):
+    def __enter__(self) -> TargetCtx:
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self, exc_type: typing.Any, exc_val: typing.Any, exc_tb: typing.Any
+    ) -> None:
         pass
 
     def start(self, async_target: AsyncTarget) -> None:
@@ -413,9 +418,7 @@ class TargetCtx:
             logger.debug(f"{event.target_unique_name}: Queue get: {event}")
             yield event
 
-    def cleanup(
-        self, async_targets: AsyncTargets[AsyncTarget]
-    ) -> typing.Iterator[AsyncTarget]:
+    def cleanup(self, async_targets: AsyncTargets[AT]) -> typing.Iterator[AT]:
         for ar in async_targets:
             target = ar.target_optional
             if target is None:
@@ -429,19 +432,19 @@ class TargetCtx:
                     logger.error(f"{t.name}: Unexpected termination!")
                     t.join()
 
-    def close_and_join(self, async_targets: AsyncTargets) -> None:
+    def close_and_join(self, async_targets: AsyncTargets[AT]) -> None:
         assert isinstance(async_targets, AsyncTargets)
 
         for t in async_targets.targets:
             if not t.has_been_joined:
                 t.join()
 
-    def targets_not_joined(self, async_targets: AsyncTargets) -> list[Target]:
+    def targets_not_joined(self, async_targets: AsyncTargets[AT]) -> list[Target]:
         assert isinstance(async_targets, AsyncTargets)
 
         return [t for t in async_targets.targets if not t.has_been_joined]
 
-    def done(self, async_targets: AsyncTargets) -> bool:
+    def done(self, async_targets: AsyncTargets[AT]) -> bool:
         assert isinstance(async_targets, AsyncTargets)
 
         return len(self.targets_not_joined(async_targets=async_targets)) == 0

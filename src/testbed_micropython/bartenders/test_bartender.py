@@ -18,6 +18,7 @@ import logging
 import pathlib
 import typing
 
+from octoprobe import octoprobe
 from octoprobe.util_constants import DirectoryTag
 
 from .. import util_multiprocessing
@@ -93,12 +94,12 @@ class TestBartender:
         self,
         firmwares_built: set[str] | None,
         args: util_testrunner.Args,
-        ctxtestrun: util_testrunner.CtxTestRun,
+        ctxtestrun: octoprobe.CtxTestRun,
         repo_micropython_tests: pathlib.Path,
     ) -> AsyncTargetTest:
         assert isinstance(firmwares_built, set | None)
         assert isinstance(args, util_testrunner.Args)
-        assert isinstance(ctxtestrun, util_testrunner.CtxTestRun)
+        assert isinstance(ctxtestrun, octoprobe.CtxTestRun)
         assert isinstance(repo_micropython_tests, pathlib.Path)
 
         possible_testruns = self.possible_testruns(
@@ -193,7 +194,7 @@ class AsyncTargetTest(util_multiprocessing.AsyncTarget):
     def __init__(
         self,
         args: util_testrunner.Args,
-        ctxtestrun: util_testrunner.CtxTestRun,
+        ctxtestrun: octoprobe.CtxTestRun,
         testrun: TestRun,
         repo_micropython_tests: pathlib.Path,
         timeout_s: float,
@@ -202,7 +203,7 @@ class AsyncTargetTest(util_multiprocessing.AsyncTarget):
         from ..mptest import util_testrunner
 
         assert isinstance(args, util_testrunner.Args)
-        assert isinstance(ctxtestrun, util_testrunner.CtxTestRun)
+        assert isinstance(ctxtestrun, octoprobe.CtxTestRun)
         assert isinstance(testrun, TestRun)
         assert isinstance(repo_micropython_tests, pathlib.Path)
         assert isinstance(timeout_s, float)

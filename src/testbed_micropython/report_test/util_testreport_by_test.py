@@ -22,9 +22,8 @@ import typing
 from markupsafe import Markup
 from octoprobe.util_constants import DELIMITER_SERIAL_BOARD
 
-from .util_baseclasses import Outcome, ResultContext
+from .util_baseclasses import Outcome, ResultContext, ResultTestGroup, ResultTestOutcome
 from .util_markdown2 import md_escape
-from .util_testreport import ResultTestGroup, ResultTestOutcome
 
 logger = logging.getLogger(__file__)
 

@@ -2,7 +2,7 @@ import pathlib
 import subprocess
 
 
-def assert_git_unchanged(filename: pathlib.Path):
+def assert_git_unchanged(filename: pathlib.Path) -> None:
     try:
         subprocess.run(
             args=[

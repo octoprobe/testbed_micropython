@@ -35,10 +35,10 @@ class FormatterBase(abc.ABC):
         self.f = f
 
     @abc.abstractmethod
-    def h1(self, title: str): ...
+    def h1(self, title: str) -> None: ...
 
     @abc.abstractmethod
-    def h2(self, title: str): ...
+    def h2(self, title: str) -> None: ...
 
     @abc.abstractmethod
     def table(self, table: Table) -> None: ...
@@ -46,12 +46,12 @@ class FormatterBase(abc.ABC):
 
 class FormatterAscii(FormatterBase):
     @typing.override
-    def h1(self, title: str):
+    def h1(self, title: str) -> None:
         self.f.write(f"{title}\n")
         self.f.write(f"{'=' * len(title)}\n\n")
 
     @typing.override
-    def h2(self, title: str):
+    def h2(self, title: str) -> None:
         self.f.write(f"\n{title}\n")
         self.f.write(f"{'-' * len(title)}\n\n")
 
@@ -84,11 +84,11 @@ class FormatterAscii(FormatterBase):
 
 class FormatterMarkdown(FormatterBase):
     @typing.override
-    def h1(self, title: str):
+    def h1(self, title: str) -> None:
         self.f.write(f"# {title}\n")
 
     @typing.override
-    def h2(self, title: str):
+    def h2(self, title: str) -> None:
         self.f.write(f"\n## {title}\n")
 
     @typing.override
@@ -298,7 +298,7 @@ class TaskReport:
     tasks: Tasks
     active_legend_tasks: set[LegendTask] = dataclasses.field(default_factory=set)
 
-    def report(self, formatter: FormatterAscii):
+    def report(self, formatter: FormatterAscii) -> None:
         self.tasks.sort_by_start()
         legend_tentacles = LegendTentacles()
         for tentacle in sorted(self.tasks.tentacles):
@@ -311,7 +311,7 @@ class TaskReport:
             row = ReportRow(start_s=task.start_s)
             rows.append(row)
 
-            def update_active_tasks(start_s: float, legend_task: LegendTask):
+            def update_active_tasks(start_s: float, legend_task: LegendTask) -> None:
                 for active_legend_task in self.active_legend_tasks.copy():
                     if active_legend_task.task.end_s < start_s:
                         self.active_legend_tasks.remove(active_legend_task)
@@ -334,7 +334,7 @@ class TaskReport:
         formatter.table(self.tasks.as_table(first_start_s=rows.first_start_s))
 
 
-def main():
+def main() -> None:
     tasks = Tasks(
         [
             Task(None, "Build A", start_s=1.3, end_s=4.5),
@@ -352,7 +352,7 @@ def main():
 
     filename_report = pathlib.Path(__file__).with_suffix(".md")
     with filename_report.open("w") as f:
-        report.report(formatter=FormatterMarkdown(f=f))
+        report.report(formatter=FormatterMarkdown(f=f))  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":

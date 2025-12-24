@@ -7,6 +7,7 @@ import sys
 import typing
 
 import pytest
+from octoprobe import octoprobe
 from octoprobe.usb_tentacle.usb_baseclasses import Location
 from octoprobe.usb_tentacle.usb_constants import HwVersion
 from octoprobe.usb_tentacle.usb_tentacle import UsbPico, UsbTentacle
@@ -122,7 +123,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         connected_tentacles=connected_tentacles,
         tentacle_reference=None,
         testrun_specs=testrun_specs_,
-        priority_sorter=baseclasses_run.TestRun.priority_sorter,
+        priority_sorter=testrun_specs.TestRun.priority_sorter,
         directory_results=DIRECTORY_TESTRESULTS,
     )
     print(f"## START: test_todo={bartender.tests_todo}")
@@ -140,7 +141,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         directory_results=constants.DIRECTORY_TESTRESULTS_DEFAULT,
     )
     args.firmware.flash_skip = False
-    ctxtestrun = util_testrunner.CtxTestRun(connected_tentacles=connected_tentacles)
+    ctxtestrun = octoprobe.CtxTestRun(connected_tentacles=connected_tentacles)
     repo_micropython_tests = pathlib.Path("/dummy_path")
 
     def testrun_done(len_actual_testruns_at_least: int) -> None:

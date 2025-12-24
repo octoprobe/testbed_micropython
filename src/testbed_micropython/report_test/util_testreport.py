@@ -71,7 +71,7 @@ class Data:
         Return the collected data.
         """
 
-        def collect_top():
+        def collect_top() -> Data:
             filename = directory_results / FILENAME_CONTEXT_JSON
             json_text = filename.read_text()
             json_dict = json.loads(json_text)
@@ -80,7 +80,7 @@ class Data:
 
         data = collect_top()
 
-        def collect():
+        def collect() -> None:
             for filename in directory_results.glob(
                 f"*/{FILENAME_CONTEXT_TESTGROUP_JSON}"
             ):
@@ -89,11 +89,13 @@ class Data:
                 testgroup = ResultTestGroup(**json_dict)
 
                 testgroup.outcomes = [
-                    ResultTestOutcome(**r) for r in testgroup.outcomes
+                    ResultTestOutcome(**r)  # type: ignore[arg-type, call-arg]
+                    for r in testgroup.outcomes
                 ]
                 data.testgroups.append(testgroup)
 
         collect()
+        assert isinstance(data, Data)
         return data
 
 

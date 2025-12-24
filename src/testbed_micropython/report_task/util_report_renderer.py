@@ -64,12 +64,12 @@ class RendererAscii(RendererBase):
     COLUMN_SPACER = "  "
 
     @typing.override
-    def h1(self, title: str):
+    def h1(self, title: str) -> None:
         self.f.write(f"{title}\n")
         self.f.write(f"{'=' * len(title)}\n\n")
 
     @typing.override
-    def h2(self, title: str):
+    def h2(self, title: str) -> None:
         self.f.write(f"\n{title}\n")
         self.f.write(f"{'-' * len(title)}\n\n")
 
@@ -104,11 +104,11 @@ class RendererAscii(RendererBase):
 
 class RendererMarkdown(RendererBase):
     @typing.override
-    def h1(self, title: str):
+    def h1(self, title: str) -> None:
         self.f.write(f"# {md_escape(title)}\n")
 
     @typing.override
-    def h2(self, title: str):
+    def h2(self, title: str) -> None:
         self.f.write(f"\n## {md_escape(title)}\n")
 
     @typing.override
@@ -194,11 +194,11 @@ class RendererHtml(RendererBase):
         self.f.write(self.HTML_START)
 
     @typing.override
-    def h1(self, title: str):
+    def h1(self, title: str) -> None:
         self.f.write(f"<h1>{html.escape(title)}</h1>")
 
     @typing.override
-    def h2(self, title: str):
+    def h2(self, title: str) -> None:
         self.f.write(f"<h2>{html.escape(title)}</h2>")
 
     @typing.override

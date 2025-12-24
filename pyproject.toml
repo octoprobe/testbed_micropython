@@ -69,8 +69,8 @@ source-includes = [
 ]
 
 [tool.mypy]
-# strict = true
-# enable_incomplete_feature = ["NewGenericSyntax"]
+strict = true
+warn_unused_ignores = false
 
 [[tool.mypy.overrides]]
 module = "pallets_sphinx_themes.*"

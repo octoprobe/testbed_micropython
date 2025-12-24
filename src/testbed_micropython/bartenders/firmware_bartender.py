@@ -7,6 +7,7 @@ import time
 import typing
 from collections import defaultdict
 
+from octoprobe import util_firmware_spec
 from octoprobe.util_baseclasses import OctoprobeAppExitException
 from octoprobe.util_constants import relative_cwd
 from octoprobe.util_firmware_spec import FirmwareBuildSpec, FirmwaresBuilt
@@ -119,7 +120,7 @@ def target_build_firmware_async(
 
 @dataclasses.dataclass
 class FirmwareTobeBuilt:
-    firmware_build_spec: util_firmware_mpbuild.FirmwareBuildSpec
+    firmware_build_spec: util_firmware_spec.FirmwareBuildSpec
     """
     Default variant: ""
     """
@@ -167,7 +168,7 @@ class FirmwaresTobeBuilt(list[FirmwareTobeBuilt]):
                     idx = -1000
                 firmwares.append(
                     FirmwareTobeBuilt(
-                        firmware_build_spec=util_firmware_mpbuild.FirmwareBuildSpec(
+                        firmware_build_spec=util_firmware_spec.FirmwareBuildSpec(
                             board_variant=BoardVariant(board=board, variant=variant),
                         ),
                         priority=(idx, -len(variants), board, variant),
@@ -201,13 +202,12 @@ class FirmwareBartenderSkipFlash:
         self,
         board: str,
         variant: str,
-    ) -> util_firmware_mpbuild.FirmwareSpecBase:
+    ) -> util_firmware_spec.FirmwareSpecBase:
         #
         # Nothing was specified: We do not flash any firmware
         #
-        from ..util_firmware_specs import FirmwareNoFlashingSpec
 
-        return FirmwareNoFlashingSpec(
+        return util_firmware_spec.FirmwareNoFlashingSpec(
             board_variant=BoardVariant(board=board, variant=variant)
         )
 
@@ -263,7 +263,7 @@ class FirmwareBartender(FirmwareBartenderSkipFlash):
         self,
         board: str,
         variant: str,
-    ) -> util_firmware_mpbuild.FirmwareSpecBase:
+    ) -> util_firmware_spec.FirmwareSpecBase:
         """
         Given: arguments to pytest, for example PYTEST_OPT_FIRMWARE.
         Now we create firmware specs.

@@ -482,7 +482,7 @@ class TestRunner:
                 with filename_report.open("w", encoding="ascii") as f:
                     report.report(renderer=cls_renderer(f))
 
-        def run_all():
+        def run_all() -> None:
             from ..bartenders.test_bartender import CurrentlyNoTestsException
 
             while True:
@@ -518,7 +518,7 @@ class TestRunner:
 
                 for event in target_ctx.iter_queue():
 
-                    def handle_event(event: util_multiprocessing.EventBase):
+                    def handle_event(event: util_multiprocessing.EventBase) -> None:
                         async_target_firmware = self.firmware_bartender.get_by_event(
                             event
                         )
@@ -652,7 +652,7 @@ def _target_run_one_test_async_b(
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
     testid: str,
-    duration_text: typing.Callable,
+    duration_text: typing.Callable[[float | None], str],
     debug_skip_tests: bool,
 ) -> None:
     """
@@ -677,7 +677,7 @@ def _target_run_one_test_async_b(
         futs=(testrun.testrun_spec.required_fut,),
         tentacles=list(testrun.tentacles),
     )
-    logger.info(f"TEST BEGIN {duration_text()} {testid}")
+    logger.info(f"TEST BEGIN {duration_text(None)} {testid}")
 
     with testrun.active_led_on:
         testrun.test(

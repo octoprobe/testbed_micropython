@@ -1,4 +1,4 @@
-Fix for known problems
+Fixes for known problems
 ===============================
 
 

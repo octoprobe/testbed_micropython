@@ -8,7 +8,7 @@ Goal is a high test coverage of the boards.
 import os
 import pathlib
 
-from mpbuild import Database
+from mpbuild.board_database import Database
 from mpbuild.build import MpbuildNotSupportedException
 
 from testbed_micropython.mpbuild.build_api import build
@@ -34,12 +34,12 @@ def get_db() -> Database:
         ) from e
 
 
-def main():
+def main() -> None:
     db = get_db()
 
     for port in db.ports.values():
         for board in list(port.boards.values())[0:NUMBER_BOARDS]:
-            variant_names = []
+            variant_names: list[str | None] = []
             if board.physical_board:
                 variant_names.append(None)  # Default variant
             variant_names.extend(v.name for v in board.variants[0:NUMBER_VARIANTS])

@@ -17,7 +17,7 @@ DIRECTORY_RESULTS = DIRECTORY_OF_THIS_FILE / "test_report_tasks_testresults"
 DIRECTORY_RESULTS.mkdir(parents=True, exist_ok=True)
 
 
-def test_report_tasks():
+def test_report_tasks() -> None:
     tasks = Tasks(
         [
             Task(4.6, 12.1, "PICO2_RISCV"),

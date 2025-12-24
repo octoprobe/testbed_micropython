@@ -17,6 +17,7 @@ import logging
 import pathlib
 import sys
 import time
+import typing
 from dataclasses import dataclass
 
 from testbed_micropython import util_multiprocessing as mp
@@ -84,7 +85,7 @@ def init_logging(arg1: mp.TargetArg1) -> None:
     logging.basicConfig(level=logging.DEBUG)
 
     class CustomFormatter(logging.Formatter):
-        def formatTime(self, record, datefmt=None):
+        def formatTime(self, record: typing.Any, datefmt: str | None = None) -> str:
             elapsed_seconds = record.created - start_s
             return f"{elapsed_seconds:6.3f}s"
 
@@ -105,6 +106,7 @@ def submain(multiprocessing: bool) -> None:
         with mp.TargetCtx(
             multiprocessing=multiprocessing, initfunc=initfunc
         ) as target_ctx:
+
             begin_s = time.monotonic()
             for duration_s, timeout_s in (
                 (10, 8.0),

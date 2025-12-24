@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 import enum
 import pathlib
+import typing
 
 from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DirectoryTag
@@ -180,7 +181,7 @@ class ResultContext:
         self.git_ref[tag.name] = git_ref
 
     @classmethod
-    def from_dict(cls, json_dict: dict) -> ResultContext:
+    def from_dict(cls, json_dict: dict[typing.Any, typing.Any]) -> ResultContext:
         for key in ("ref_firmware_metadata", "ref_tests_metadata"):
             if json_dict[key] is None:
                 continue

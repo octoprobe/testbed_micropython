@@ -20,12 +20,12 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestException,
     assert_micropython_repo,
 )
+from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import is_url
 from ..testcollection.constants import ENV_PYTHONUNBUFFERED, MICROPYTHON_DIRECTORY_TESTS
-from ..util_firmware_mpbuild import CachedGitRepo
 
 if typing.TYPE_CHECKING:
     from ..testcollection.testrun_specs import TestArgs

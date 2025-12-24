@@ -14,8 +14,8 @@ from ..testcollection.constants import (
 from ..testcollection.testrun_specs import (
     TestArgs,
     TestRun,
+    TestRunSpec,
 )
-from ..testrunspecs.runtests import TestRunSpec
 from ..util_multiprocessing import EVENTLOGCALLBACK
 
 

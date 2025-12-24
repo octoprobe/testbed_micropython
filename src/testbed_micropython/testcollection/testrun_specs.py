@@ -11,11 +11,12 @@ from collections.abc import Iterator
 from octoprobe.usb_tentacle.usb_constants import Switch
 from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
+from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from .. import constants
+from ..tentacle_spec import TentacleMicropython
 from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
-    TentacleMicropython,
     TentacleSpecVariant,
     TentacleSpecVariants,
     TestRole,
@@ -25,9 +26,6 @@ from ..testcollection.constants import (
     DELIMITER_TESTROLE,
     DELIMITER_TESTRUN,
 )
-
-if typing.TYPE_CHECKING:
-    from ..mptest.util_testrunner import ResultsDir
 
 logger = logging.getLogger(__name__)
 
@@ -178,7 +176,7 @@ class TestRun:
         )
         # return self.testid
 
-    def pytest_print(self, indent: int, file=typing.TextIO) -> None:
+    def pytest_print(self, indent: int, file: typing.TextIO) -> None:
         # print(indent * "  " + f"{self!r}", file=file)
         print(indent * "  " + f"{self.debug_text} / {self.testid}", file=file)
 
@@ -199,7 +197,7 @@ class TestRun:
         In the list, the first element has the highest priority.
         """
 
-        def priority(testrun: TestRun) -> tuple:
+        def priority(testrun: TestRun) -> tuple[int, int, int, str]:
             build_variants = len(
                 testrun.tentacle_variant.tentacle.tentacle_spec.build_variants
             )

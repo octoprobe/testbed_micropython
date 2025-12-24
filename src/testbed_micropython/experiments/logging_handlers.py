@@ -1,6 +1,7 @@
 import enum
 import logging
-import logging.config
+import typing
+from typing import TextIO
 
 logger = logging.getLogger(__file__)
 
@@ -12,7 +13,7 @@ CSI = "\033["
 Color = enum.Enum("Color", "BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE", start=30)
 
 
-class AnsiColorHandler(logging.StreamHandler):
+class AnsiColorHandler(logging.StreamHandler[TextIO]):
     # https://stackoverflow.com/questions/384076/how-can-i-color-python-logging-output/45394501
     LOGLEVEL_COLORS = {
         "DEBUG": Color.BLUE,
@@ -22,7 +23,7 @@ class AnsiColorHandler(logging.StreamHandler):
         "CRITICAL": Color.RED,
     }
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         super().__init__(*args, **kwargs)
         self.formatter = logging.Formatter("%(levelname)-8s - %(message)s")
 

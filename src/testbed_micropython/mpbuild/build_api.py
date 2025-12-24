@@ -67,7 +67,7 @@ class MpbuildDockerException(MpbuildException):
         self,
         board: Board,
         variant: str | None,
-        proc: subprocess.CompletedProcess,
+        proc: subprocess.CompletedProcess[str],
     ) -> None:
         super().__init__(f"Failed to build {board.name}-{variant}")
         self.proc = proc
@@ -273,7 +273,7 @@ class BuildFolder:
         versions.append(self.micropython_sys_implementation_text)
         return VERSION_IMPLEMENTATION_SEPARATOR.join(versions)
 
-    def get_regex(self, pattern: re.Pattern) -> str:
+    def get_regex(self, pattern: re.Pattern[str]) -> str:
         match = pattern.search(self.file_qstr_i_last)
         if match is None:
             raise MpbuildException(
@@ -283,6 +283,7 @@ class BuildFolder:
         # Example 'mcu_name': "LOLIN_C3_MINI" " with " "ESP32-C3FH4"
         text = eval(text)  # pylint: disable=eval-used
         # Example 'mcu_name': LOLIN_C3_MINI with ESP32-C3FH4
+        assert isinstance(text, str)
         return text
 
 
