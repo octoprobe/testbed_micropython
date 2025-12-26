@@ -299,17 +299,12 @@ def build(
     """
     board_specific_download(logfile=logfile, db=db, board=board, variant=variant)
 
-    # https://github.com/octoprobe/testbed_micropython/issues/79
-    submodules_add_board = not board.mcu.startswith("esp32")
-
     build_cmd = docker_build_cmd(
         board=board,
         variant=variant,
         do_clean=do_clean,
         extra_args=[],
         docker_interactive=False,
-        add_device_flags=False,
-        submodules_add_board=submodules_add_board,
     )
 
     mpbuild_cmd = f"mpbuild build {board.name}"
