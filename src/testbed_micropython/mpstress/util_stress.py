@@ -20,8 +20,11 @@ DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
 logger = logging.getLogger(__file__)
 
+# pylint: disable=invalid-name
+# pylint: disable=no-member
+# pylint: disable=protected-access
 
-def print_fds():
+def print_fds() -> None:
     cmd = f"ls -l /proc/{os.getpid()}/fd"
     fd_text = subprocess.check_output(cmd, shell=True)
     print(f"  {cmd}: {len(fd_text.splitlines())} lines")
@@ -94,6 +97,7 @@ class StressThread(threading.Thread):
                 if self._stopping:
                     return
                 i += 1
+                assert t.infra.usb_tentacle.serial_port is not None
                 args = [
                     str(DIRECTORY_OF_THIS_FILE / "c" / "mpremote_c"),
                     t.infra.usb_tentacle.serial_port,
@@ -115,6 +119,7 @@ class StressThread(threading.Thread):
                 if self._stopping:
                     return
                 i += 1
+                assert t.infra.usb_tentacle.serial_port is not None
                 args = [
                     sys.executable,
                     "-m",
@@ -136,14 +141,14 @@ class StressThread(threading.Thread):
     def _scenario_INFRA_MPREMOTE(self) -> None:
         print("off")
         for t in self._tentacles_stress:
-            t.infra.power.dut = False
+            t.infra.switches.dut = False
 
         i = 0
         while True:
             print("cycle")
             print_fds()
 
-            for idx, t in enumerate(self._tentacles_stress):
+            for _idx, t in enumerate(self._tentacles_stress):
                 if self._stopping:
                     return
                 i += 1
@@ -151,12 +156,15 @@ class StressThread(threading.Thread):
                 #     continue
                 serial_closed = t.infra.mp_remote_close()
                 t.infra.connect_mpremote_if_needed()
+                assert t.infra._mp_remote is not None
+                assert t.infra._mp_remote.state.transport is not None
+                serial = t.infra._mp_remote.state.transport.serial
                 fds = (
-                    t.infra._mp_remote.state.transport.serial.fd,
-                    t.infra._mp_remote.state.transport.serial.pipe_abort_read_r,
-                    t.infra._mp_remote.state.transport.serial.pipe_abort_read_w,
-                    t.infra._mp_remote.state.transport.serial.pipe_abort_write_r,
-                    t.infra._mp_remote.state.transport.serial.pipe_abort_write_w,
+                    serial.fd,
+                    serial.pipe_abort_read_r,
+                    serial.pipe_abort_read_w,
+                    serial.pipe_abort_write_r,
+                    serial.pipe_abort_write_w,
                 )
                 print(
                     f"count={i:03d}",
@@ -174,12 +182,12 @@ class StressThread(threading.Thread):
         while not self._stopping:
             print("on")
             for t in self._tentacles_stress:
-                t.infra.power.dut = True
+                t.infra.switches.dut = True
             time.sleep(sleep_s)
 
             print("off")
             for t in self._tentacles_stress:
-                t.infra.power.dut = False
+                t.infra.switches.dut = False
             time.sleep(sleep_s)
 
     def stop(self) -> None:
