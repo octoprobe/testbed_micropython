@@ -124,13 +124,13 @@ def run_test(
     test_params = test.test_params
 
     args_aux: list[str] = []
+    cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
     if test == EnumTest.SERIAL_TEST:
-        cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
-    if test == EnumTest.SIMPLE_SERIAL_WRITE:
+        pass
+    elif test == EnumTest.SIMPLE_SERIAL_WRITE:
         cwd = DIRECTORY_OF_THIS_FILE
     else:
         args_aux = [f"--result-dir={directory_results}"]
-        cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
     args = [
         sys.executable,
         *test_params.program,
@@ -140,6 +140,7 @@ def run_test(
         # "misc/cexample_class.py",
     ]
     env = ENV_PYTHONUNBUFFERED
+    print(f"RUN: run_test(): subprocess_run({args})")
     subprocess_run(
         args=args,
         cwd=cwd,
@@ -150,3 +151,4 @@ def run_test(
         # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
         # success_returncodes=[0, 1],
     )
+    print(f"DONE: run_test(): subprocess_run({args})")
