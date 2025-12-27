@@ -15,6 +15,7 @@ import pathlib
 
 import typer
 import typing_extensions
+from octoprobe import util_baseclasses
 from octoprobe.scripts.commissioning import init_logging
 from octoprobe.usb_tentacle.usb_tentacle import serial_short_from_delimited
 
@@ -42,19 +43,21 @@ app = typer.Typer(pretty_exceptions_enable=False)
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_RESULTS = DIRECTORY_OF_THIS_FILE / "testresults"
 DIRECTORY_RESULTS.mkdir(parents=True, exist_ok=True)
-[f.unlink(missing_ok=True) for f in DIRECTORY_RESULTS.glob("*.txt")]
-[f.unlink(missing_ok=True) for f in DIRECTORY_RESULTS.glob("*.out")]
+for f in DIRECTORY_RESULTS.glob("*.txt"):
+    f.unlink(missing_ok=True)
+for f in DIRECTORY_RESULTS.glob("*.out"):
+    f.unlink(missing_ok=True)
 
 
-def complete_scenario():
+def complete_scenario() -> list[str]:
     return sorted([scenario.name for scenario in EnumScenario])
 
 
-def complete_test():
+def complete_test() -> list[str]:
     return sorted([test.name for test in EnumTest])
 
 
-def complete_only_tentacle():
+def complete_only_tentacle() -> list[str]:
     connected_tentacles = util_testrunner.query_connected_tentacles_fast()
 
     return sorted(
@@ -106,13 +109,14 @@ def stress(
         tentacles_load: ConnectedTentacles = ConnectedTentacles()
         for t in connected_tentacles:
             serial_short = serial_short_from_delimited(t.tentacle_instance.serial)
-            if serial_short in tentacle:
+            if serial_short in tentacle:  # type: ignore[attr-defined]
                 tentacle_test = t
                 continue
             tentacles_load.append(t)
         assert tentacle_test is not None, f"Tentacle not connected: {tentacle}"
         for t in connected_tentacles:
-            t.power.set_default_infra_on()
+            t.infra.load_base_code_if_needed()
+            t.switches.default_off_infra_on()
 
         repo_micropython_tests = pathlib.Path(micropython_tests).expanduser().resolve()
         assert repo_micropython_tests.is_dir(), repo_micropython_tests
@@ -132,7 +136,7 @@ def stress(
         )
         st.stop()
 
-    except util_testrunner.OctoprobeAppExitException as e:
+    except util_baseclasses.OctoprobeAppExitException as e:
         logger.info(f"Terminating test due to OctoprobeAppExitException: {e}")
         raise typer.Exit(1) from e
 

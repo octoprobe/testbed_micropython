@@ -51,13 +51,13 @@ class TestError(Exception):
 class SimpleSerialWrite:
     serial: serial.Serial
 
-    def drain_input(self):
+    def drain_input(self) -> None:
         time.sleep(0.1)
-        while self.serial.inWaiting() > 0:
-            _data = self.serial.read(self.serial.inWaiting())
+        while self.serial.inWaiting() > 0:  # type: ignore[attr-defined]
+            _data = self.serial.read(self.serial.inWaiting())  # type: ignore[attr-defined]
             time.sleep(0.1)
 
-    def send_script(self, script):
+    def send_script(self, script: bytes) -> None:
         assert isinstance(script, bytes)
         chunk_size = 32
         for i in range(0, len(script), chunk_size):
@@ -67,10 +67,10 @@ class SimpleSerialWrite:
         self.serial.flush()
         response = self.serial.read(2)
         if response != b"OK":
-            response += self.serial.read(self.serial.inWaiting())
+            response += self.serial.read(self.serial.inWaiting())  # type: ignore[attr-defined]
             raise TestError("could not send script", response)
 
-    def read_test(self, count0: int):
+    def read_test(self, count0: int) -> None:
         self.serial.write(b"\x03\x01\x04")  # break, raw-repl, soft-reboot
         self.drain_input()
         script = MICROPYTHON_SCRIPT.replace("<COUNT>", str(count0))
@@ -91,7 +91,7 @@ class SimpleSerialWrite:
                 chars2 = self.serial.read(len(CHARS))
                 read_duration_s = time.monotonic() - read_start_s
                 print(
-                    f"  try reading again: {chars2} read_duration_s={read_duration_s:0.6f}s"
+                    f"  try reading again: {chars2.decode('ascii')} read_duration_s={read_duration_s:0.6f}s"
                 )
                 print(f"   serial:{self.serial!r}")
                 elements = [
@@ -101,12 +101,13 @@ class SimpleSerialWrite:
                     f"{self.serial.pipe_abort_read_w=}",
                     f"{self.serial.pipe_abort_write_r=}",
                     f"{self.serial.pipe_abort_write_w=}",
-                    f"{self.serial._rts_state=}",
-                    f"{self.serial._break_state=}",
-                    f"{self.serial._dtr_state=}",
-                    f"{self.serial._dsrdtr=}",
+                    f"{self.serial._rts_state=}",  # type: ignore[attr-defined]
+                    f"{self.serial._break_state=}",  # type: ignore[attr-defined]
+                    f"{self.serial._dtr_state=}",  # type: ignore[attr-defined]
+                    f"{self.serial._dsrdtr=}",  # type: ignore[attr-defined]
                 ]
                 print("  ", " ".join(elements))
+                assert isinstance(self.serial.fd, int), self.serial.fd
                 print(f"   {os.fstat(self.serial.fd)=!r}")
 
                 print_fds()
@@ -129,14 +130,16 @@ def write_alphabet(
     test_instance: TyperAnnotated[
         str,
         typer.Option(help="For example port:/dev/ttyACM3"),
-    ] = None,  # noqa: UP007
+    ],
     count: TyperAnnotated[
         int,
         typer.Option(help="The count of ~60byte-strings to be sent"),
     ] = 10_000,  # noqa: UP007
 ) -> None:
-    assert test_instance.startswith("port:"), test_instance
-    serial_port = test_instance[len("port:") :]
+    assert isinstance(test_instance, str)
+    assert str(test_instance).startswith("port:"), test_instance
+
+    serial_port = test_instance[len("port:") :]  # type: ignore[index]
     ssw = SimpleSerialWrite(serial.Serial(serial_port, baudrate=115200, timeout=1))
     ssw.read_test(count0=count)
 

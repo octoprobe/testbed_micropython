@@ -123,11 +123,10 @@ def run_test(
 
     test_params = test.test_params
 
+    args_aux: list[str] = []
     if test == EnumTest.SERIAL_TEST:
-        args_aux = []
         cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
     if test == EnumTest.SIMPLE_SERIAL_WRITE:
-        args_aux = []
         cwd = DIRECTORY_OF_THIS_FILE
     else:
         args_aux = [f"--result-dir={directory_results}"]
