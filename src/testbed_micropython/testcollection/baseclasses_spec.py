@@ -193,28 +193,34 @@ class ConnectedTentacles(list[TentacleMicropython]):
 
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
 
-        query_only = {BoardVariant.parse(o).board for o in query.only_test}
+        list_board_query_only = [BoardVariant.parse(o).board for o in query.only_test]
+        board_query_only = set(list_board_query_only)
+        for board in board_query_only:
+            if list_board_query_only.count(board) > 1:
+                logger.warning(
+                    f"Argument --only-test: Board '{board}' was specified more that once: {', '.join(query.only_test)}"
+                )
 
         def board_not_connected_warning(boards: set[str]) -> None:
             for board in boards:
                 if board not in connected_boards:
                     logger.warning(
-                        f"Board '{board}' not found. Connected boards are {','.join(sorted(connected_boards))}"
+                        f"Argument --only-test: Board '{board}' not found. Connected boards are {','.join(sorted(connected_boards))}"
                     )
 
-        board_not_connected_warning(boards=query_only)
+        board_not_connected_warning(boards=board_query_only)
         board_not_connected_warning(boards=query.skip_test)
 
         selected_boards = connected_boards
-        if len(query_only) > 0:
-            selected_boards.intersection_update(query_only)
+        if len(board_query_only) > 0:
+            selected_boards.intersection_update(board_query_only)
         if len(query.skip_test) > 0:
             selected_boards.difference_update(query.skip_test)
 
         selected_tentacles = [
             t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)
         ]
-        if len(query_only) > 0:
+        if len(board_query_only) > 0:
             # If a board with variant was specified. Example: --only-board=RPI_PICO2-RISCV
             # Then 'RISCV' has to be stored in the 'tentacle_state'.
             for connected_tentacle in selected_tentacles:

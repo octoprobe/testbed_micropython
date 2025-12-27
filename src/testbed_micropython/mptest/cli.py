@@ -232,7 +232,7 @@ def test(
             envvar="TESTBED_MICROPYTHON_TESTRESULTS",
             help="Directory for the testresults",
         ),
-    ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
+    ] = str(constants.DIRECTORY_TESTRESULTS_DEFAULT),
     only_board: TyperAnnotated[
         list[str],
         typer.Option(
@@ -275,7 +275,7 @@ def test(
         ),
     ] = None,  # noqa: UP007
     flash_force: TyperAnnotated[
-        bool | None,
+        bool,
         typer.Option(help="Will flash all firmware and run tests."),
     ] = False,  # noqa: UP007
     multiprocessing: TyperAnnotated[
@@ -297,11 +297,11 @@ def test(
         ),
     ] = False,  # noqa: UP007
     flash_skip: TyperAnnotated[
-        bool | None,
+        bool,
         typer.Option(help="Will not flash and use the firmware already on the boards"),
     ] = False,  # noqa: UP007
     count: TyperAnnotated[
-        int | None,
+        int,
         typer.Option(help="Run every test multiple times to detect flakiness"),
     ] = 1,  # noqa: UP007
     debug_skip_tests: TyperAnnotated[
