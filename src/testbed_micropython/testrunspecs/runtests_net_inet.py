@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import sys
 
-from octoprobe.util_subprocess import subprocess_run
+from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
 
 from ..constants import EnumFut
 from ..mptest import util_common
@@ -73,9 +73,10 @@ class TestRunRunTests(TestRun):
             "--jobs=1",
             f"--result-dir={testargs.testresults_directory.directory_test}",
         ]
-        subprocess_run(
+        tentacle_subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            testrun=self,
             env=ENV_MICROPYTHON_TESTS,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,

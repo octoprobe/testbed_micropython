@@ -10,6 +10,7 @@ import sys
 from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_run
+from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
 
 from testbed_micropython import constants
 
@@ -240,9 +241,9 @@ class TestRunRunTests(TestRun):
             f"--result-dir={testargs.testresults_directory.directory_test}",
             f"--test-instance=port:{tentacle.dut.get_tty()}",
         ] + tests_natmod
-        subprocess_run(
+        tentacle_subprocess_run(
             args=args,
-            cwd=testargs.repo_micropython_tests / "tests",
+            cwd=testargs.repo_micropython_tests / "tests",testrun=self,
             env=ENV_MICROPYTHON_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,

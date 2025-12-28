@@ -4,7 +4,7 @@ import logging
 import re
 import sys
 
-from octoprobe.util_subprocess import subprocess_run
+from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
 
 from testbed_micropython import constants
 from testbed_micropython.util_mpycross import get_filename_mpycross
@@ -106,9 +106,10 @@ class TestRunRunTests(TestRun):
             # "misc/cexample_class.py",
         ]
         env = env_for_mpycross()
-        subprocess_run(
+        tentacle_subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            testrun=self,
             env=env,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,

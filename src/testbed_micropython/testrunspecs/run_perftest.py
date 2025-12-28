@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from octoprobe.util_subprocess import subprocess_run
+from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
 
 from ..constants import EnumFut
 from ..testcollection.baseclasses_spec import TentacleSpecVariant
@@ -54,9 +54,10 @@ class TestRunPerfTest(TestRun):
             f"--test-instance=port:{tentacle.dut.get_tty()}",
             *perftest_args,
         ]
-        subprocess_run(
+        tentacle_subprocess_run(
             args=args,
             cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            testrun=self,
             env=ENV_MICROPYTHON_TESTS,
             logfile=logfile,
             timeout_s=self.timeout_s,

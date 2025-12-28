@@ -4,7 +4,7 @@ import abc
 import logging
 import sys
 
-from octoprobe.util_subprocess import subprocess_run
+from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
 
 from ..constants import EnumFut
 from ..mptest import util_common
@@ -66,9 +66,10 @@ class TestRunReference(TestRun):
             f"--test-instance=port:{tentacle_instance1.dut.get_tty()}",
             *list_tests,
         ]
-        subprocess_run(
+        tentacle_subprocess_run(
             args=args,
             cwd=cwd,
+            testrun=self,
             env=ENV_MICROPYTHON_TESTS,
             # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
             logfile=logfile,
