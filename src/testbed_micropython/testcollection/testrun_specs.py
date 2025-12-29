@@ -8,7 +8,6 @@ import pathlib
 import typing
 from collections.abc import Iterator
 
-from octoprobe.usb_tentacle.usb_constants import Switch
 from octoprobe.util_baseclasses import OctoprobeTestSkipException
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 from octoprobe.util_pytest.util_resultdir import ResultsDir
@@ -126,11 +125,11 @@ class TestRun:
         """
         try:
             for t in self.tentacles:
-                t.infra.switches[Switch.LED_ACTIVE].set(on=True)
+                t.infra.switches.led_active = True
             yield
         finally:
             for t in self.tentacles:
-                t.infra.switches[Switch.LED_ACTIVE].set(on=False)
+                t.infra.switches.led_active = False
 
     @property
     def tentacle_variant_text(self) -> str:
