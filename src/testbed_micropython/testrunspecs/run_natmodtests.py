@@ -9,8 +9,8 @@ import sys
 
 from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_constants import relative_cwd
+from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
 from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_run
-from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
 
 from testbed_micropython import constants
 
@@ -26,6 +26,7 @@ from ..testcollection.testrun_specs import (
     TestRunSpec,
 )
 from ..util_multiprocessing import EVENTLOGCALLBACK
+from ..util_subprocess_tentacle import tentacle_subprocess_run
 
 logger = logging.getLogger(__file__)
 
@@ -241,15 +242,27 @@ class TestRunRunTests(TestRun):
             f"--result-dir={testargs.testresults_directory.directory_test}",
             f"--test-instance=port:{tentacle.dut.get_tty()}",
         ] + tests_natmod
-        tentacle_subprocess_run(
-            args=args,
-            cwd=testargs.repo_micropython_tests / "tests",testrun=self,
-            env=ENV_MICROPYTHON_TESTS,
-            logfile=logfile,
-            timeout_s=self.timeout_s,
-            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-            success_returncodes=[0, 1],
-        )
+        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
+            tentacle_subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / "tests",
+                testrun=self,
+                logfile=logfile,
+                env=ENV_MICROPYTHON_TESTS,
+                timeout_s=self.timeout_s,
+                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+                success_returncodes=[0, 1],
+            )
+        else:
+            subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / "tests",
+                env=ENV_MICROPYTHON_TESTS,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+                success_returncodes=[0, 1],
+            )
 
 
 TESTRUNSPEC_RUN_NATMODTESTS = TestRunSpec(

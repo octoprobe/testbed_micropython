@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import sys
 
-from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
+from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
+from octoprobe.util_subprocess import subprocess_run
 
 from ..constants import EnumFut
 from ..testcollection.baseclasses_spec import TentacleSpecVariant
@@ -17,6 +18,7 @@ from ..testcollection.testrun_specs import (
     TestRunSpec,
 )
 from ..util_multiprocessing import EVENTLOGCALLBACK
+from ..util_subprocess_tentacle import tentacle_subprocess_run
 
 
 class TestRunPerfTest(TestRun):
@@ -54,14 +56,23 @@ class TestRunPerfTest(TestRun):
             f"--test-instance=port:{tentacle.dut.get_tty()}",
             *perftest_args,
         ]
-        tentacle_subprocess_run(
-            args=args,
-            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-            testrun=self,
-            env=ENV_MICROPYTHON_TESTS,
-            logfile=logfile,
-            timeout_s=self.timeout_s,
-        )
+        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
+            tentacle_subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+                testrun=self,
+                env=ENV_MICROPYTHON_TESTS,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+            )
+        else:
+            subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+                env=ENV_MICROPYTHON_TESTS,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+            )
 
 
 TESTRUNSPEC_PERFTEST = TestRunSpec(

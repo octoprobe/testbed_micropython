@@ -70,13 +70,13 @@ class TentaclePowerOffTimer:
             except Exception as e:
                 logger.exception(e)
 
-    def __enter__(self):
+    def __enter__(self) -> TentaclePowerOffTimer:
         # Start timer thread
         if not self._thread.is_alive():
             self._thread.start()
         return self
 
-    def __exit__(self, exc_type, value, traceback):
+    def __exit__(self, exc_type:typing.Any, value:typing.Any, traceback:typing.Any) -> None:
         # Ensure timer is cancelled and thread is finished
         self.cancel()
 
@@ -172,6 +172,7 @@ def tentacle_subprocess_run(
                             timeout_s=timeout_s,
                             f=f,
                         ) as tenacle_power_off_timer:
+                            stdout = stderr = "...empty...\n"
                             try:
                                 stdout, stderr = process.communicate(timeout=timeout_s)
                             except subprocess.TimeoutExpired:
@@ -180,18 +181,17 @@ def tentacle_subprocess_run(
                                     process.terminate()
                                     process.wait(timeout=3.0)
                                     logger.info("process.terminate() succeeded()")
-                                    raise
                                 except subprocess.TimeoutExpired:
-                                    pass
-
-                                logger.info(
-                                    "process.terminate() was running into a timeout. Now try to use process.kill()"
-                                )
-                                process.kill()
-                                # POSIX _communicate already populated the output so
-                                # far into the TimeoutExpired exception.
-                                process.wait()
-                                raise
+                                    logger.info(
+                                        "process.terminate() was running into a timeout. Now try to use process.kill()"
+                                    )
+                                    process.kill()
+                                    # POSIX _communicate already populated the output so
+                                    # far into the TimeoutExpired exception.
+                                    process.wait()
+                                else:
+                                    # The try clause does not raise an exception
+                                    raise
                             except:  # Including KeyboardInterrupt, communicate handled that.
                                 process.kill()
                                 # We don't call process.wait() as .__exit__ does that for us.

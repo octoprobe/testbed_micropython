@@ -21,11 +21,15 @@ from octoprobe.util_baseclasses import (
     assert_micropython_repo,
 )
 from octoprobe.util_cached_git_repo import CachedGitRepo
+from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_subprocess import subprocess_run
 
+from testbed_micropython.testcollection.testrun_specs import TestRun
+
 from ..constants import is_url
 from ..testcollection.constants import ENV_PYTHONUNBUFFERED, MICROPYTHON_DIRECTORY_TESTS
+from ..util_subprocess_tentacle import tentacle_subprocess_run
 
 if typing.TYPE_CHECKING:
     from ..testcollection.testrun_specs import TestArgs
@@ -76,11 +80,13 @@ def mip_install(
     tentacle: TentacleBase,
     serial_port: str,
     mip_package: str,
+    testrun: TestRun,
 ) -> None:
     assert testargs.__class__.__name__ == "TestArgs"
     assert isinstance(tentacle, TentacleBase)
     assert isinstance(serial_port, str)
     assert isinstance(mip_package, str)
+    assert isinstance(testrun, TestRun)
     # if False:
     # Using internal mp_remote connection
     # logger.info(f"{tentacle.dut.label}: mip install {mip_package}")
@@ -98,15 +104,27 @@ def mip_install(
         "install",
         mip_package,
     ]
-    subprocess_run(
-        args=args,
-        cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-        env=ENV_PYTHONUNBUFFERED,
-        logfile=testargs.testresults_directory(
-            f"mip_install_{mip_package}.txt"
-        ).filename,
-        timeout_s=60.0,
-    )
+    if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
+        tentacle_subprocess_run(
+            args=args,
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            testrun=testrun,
+            env=ENV_PYTHONUNBUFFERED,
+            logfile=testargs.testresults_directory(
+                f"mip_install_{mip_package}.txt"
+            ).filename,
+            timeout_s=60.0,
+        )
+    else:
+        subprocess_run(
+            args=args,
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            env=ENV_PYTHONUNBUFFERED,
+            logfile=testargs.testresults_directory(
+                f"mip_install_{mip_package}.txt"
+            ).filename,
+            timeout_s=60.0,
+        )
 
 
 def copy_certificates(dut: TentacleDut, src: pathlib.Path) -> None:

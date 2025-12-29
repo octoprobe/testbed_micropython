@@ -4,7 +4,8 @@ import logging
 import re
 import sys
 
-from testbed_micropython.util_subprocess_tentacle import tentacle_subprocess_run
+from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
+from octoprobe.util_subprocess import subprocess_run
 
 from testbed_micropython import constants
 from testbed_micropython.util_mpycross import get_filename_mpycross
@@ -23,6 +24,7 @@ from ..testcollection.testrun_specs import (
     TestRunSpec,
 )
 from ..util_multiprocessing import EVENTLOGCALLBACK
+from ..util_subprocess_tentacle import tentacle_subprocess_run
 
 logger = logging.getLogger(__file__)
 
@@ -90,6 +92,7 @@ class TestRunRunTests(TestRun):
                 tentacle=tentacle,
                 serial_port=serial_port,
                 mip_package="unittest",
+                testrun=self,
             )
 
         # Run tests
@@ -106,17 +109,29 @@ class TestRunRunTests(TestRun):
             # "misc/cexample_class.py",
         ]
         env = env_for_mpycross()
-        tentacle_subprocess_run(
-            args=args,
-            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-            testrun=self,
-            env=env,
-            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-            logfile=logfile,
-            timeout_s=self.timeout_s,
-            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-            success_returncodes=[0, 1],
-        )
+        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
+            tentacle_subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+                testrun=self,
+                env=env,
+                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+                success_returncodes=[0, 1],
+            )
+        else:
+            subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+                env=env,
+                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+                success_returncodes=[0, 1],
+            )
 
 
 TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
