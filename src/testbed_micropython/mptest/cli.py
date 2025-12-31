@@ -315,6 +315,12 @@ def test(
         ),
     ] = False,  # noqa: UP007
 ) -> None:
+    if reference_board is None:
+        reference_board = constants.DEFAULT_REFERENCE_BOARD
+    if debug_skip_tests is None:
+        debug_skip_tests = False
+    if debug_skip_usb_error is None:
+        debug_skip_usb_error = False
     try:
         directory_results = assert_valid_testresults(testresults)
         args = util_testrunner.Args(

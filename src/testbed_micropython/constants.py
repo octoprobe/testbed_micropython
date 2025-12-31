@@ -43,6 +43,12 @@ Does not work: "/var/lock/octoprobe/testbed.lock": On Archlinux: Failed to creat
 SUBDIR_MPBUILD = "mpbuild"
 DIRECTORY_MPBUILD_ARTIFACTS_DEFAULT = DIRECTORY_TESTRESULTS_DEFAULT / SUBDIR_MPBUILD
 
+DIRECTORY_TESTBED_MICROPYTHON_SRC_GIT = (
+    pathlib.Path(__file__).parent.parent.parent / ".git"
+)
+"""
+See comments of 'DIRECTORY_OCTOPROBE_SRC_GIT'
+"""
 
 URL_FILENAME_DEFAULT = "."
 

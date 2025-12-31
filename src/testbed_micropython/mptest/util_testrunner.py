@@ -19,8 +19,8 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestException,
     OctoprobeTestSkipException,
 )
-from octoprobe.util_cached_git_repo import CachedGitRepo, GitMetadata
-from octoprobe.util_constants import DirectoryTag
+from octoprobe.util_cached_git_repo import CachedGitRepo, GitMetadata, log_git_describe
+from octoprobe.util_constants import DIRECTORY_OCTOPROBE_SRC_GIT, DirectoryTag
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
 from octoprobe.util_micropython_boards import BoardVariant
@@ -313,6 +313,14 @@ class TestRunner:
         self.set_directory(DirectoryTag.R, args.directory_results)
         self.set_directory(DirectoryTag.P, pathlib.Path(sys.executable).parent)
         self.set_directory(DirectoryTag.W, pathlib.Path.cwd())
+        for python_package, git_directory in (
+            ("testbed_micropython", constants.DIRECTORY_TESTBED_MICROPYTHON_SRC_GIT),
+            ("octoprobe", DIRECTORY_OCTOPROBE_SRC_GIT),
+        ):
+            log_git_describe(
+                label=f"Python package '{python_package}'",
+                git_directory=git_directory,
+            )
 
     def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
         self.report_testgroup.result_context.set_directory(tag=tag, directory=directory)
