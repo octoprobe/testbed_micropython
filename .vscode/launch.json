@@ -214,6 +214,56 @@
             "subProcess": false,
         },
         {
+            "name": "mpstress",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpstress.cli",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                // "--help",
+                // "stress",
+                // "--micropython-tests=${workspaceFolder}/../fork_micropython",
+                "--micropython-tests=${workspaceFolder}/../micropython",
+                "--scenario=NONE",
+                // "--scenario=DUT_ON_OFF",
+                // "--scenario=INFRA_MPREMOTE",
+                // "--scenario=SUBPROCESS_INFRA_MPREMOTE",
+                // "--scenario=SUBPROCESS_INFRA_MPREMOTE_C",
+                // "--test=RUN_TESTS_BASIC_B_INT_POW",
+                // "--test=SERIAL_TEST",
+                "--test=SIMPLE_SERIAL_WRITE",
+                "--stress-tentacle-count=99",
+                // "--tentacle=1722",
+                // "--tentacle=5f2a", // 5f2a-ADA_ITSYBITSY_M0
+                // "--tentacle=5f2c", // 5f2c-RPI_PICO_W
+                // "--tentacle=3c2a", // 3c2a-ARDUINO_NANO_33
+                "--tentacle=0c30", // 0c30-ESP32_C3_DEVKIT
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "justMyCode": false,
+            "subProcess": true,
+        },
+        {
+            "name": "simple_serial_write",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpstress.simple_serial_write",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--count=10000",
+                "--test-instance=port:/dev/ttyUSB0"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "justMyCode": false,
+            "subProcess": false,
+        },
+        {
             "name": "pytest",
             "type": "debugpy",
             "request": "launch",
