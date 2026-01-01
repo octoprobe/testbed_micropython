@@ -78,7 +78,7 @@ def stress(
         ),
     ] = constants.URL_FILENAME_DEFAULT,
     tentacle: TyperAnnotated[
-        list[str],
+        str | None,
         typer.Option(
             help="Run tests only on these tentacles. All other tentacles are used to create stress",
             autocompletion=complete_only_tentacle,
@@ -102,43 +102,90 @@ def stress(
     ] = EnumTest.RUN_TESTS_BASIC_B_INT_POW,
 ) -> None:
     init_logging()
+    connected_tentacles = util_testrunner.query_connected_tentacles_fast()
+    connected_tentacles.sort(
+        key=lambda t: (t.tentacle_spec_base.tentacle_tag, t.tentacle_serial_number)
+    )
 
     try:
-        connected_tentacles = util_testrunner.query_connected_tentacles_fast()
-        tentacle_test: TentacleMicropython | None = None
-        tentacles_load: ConnectedTentacles = ConnectedTentacles()
-        for t in connected_tentacles:
-            serial_short = serial_short_from_delimited(t.tentacle_instance.serial)
-            if serial_short in tentacle:  # type: ignore[attr-defined]
-                tentacle_test = t
-                continue
-            tentacles_load.append(t)
-        assert tentacle_test is not None, f"Tentacle not connected: {tentacle}"
-        for t in connected_tentacles:
-            t.infra.load_base_code_if_needed()
-            t.switches.default_off_infra_on()
-
-        repo_micropython_tests = pathlib.Path(micropython_tests).expanduser().resolve()
-        assert repo_micropython_tests.is_dir(), repo_micropython_tests
-
-        st = StressThread(
-            scenario=EnumScenario[scenario],
-            stress_tentacle_count=stress_tentacle_count,
-            tentacles_stress=tentacles_load,
-            directory_results=DIRECTORY_RESULTS,
-        )
-        st.start()
-        run_test(
-            tentacle_test=tentacle_test,
-            repo_micropython_tests=repo_micropython_tests,
-            directory_results=DIRECTORY_RESULTS,
-            test=EnumTest[test],
-        )
-        st.stop()
+        if tentacle is not None:
+            test_one_tentacle(
+                connected_tentacles=connected_tentacles,
+                micropython_tests=micropython_tests,
+                tentacle=tentacle,
+                stress_tentacle_count=stress_tentacle_count,
+                scenario=scenario,
+                test=test,
+            )
+        else:
+            for connected_tentacle in connected_tentacles:
+                test_one_tentacle(
+                    connected_tentacles=connected_tentacles,
+                    micropython_tests=micropython_tests,
+                    tentacle=serial_short_from_delimited(
+                        connected_tentacle.tentacle_serial_number
+                    ),
+                    stress_tentacle_count=stress_tentacle_count,
+                    scenario=scenario,
+                    test=test,
+                )
 
     except util_baseclasses.OctoprobeAppExitException as e:
         logger.info(f"Terminating test due to OctoprobeAppExitException: {e}")
         raise typer.Exit(1) from e
+
+
+def test_one_tentacle(
+    connected_tentacles: ConnectedTentacles,
+    micropython_tests: str,
+    tentacle: str,
+    stress_tentacle_count: int,
+    scenario: str,
+    test: str,
+):
+    scenario = EnumScenario[scenario]
+    tentacle_test: TentacleMicropython | None = None
+    tentacles_load: ConnectedTentacles = ConnectedTentacles()
+    for t in connected_tentacles:
+        serial_short = serial_short_from_delimited(t.tentacle_serial_number)
+        if serial_short == tentacle:  # type: ignore[attr-defined]
+            tentacle_test = t
+            continue
+        tentacles_load.append(t)
+
+    assert tentacle_test is not None, f"Tentacle not connected: {tentacle}"
+    print(f"*** Initialized {len(connected_tentacles)} tentacles")
+    for t in connected_tentacles:
+        t.infra.load_base_code_if_needed()
+        t.switches.default_off_infra_on()
+        if scenario is EnumScenario.INFRA_MPREMOTE:
+            # if t == tentacle_test:
+            #     t.infra.switches.dut = True
+            # else:
+            #     t.infra.switches.dut = False
+            t.infra.switches.dut = False
+
+    repo_micropython_tests = pathlib.Path(micropython_tests).expanduser().resolve()
+    assert repo_micropython_tests.is_dir(), repo_micropython_tests
+
+    st = StressThread(
+        scenario=scenario,
+        stress_tentacle_count=stress_tentacle_count,
+        tentacles_stress=tentacles_load,
+        directory_results=DIRECTORY_RESULTS,
+    )
+
+    print("*** start")
+    st.start()
+    print("*** run_test")
+    run_test(
+        tentacle_test=tentacle_test,
+        repo_micropython_tests=repo_micropython_tests,
+        directory_results=DIRECTORY_RESULTS,
+        test=EnumTest[test],
+    )
+    print("*** stop")
+    st.stop()
 
 
 if __name__ == "__main__":

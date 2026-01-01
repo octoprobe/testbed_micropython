@@ -20,9 +20,13 @@ DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
 logger = logging.getLogger(__file__)
 
+PRINT_STRESS_OUTPUT = False
+LOG_OUTPUT_S = 10.0
+
 # pylint: disable=invalid-name
 # pylint: disable=no-member
 # pylint: disable=protected-access
+
 
 def print_fds() -> None:
     cmd = f"ls -l /proc/{os.getpid()}/fd"
@@ -52,6 +56,7 @@ class StressThread(threading.Thread):
         assert isinstance(tentacles_stress, ConnectedTentacles)
         assert isinstance(directory_results, pathlib.Path)
         super().__init__(daemon=True, name="stress")
+        self._next_log_output_s = time.monotonic() + LOG_OUTPUT_S
         self._stopping = False
         self._stress_tentacle_count = stress_tentacle_count
         self._scenario = scenario
@@ -63,6 +68,13 @@ class StressThread(threading.Thread):
         print(
             f"Tentacles to generate stress: {[serial_short_from_delimited(t.tentacle_instance.serial) for t in self._tentacles_stress]}"
         )
+
+    @property
+    def do_log_output(self) -> bool:
+        if time.monotonic() > self._next_log_output_s:
+            self._next_log_output_s += LOG_OUTPUT_S
+            return True
+        return False
 
     def run(self) -> None:
         """
@@ -139,14 +151,11 @@ class StressThread(threading.Thread):
                 )
 
     def _scenario_INFRA_MPREMOTE(self) -> None:
-        print("off")
-        for t in self._tentacles_stress:
-            t.infra.switches.dut = False
-
         i = 0
         while True:
-            print("cycle")
-            print_fds()
+            if PRINT_STRESS_OUTPUT:
+                print("cycle")
+                print_fds()
 
             for _idx, t in enumerate(self._tentacles_stress):
                 if self._stopping:
@@ -166,15 +175,18 @@ class StressThread(threading.Thread):
                     serial.pipe_abort_write_r,
                     serial.pipe_abort_write_w,
                 )
-                print(
-                    f"count={i:03d}",
-                    f"pyserial.fds:{fds}",
-                    f"close:{serial_closed}",
-                    f"open:{t.infra.mp_remote._tty}",
-                )
+                # if PRINT_STRESS_OUTPUT:
+                if self.do_log_output:
+                    print(
+                        f"count={i:03d}",
+                        f"pyserial.fds:{fds}",
+                        f"close:{serial_closed}",
+                        f"open:{t.infra.mp_remote._tty}",
+                    )
                 if False:
                     rc = t.infra.mp_remote.exec_raw("print('Hello')")
                     assert rc == "Hello\r\n"
+                time.sleep(0.001)
                 # print(rc)
 
     def _scenario_DUT_ON_OFF(self) -> None:

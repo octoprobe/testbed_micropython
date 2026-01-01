@@ -89,9 +89,14 @@ class EnumTest(enum.StrEnum):
                 files=[],
             )
         if self is EnumTest.SIMPLE_SERIAL_WRITE:
+            duration_factor = 1
+            # duration_factor = 100
             return TestArgs(
-                program=["simple_serial_write.py", "--count=1000000"],
-                timeout_s=340.0 * 1.5,
+                program=[
+                    "simple_serial_write.py",
+                    f"--count={int(duration_factor * 10000)}",
+                ],
+                timeout_s=duration_factor * 3.4 * 1.5 + 10.0,
                 files=[],
             )
         raise ValueError(self)
@@ -115,10 +120,13 @@ def run_test(
     assert isinstance(directory_results, pathlib.Path)
     assert isinstance(test, EnumTest)
 
+    print(f"*** power up tentacle_test: {tentacle_test.label_short}")
+
     # tentacle_test.power.dut = True
     with UdevPoller() as udev:
         tty = tentacle_test.dut.dut_mcu.application_mode_power_up(
-            tentacle=tentacle_test, udev=udev
+            tentacle=tentacle_test,
+            udev=udev,
         )
 
     test_params = test.test_params
@@ -140,13 +148,14 @@ def run_test(
         # "misc/cexample_class.py",
     ]
     env = ENV_PYTHONUNBUFFERED
-    print(f"RUN: run_test(): subprocess_run({args})")
+    print(f"** RUN: run_test(): subprocess_run({args})")
     subprocess_run(
         args=args,
         cwd=cwd,
         env=env,
         # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-        logfile=directory_results / "testresults.txt",
+        logfile=directory_results
+        / f"testresults_{tentacle_test.tentacle_serial_number}_{tentacle_test.tentacle_spec_base.tentacle_tag}.txt",
         timeout_s=test_params.timeout_s,
         # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
         # success_returncodes=[0, 1],

@@ -37,7 +37,8 @@ CHARS = b"_ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxy1234567890_"
 def send_alphabet(count):
     for i in range(count):
         sys.stdout.buffer.write(CHARS)
-        sys.stdout.buffer.write(f"{i:06d}")
+        # sys.stdout.buffer.write(f"{i:06d}")
+        sys.stdout.buffer.write("%06d" % i)
 
 send_alphabet(count=<COUNT>)
 """
@@ -140,7 +141,7 @@ def write_alphabet(
     assert str(test_instance).startswith("port:"), test_instance
 
     serial_port = test_instance[len("port:") :]  # type: ignore[index]
-    ssw = SimpleSerialWrite(serial.Serial(serial_port, baudrate=115200, timeout=1))
+    ssw = SimpleSerialWrite(serial.Serial(serial_port, baudrate=115200, timeout=5))
     ssw.read_test(count0=count)
 
 
