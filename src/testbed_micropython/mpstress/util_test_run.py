@@ -5,6 +5,7 @@ import enum
 import logging
 import pathlib
 import sys
+import time
 
 from octoprobe.util_pyudev import UdevPoller
 from octoprobe.util_subprocess import subprocess_run
@@ -31,8 +32,22 @@ class EnumTest(enum.StrEnum):
     SERIAL_TEST = enum.auto()
     SIMPLE_SERIAL_WRITE = enum.auto()
 
-    @property
-    def test_params(self) -> TestArgs:
+    def get_test_args(self, tentacle_test: TentacleMicropython) -> TestArgs:
+        serial_speed_default = 249  # kByts/s
+        serial_speed = serial_speed_default
+        for mcu, _serial_speed in (
+            ("ESP32", 12),
+            ("LOLIN_D1", 12),
+            ("WB55", 12),
+            ("ADA_ITSYBITSY_M0", 140),
+        ):
+            if mcu in tentacle_test.description_short:
+                serial_speed = _serial_speed
+                print(
+                    f"*** {mcu}: serial_speed_default={serial_speed_default}, serial_speed={serial_speed}kBytes/s"
+                )
+                break
+
         if self is EnumTest.RUN_TESTS_ALL:
             return TestArgs(
                 timeout_s=240.0 * 1.5,
@@ -90,11 +105,15 @@ class EnumTest(enum.StrEnum):
             )
         if self is EnumTest.SIMPLE_SERIAL_WRITE:
             duration_factor = 1
+            duration_factor = 5
+            duration_factor = 2
             # duration_factor = 100
+            count = int(duration_factor * 10000 * serial_speed / serial_speed_default)
+            count = max(1000, count)
             return TestArgs(
                 program=[
                     "simple_serial_write.py",
-                    f"--count={int(duration_factor * 10000)}",
+                    f"--count={count}",
                 ],
                 timeout_s=duration_factor * 3.4 * 1.5 + 10.0,
                 files=[],
@@ -128,8 +147,14 @@ def run_test(
             tentacle=tentacle_test,
             udev=udev,
         )
+    time.sleep(1.0)
 
-    test_params = test.test_params
+    test_args = test.get_test_args(tentacle_test)
+    # timeout_s = test_params.timeout_s
+    # for mcu in ("ESP32", "LOLIN_D1", "WB55"):
+    #     if mcu in tentacle_test.description_short:
+    #         timeout_s *= 15
+    #         logger.info(f"*** {mcu}: timeout_s={timeout_s:0.0f}s")
 
     args_aux: list[str] = []
     cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS
@@ -141,14 +166,15 @@ def run_test(
         args_aux = [f"--result-dir={directory_results}"]
     args = [
         sys.executable,
-        *test_params.program,
+        *test_args.program,
         f"--test-instance=port:{tty}",
         *args_aux,
-        *test_params.files,
+        *test_args.files,
         # "misc/cexample_class.py",
     ]
     env = ENV_PYTHONUNBUFFERED
-    print(f"** RUN: run_test(): subprocess_run({args})")
+    print(f"*** RUN: run_test(): subprocess_run({args})")
+    begin_s = time.monotonic()
     subprocess_run(
         args=args,
         cwd=cwd,
@@ -156,8 +182,13 @@ def run_test(
         # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
         logfile=directory_results
         / f"testresults_{tentacle_test.tentacle_serial_number}_{tentacle_test.tentacle_spec_base.tentacle_tag}.txt",
-        timeout_s=test_params.timeout_s,
+        timeout_s=test_args.timeout_s,
         # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
         # success_returncodes=[0, 1],
     )
+    duration_s = time.monotonic() - begin_s
+    if duration_s > test_args.timeout_s * 0.5:
+        print(
+            f"*** WARNING: {tentacle_test.description_short}: duration_s={duration_s:0.0f}s > timeout*0.5={test_args.timeout_s * 0.5:0.0f}s"
+        )
     print(f"DONE: run_test(): subprocess_run({args})")

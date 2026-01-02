@@ -103,9 +103,10 @@ def stress(
 ) -> None:
     init_logging()
     connected_tentacles = util_testrunner.query_connected_tentacles_fast()
-    connected_tentacles.sort(
-        key=lambda t: (t.tentacle_spec_base.tentacle_tag, t.tentacle_serial_number)
-    )
+    # connected_tentacles.sort(
+    #     key=lambda t: (t.tentacle_spec_base.tentacle_tag, t.tentacle_serial_number)
+    # )
+    connected_tentacles.sort(key=lambda t: t.tentacle_serial_number)
 
     try:
         if tentacle is not None:
@@ -156,14 +157,15 @@ def test_one_tentacle(
     assert tentacle_test is not None, f"Tentacle not connected: {tentacle}"
     print(f"*** Initialized {len(connected_tentacles)} tentacles")
     for t in connected_tentacles:
+        print(f"**** load_base_code_if_needed  {t.description_short}")
         t.infra.load_base_code_if_needed()
         t.switches.default_off_infra_on()
-        if scenario is EnumScenario.INFRA_MPREMOTE:
-            # if t == tentacle_test:
-            #     t.infra.switches.dut = True
-            # else:
-            #     t.infra.switches.dut = False
-            t.infra.switches.dut = False
+        # if scenario is EnumScenario.INFRA_MPREMOTE:
+        #     # if t == tentacle_test:
+        #     #     t.infra.switches.dut = True
+        #     # else:
+        #     #     t.infra.switches.dut = False
+        #     t.infra.switches.dut = False
 
     repo_micropython_tests = pathlib.Path(micropython_tests).expanduser().resolve()
     assert repo_micropython_tests.is_dir(), repo_micropython_tests

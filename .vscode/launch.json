@@ -146,13 +146,13 @@
                 // "--skip-test=RUN-MULTITESTS_MULTINET",
                 // "--only-test=RUN-NATMODTESTS",
                 // "--only-board=LOLIN_C3_MINI",
-                // "--only-board=LOLIN_D1_MINI",
+                "--only-board=LOLIN_D1_MINI",
                 // "--only-fut=FUT_WLAN",
                 // "--skip-fut=FUT_WLAN",
                 // "--skip-fut=FUT_BLE",
                 "--no-multiprocessing",
                 // "--flash-force",
-                "--flash-skip",
+                // "--flash-skip",
                 // "--count=24",
                 // "--no-git-clean",
                 // "--debug-skip-tests",
@@ -233,11 +233,13 @@
                 // "--test=SERIAL_TEST",
                 "--test=SIMPLE_SERIAL_WRITE",
                 "--stress-tentacle-count=99",
-                // "--tentacle=1722",
                 // "--tentacle=5f2a", // 5f2a-ADA_ITSYBITSY_M0
                 // "--tentacle=5f2c", // 5f2c-RPI_PICO_W
                 // "--tentacle=3c2a", // 3c2a-ARDUINO_NANO_33
-                "--tentacle=0c30", // 0c30-ESP32_C3_DEVKIT
+                // "--tentacle=0c30", // 0c30-ESP32_C3_DEVKIT
+                // "--tentacle=5d21", // 5d21-ESP32_DEVKIT
+                // "--tentacle=2d2d", // 2d2d_LOLIN_D1_MINI
+                // "--tentacle=3a21",// 3a21-PYBV11
             ],
             "console": "integratedTerminal",
             "env": {
