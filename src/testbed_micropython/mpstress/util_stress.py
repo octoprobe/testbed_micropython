@@ -35,7 +35,7 @@ def print_fds() -> None:
     print(fd_text.decode("ascii"))
 
 
-class EnumScenario(enum.StrEnum):
+class EnumStressScenario(enum.StrEnum):
     NONE = enum.auto()
     DUT_ON_OFF = enum.auto()
     INFRA_MPREMOTE = enum.auto()
@@ -46,12 +46,12 @@ class EnumScenario(enum.StrEnum):
 class StressThread(threading.Thread):
     def __init__(
         self,
-        scenario: EnumScenario,
+        scenario: EnumStressScenario,
         stress_tentacle_count: int,
         tentacles_stress: ConnectedTentacles,
         directory_results: pathlib.Path,
     ):
-        assert isinstance(scenario, EnumScenario)
+        assert isinstance(scenario, EnumStressScenario)
         assert isinstance(stress_tentacle_count, int)
         assert isinstance(tentacles_stress, ConnectedTentacles)
         assert isinstance(directory_results, pathlib.Path)
@@ -81,19 +81,19 @@ class StressThread(threading.Thread):
         Power up all duts on all tentacles.
         Now loop over all tentacles and power down dut for a short time
         """
-        if self._scenario is EnumScenario.NONE:
+        if self._scenario is EnumStressScenario.NONE:
             return self._scenario_NONE()
 
-        if self._scenario is EnumScenario.DUT_ON_OFF:
+        if self._scenario is EnumStressScenario.DUT_ON_OFF:
             return self._scenario_DUT_ON_OFF()
 
-        if self._scenario is EnumScenario.INFRA_MPREMOTE:
+        if self._scenario is EnumStressScenario.INFRA_MPREMOTE:
             return self._scenario_INFRA_MPREMOTE()
 
-        if self._scenario is EnumScenario.SUBPROCESS_INFRA_MPREMOTE:
+        if self._scenario is EnumStressScenario.SUBPROCESS_INFRA_MPREMOTE:
             return self._scenario_SUBPROCESS_INFRA_MPREMOTE()
 
-        if self._scenario is EnumScenario.SUBPROCESS_INFRA_MPREMOTE_C:
+        if self._scenario is EnumStressScenario.SUBPROCESS_INFRA_MPREMOTE_C:
             return self._scenario_SUBPROCESS_INFRA_MPREMOTE_C()
 
         raise ValueError(f"Not handled: scenario {self._scenario}!")
@@ -159,6 +159,8 @@ class StressThread(threading.Thread):
 
             for _idx, t in enumerate(self._tentacles_stress):
                 if self._stopping:
+                    for _t in self._tentacles_stress:
+                        _t.infra.mp_remote_close()
                     return
                 i += 1
                 # if idx > 5:

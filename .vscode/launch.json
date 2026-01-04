@@ -224,11 +224,11 @@
                 // "stress",
                 // "--micropython-tests=${workspaceFolder}/../fork_micropython",
                 "--micropython-tests=${workspaceFolder}/../micropython",
-                "--scenario=NONE",
-                // "--scenario=DUT_ON_OFF",
-                // "--scenario=INFRA_MPREMOTE",
-                // "--scenario=SUBPROCESS_INFRA_MPREMOTE",
-                // "--scenario=SUBPROCESS_INFRA_MPREMOTE_C",
+                // "--stress-scenario=NONE",
+                // "--stress-scenario=DUT_ON_OFF",
+                "--stress-scenario=INFRA_MPREMOTE",
+                // "--stress-scenario=SUBPROCESS_INFRA_MPREMOTE",
+                // "--stress-scenario=SUBPROCESS_INFRA_MPREMOTE_C",
                 // "--test=RUN_TESTS_BASIC_B_INT_POW",
                 // "--test=SERIAL_TEST",
                 "--test=SIMPLE_SERIAL_WRITE",
@@ -239,7 +239,7 @@
                 // "--tentacle=0c30", // 0c30-ESP32_C3_DEVKIT
                 // "--tentacle=5d21", // 5d21-ESP32_DEVKIT
                 // "--tentacle=2d2d", // 2d2d_LOLIN_D1_MINI
-                // "--tentacle=3a21",// 3a21-PYBV11
+                // "--tentacle=3a21", // 3a21-PYBV11
             ],
             "console": "integratedTerminal",
             "env": {

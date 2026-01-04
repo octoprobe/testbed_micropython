@@ -150,11 +150,6 @@ def run_test(
     time.sleep(1.0)
 
     test_args = test.get_test_args(tentacle_test)
-    # timeout_s = test_params.timeout_s
-    # for mcu in ("ESP32", "LOLIN_D1", "WB55"):
-    #     if mcu in tentacle_test.description_short:
-    #         timeout_s *= 15
-    #         logger.info(f"*** {mcu}: timeout_s={timeout_s:0.0f}s")
 
     args_aux: list[str] = []
     cwd = repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS

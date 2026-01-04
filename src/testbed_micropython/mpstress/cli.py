@@ -24,7 +24,7 @@ from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacl
 
 from .. import constants
 from ..mptest import util_testrunner
-from .util_stress import EnumScenario, StressThread
+from .util_stress import EnumStressScenario, StressThread
 from .util_test_run import EnumTest, run_test
 
 logger = logging.getLogger(__file__)
@@ -50,7 +50,7 @@ for f in DIRECTORY_RESULTS.glob("*.out"):
 
 
 def complete_scenario() -> list[str]:
-    return sorted([scenario.name for scenario in EnumScenario])
+    return sorted([scenario.name for scenario in EnumStressScenario])
 
 
 def complete_test() -> list[str]:
@@ -90,12 +90,12 @@ def stress(
             help="Use that many tentacles to generate stress. May be less if less tentacles are connected.",
         ),
     ] = 99,  # noqa: UP007
-    scenario: TyperAnnotated[
+    stress_scenario: TyperAnnotated[
         str,
         typer.Option(
             help="Run this stress scenario.", autocompletion=complete_scenario
         ),
-    ] = EnumScenario.DUT_ON_OFF,
+    ] = EnumStressScenario.DUT_ON_OFF,
     test: TyperAnnotated[
         str,
         typer.Option(help="Use these test arguments.", autocompletion=complete_test),
@@ -115,7 +115,7 @@ def stress(
                 micropython_tests=micropython_tests,
                 tentacle=tentacle,
                 stress_tentacle_count=stress_tentacle_count,
-                scenario=scenario,
+                stress_scenario=stress_scenario,
                 test=test,
             )
         else:
@@ -127,7 +127,7 @@ def stress(
                         connected_tentacle.tentacle_serial_number
                     ),
                     stress_tentacle_count=stress_tentacle_count,
-                    scenario=scenario,
+                    stress_scenario=stress_scenario,
                     test=test,
                 )
 
@@ -141,10 +141,10 @@ def test_one_tentacle(
     micropython_tests: str,
     tentacle: str,
     stress_tentacle_count: int,
-    scenario: str,
+    stress_scenario: str,
     test: str,
 ):
-    scenario = EnumScenario[scenario]
+    stress_scenario = EnumStressScenario[stress_scenario]
     tentacle_test: TentacleMicropython | None = None
     tentacles_load: ConnectedTentacles = ConnectedTentacles()
     for t in connected_tentacles:
@@ -171,7 +171,7 @@ def test_one_tentacle(
     assert repo_micropython_tests.is_dir(), repo_micropython_tests
 
     st = StressThread(
-        scenario=scenario,
+        scenario=stress_scenario,
         stress_tentacle_count=stress_tentacle_count,
         tentacles_stress=tentacles_load,
         directory_results=DIRECTORY_RESULTS,
