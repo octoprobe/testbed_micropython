@@ -390,7 +390,7 @@ def report(
             envvar="TESTBED_MICROPYTHON_TESTRESULTS",
             help="Directory containing results",
         ),
-    ] = DIRECTORY_TESTRESULTS_DEFAULT,
+    ] = str(DIRECTORY_TESTRESULTS_DEFAULT),
     url: TyperAnnotated[
         str,
         typer.Option(

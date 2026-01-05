@@ -108,3 +108,29 @@
 12 tentacles
 --> error after 120s, 35s
 --> no error 340s, 340s
+
+
+## How to run test with ftrace
+
+* tty_open: https://github.com/torvalds/linux/blob/master/drivers/tty/tty_io.c#L467
+
+```bash
+sudo chmod a+w /sys/kernel/tracing/trace_marker
+cd /tmp/ftrace
+sudo trace-cmd record -p function_graph \
+  -l tty_open \
+  -l tty_poll \
+  -l tty_release \
+  -l tty_read \
+  -l tty_write \
+  -l usb_serial_open \
+  -l acm_open
+```
+
+```bash
+mpstress --micropython-tests=/home/octoprobe/work_octoprobe/micropython --stress-scenario=NONE --test=SIMPLE_SERIAL_WRITE --stress-tentacle-count=99 2>&1 | tee > ./src/testbed_micropython/mpstress/ftrace/mpstress.log
+```
+
+```bash
+trace-cmd report
+```

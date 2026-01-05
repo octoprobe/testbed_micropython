@@ -122,9 +122,12 @@ class SimpleSerialWrite:
                 print_fds()
 
                 raise TestError("Received erronous data.")
+
             count_text = self.serial.read(6)
+            assert len(count_text) == 6, f"Expected a number of 6 chars: {count_text!r}"
             count0 = int(count_text)
-            assert count0 == i0
+            assert count0 == i0, f"Unexpected count: {count0} == {i0}"
+
             byte_count += len(CHARS) + 6
             if (i1 % 1000) == 0:
                 duration_s = time.monotonic() - start_s

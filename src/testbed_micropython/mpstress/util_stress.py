@@ -21,7 +21,7 @@ DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 logger = logging.getLogger(__file__)
 
 PRINT_STRESS_OUTPUT = False
-LOG_OUTPUT_S = 10.0
+LOG_OUTPUT_S = 3.0
 
 # pylint: disable=invalid-name
 # pylint: disable=no-member

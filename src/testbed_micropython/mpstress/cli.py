@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 import pathlib
+import sys
 
 import typer
 import typing_extensions
@@ -102,6 +103,7 @@ def stress(
     ] = EnumTest.RUN_TESTS_BASIC_B_INT_POW,
 ) -> None:
     init_logging()
+    logger.info(" ".join(sys.argv))
     connected_tentacles = util_testrunner.query_connected_tentacles_fast()
     # connected_tentacles.sort(
     #     key=lambda t: (t.tentacle_spec_base.tentacle_tag, t.tentacle_serial_number)

@@ -107,6 +107,7 @@ class EnumTest(enum.StrEnum):
             duration_factor = 1
             duration_factor = 5
             duration_factor = 2
+            duration_factor = 4
             # duration_factor = 100
             count = int(duration_factor * 10000 * serial_speed / serial_speed_default)
             count = max(1000, count)
