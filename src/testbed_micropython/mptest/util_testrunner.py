@@ -186,6 +186,11 @@ class Args:
     firmware: ArgsFirmware
     directory_results: pathlib.Path
     force_multiprocessing: bool
+    jobs: int
+    """
+    Limit parallel jobs.
+    0: No limit
+    """
     query_test: ArgsQuery
     query_board: ArgsQuery
     debug_skip_tests: bool
@@ -201,6 +206,7 @@ class Args:
         assert isinstance(self.firmware, ArgsFirmware)
         assert isinstance(self.directory_results, pathlib.Path)
         assert isinstance(self.force_multiprocessing, bool)
+        assert isinstance(self.jobs, int)
         assert isinstance(self.query_test, ArgsQuery)
         assert isinstance(self.query_board, ArgsQuery)
         assert isinstance(self.debug_skip_tests, bool)

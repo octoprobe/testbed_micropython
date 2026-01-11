@@ -304,6 +304,12 @@ def test(
         int,
         typer.Option(help="Run every test multiple times to detect flakiness"),
     ] = 1,  # noqa: UP007
+    jobs: TyperAnnotated[
+        int,
+        typer.Option(
+            help="Limit parallel jobs. 0: No limit on job count. Limiting parallel jobs might reduce stability issues.",
+        ),
+    ] = 6,  # noqa: UP007
     debug_skip_tests: TyperAnnotated[
         bool | None,
         typer.Option(help="Skip the test execution"),
@@ -351,6 +357,7 @@ def test(
                 arg="board",
             ),
             force_multiprocessing=force_multiprocessing,
+            jobs=jobs,
             debug_skip_tests=debug_skip_tests,
             debug_skip_usb_error=debug_skip_usb_error,
             reference_board=reference_board,

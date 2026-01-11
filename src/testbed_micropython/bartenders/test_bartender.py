@@ -102,6 +102,12 @@ class TestBartender:
         assert isinstance(ctxtestrun, octoprobe.CtxTestRun)
         assert isinstance(repo_micropython_tests, pathlib.Path)
 
+        if args.jobs > 0:
+            if len(self.async_targets) >= args.jobs:
+                msg = f"Do not start more jobs: len(async_targets)>=jobs: {len(self.async_targets)}>={args.jobs}"
+                logger.debug(msg)
+                raise CurrentlyNoTestsException(msg)
+
         possible_testruns = self.possible_testruns(
             firmwares_built=firmwares_built,
             flash_skip=args.firmware.flash_skip,
