@@ -43,6 +43,7 @@ Repository = "https://github.com/octoprobe/octoprobe"
 
 [project.scripts]
 mptest = "testbed_micropython.mptest.cli:app"
+mpstress = "testbed_micropython.mpstress.cli:app"
 
 [project.optional-dependencies]
 

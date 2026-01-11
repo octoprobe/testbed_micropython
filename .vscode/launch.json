@@ -135,13 +135,14 @@
                 // "--only-test=RUN-TESTS_STANDARD",
                 // "--only-test=RUN-TESTS_STANDARD_NATIVE",
                 // "--only-test=RUN-TESTS_STANDARD_VIA_MPY",
-                "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
+                // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
                 // "--only-test=RUN-FLASH_FORMAT",
                 // "--only-test=RUN-TESTS_STANDARD_NATIVE",
                 // "--only-test=RUN-TESTS_STANDARD",
                 // "--skip-test=RUN-TESTS_STANDARD",
                 // "--only-test=RUN-TESTS_STANDARD:run-tests.py --via-mpy --test-dirs=micropython",
                 // "--only-test=RUN-TESTS_STANDARD:run-tests.py --test-dirs=micropython",
+                "--only-test=RUN-TESTS_STANDARD:run-tests.py --test-dirs=dummy",
                 // "--only-board=LOLIN_D1_MINI",
                 // "--skip-test=RUN-MULTITESTS_MULTINET",
                 // "--only-test=RUN-NATMODTESTS",
@@ -205,6 +206,59 @@
                 // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 // "--firmware-build-git=https://github.com/micropython/micropython.git@master",
                 // "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "justMyCode": false,
+            "subProcess": false,
+        },
+        {
+            "name": "mpstress",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpstress.cli",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                // "--help",
+                // "stress",
+                // "--micropython-tests=${workspaceFolder}/../fork_micropython",
+                "--micropython-tests=${workspaceFolder}/../micropython",
+                "--stress-scenario=NONE",
+                // "--stress-scenario=DUT_ON_OFF",
+                // "--stress-scenario=INFRA_MPREMOTE",
+                // "--stress-scenario=SUBPROCESS_INFRA_MPREMOTE",
+                // "--stress-scenario=SUBPROCESS_INFRA_MPREMOTE_C",
+                // "--test=RUN_TESTS_BASIC_B_INT_POW",
+                // "--test=SERIAL_TEST",
+                "--test=SIMPLE_SERIAL_WRITE",
+                "--stress-tentacle-count=99",
+                // "--tentacle=5f2a", // 5f2a-ADA_ITSYBITSY_M0
+                // "--tentacle=5f2c", // 5f2c-RPI_PICO_W
+                // "--tentacle=3c2a", // 3c2a-ARDUINO_NANO_33
+                // "--tentacle=0c30", // 0c30-ESP32_C3_DEVKIT
+                // "--tentacle=5d21", // 5d21-ESP32_DEVKIT
+                // "--tentacle=2d2d", // 2d2d_LOLIN_D1_MINI
+                // "--tentacle=3a21", // 3a21-PYBV11
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "OCTOPROBE_ENABLE_FTRACE_MARKER": "1"
+            },
+            "justMyCode": false,
+            "subProcess": false,
+        },
+        {
+            "name": "simple_serial_write",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpstress.simple_serial_write",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--count=10000",
+                "--test-instance=port:/dev/ttyUSB0"
             ],
             "console": "integratedTerminal",
             "env": {
