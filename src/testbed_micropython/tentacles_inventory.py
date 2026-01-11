@@ -10,7 +10,20 @@ TENTACLES_INVENTORY = (
         testbed_instance="ch_hans_1",
         tentacles=[
             # testbed showcase
-            ("e46340474b4c-2731", HwVersion.V03, "v1.1", tentacle_specs.RPI_PICO2),
+            (
+                # PICO_INFRA broken. Replaced by e46340474b4b-5a31
+                "e46340474b4c-2731",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.RPI_PICO2,
+            ),
+            (
+                # PICO_INFRA broken. Replaced e46340474b4c-2731
+                "e46340474b4b-5a31",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.RPI_PICO2,
+            ),
             ("e46340474b4e-1831", HwVersion.V03, "v1.1", tentacle_specs.RPI_PICO2),
             (
                 "de646cc20b92-5425",
@@ -51,7 +64,20 @@ TENTACLES_INVENTORY = (
                 tentacle_specs.ADA_ITSYBITSY_M0,
             ),
             ("e46414481354-1133", HwVersion.V03, "v1.0", tentacle_specs.TEENSY40),
-            ("e4641448130f-2f2c", HwVersion.V03, "v1.1", tentacle_specs.NUCLEO_WB55),
+            (
+                # PICO_INFRA broken, replaced by de6528b3cb15-4434
+                "e4641448130f-2f2c",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.NUCLEO_WB55,
+            ),
+            (
+                # replaces e4641448130f-2f2c
+                "de6528b3cb15-4434",
+                HwVersion.V06,
+                "v1.1",
+                tentacle_specs.NUCLEO_WB55,
+            ),
             (
                 # Replaced R1503 0R with 1K
                 "de6528b3cb48-3038",
