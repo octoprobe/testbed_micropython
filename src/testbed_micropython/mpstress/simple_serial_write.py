@@ -35,11 +35,7 @@ import sys
 CHARS = b"_ABCDEFGHIJKLMNOPQRSTUVWXYabcdefghijklmnopqrstuvwxy1234567890_"
 
 def write(msg):
-    try:
-        sys.stdout.buffer.write(msg)
-    except AttributeError:
-        # 2d2d_LOLIN_D1_MINI
-        print(msg.decode("ascii"), end="")
+    sys.stdout.write(msg)
 
 def send_alphabet(count):
     for i in range(count):
