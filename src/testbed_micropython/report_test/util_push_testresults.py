@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 import logging
-import os
 import pathlib
 import platform
 import re
@@ -14,26 +13,19 @@ import urllib3
 from octoprobe.util_constants import ExitCode
 
 from . import util_constants
-from .util_testreport import now_formatted
 
 logger = logging.getLogger(__file__)
 
 
 class TarAndHttpsPush:
-    def __init__(self, directory: pathlib.Path, label: str | None):
+    def __init__(self, directory: pathlib.Path, label: str):
         """
         Example label: notebook_hans-2025_04_22-12_33_22
         """
         assert isinstance(directory, pathlib.Path)
-        assert isinstance(label, str | None)
+        assert isinstance(label, str)
         self.directory = directory
-        if label is not None:
-            self.label = label
-            return
-        self.label = self._create_local_label()
-
-    def _create_local_label(self) -> str:
-        return f"{platform.node()}_{now_formatted()}"
+        self.label = label
 
     def _create_tarfile(self) -> pathlib.Path:
         filename_tar = pathlib.Path("/tmp") / f"{self.label}.tar.gz"
@@ -111,7 +103,7 @@ class DirectoryManualWorkflow:
     @classmethod
     def factory_now(cls) -> DirectoryManualWorkflow:
         return cls(
-            hostname=os.environ["HOSTNAME"],
+            hostname=platform.node(),
             start=datetime.datetime.now(),
         )
 

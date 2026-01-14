@@ -12,8 +12,9 @@
             "cwd": "${workspaceFolder}",
             "args": [
                 "report",
-                "--label=hans_local_selfhosted_testrun_42",
+                // "--label=hostname_20250116-185542",
                 "--testresults=${workspaceFolder}/testresults",
+                // "--action-url=..."
             ],
             "console": "integratedTerminal",
             "env": {

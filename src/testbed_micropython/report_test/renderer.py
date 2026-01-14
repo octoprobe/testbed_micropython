@@ -19,10 +19,10 @@ class ReportRenderer:
     def __init__(
         self,
         directory_results: pathlib.Path,
-        label: str | None = None,
+        label: str,
     ) -> None:
         assert isinstance(directory_results, pathlib.Path)
-        assert isinstance(label, str | None)
+        assert isinstance(label, str)
         self.directory_results = directory_results
         self.label = label
         self.data = Data.gather_json_files(directory_results=directory_results)

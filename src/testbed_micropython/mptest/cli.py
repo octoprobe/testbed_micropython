@@ -25,7 +25,10 @@ from octoprobe.util_tentacle_label import label_renderer
 
 from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT, EnumFut
 from testbed_micropython.report_test.renderer import ReportRenderer
-from testbed_micropython.report_test.util_push_testresults import TarAndHttpsPush
+from testbed_micropython.report_test.util_push_testresults import (
+    DirectoryManualWorkflow,
+    TarAndHttpsPush,
+)
 
 from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
@@ -408,7 +411,7 @@ def report(
     label: TyperAnnotated[
         str,
         typer.Option(
-            help="Label to be used for store the results. For example 'notebook_hans-2025_04_22-12_33_22'.",
+            help="Label to be used for store the results. For example 'notebook_hans-20250422-123322'.",
         ),
     ] = None,
     action_url: TyperAnnotated[
@@ -421,6 +424,7 @@ def report(
     init_logging()
     directory_results = assert_valid_testresults(testresults)
 
+    label = DirectoryManualWorkflow.factory_now().directory_name
     tar = TarAndHttpsPush(directory=directory_results, label=label)
     renderer = ReportRenderer(directory_results=directory_results, label=label)
     renderer.render(action_url=action_url)

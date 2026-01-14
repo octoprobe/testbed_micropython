@@ -160,7 +160,10 @@ class ReportTests:
 
         from ..report_test.renderer import ReportRenderer
 
-        renderer = ReportRenderer(directory_results=self.testresults_directory)
+        renderer = ReportRenderer(
+            directory_results=self.testresults_directory,
+            label=self.testresults_directory.name,
+        )
         renderer.render()
 
 
