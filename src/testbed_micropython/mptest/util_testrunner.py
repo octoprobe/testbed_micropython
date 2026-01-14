@@ -186,11 +186,6 @@ class Args:
     firmware: ArgsFirmware
     directory_results: pathlib.Path
     force_multiprocessing: bool
-    jobs: int
-    """
-    Limit parallel jobs.
-    0: No limit
-    """
     query_test: ArgsQuery
     query_board: ArgsQuery
     debug_skip_tests: bool
@@ -199,6 +194,11 @@ class Args:
     """
     The board to be used a reference for WLAN/Bluetooth tests.
     Example: RPI_PICO_W
+    """
+    jobs: int = 0
+    """
+    Limit parallel jobs.
+    0: No limit
     """
 
     def __post_init__(self) -> None:

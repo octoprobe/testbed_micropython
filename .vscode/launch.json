@@ -5,17 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mptest report --url=",
+            "name": "mptest report",
             "type": "debugpy",
             "request": "launch",
             "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
                 "report",
-                "--label=github_testbed_micropython_100",
-                "--action-url=https://github.com/octoprobe/testbed_micropython_runner/actions/runs/14650052333",
-                "--testresults=/home/maerki/work_octoprobe/testbed_micropython_reports/reports/github_selfhosted_testrun_99",
-                "--url="
+                "--label=hans_local_selfhosted_testrun_42",
+                "--testresults=${workspaceFolder}/testresults",
             ],
             "console": "integratedTerminal",
             "env": {

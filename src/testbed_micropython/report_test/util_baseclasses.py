@@ -4,11 +4,13 @@ import dataclasses
 import enum
 import pathlib
 import typing
+from datetime import datetime
 
 from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DirectoryTag
 
 from ..testcollection.constants import MICROPYTHON_DIRECTORY_TESTS
+from . import util_constants
 from .util_markdown2 import md_escape, md_link
 
 
@@ -216,6 +218,25 @@ class ResultContext:
         #         markdown = markdown_try
 
         return markdown
+
+    @property
+    def time_start_datetime(self) -> datetime:
+        return datetime.strptime(self.time_start, util_constants.TIME_FORMAT)
+
+    @property
+    def time_end_datetime(self) -> datetime:
+        return datetime.strptime(self.time_end, util_constants.TIME_FORMAT)
+
+    @property
+    def time_start_text(self) -> str:
+        return datetime.strftime(
+            self.time_start_datetime, util_constants.FORMAT_HTTP_STARTED_AT
+        )
+
+    @property
+    def time_duration_text(self) -> str:
+        duration = self.time_end_datetime - self.time_start_datetime
+        return util_constants.seconds_to_duration(seconds=int(duration.total_seconds()))
 
 
 @dataclasses.dataclass(slots=True)

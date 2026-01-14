@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import datetime
 import logging
+import os
 import pathlib
 import platform
+import re
 import tarfile
 import time
 
@@ -10,6 +13,7 @@ import requests
 import urllib3
 from octoprobe.util_constants import ExitCode
 
+from . import util_constants
 from .util_testreport import now_formatted
 
 logger = logging.getLogger(__file__)
@@ -77,3 +81,49 @@ class TarAndHttpsPush:
     def https_push(self, url: str) -> ExitCode:
         filename_tar = self._create_tarfile()
         return self._http_push(url=url, filename=filename_tar)
+
+
+class DirectoryManualWorkflow:
+    """
+    local_hostname_20250116-185542
+    """
+
+    REGEX = re.compile(r"^(?P<hostname>.*)_(?P<start>\d{8}-\d{6})$")
+    FORMAT = "%Y%m%d-%H%M%S"
+    FORMAT_SHORT = "%m%d-%H%M"
+
+    def __init__(self, hostname: str, start: datetime.datetime) -> None:
+        self.hostname = hostname
+        self.start = start
+
+    @property
+    def directory_name(self) -> str:
+        return f"{self.hostname}_{datetime.datetime.now().strftime(self.FORMAT)}"
+
+    @property
+    def date_short(self) -> str:
+        return datetime.datetime.now().strftime(self.FORMAT_SHORT)
+
+    @property
+    def datetime_text(self) -> str:
+        return datetime.datetime.now().strftime(util_constants.FORMAT_HTTP_STARTED_AT)
+
+    @classmethod
+    def factory_now(cls) -> DirectoryManualWorkflow:
+        return cls(
+            hostname=os.environ["HOSTNAME"],
+            start=datetime.datetime.now(),
+        )
+
+    @classmethod
+    def factory_directory(cls, directory: str) -> DirectoryManualWorkflow | None:
+        assert isinstance(directory, str)
+
+        match = cls.REGEX.match(directory)
+        if match is None:
+            return None
+        start_text = match.group("start")
+        return cls(
+            hostname=match.group("hostname"),
+            start=datetime.datetime.strptime(start_text, cls.FORMAT),
+        )

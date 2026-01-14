@@ -12,23 +12,23 @@ import typing
 from octoprobe.util_constants import DirectoryTag, TAG_MCU
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
-from ..testcollection.testrun_specs import TestRun
+from testbed_micropython.testcollection.testrun_specs import TestRun
+
 from .util_baseclasses import (
     Outcome,
     ResultContext,
     ResultTestGroup,
     ResultTestOutcome,
 )
+from .util_constants import (
+    FILENAME_CONTEXT_JSON,
+    FILENAME_CONTEXT_TESTGROUP_JSON,
+    TIME_FORMAT,
+)
 from .util_testreport_summary import DataSummaryLine
 
 if typing.TYPE_CHECKING:
     from .util_testreport_by_test import SummaryByTest
-
-TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
-
-FILENAME_CONTEXT_JSON = "context.json"
-
-FILENAME_CONTEXT_TESTGROUP_JSON = "context_testgroup.json"
 
 
 @dataclasses.dataclass(slots=True)
