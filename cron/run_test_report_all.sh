@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 
-git fetch --all -p
-git reset --hard origin/main
+DIRECTORY_CRON="$(dirname "${BASH_SOURCE[0]}")"
 
-. ~/.profile
-
-mptest test --micropython-tests=https://github.com/micropython/micropython.git~17782 --firmware-build=https://github.com/micropython/micropython.git~17782 --no-multiprocessing
-mptest report --testresults=./testresults
-
-mptest test --micropython-tests=https://github.com/micropython/micropython.git@master --firmware-build=https://github.com/micropython/micropython.git@master --no-multiprocessing
-mptest report --testresults=./testresults
-
+"$DIRECTORY_CRON/run_test_report.sh" ~17782
+"$DIRECTORY_CRON/run_test_report.sh" @master
