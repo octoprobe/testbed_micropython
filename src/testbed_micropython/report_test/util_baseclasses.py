@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import enum
+import json
 import pathlib
 import typing
 from datetime import datetime
@@ -182,8 +183,8 @@ class ResultContext:
         assert isinstance(git_ref, str)
         self.git_ref[tag.name] = git_ref
 
-    @classmethod
-    def from_dict(cls, json_dict: dict[typing.Any, typing.Any]) -> ResultContext:
+    @staticmethod
+    def from_dict(json_dict: dict[typing.Any, typing.Any]) -> ResultContext:
         for key in ("ref_firmware_metadata", "ref_tests_metadata"):
             if json_dict[key] is None:
                 continue
@@ -191,6 +192,14 @@ class ResultContext:
 
         result_context = ResultContext(**json_dict)
         return result_context
+
+    @staticmethod
+    def factory(filename: pathlib.Path) -> ResultContext:
+        assert isinstance(filename, pathlib.Path)
+
+        json_text = filename.read_text()
+        json_dict = json.loads(json_text)
+        return ResultContext.from_dict(json_dict=json_dict)
 
     @property
     def ref_firmware2(self) -> GitRef:

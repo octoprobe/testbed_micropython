@@ -12,7 +12,7 @@ import requests
 import urllib3
 from octoprobe.util_constants import ExitCode
 
-from . import util_constants
+from . import util_baseclasses, util_constants
 
 logger = logging.getLogger(__file__)
 
@@ -105,6 +105,27 @@ class DirectoryManualWorkflow:
         return cls(
             hostname=platform.node(),
             started_at=datetime.datetime.now(),
+        )
+
+    @classmethod
+    def factory_directory_results(
+        cls,
+        directory_results: pathlib.Path,
+    ) -> DirectoryManualWorkflow:
+        """
+        The directory 'testresults' is given which
+        must include a directory 'context.json'.
+        The starttime from 'context.json' will be used.
+        The hostname is not part of 'context.json', hence we use platform.node().
+        """
+        assert isinstance(directory_results, pathlib.Path)
+
+        result_context = util_baseclasses.ResultContext.factory(
+            directory_results / util_constants.FILENAME_CONTEXT_JSON
+        )
+        return cls(
+            hostname=platform.node(),
+            started_at=result_context.time_start_datetime,
         )
 
     @classmethod

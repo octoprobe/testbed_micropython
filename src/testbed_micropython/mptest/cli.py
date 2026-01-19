@@ -424,7 +424,10 @@ def report(
     init_logging()
     directory_results = assert_valid_testresults(testresults)
 
-    label = DirectoryManualWorkflow.factory_now().directory_name
+    if label is None:
+        label = DirectoryManualWorkflow.factory_directory_results(
+            directory_results
+        ).directory_name
     tar = TarAndHttpsPush(directory=directory_results, label=label)
     renderer = ReportRenderer(directory_results=directory_results, label=label)
     renderer.render(action_url=action_url)

@@ -72,10 +72,9 @@ class Data:
         """
 
         def collect_top() -> Data:
-            filename = directory_results / FILENAME_CONTEXT_JSON
-            json_text = filename.read_text()
-            json_dict = json.loads(json_text)
-            result_context = ResultContext.from_dict(json_dict=json_dict)
+            result_context = ResultContext.factory(
+                directory_results / FILENAME_CONTEXT_JSON
+            )
             return Data(result_context=result_context)
 
         data = collect_top()
