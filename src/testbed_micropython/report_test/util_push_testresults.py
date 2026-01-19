@@ -84,27 +84,27 @@ class DirectoryManualWorkflow:
     FORMAT = "%Y%m%d-%H%M%S"
     FORMAT_SHORT = "%m%d-%H%M"
 
-    def __init__(self, hostname: str, start: datetime.datetime) -> None:
+    def __init__(self, hostname: str, started_at: datetime.datetime) -> None:
         self.hostname = hostname
-        self.start = start
+        self.started_at = started_at
 
     @property
     def directory_name(self) -> str:
-        return f"{self.hostname}_{datetime.datetime.now().strftime(self.FORMAT)}"
+        return f"{self.hostname}_{self.started_at.strftime(self.FORMAT)}"
 
     @property
-    def date_short(self) -> str:
-        return datetime.datetime.now().strftime(self.FORMAT_SHORT)
+    def started_ad_short(self) -> str:
+        return self.started_at.strftime(self.FORMAT_SHORT)
 
     @property
-    def datetime_text(self) -> str:
-        return datetime.datetime.now().strftime(util_constants.FORMAT_HTTP_STARTED_AT)
+    def started_at_text(self) -> str:
+        return self.started_at.strftime(util_constants.FORMAT_HTTP_STARTED_AT)
 
     @classmethod
     def factory_now(cls) -> DirectoryManualWorkflow:
         return cls(
             hostname=platform.node(),
-            start=datetime.datetime.now(),
+            started_at=datetime.datetime.now(),
         )
 
     @classmethod
@@ -114,8 +114,8 @@ class DirectoryManualWorkflow:
         match = cls.REGEX.match(directory)
         if match is None:
             return None
-        start_text = match.group("start")
+        started_at_text = match.group("start")
         return cls(
             hostname=match.group("hostname"),
-            start=datetime.datetime.strptime(start_text, cls.FORMAT),
+            started_at=datetime.datetime.strptime(started_at_text, cls.FORMAT),
         )
