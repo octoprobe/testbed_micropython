@@ -24,7 +24,7 @@
 * Logdirectory: [{{ result_context.log_directory|fix_links|md_escape }}]({{ result_context.log_directory|fix_links|md_escape }})
 * Logoutput: [{{ result_context.log_output|fix_links|md_escape }}]({{ result_context.log_output|fix_links|md_escape }})
 {% if result_context.error %}
-* Error: {{ result_context.error }}
+* **Error: {{ result_context.error }}**
 {% endif %}
 
 ## Summary

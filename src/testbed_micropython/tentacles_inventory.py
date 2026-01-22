@@ -19,8 +19,9 @@ TENTACLES_INVENTORY = (
             ),
             (
                 # PICO_INFRA broken. Replaced e46340474b4c-2731
-                "e46340474b4b-5a31",
-                HwVersion.V03,
+                # "e46340474b4b-5a31",
+                "de6528b3cb15-5334",
+                HwVersion.V06,
                 "v1.1",
                 tentacle_specs.RPI_PICO2,
             ),

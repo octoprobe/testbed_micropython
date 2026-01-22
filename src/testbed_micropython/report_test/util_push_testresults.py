@@ -124,7 +124,7 @@ class DirectoryManualWorkflow:
             directory_results / util_constants.FILENAME_CONTEXT_JSON
         )
         return cls(
-            hostname=platform.node(),
+            hostname=result_context.testbed_instance,
             started_at=result_context.time_start_datetime,
         )
 
