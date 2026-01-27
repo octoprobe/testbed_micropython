@@ -9,5 +9,5 @@ git reset --hard origin/main
 
 . ~/.profile
 
-mptest test --micropython-tests="$REPO" --firmware-build="$REPO" --no-multiprocessing
-mptest report --testresults=./testresults
+mptest test --micropython-tests="$REPO" --firmware-build="$REPO" --no-multiprocessing --count=2 --skip-fut=FUT_WLAN --skip-fut=FUT_BLE 
+mptest report --testresults=./testresults --email=buhtig.hans.maerki@ergoinfo.ch --email=damien@micropython.org 

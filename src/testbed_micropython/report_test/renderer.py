@@ -7,6 +7,7 @@ import textwrap
 from octoprobe.util_constants import DirectoryTag
 from octoprobe.util_jinja2 import JinjaEnv
 
+from testbed_micropython.report_test import util_constants
 from testbed_micropython.report_test.util_markdown2 import markdown2html, md_escape
 from testbed_micropython.report_test.util_testreport import Data
 
@@ -46,8 +47,14 @@ class ReportRenderer:
 
     def render(self, action_url: str | None = None) -> None:
         assert isinstance(action_url, str | None)
-        filename_md = self.directory_results / "octoprobe_summary_report.md"
-        filename_template = DIRECTORY_OF_THIS_FILE / "octoprobe_summary_report.jinja"
+        filename_md = (
+            self.directory_results
+            / f"{util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM}.md"
+        )
+        filename_template = (
+            DIRECTORY_OF_THIS_FILE
+            / f"{util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM}.jinja"
+        )
 
         template = filename_template.read_text()
 

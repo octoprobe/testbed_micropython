@@ -24,6 +24,7 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
 from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT, EnumFut
+from testbed_micropython.report_test import util_constants
 from testbed_micropython.report_test.renderer import ReportRenderer
 from testbed_micropython.report_test.util_push_testresults import (
     DirectoryManualWorkflow,
@@ -33,6 +34,7 @@ from testbed_micropython.report_test.util_push_testresults import (
 from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
+from ..report_test import util_email
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..util_firmware_mpbuild_interface import ArgsFirmware
 from .util_baseclasses import ArgsQuery
@@ -179,7 +181,7 @@ def flash(
             envvar="TESTBED_MICROPYTHON_TESTRESULTS",
             help="Directory for the testresults",
         ),
-    ] = constants.DIRECTORY_TESTRESULTS_DEFAULT,
+    ] = str(constants.DIRECTORY_TESTRESULTS_DEFAULT),
 ) -> None:
     directory_results = assert_valid_testresults(testresults)
     args = util_testrunner.Args(
@@ -242,14 +244,14 @@ def test(
             help="Run tests only on this board (tentacles). Examples: 'RPI-PICO2-RISCV' will only test variant 'RISCV'. 'RPI_PICO2-' will only test variant ''. 'RPI_PICO2' will test all variants.",
             autocompletion=complete_only_board,
         ),
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UP007 # type: ignore
     skip_board: TyperAnnotated[
         list[str],
         typer.Option(
             help="Skip tests on this board (tentacles).",
             autocompletion=complete_only_board,
         ),
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UP007 # type: ignore
     reference_board: TyperAnnotated[
         str | None,
         typer.Option(
@@ -260,23 +262,23 @@ def test(
     only_test: TyperAnnotated[
         list[str],
         typer.Option(help="Run this test only.", autocompletion=complete_only_test),
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UP007 # type: ignore
     skip_test: TyperAnnotated[
         list[str],
         typer.Option(help="Skip this test.", autocompletion=complete_only_test),
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UP007 # type: ignore
     only_fut: TyperAnnotated[
         list[str],
         typer.Option(
             help="Run this FUT (feature under test).", autocompletion=complete_only_fut
         ),
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UP007 # type: ignore
     skip_fut: TyperAnnotated[
         list[str],
         typer.Option(
             help="Skip this FUT (feature under test).", autocompletion=complete_only_fut
         ),
-    ] = None,  # noqa: UP007
+    ] = None,  # noqa: UP007 # type: ignore
     flash_force: TyperAnnotated[
         bool,
         typer.Option(help="Will flash all firmware and run tests."),
@@ -413,16 +415,24 @@ def report(
         typer.Option(
             help="Label to be used for store the results. For example 'notebook_hans-20250422-123322'.",
         ),
-    ] = None,
+    ] = None,  # type: ignore
     action_url: TyperAnnotated[
         str,
         typer.Option(
             help="The url which points back to the github action. For example '://github.com/octoprobe/testbed_micropython_runner/actions/runs/14647476492'.",
         ),
-    ] = None,
+    ] = None,  # type: ignore
+    email: TyperAnnotated[
+        list[str],
+        typer.Option(
+            help="Email address. May be more than one.",
+        ),
+    ] = None,  # type: ignore
 ) -> None:
     init_logging()
     directory_results = assert_valid_testresults(testresults)
+
+    emails: list[str] = [] if email is None else email
 
     if label is None:
         label = DirectoryManualWorkflow.factory_directory_results(
@@ -436,6 +446,17 @@ def report(
         raise typer.Exit(ExitCode.SUCCESS)
 
     rc = tar.https_push(url=url)
+
+    if emails is not None:
+        email_smtp = util_email.EmailSmtp()
+        email_smtp.send(
+            receipients=emails,
+            subject=f"[octoprobe/testbed_micropython] Testrun {label} done",
+            from_address="Hans Maerki<buhtig.hans.maerki@ergoinfo.ch>",
+            filename_summary_report=directory_results
+            / f"{util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM}.html",
+        )
+
     raise typer.Exit(rc)
 
 

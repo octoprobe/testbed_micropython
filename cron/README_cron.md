@@ -9,11 +9,13 @@ Links
 
 Login as `githubrunner`
 
+The test should start at 00:00 melbourne time. This is 14:00 swiss time.
+
 ```bash
 crontab -e
 
 # m h dom mon dow   command
-0 20 * * * cd /home/githubrunner/testbed_micropython && /home/githubrunner/testbed_micropython/cron/run_test_report_all.sh >> /home/githubrunner/testbed_micropython/cron/cron_log.txt 2>&1
+0 14 * * * cd /home/githubrunner/testbed_micropython && /home/githubrunner/testbed_micropython/cron/run_test_report_all.sh >> /home/githubrunner/testbed_micropython/cron/cron_log.txt 2>&1
 ```
 
 ## Debugging
