@@ -80,8 +80,21 @@ class TestRunRunTests(TestRun):
         if not unittest_already_installed:
             self.skip_if_no_filesystem()
 
-        self.skip_missing_support_native()
-        self.skip_missing_support_mpy()
+        def emit_native_specified() -> bool:
+            try:
+                idx_emit = self.testrun_spec.command_args.index("--emit")
+            except ValueError:
+                return False
+            try:
+                # --emit native
+                return "native" == self.testrun_spec.command_args[idx_emit + 1]
+            except IndexError:
+                return False
+
+        if emit_native_specified():
+            self.skip_missing_support_native()
+        if "--via-mpy" in self.testrun_spec.command_args:
+            self.skip_missing_support_mpy()
 
         serial_port = tentacle.dut.get_tty()
 
