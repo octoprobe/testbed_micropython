@@ -79,6 +79,7 @@ A `TestRun` will
 The `TestRun` knows the associated `TestRunSpec` which will provide information needed to run the test.
 
 .. mermaid::
+
     classDiagram
         class TestRun{
             testid 'RUN-TESTS_EXTMOD_HARDWARE[5f2c-RPI_PICO_W]'
