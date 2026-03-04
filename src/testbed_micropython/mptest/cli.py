@@ -447,7 +447,7 @@ def report(
 
     rc = tar.https_push(url=url)
 
-    if emails is not None:
+    if len(emails) > 0:
         email_smtp = util_email.EmailSmtp()
         email_smtp.send(
             receipients=emails,
