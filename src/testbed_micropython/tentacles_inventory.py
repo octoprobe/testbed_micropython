@@ -182,4 +182,10 @@ TENTACLES_INVENTORY = (
             ("e46340474b4c-3f31", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
         ],
     )
+    .add_testbed_instance(
+        testbed_instance="testbed_heatguard",
+        tentacles=[
+            ("de6528b3cb68-3836", HwVersion.V06, "v1.0", tentacle_specs.AA_UNASSEMBLED),
+        ],
+    )
 ).inventory
