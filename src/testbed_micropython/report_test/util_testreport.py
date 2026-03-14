@@ -257,7 +257,12 @@ class ReportTestgroup:
                     )
             return True
 
-        fix_outcomes = {"pass": "passed", "skip": "skipped", "fail": "failed"}
+        fix_outcomes = {
+            "pass": "passed",
+            "skip": "skipped",
+            "fail": "failed",
+            "ignored": "skipped",  # Example: run-tests.py: results[i] = (r[0], "ignored", "{}: {}".format(FLAKY_REASON_PREFIX, reason))
+        }
         for test_name, _outcome, reason in list_results:
             _outcome = fix_outcomes[_outcome]
             outcome = Outcome(_outcome)
