@@ -1,10 +1,12 @@
 testbed_micropython
 ======================
 
+.. image:: images/tentacle_stack_top_a.jpg
+    :align: center
+    :height: 400px
 
 .. toctree::
 
-    big_picture.rst
     /user_guide/index
     /developer_guide/index
     /fixes_for_known_problems/index

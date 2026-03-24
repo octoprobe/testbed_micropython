@@ -1,6 +1,8 @@
 **/__pycache__/
-schematics_kicad/kicad/testbed-backups/*
-docs/_build/**
+schematics_kicad/kicad/testbed-backups/
+docs/_build/
+docs/top/
+docs/index_top.rst
 testresults/**
 testresults_*/**
 results_*/**
@@ -12,7 +14,7 @@ testbed.lock
 **/*\ copy\ [0-9]*.py
 src/testbed_micropython/mpbuild/tests/results/*.txt
 src/testbed_micropython/mpbuild/docker-build-micropython-esp32/esp-idf
-src/testbed/experiments/*
-testresults*/**
 src/testbed_micropython/mpstress/testresults*/**
 src/testbed_micropython/mpstress/c/mpremote_c
+src/testbed/experiments/*
+testresults*/**
