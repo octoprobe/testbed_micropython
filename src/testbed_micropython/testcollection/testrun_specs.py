@@ -223,17 +223,17 @@ class TestRun:
 
     def skip_missing_support_native(self) -> None:
         mp_remote = self.tentacle_variant.tentacle.dut.mp_remote
-        support_native = mp_remote.exec_bool(
-            "import sys; print(bool(getattr(sys.implementation, '_mpy', 0) >> 10))"
+        # The following line assumes that 'sys' is already imported.
+        support_native = mp_remote.read_bool(
+            "bool(getattr(sys.implementation, '_mpy', 0) >> 10)"
         )
         if not support_native:
             raise OctoprobeTestSkipException("Board does not support native code!")
 
     def skip_missing_support_mpy(self) -> None:
         mp_remote = self.tentacle_variant.tentacle.dut.mp_remote
-        support_mpy = mp_remote.exec_bool(
-            "import sys; print(hasattr(sys.implementation, '_mpy'))"
-        )
+        # The following line assumes that 'sys' is already imported.
+        support_mpy = mp_remote.read_bool("hasattr(sys.implementation, '_mpy')")
         if not support_mpy:
             raise OctoprobeTestSkipException("Board does not support mpy!")
 

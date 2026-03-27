@@ -95,7 +95,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                     tentacle_instance=tentacle_instance,
                     tentacle_serial_number=serial,
                     usb_tentacle=UsbTentacle(
-                        hub4_location=Location(3, [1, i]),
+                        tentacle_hub_location=Location(3, [1, i]),
                         pico_infra=UsbPico(
                             location=Location(bus=1, path=[]),
                             serial=None,
