@@ -15,7 +15,6 @@ import pathlib
 import sys
 
 import typer
-import typing_extensions
 from mpbuild.board_database import MpbuildMpyDirectoryException
 from octoprobe import util_baseclasses
 from octoprobe.scripts.commissioning import init_logging
@@ -44,7 +43,7 @@ logger = logging.getLogger(__file__)
 
 # 'typer' does not work correctly with typing.Annotated
 # Required is: typing_extensions.Annotated
-TyperAnnotated = typing_extensions.Annotated
+TyperAnnotated = typing.Annotated
 
 # mypy: disable-error-code="valid-type"
 # This will disable this warning:

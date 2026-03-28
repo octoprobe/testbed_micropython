@@ -161,13 +161,13 @@ The `testid` is:
     │   ├── logger_40_error.log
     │   └── testresults.txt
     ├── RUN-PERFBENCH,a@2731-RPI_PICO2-RISCV
-    │   ├── flashing_stout.txt
+    │   ├── flashing_stdout.txt
     │   ├── logger_10_debug.log
     │   ├── logger_20_info.log
     │   ├── logger_40_error.log
     │   └── testresults.txt
     ├── RUN-PERFBENCH,a@2731-RPI_PICO2
-    │   ├── flashing_stout.txt
+    │   ├── flashing_stdout.txt
     │   ├── logger_10_debug.log
     │   ├── logger_20_info.log
     │   ├── logger_40_error.log
