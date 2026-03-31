@@ -93,7 +93,6 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             tentacle_list.append(
                 TentacleMicropython(
                     tentacle_instance=tentacle_instance,
-                    tentacle_serial_number=serial,
                     usb_tentacle=UsbTentacle(
                         tentacle_hub_location=Location(3, [1, i]),
                         pico_infra=UsbPico(

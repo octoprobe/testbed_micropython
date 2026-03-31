@@ -10,10 +10,7 @@ import time
 import typing
 
 from octoprobe.octoprobe import CtxTestRun
-from octoprobe.usb_tentacle.usb_tentacle import (
-    UsbTentacles,
-    assert_serialdelimtied_valid,
-)
+from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
 from octoprobe.util_baseclasses import (
     OctoprobeAppExitException,
     OctoprobeTestException,
@@ -27,6 +24,7 @@ from octoprobe.util_micropython_boards import BoardVariant
 from octoprobe.util_pytest import util_logging
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY, UdevFailException, UdevPoller
+from octoprobe.util_serialnumber import assert_serialdelimted_valid
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
@@ -258,7 +256,7 @@ def instantiate_tentacles(usb_tentacles: UsbTentacles) -> ConnectedTentacles:
         serial_delimited = pico_infra.serial_delimited
         if serial_delimited is None:
             continue
-        assert_serialdelimtied_valid(serial_delimited=serial_delimited)
+        assert_serialdelimted_valid(serial_delimited=serial_delimited)
         try:
             tentacle_instance = TENTACLES_INVENTORY[serial_delimited]
 
@@ -269,9 +267,7 @@ def instantiate_tentacles(usb_tentacles: UsbTentacles) -> ConnectedTentacles:
             continue
 
         tentacle = TentacleMicropython(
-            tentacle_instance=tentacle_instance,
-            tentacle_serial_number=serial_delimited,
-            usb_tentacle=usb_tentacle,
+            tentacle_instance=tentacle_instance, usb_tentacle=usb_tentacle,
         )
 
         tentacles.append(tentacle)

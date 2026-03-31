@@ -13,6 +13,7 @@ from __future__ import annotations
 import logging
 import pathlib
 import sys
+import typing
 
 import typer
 from mpbuild.board_database import MpbuildMpyDirectoryException
