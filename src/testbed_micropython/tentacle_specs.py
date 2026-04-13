@@ -70,7 +70,9 @@ See: https://micropython.org/download/ADAFRUIT_ITSYBITSY_M0_EXPRESS/
     # -  Push the reset button twice or call machine.bootloader(). A drive
     #   icon should appear representing a virtual drive.
     # -  Copy the .uf2 file with the required firmware to that drive.
-    mcu_config=McuConfig(),
+    mcu_config=McuConfig(
+        micropython_perftest_args=["48", "20"],
+    ),
 )
 
 
