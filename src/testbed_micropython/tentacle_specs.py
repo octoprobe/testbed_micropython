@@ -373,7 +373,7 @@ v1.0: initial
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
     ],
-    tags="board=ESP8266_GENERIC,build_variants=:FLASH_512K,mcu=esp8266,programmer=esptool",
+    tags="board=ESP8266_GENERIC,mcu=esp8266,programmer=esptool",
     programmer_args=[
         "--chip=esp8266",
         "--baud=1000000",
