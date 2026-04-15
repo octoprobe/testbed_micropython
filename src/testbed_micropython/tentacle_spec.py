@@ -45,6 +45,12 @@ class TentacleSpecMicropython(TentacleSpecBase):
         """
         Example for PICO: ["", "RISCV"]
         Example for ESP8266_GENERIC: [""]
+
+        How to use 'build_variants':
+        * missing: defaults to "build_variants="
+        * "build_variants=": Will test PICO-"" only
+        * "build_variants=RISCV": Will test PICO-"RISCV" only
+        * "build_variants=:RISCV": Will test both, PICO-"" and PICO-"RISCV"
         """
         variants = self.get_tag(TAG_BUILD_VARIANTS)
         if variants is None:
