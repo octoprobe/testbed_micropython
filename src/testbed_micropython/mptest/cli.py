@@ -80,13 +80,19 @@ def complete_only_board() -> list[str]:
     return sorted([t.board_variant for t in tsvs])
 
 
-def assert_valid_testresults(testresults: str) -> pathlib.Path:
+def assert_valid_testresults(testresults: str, create: bool = True) -> pathlib.Path:
     assert isinstance(testresults, str)
+    assert isinstance(create, bool)
 
     _testresults = pathlib.Path(testresults).resolve()
+    if create:
+        _testresults.mkdir(parents=True, exist_ok=True)
+        return _testresults
+
     if not _testresults.is_dir():
         print(f"Directory does not exist: {_testresults}")
-        typer.Exit(1)  # pylint: disable=pointless-exception-statement
+        raise typer.Exit(1)
+
     return _testresults
 
 
@@ -430,7 +436,7 @@ def report(
     ] = None,  # type: ignore
 ) -> None:
     init_logging()
-    directory_results = assert_valid_testresults(testresults)
+    directory_results = assert_valid_testresults(testresults, create=False)
 
     emails: list[str] = [] if email is None else email
 
