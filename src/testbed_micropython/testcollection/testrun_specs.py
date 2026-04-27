@@ -234,6 +234,7 @@ class TestRun:
     def skip_missing_support_native(self) -> None:
         mp_remote = self.tentacle_variant.tentacle.dut.mp_remote
         # The following line assumes that 'sys' is already imported.
+        mp_remote.exec_raw("import sys")
         support_native = mp_remote.read_bool(
             "bool(getattr(sys.implementation, '_mpy', 0) >> 10)"
         )
@@ -242,6 +243,7 @@ class TestRun:
 
     def skip_missing_support_mpy(self) -> None:
         mp_remote = self.tentacle_variant.tentacle.dut.mp_remote
+        mp_remote.exec_raw("import sys")
         # The following line assumes that 'sys' is already imported.
         support_mpy = mp_remote.read_bool("hasattr(sys.implementation, '_mpy')")
         if not support_mpy:
