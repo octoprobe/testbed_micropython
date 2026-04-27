@@ -187,6 +187,7 @@ class Args:
     query_test: ArgsQuery
     query_board: ArgsQuery
     debug_skip_tests: bool
+    debug_fast_fake_tests: bool
     debug_skip_usb_error: bool = False
     reference_board: str = constants.DEFAULT_REFERENCE_BOARD
     """
@@ -208,6 +209,7 @@ class Args:
         assert isinstance(self.query_test, ArgsQuery)
         assert isinstance(self.query_board, ArgsQuery)
         assert isinstance(self.debug_skip_tests, bool)
+        assert isinstance(self.debug_fast_fake_tests, bool)
         assert isinstance(self.debug_skip_usb_error, bool)
         assert isinstance(self.reference_board, str)
 
@@ -232,6 +234,7 @@ class Args:
             query_test=ArgsQuery(),
             force_multiprocessing=False,
             debug_skip_tests=False,
+            debug_fast_fake_tests=False,
             debug_skip_usb_error=False,
         )
 
@@ -267,7 +270,8 @@ def instantiate_tentacles(usb_tentacles: UsbTentacles) -> ConnectedTentacles:
             continue
 
         tentacle = TentacleMicropython(
-            tentacle_instance=tentacle_instance, usb_tentacle=usb_tentacle,
+            tentacle_instance=tentacle_instance,
+            usb_tentacle=usb_tentacle,
         )
 
         tentacles.append(tentacle)
@@ -664,6 +668,7 @@ def _target_run_one_test_async_b(
     testid: str,
     duration_text: typing.Callable[[float | None], str],
     debug_skip_tests: bool,
+    debug_fast_fake_tests: bool,
 ) -> None:
     """
     This is a 'global' method and as such may be used within process or
@@ -690,13 +695,15 @@ def _target_run_one_test_async_b(
     logger.info(f"TEST BEGIN {duration_text(None)} {testid}")
 
     with testrun.active_led_on:
-        testrun.test(
+        testrun.test_outer(
             testargs=TestArgs(
                 testresults_directory=testresults_directory,
                 repo_micropython_tests=repo_micropython_tests,
-                debug_skip_tests=debug_skip_tests,
-            )
+            ),
+            debug_skip_tests=debug_skip_tests,
+            debug_fast_fake_tests=debug_fast_fake_tests,
         )
+
         logger.info("Test SUCCESS")
 
 
@@ -733,6 +740,7 @@ def _target_run_one_test_async_a(
             testid=testid,
             duration_text=duration_text,
             debug_skip_tests=args.debug_skip_tests,
+            debug_fast_fake_tests=args.debug_fast_fake_tests,
         )
         report_test.write_ok()
         return True

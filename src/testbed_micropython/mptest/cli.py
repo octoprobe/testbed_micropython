@@ -204,6 +204,7 @@ def flash(
         query_test=ArgsQuery(),
         force_multiprocessing=False,
         debug_skip_tests=False,
+        debug_fast_fake_tests=False,
     )
 
     testrunner = util_testrunner.TestRunner(args=args)
@@ -321,6 +322,10 @@ def test(
             help="Limit parallel jobs. 0: No limit on job count. Limiting parallel jobs might reduce stability issues.",
         ),
     ] = 6,  # noqa: UP007
+    debug_fast_fake_tests: TyperAnnotated[
+        bool | None,
+        typer.Option(help="Run some fast faketest"),
+    ] = False,  # noqa: UP007
     debug_skip_tests: TyperAnnotated[
         bool | None,
         typer.Option(help="Skip the test execution"),
@@ -336,6 +341,8 @@ def test(
         reference_board = constants.DEFAULT_REFERENCE_BOARD
     if debug_skip_tests is None:
         debug_skip_tests = False
+    if debug_fast_fake_tests is None:
+        debug_fast_fake_tests = False
     if debug_skip_usb_error is None:
         debug_skip_usb_error = False
     try:
@@ -370,6 +377,7 @@ def test(
             force_multiprocessing=force_multiprocessing,
             jobs=jobs,
             debug_skip_tests=debug_skip_tests,
+            debug_fast_fake_tests=debug_fast_fake_tests,
             debug_skip_usb_error=debug_skip_usb_error,
             reference_board=reference_board,
         )

@@ -5,12 +5,15 @@ import contextlib
 import dataclasses
 import logging
 import pathlib
+import sys
 import typing
 from collections.abc import Iterator
 
 from octoprobe.util_baseclasses import OctoprobeTestSkipException
+from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 from octoprobe.util_pytest.util_resultdir import ResultsDir
+from octoprobe.util_subprocess import subprocess_run
 
 from .. import constants
 from ..tentacle_spec import TentacleMicropython
@@ -24,6 +27,7 @@ from ..testcollection.constants import (
     DELIMITER_TENTACLE,
     DELIMITER_TESTROLE,
     DELIMITER_TESTRUN,
+    MICROPYTHON_DIRECTORY_TESTS,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,18 +37,10 @@ logger = logging.getLogger(__name__)
 class TestArgs:
     testresults_directory: ResultsDir
     repo_micropython_tests: pathlib.Path
-    debug_skip_tests: bool
 
     def __post_init__(self) -> None:
         # assert isinstance(self.testresults_directory, ResultsDir)
         assert isinstance(self.repo_micropython_tests, pathlib.Path)
-        assert isinstance(self.debug_skip_tests, bool)
-
-    @property
-    def debug_skip_tests_with_message(self) -> bool:
-        if self.debug_skip_tests:
-            logger.info("debug_skip_tests: Skip test!")
-        return self.debug_skip_tests
 
 
 @dataclasses.dataclass(slots=True, repr=True)
@@ -88,6 +84,20 @@ class TestRun:
 
     @abc.abstractmethod
     def test(self, testargs: TestArgs) -> None: ...
+
+    def test_outer(
+        self,
+        testargs: TestArgs,
+        debug_skip_tests: bool,
+        debug_fast_fake_tests: bool,
+    ) -> None:
+        if debug_skip_tests:
+            logger.info("debug_skip_tests: Skip test!")
+            return
+        if debug_fast_fake_tests:
+            self._fast_fake_test(testargs=testargs)
+            return
+        self.test(testargs=testargs)
 
     @property
     def label_testrun(self) -> str:
@@ -236,6 +246,59 @@ class TestRun:
         support_mpy = mp_remote.read_bool("hasattr(sys.implementation, '_mpy')")
         if not support_mpy:
             raise OctoprobeTestSkipException("Board does not support mpy!")
+
+    def _fast_fake_test(self, testargs: TestArgs) -> bool:
+        """
+        If given on the command line: --debug-fast-fake-tests
+        The fastest possible test will be executed.
+        """
+        from ..util_subprocess_tentacle import tentacle_subprocess_run
+
+        testrunner = "run-tests.py"
+        testfile = "basics/andor.py"
+        logger.info(
+            f"debug_fast_fake_tests: Run fast fake test '{testrunner} {testfile}'!"
+        )
+
+        tentacle_variant = self.tentacle_variant
+        assert isinstance(tentacle_variant, TentacleSpecVariant)
+        tentacle = tentacle_variant.tentacle
+        serial_port = tentacle.dut.get_tty()
+
+        args = [
+            sys.executable,
+            testrunner,
+            f"--result-dir={testargs.testresults_directory.directory_test}",
+            f"--test-instance=port:{serial_port}",
+            "--jobs=1",
+            testfile,
+        ]
+        logfile = testargs.testresults_directory("testresults.txt").filename
+        env = None
+        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
+            tentacle_subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+                env=env,
+                testrun=self,
+                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+                success_returncodes=[0, 1],
+            )
+        else:
+            subprocess_run(
+                args=args,
+                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+                env=env,
+                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+                logfile=logfile,
+                timeout_s=self.timeout_s,
+                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+                success_returncodes=[0, 1],
+            )
+        return True
 
 
 @dataclasses.dataclass(slots=True, order=True)

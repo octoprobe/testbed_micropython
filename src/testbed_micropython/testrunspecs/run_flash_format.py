@@ -57,9 +57,6 @@ flash_format()
 
 class TestRunFlashFormat(TestRun):
     def test(self, testargs: TestArgs) -> None:
-        if testargs.debug_skip_tests_with_message:
-            return
-
         tentacle = self.tentacle_variant.tentacle
         mcu = tentacle.get_tag(TAG_MCU)
         if mcu is None:
