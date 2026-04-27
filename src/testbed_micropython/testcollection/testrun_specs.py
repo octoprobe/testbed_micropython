@@ -33,7 +33,7 @@ from ..testcollection.constants import (
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class TestArgs:
     testresults_directory: ResultsDir
     repo_micropython_tests: pathlib.Path

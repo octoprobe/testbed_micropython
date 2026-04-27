@@ -22,7 +22,7 @@ from ..util_mpycross import copy_mpycross
 logger = logging.getLogger(__file__)
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class EventFirmwareSpec(util_multiprocessing.EventBase):
     firmware_spec: FirmwareBuildSpec
     start_s: float
@@ -38,7 +38,7 @@ class EventFirmwareSpec(util_multiprocessing.EventBase):
         return f"{self.duration_s:0.1f}s"
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class EventExitFirmware(util_multiprocessing.EventExit):
     pass
 

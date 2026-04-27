@@ -44,7 +44,7 @@ class ReportTentacle:
         return f"{self.label}({self.board})"
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class Task:
     start_s: float
     end_s: float
@@ -162,7 +162,7 @@ class Tasks(list[Task]):
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class ReportRow:
     time_s: float
     duration_s: float | None = None
@@ -245,13 +245,13 @@ class ReportRows(list[ReportRow]):
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTentacle:
     tentacle_id: str
     tentacle: str
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTentacles:
     next_tentacle_id: int = ord("A")
     legend_tentacles: list[LegendTentacle] = dataclasses.field(default_factory=list)
@@ -276,7 +276,7 @@ class LegendTentacles:
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTask:
     task_id: str
     task: Task
@@ -300,7 +300,7 @@ class LegendTask:
         return f"{self.task_id}({build_ids_text})"
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTasks:
     next_task_id: int = 1
     next_mpbuild_id: int = ord("a")

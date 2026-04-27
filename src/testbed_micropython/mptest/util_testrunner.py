@@ -67,7 +67,7 @@ _TESTBED_LOCK = TestbedLock()
 logger = logging.getLogger(__file__)
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class EventExitRunOneTest(util_multiprocessing.EventExit):
     testid: str
 

@@ -160,7 +160,7 @@ class Tasks(list[Task]):
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class ReportRow:
     start_s: float
     dict_columns: dict[str, LegendTask] = dataclasses.field(default_factory=dict)
@@ -213,7 +213,7 @@ class ReportRows(list[ReportRow]):
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTentacle:
     tentacle_id: int
     tentacle: str
@@ -226,7 +226,7 @@ class LegendTentacle:
         return chr(self.tentacle_id)
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTentacles:
     next_tentacle_id: int = ord("A")
     legend_tentacles: list[LegendTentacle] = dataclasses.field(default_factory=list)
@@ -249,7 +249,7 @@ class LegendTentacles:
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTask:
     task_id: int
     task: Task
@@ -262,7 +262,7 @@ class LegendTask:
         return str(self.task_id)
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class LegendTasks:
     next_task_id: int = 1
     legend_tasks: list[LegendTask] = dataclasses.field(default_factory=list)
@@ -293,7 +293,7 @@ class LegendTasks:
         )
 
 
-@dataclasses.dataclass(repr=True)
+@dataclasses.dataclass(repr=True, slots=True)
 class TaskReport:
     tasks: Tasks
     active_legend_tasks: set[LegendTask] = dataclasses.field(default_factory=set)

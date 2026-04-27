@@ -34,7 +34,7 @@ class TestRole(enum.StrEnum):
     """
 
 
-@dataclasses.dataclass(frozen=True, unsafe_hash=True, order=True)
+@dataclasses.dataclass(frozen=True, slots=True, unsafe_hash=True, order=True)
 class TentacleSpecVariant:
     tentacle: TentacleMicropython
     variant: str

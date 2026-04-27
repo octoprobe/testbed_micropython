@@ -34,7 +34,7 @@ logger = logging.getLogger(__file__)
 NATMOD_LIBS = ("btree", "deflate", "framebuf", "heapq", "random", "re")
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, slots=True)
 class Arch:
     arch: str
     container: str

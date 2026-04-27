@@ -11,7 +11,7 @@ from octoprobe.util_micropython_boards import VARIANT_SEPARATOR, VARIANT_UNKNOWN
 from .constants import TAG_BOARD, TAG_BUILD_VARIANTS
 
 
-@dataclasses.dataclass(frozen=True, repr=True, eq=True, order=True)
+@dataclasses.dataclass(frozen=True, slots=True, repr=True, eq=True, order=True)
 class TentacleSpecMicropython(TentacleSpecBase):
     mcu_config: McuConfig | None = None
 
@@ -79,7 +79,7 @@ class TentacleSpecMicropython(TentacleSpecBase):
         return self.build_variants[-1 if last else 0]
 
 
-@dataclasses.dataclass(frozen=True, repr=True)
+@dataclasses.dataclass(frozen=True, slots=True, repr=True)
 class McuConfig:
     """
     These variables will be replaced in micropython code
