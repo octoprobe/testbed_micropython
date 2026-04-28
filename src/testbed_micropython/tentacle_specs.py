@@ -210,6 +210,7 @@ Connections
 
 * GND
   * Board GND <=> Tentacle GND
+  * Tentacle v0.6 C217/1uF: unsolder
 
 * Bootmode
   * Board GPIO0  <=> Tentacle Relay 1b
@@ -224,6 +225,7 @@ Connections
 
 v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
+v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF on Tentaclce!
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C3_DEVKIT",

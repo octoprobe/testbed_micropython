@@ -163,7 +163,7 @@ TENTACLES_INVENTORY = (
             (
                 "de6528b3cb15-5c34",
                 HwVersion.V06,
-                "v1.1",
+                "v1.2",
                 tentacle_specs.ESP32_C3_DEVKIT,
             ),
         ],
