@@ -175,6 +175,7 @@ config = wlan.ifconfig()
 
         break
 
-    config = dut.mp_remote.read_str("config")
+    config = dut.mp_remote.read_list("config")
+    # Example config: ('192.168.1.160', '255.255.255.0', '192.168.1.1', '192.168.1.1')
     connect_duration_s = dut.mp_remote.read_int("connect_duration_ms") / 1000.0
     logger.info(f"WLAN {connect_duration_s=:0.1f} {config=}")
