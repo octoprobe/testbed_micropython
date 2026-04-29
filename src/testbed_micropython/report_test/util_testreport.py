@@ -21,6 +21,7 @@ from .util_baseclasses import (
     ResultTestOutcome,
 )
 from .util_constants import (
+    DIRECTORY_TEST_RETRY_POSTFIX,
     FILENAME_CONTEXT_JSON,
     FILENAME_CONTEXT_TESTGROUP_JSON,
     TIME_FORMAT,
@@ -83,6 +84,11 @@ class Data:
             for filename in directory_results.glob(
                 f"*/{FILENAME_CONTEXT_TESTGROUP_JSON}"
             ):
+                if DIRECTORY_TEST_RETRY_POSTFIX in filename.parent.name:
+                    # Example filename.parent: RUN-TESTS_STANDARD,a@472b-ESP32_S3_DEVKIT-RETRY2
+                    # This is a test which failed: Skip it
+                    continue
+
                 json_text = filename.read_text()
                 json_dict = json.loads(json_text)
                 testgroup = ResultTestGroup(**json_dict)

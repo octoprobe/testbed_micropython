@@ -31,6 +31,7 @@ from octoprobe.util_testbed_lock import TestbedLock
 from .. import constants, util_multiprocessing
 from ..mptest.util_common import ArgsMpTest
 from ..report_task import util_report_renderer, util_report_tasks
+from ..report_test.util_constants import DIRECTORY_TEST_RETRY_POSTFIX
 from ..report_test.util_testreport import (
     ReportTestgroup,
     ReportTests,
@@ -785,24 +786,46 @@ def target_run_one_test_async(
     try:
         arg1.initfunc(arg1=arg1)
 
-        testresults_directory = ResultsDir(
-            directory_top=args.directory_results,
-            test_name=testid,
-            test_nodeid=testid,
-        )
-
-        with util_logging.Logs(testresults_directory.directory_test) as logs:
-            logfile = logs.filename
-
-            success = _target_run_one_test_async_a(
-                args=args,
-                ctxtestrun=ctxtestrun,
-                logfile=logfile,
-                testrun=testrun,
-                repo_micropython_tests=repo_micropython_tests,
-                testresults_directory=testresults_directory,
-                testid=testid,
+        i_retry = 1
+        while True:
+            testresults_directory = ResultsDir(
+                directory_top=args.directory_results,
+                test_name=testid,
+                test_nodeid=testid,
             )
+            directory_test = testresults_directory.directory_test
+
+            with util_logging.Logs(directory_test) as logs:
+                logfile = logs.filename
+
+                success = _target_run_one_test_async_a(
+                    args=args,
+                    ctxtestrun=ctxtestrun,
+                    logfile=logfile,
+                    testrun=testrun,
+                    repo_micropython_tests=repo_micropython_tests,
+                    testresults_directory=testresults_directory,
+                    testid=testid,
+                )
+
+            if success:
+                break
+
+            last_retry = i_retry >= constants.TEST_MAX_RETRIES
+            msg = f"Retry {i_retry} of {constants.TEST_MAX_RETRIES} failed!"
+            if last_retry:
+                msg += " Last_retry: Giving up!"
+            logger.info(msg)
+            if last_retry:
+                break
+
+            directory_test.rename(
+                directory_test.with_name(
+                    directory_test.name + f"{DIRECTORY_TEST_RETRY_POSTFIX}{i_retry}"
+                )
+            )
+            i_retry += 1
+
     finally:
         # We have to send a exit event before returing!
         arg1.queue_put(

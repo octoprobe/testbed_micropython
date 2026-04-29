@@ -60,6 +60,11 @@ Disable if set to None.
 """
 MPREMOTE_PROVOKE_ERROR_A = None
 
+TEST_MAX_RETRIES = 2
+"""
+If a test fails: maximum retries
+"""
+
 
 class EnumTentacleType(enum.StrEnum):
     TENTACLE_MCU = TENTACLE_TYPE_MCU
