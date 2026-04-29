@@ -8,13 +8,12 @@ import threading
 import time
 import typing
 
-from testbed_micropython.testcollection.testrun_specs import TestRun
+from octoprobe.util_subprocess import SubprocessExitCodeException
+
+from .constants import MPREMOTE_PROVOKE_ERROR_A
+from .testcollection.testrun_specs import TestRun
 
 logger = logging.getLogger(__file__)
-
-
-class SubprocessExitCodeException(Exception):
-    pass
 
 
 class TentaclePowerOffTimer:
@@ -76,7 +75,9 @@ class TentaclePowerOffTimer:
             self._thread.start()
         return self
 
-    def __exit__(self, exc_type:typing.Any, value:typing.Any, traceback:typing.Any) -> None:
+    def __exit__(
+        self, exc_type: typing.Any, value: typing.Any, traceback: typing.Any
+    ) -> None:
         # Ensure timer is cancelled and thread is finished
         self.cancel()
 
@@ -205,6 +206,10 @@ def tentacle_subprocess_run(
                             )
 
                 proc = sub_run()
+                if MPREMOTE_PROVOKE_ERROR_A is not None:
+                    f.write(
+                        f"\n\nMPREMOTE_PROVOKE_ERROR_A is defined. This will provoke an error!\n      {MPREMOTE_PROVOKE_ERROR_A}\n\n"
+                    )
                 f.write(f"\n\nreturncode={proc.returncode}\n")
                 f.write(f"duration={time.monotonic() - begin_s:0.3f}s\n")
             except subprocess.TimeoutExpired as e:
@@ -239,6 +244,10 @@ def tentacle_subprocess_run(
             f(f"  stderr: {stderr}")
         else:
             f(f"  logfile: {logfile}")
+
+    if MPREMOTE_PROVOKE_ERROR_A is not None:
+        logger.info("MPREMOTE_ERROR_DETECT is set: We force error code 2!")
+        proc.returncode = 2
 
     if proc.returncode not in success_returncodes:
         log(logger.warning)
