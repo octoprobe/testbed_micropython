@@ -54,6 +54,10 @@ class Data:
         return sorted(self.testgroups, key=lambda testgroup: testgroup.testid)
 
     @property
+    def group_retries(self) -> int:
+        return sum([tg.retry - 1 for tg in self.testgroups])
+
+    @property
     def summary(self) -> list[DataSummaryLine]:
         return DataSummaryLine.factory_summary_lines(
             self.result_context, self.testgroups

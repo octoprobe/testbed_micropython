@@ -719,6 +719,8 @@ def _target_run_one_test_async_a(
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
     testid: str,
+    retry: int,
+    max_retries: int,
 ) -> bool:
     """
     return True on success
@@ -729,6 +731,8 @@ def _target_run_one_test_async_a(
         testrun=testrun,
         logfile=logfile,
     )
+    report_test.report.retry = retry
+    report_test.report.max_retries = max_retries
 
     def duration_text(duration_s: float | None = None) -> str:
         if duration_s is None:
@@ -786,7 +790,7 @@ def target_run_one_test_async(
     try:
         arg1.initfunc(arg1=arg1)
 
-        i_retry = 1
+        retry = 1
         while True:
             testresults_directory = ResultsDir(
                 directory_top=args.directory_results,
@@ -806,13 +810,15 @@ def target_run_one_test_async(
                     repo_micropython_tests=repo_micropython_tests,
                     testresults_directory=testresults_directory,
                     testid=testid,
+                    retry=retry,
+                    max_retries=constants.TEST_MAX_RETRIES,
                 )
 
             if success:
                 break
 
-            last_retry = i_retry >= constants.TEST_MAX_RETRIES
-            msg = f"Retry {i_retry} of {constants.TEST_MAX_RETRIES} failed!"
+            last_retry = retry >= constants.TEST_MAX_RETRIES
+            msg = f"Retry {retry}({constants.TEST_MAX_RETRIES}) failed!"
             if last_retry:
                 msg += " Last_retry: Giving up!"
             logger.info(msg)
@@ -821,10 +827,10 @@ def target_run_one_test_async(
 
             directory_test.rename(
                 directory_test.with_name(
-                    directory_test.name + f"{DIRECTORY_TEST_RETRY_POSTFIX}{i_retry}"
+                    directory_test.name + f"{DIRECTORY_TEST_RETRY_POSTFIX}{retry}"
                 )
             )
-            i_retry += 1
+            retry += 1
 
     finally:
         # We have to send a exit event before returing!
