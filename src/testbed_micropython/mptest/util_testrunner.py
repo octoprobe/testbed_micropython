@@ -814,16 +814,16 @@ def target_run_one_test_async(
                     max_retries=constants.TEST_MAX_RETRIES,
                 )
 
-            if success:
-                break
+                if success:
+                    break
 
-            last_retry = retry >= constants.TEST_MAX_RETRIES
-            msg = f"Retry {retry}({constants.TEST_MAX_RETRIES}) failed!"
-            if last_retry:
-                msg += " Last_retry: Giving up!"
-            logger.info(msg)
-            if last_retry:
-                break
+                last_retry = retry >= constants.TEST_MAX_RETRIES
+                msg = f"Retry {retry}({constants.TEST_MAX_RETRIES}) failed!"
+                if last_retry:
+                    msg += " Last_retry: Giving up!"
+                logger.info(msg)
+                if last_retry:
+                    break
 
             directory_test.rename(
                 directory_test.with_name(
