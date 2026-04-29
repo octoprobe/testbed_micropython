@@ -41,6 +41,7 @@ from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestArgs, TestRun, TestRunSpec
 from ..testrunspecs import (
+    run_flash_format,
     run_multinet,
     run_natmodtests,
     run_perftest,
@@ -85,7 +86,8 @@ _TESTRUN_SPECS = [
     run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS,
     # We probably had corrupt filesystems due to powerdrops
     # Now these problems have gone and we can uncommet flash format
-    # run_flash_format.TESTRUNSPEC_RUN_FLASH_FORMAT,
+    # 2026-04-29: Again, the filesystem of a rpi2 was corrupt.
+    run_flash_format.TESTRUNSPEC_RUN_FLASH_FORMAT,
 ]
 DICT_TESTRUN_SPECS = {s.label: s for s in _TESTRUN_SPECS}
 
