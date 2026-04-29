@@ -182,6 +182,8 @@ class ReportTestgroup:
         testresults_directory: ResultsDir,
         testrun: TestRun,
         logfile: pathlib.Path,
+        retry: int,
+        max_retries: int,
     ) -> None:
         self._report_written = False
         self.testresults_directory = testresults_directory
@@ -202,6 +204,11 @@ class ReportTestgroup:
         self.report.tentacle_mcu = (
             testrun.tentacle_variant.tentacle.tentacle_spec.get_tag_mandatory(TAG_MCU)
         )
+        assert retry >= 1
+        assert max_retries >= retry
+        self.report.retry = retry
+        self.report.max_retries = max_retries
+
         if testrun.tentacle_reference is not None:
             self.report.tentacle_reference = testrun.tentacle_reference.label_short
 

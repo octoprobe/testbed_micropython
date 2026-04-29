@@ -281,8 +281,8 @@ class ResultTestGroup:
     """
     Example: RUN-TESTS_STANDARD
     """
-    retry: int = 0
-    max_retries: int = 0
+    retry: int = -1
+    max_retries: int = -1
 
     # tentacle_role: str = ""
     # """
