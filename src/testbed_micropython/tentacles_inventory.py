@@ -160,6 +160,7 @@ TENTACLES_INVENTORY = (
         testbed_instance="nl_jan_1",
         tentacles=[
             ("de6528b3cb15-6c34", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO_W),
+            ("de6528b3cb49-6038", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO_W),
             (
                 "de6528b3cb15-5c34",
                 HwVersion.V06,
