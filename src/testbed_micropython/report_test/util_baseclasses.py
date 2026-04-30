@@ -247,6 +247,11 @@ class ResultContext:
         duration = self.time_end_datetime - self.time_start_datetime
         return util_constants.seconds_to_duration(seconds=int(duration.total_seconds()))
 
+    @property
+    def time_duration_s(self) -> float:
+        duration = self.time_end_datetime - self.time_start_datetime
+        return duration.total_seconds()
+
 
 @dataclasses.dataclass(slots=True)
 class ResultTestGroup:

@@ -69,6 +69,15 @@ class Data:
 
         return SummaryByTest.factory(self.testgroups)
 
+    @property
+    def duration_per_test_text(self) -> str:
+        tests_total = sum([len(tg.outcomes) - 1 for tg in self.testgroups])
+        if tests_total == 0:
+            return "-"
+        return (
+            f"{1000.0 * self.result_context.time_duration_s / tests_total:0.0f}ms/test"
+        )
+
     @staticmethod
     def gather_json_files(directory_results: pathlib.Path) -> Data:
         """

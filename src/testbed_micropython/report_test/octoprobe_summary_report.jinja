@@ -3,8 +3,12 @@
 {% set result_context = data.result_context %}
 
 * Trigger: {{ result_context.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
+
 * Testbed: {{ result_context.testbed_instance|md_escape }} {{ result_context.testbed_name|md_escape }}
-* Start - End: {{ result_context.time_start|md_escape }} - {{ result_context.time_end|md_escape }}, {{ result_context.time_duration_text }}
+
+* Start - End: {{ result_context.time_start|md_escape }} - {{ result_context.time_end|md_escape }}
+
+* Duration: {{ result_context.time_duration_text }} {{ data.duration_per_test_text|md_escape }}
 
 * Repo Firmware: {{ result_context.ref_firmware2.markdown }} {% if result_context.ref_firmware_metadata %} [{{ result_context.ref_firmware_metadata.commit_comment }}]({{ result_context.ref_firmware_metadata.url_commit_hash }}) {% endif %}
 {% if result_context.ref_firmware_metadata %}
