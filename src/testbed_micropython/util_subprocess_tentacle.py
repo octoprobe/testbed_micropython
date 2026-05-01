@@ -8,6 +8,7 @@ import threading
 import time
 import typing
 
+from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TERMINATE_PAUSE_S
 from octoprobe.util_subprocess import SubprocessExitCodeException
 
 from .constants import MPREMOTE_PROVOKE_ERROR_A
@@ -170,7 +171,7 @@ def tentacle_subprocess_run(
                     ) as process:
                         with TentaclePowerOffTimer(
                             testrun=testrun,
-                            timeout_s=timeout_s,
+                            timeout_s=timeout_s - 2 * SUBPROCESS_TERMINATE_PAUSE_S,
                             f=f,
                         ) as tenacle_power_off_timer:
                             stdout = stderr = "...empty...\n"
@@ -212,16 +213,15 @@ def tentacle_subprocess_run(
                     )
                 f.write(f"\n\nreturncode={proc.returncode}\n")
                 f.write(f"duration={time.monotonic() - begin_s:0.3f}s\n")
-            except subprocess.TimeoutExpired as e:
+            except subprocess.TimeoutExpired:
                 f.write("\n\n")
-                f.write(f"TimeoutExpired after {timeout_s=}: {e}\n")
+                f.write(f"TimeoutExpired after {timeout_s=}\n")
                 # Does it take some time for the subprocess to fully die?
                 # To be sure, we wait some time.
                 # This should avoid to unpower the tentacle before the subprocess really terminated.
-                dying_gasp_timeout_s = 10.0
-                f.write(f"Waiting for another {dying_gasp_timeout_s=}s\n")
+                f.write(f"Waiting for another {SUBPROCESS_TERMINATE_PAUSE_S=}s\n")
                 f.flush()
-                time.sleep(dying_gasp_timeout_s)
+                time.sleep(SUBPROCESS_TERMINATE_PAUSE_S)
                 f.write("DONE\n")
                 f.flush()
                 raise

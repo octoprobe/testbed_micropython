@@ -55,7 +55,7 @@ class Data:
 
     @property
     def group_retries(self) -> int:
-        return sum([tg.retry - 1 for tg in self.testgroups])
+        return sum(tg.retry - 1 for tg in self.testgroups)
 
     @property
     def summary(self) -> list[DataSummaryLine]:
@@ -71,7 +71,7 @@ class Data:
 
     @property
     def duration_per_test_text(self) -> str:
-        tests_total = sum([len(tg.outcomes) - 1 for tg in self.testgroups])
+        tests_total = sum(len(tg.outcomes) - 1 for tg in self.testgroups)
         if tests_total == 0:
             return "-"
         return (
