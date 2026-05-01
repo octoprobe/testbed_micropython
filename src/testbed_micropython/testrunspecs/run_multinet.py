@@ -4,9 +4,6 @@ import abc
 import logging
 import sys
 
-from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
-from octoprobe.util_subprocess import subprocess_run
-
 from ..constants import EnumFut
 from ..mptest import util_common
 from ..tentacle_spec import TentacleMicropython
@@ -65,29 +62,17 @@ class TestRunReference(TestRun):
             f"--test-instance=port:{tentacle_instance1.dut.get_tty()}",
             *list_tests,
         ]
-        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
-            tentacle_subprocess_run(
-                args=args,
-                cwd=cwd,
-                testrun=self,
-                env=ENV_MICROPYTHON_TESTS,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
-        else:
-            subprocess_run(
-                args=args,
-                cwd=cwd,
-                env=ENV_MICROPYTHON_TESTS,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
+        tentacle_subprocess_run(
+            args=args,
+            cwd=cwd,
+            testrun=self,
+            env=ENV_MICROPYTHON_TESTS,
+            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+            logfile=logfile,
+            timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+            success_returncodes=[0, 1],
+        )
 
     @property
     def tentacle_instance0(self) -> TentacleMicropython:

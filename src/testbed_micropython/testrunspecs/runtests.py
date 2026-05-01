@@ -4,9 +4,6 @@ import logging
 import re
 import sys
 
-from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
-from octoprobe.util_subprocess import subprocess_run
-
 from testbed_micropython import constants
 from testbed_micropython.util_mpycross import get_filename_mpycross
 
@@ -119,29 +116,17 @@ class TestRunRunTests(TestRun):
             # "misc/cexample_class.py",
         ]
         env = env_for_mpycross()
-        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
-            tentacle_subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-                testrun=self,
-                env=env,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
-        else:
-            subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-                env=env,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
+        tentacle_subprocess_run(
+            args=args,
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            testrun=self,
+            env=env,
+            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+            logfile=logfile,
+            timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+            success_returncodes=[0, 1],
+        )
 
 
 TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(

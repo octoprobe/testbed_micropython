@@ -9,7 +9,6 @@ import sys
 
 from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_constants import relative_cwd
-from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
 from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_run
 
 from testbed_micropython import constants
@@ -239,27 +238,16 @@ class TestRunRunTests(TestRun):
             f"--result-dir={testargs.testresults_directory.directory_test}",
             f"--test-instance=port:{tentacle.dut.get_tty()}",
         ] + tests_natmod
-        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
-            tentacle_subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / "tests",
-                testrun=self,
-                logfile=logfile,
-                env=ENV_MICROPYTHON_TESTS,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
-        else:
-            subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / "tests",
-                env=ENV_MICROPYTHON_TESTS,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
+        tentacle_subprocess_run(
+            args=args,
+            cwd=testargs.repo_micropython_tests / "tests",
+            testrun=self,
+            logfile=logfile,
+            env=ENV_MICROPYTHON_TESTS,
+            timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+            success_returncodes=[0, 1],
+        )
 
 
 TESTRUNSPEC_RUN_NATMODTESTS = TestRunSpec(

@@ -31,7 +31,6 @@ from octoprobe.util_testbed_lock import TestbedLock
 from .. import constants, util_multiprocessing
 from ..mptest.util_common import ArgsMpTest
 from ..report_task import util_report_renderer, util_report_tasks
-from ..report_test.util_constants import DIRECTORY_TEST_RETRY_POSTFIX
 from ..report_test.util_testreport import (
     ReportTestgroup,
     ReportTests,
@@ -825,11 +824,6 @@ def target_run_one_test_async(
                 if last_retry:
                     break
 
-            directory_test.rename(
-                directory_test.with_name(
-                    directory_test.name + f"{DIRECTORY_TEST_RETRY_POSTFIX}{retry}"
-                )
-            )
             retry += 1
 
     finally:

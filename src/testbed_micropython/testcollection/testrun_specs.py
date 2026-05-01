@@ -10,10 +10,8 @@ import typing
 from collections.abc import Iterator
 
 from octoprobe.util_baseclasses import OctoprobeTestSkipException
-from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 from octoprobe.util_pytest.util_resultdir import ResultsDir
-from octoprobe.util_subprocess import subprocess_run
 
 from .. import constants
 from ..tentacle_spec import TentacleMicropython
@@ -277,29 +275,17 @@ class TestRun:
         ]
         logfile = testargs.testresults_directory("testresults.txt").filename
         env = None
-        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
-            tentacle_subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-                env=env,
-                testrun=self,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
-        else:
-            subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-                env=env,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-                # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
-                success_returncodes=[0, 1],
-            )
+        tentacle_subprocess_run(
+            args=args,
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            env=env,
+            testrun=self,
+            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+            logfile=logfile,
+            timeout_s=self.timeout_s,
+            # TODO: Remove the following line as soon returncode of 'run-multitest.py' is fixed.
+            success_returncodes=[0, 1],
+        )
         return True
 
 

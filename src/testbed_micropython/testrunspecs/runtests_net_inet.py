@@ -3,9 +3,6 @@ from __future__ import annotations
 import logging
 import sys
 
-from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TENTACLE_DUT_TIMEOUT
-from octoprobe.util_subprocess import subprocess_run
-
 from ..constants import EnumFut
 from ..mptest import util_common
 from ..testcollection.baseclasses_spec import TentacleSpecVariant
@@ -73,25 +70,15 @@ class TestRunRunTests(TestRun):
             "--jobs=1",
             f"--result-dir={testargs.testresults_directory.directory_test}",
         ]
-        if SUBPROCESS_TENTACLE_DUT_TIMEOUT:
-            tentacle_subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-                testrun=self,
-                env=ENV_MICROPYTHON_TESTS,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-            )
-        else:
-            subprocess_run(
-                args=args,
-                cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
-                env=ENV_MICROPYTHON_TESTS,
-                # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
-                logfile=logfile,
-                timeout_s=self.timeout_s,
-            )
+        tentacle_subprocess_run(
+            args=args,
+            cwd=testargs.repo_micropython_tests / MICROPYTHON_DIRECTORY_TESTS,
+            testrun=self,
+            env=ENV_MICROPYTHON_TESTS,
+            # logfile=testresults_directory(f"run-tests-{test_dir}.txt").filename,
+            logfile=logfile,
+            timeout_s=self.timeout_s,
+        )
 
 
 TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(

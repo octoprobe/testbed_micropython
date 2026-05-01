@@ -53,12 +53,11 @@ See comments of 'DIRECTORY_OCTOPROBE_SRC_GIT'
 URL_FILENAME_DEFAULT = "."
 
 # pylint: disable=invalid-name
-MPREMOTE_PROVOKE_ERROR_A: str | None = "error: could not detect test instance"
+SUBPROCESS_PROVOKE_RETURNCODE2: bool = False
 """
 Will produce a mpremote error which happens very rarely when a tentacle can't be detected by mpremote.
 Disable if set to None.
 """
-MPREMOTE_PROVOKE_ERROR_A = None
 
 TEST_MAX_RETRIES = 2
 """
