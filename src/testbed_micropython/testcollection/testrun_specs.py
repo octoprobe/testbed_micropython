@@ -56,7 +56,6 @@ class TestRun:
     This is only set if subclass of 'class TestRunReference()' respective 'testrun_spec.requires_reference_tentacle'.
     """
     flash_skip: bool
-    idx0: int = ord("z") - ord("a")
 
     def __post_init__(self) -> None:
         assert isinstance(self.testrun_spec, TestRunSpec)
@@ -67,8 +66,6 @@ class TestRun:
         else:
             self.tentacle_reference = None
         assert isinstance(self.flash_skip, bool)
-        assert isinstance(self.idx0, int)
-
         assert self.tentacle_variant.tentacle != self.tentacle_reference
 
     def mark_as_done(self) -> None:
@@ -99,12 +96,32 @@ class TestRun:
             return
         self.test(testargs=testargs)
 
-    @property
-    def label_testrun(self) -> str:
+    def label_testrun_idx0(self, idx0: int) -> str:
         """
         Example: 'RUN-TESTS_EXTMOD_HARDWARE,a'
         """
-        return f"{self.testrun_spec.label}{DELIMITER_TESTRUN}{self.tentacle_variant.testrun_idx_text(idx0=self.idx0)}"
+
+        return f"{self.testrun_spec.label}{DELIMITER_TESTRUN}{self.tentacle_variant.testrun_idx_text(idx0=idx0)}"
+
+    def testid_idx0(self, idx0: int) -> str:
+        """
+        Example: run-perfbench.py,a@2d2d-RPI_PICO2-RISCV_GENERIC
+        This is the unique id of the testrun.
+        """
+        return "".join(
+            [
+                self.label_testrun_idx0(idx0=idx0),
+                DELIMITER_TENTACLE,
+                self.tentacle_variant_role_text,
+            ]
+        )
+
+    @property
+    def label_testrun(self) -> str:
+        """
+        Example: 'RUN-TESTS_EXTMOD_HARDWARE'
+        """
+        return f"{self.testrun_spec.label}"
 
     @property
     def testid(self) -> str:

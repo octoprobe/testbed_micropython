@@ -365,7 +365,6 @@ def test(
                 only_fut=only_fut,
                 skip_fut=skip_fut,
                 arg="tests",
-                count=count,
             ),
             query_board=ArgsQuery.factory(
                 only_test=only_board,
@@ -380,6 +379,7 @@ def test(
             debug_fast_fake_tests=debug_fast_fake_tests,
             debug_skip_usb_error=debug_skip_usb_error,
             reference_board=reference_board,
+            count=count,
         )
         testrunner = util_testrunner.TestRunner(args=args)
         logger.info(f"{' '.join(sys.argv)}")

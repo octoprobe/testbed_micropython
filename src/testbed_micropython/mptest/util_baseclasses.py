@@ -16,14 +16,8 @@ class ArgsQuery:
     skip_test: set[str] = dataclasses.field(default_factory=set)
     only_fut: set[EnumFut] = dataclasses.field(default_factory=set)
     skip_fut: set[EnumFut] = dataclasses.field(default_factory=set)
-    count: int = 0
-    """
-    Is only relevant for '--query-test'.
-    Every test should be repeated 'count' time.
-    """
 
     def __post_init__(self) -> None:
-        assert isinstance(self.count, int)
         for elements0 in (
             self.only_test,
             self.skip_test,
@@ -47,7 +41,6 @@ class ArgsQuery:
         only_fut: list[str] | None,
         skip_fut: list[str] | None,
         arg: str,
-        count: int = 0,
     ) -> ArgsQuery:
         if (only_test is not None) and (skip_test is not None):
             logger.error(
@@ -69,5 +62,4 @@ class ArgsQuery:
             skip_test=set(skip_test),
             only_fut={EnumFut.factory(fut) for fut in only_fut},
             skip_fut={EnumFut.factory(fut) for fut in skip_fut},
-            count=count,
         )

@@ -49,8 +49,12 @@ class Data:
     testgroups: list[ResultTestGroup] = dataclasses.field(default_factory=list)
 
     @property
+    def testgroups_success(self) -> list[ResultTestGroup]:
+        return [g for g in self.testgroups if not g.is_error]
+
+    @property
     def testgroups_ordered(self) -> list[ResultTestGroup]:
-        return sorted(self.testgroups, key=lambda testgroup: testgroup.testid)
+        return sorted(self.testgroups_success, key=lambda testgroup: testgroup.testid)
 
     @property
     def group_errors(self) -> int:
@@ -59,14 +63,14 @@ class Data:
     @property
     def summary(self) -> list[DataSummaryLine]:
         return DataSummaryLine.factory_summary_lines(
-            self.result_context, self.testgroups
+            self.result_context, self.testgroups_success
         )
 
     @property
     def summary_by_test(self) -> SummaryByTest:
         from .util_testreport_by_test import SummaryByTest
 
-        return SummaryByTest.factory(self.testgroups)
+        return SummaryByTest.factory(self.testgroups_success)
 
     @property
     def duration_per_test_text(self) -> str:
@@ -99,8 +103,6 @@ class Data:
                 json_text = filename.read_text()
                 json_dict = json.loads(json_text)
                 testgroup = ResultTestGroup(**json_dict)
-                if testgroup.is_error:
-                    continue
 
                 testgroup.outcomes = [
                     ResultTestOutcome(**r)  # type: ignore[arg-type, call-arg]

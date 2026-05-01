@@ -202,6 +202,11 @@ class Args:
     Limit parallel jobs.
     0: No limit
     """
+    count: int = 0
+    """
+    Is only relevant for '--query-test'.
+    Every test should be repeated 'count' time.
+    """
 
     def __post_init__(self) -> None:
         assert isinstance(self.mp_test, ArgsMpTest | None)
@@ -215,6 +220,7 @@ class Args:
         assert isinstance(self.debug_fast_fake_tests, bool)
         assert isinstance(self.debug_skip_usb_error, bool)
         assert isinstance(self.reference_board, str)
+        assert isinstance(self.count, int)
 
     @staticmethod
     def get_default_args(
@@ -712,23 +718,16 @@ def _target_run_one_test_async_b(
 def _target_run_one_test_async_a(
     args: Args,
     ctxtestrun: CtxTestRun,
-    logfile: pathlib.Path,
     testrun: TestRun,
     repo_micropython_tests: pathlib.Path,
     testresults_directory: ResultsDir,
     testid: str,
-    retry: int,
-    max_retries: int,
+    report_test: ReportTestgroup,
 ) -> bool:
     """
     return True on success
     """
     begin_s = time.monotonic()
-    report_test = ReportTestgroup(
-        testresults_directory=testresults_directory,
-        testrun=testrun,
-        logfile=logfile,
-    )
 
     def duration_text(duration_s: float | None = None) -> str:
         if duration_s is None:
@@ -782,46 +781,63 @@ def target_run_one_test_async(
 ) -> None:
     logfile = pathlib.Path("/here_is_the_logfile")
     success = False
-    testid = testrun.testid
     try:
         arg1.initfunc(arg1=arg1)
 
-        retry = 1
+        counter_error = 0
+        counter_success = 0
         while True:
+            testid_idx0 = testrun.testid_idx0(idx0=counter_success)
+
             testresults_directory = ResultsDir(
                 directory_top=args.directory_results,
-                test_name=testid,
-                test_nodeid=testid,
+                test_name=testid_idx0,
+                test_nodeid=testid_idx0,
             )
             directory_test = testresults_directory.directory_test
 
             with util_logging.Logs(directory_test) as logs:
                 logfile = logs.filename
 
+                report_test = ReportTestgroup(
+                    testresults_directory=testresults_directory,
+                    testrun=testrun,
+                    logfile=logfile,
+                )
+
                 success = _target_run_one_test_async_a(
                     args=args,
                     ctxtestrun=ctxtestrun,
-                    logfile=logfile,
                     testrun=testrun,
                     repo_micropython_tests=repo_micropython_tests,
                     testresults_directory=testresults_directory,
-                    testid=testid,
-                    retry=retry,
-                    max_retries=constants.TEST_MAX_RETRIES,
+                    testid=testid_idx0,
+                    report_test=report_test,
                 )
 
                 if success:
+                    counter_success += 1
+                    if counter_success == 1:
+                        # This is the first time
+                        if len(report_test.report.results_failed) == 0:
+                            # If the first run had NO failures
+                            # We assume there is no flakyness
+                            # and skip more tests.
+                            msg = "All tests succeeded. We assume no flakyness and stop testing this group."
+                            logger.info(msg)
+                            break
+                    if counter_success < args.count:
+                        continue
                     break
+                counter_error += 1
 
-                last_retry = retry >= constants.TEST_MAX_RETRIES
-                msg = f"Try {retry}({constants.TEST_MAX_RETRIES}) failed!"
+                msg = f"Run {counter_success + 1}({args.count}), retry {counter_error}({constants.TEST_MAX_RETRIES}) failed!"
+                last_retry = counter_error >= constants.TEST_MAX_RETRIES
                 if last_retry:
                     msg += " Last_retry: Giving up!"
                 logger.info(msg)
                 if last_retry:
                     break
-
-            retry += 1
 
     finally:
         # We have to send a exit event before returing!
@@ -830,6 +846,6 @@ def target_run_one_test_async(
                 arg1.target_unique_name,
                 success=success,
                 logfile=logfile,
-                testid=testid,
+                testid=testrun.testid,
             )
         )
