@@ -729,8 +729,6 @@ def _target_run_one_test_async_a(
         testresults_directory=testresults_directory,
         testrun=testrun,
         logfile=logfile,
-        retry=retry,
-        max_retries=max_retries,
     )
 
     def duration_text(duration_s: float | None = None) -> str:

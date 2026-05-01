@@ -21,7 +21,6 @@ from .util_baseclasses import (
     ResultTestOutcome,
 )
 from .util_constants import (
-    DIRECTORY_TEST_RETRY_POSTFIX,
     FILENAME_CONTEXT_JSON,
     FILENAME_CONTEXT_TESTGROUP_JSON,
     TIME_FORMAT,
@@ -54,8 +53,8 @@ class Data:
         return sorted(self.testgroups, key=lambda testgroup: testgroup.testid)
 
     @property
-    def group_retries(self) -> int:
-        return sum(tg.retry - 1 for tg in self.testgroups)
+    def group_errors(self) -> int:
+        return sum(tg.is_error for tg in self.testgroups)
 
     @property
     def summary(self) -> list[DataSummaryLine]:
@@ -97,14 +96,11 @@ class Data:
             for filename in directory_results.glob(
                 f"*/{FILENAME_CONTEXT_TESTGROUP_JSON}"
             ):
-                if DIRECTORY_TEST_RETRY_POSTFIX in filename.parent.name:
-                    # Example filename.parent: RUN-TESTS_STANDARD,a@472b-ESP32_S3_DEVKIT-RETRY2
-                    # This is a test which failed: Skip it
-                    continue
-
                 json_text = filename.read_text()
                 json_dict = json.loads(json_text)
                 testgroup = ResultTestGroup(**json_dict)
+                if testgroup.is_error:
+                    continue
 
                 testgroup.outcomes = [
                     ResultTestOutcome(**r)  # type: ignore[arg-type, call-arg]
@@ -191,8 +187,6 @@ class ReportTestgroup:
         testresults_directory: ResultsDir,
         testrun: TestRun,
         logfile: pathlib.Path,
-        retry: int,
-        max_retries: int,
     ) -> None:
         self._report_written = False
         self.testresults_directory = testresults_directory
@@ -213,10 +207,6 @@ class ReportTestgroup:
         self.report.tentacle_mcu = (
             testrun.tentacle_variant.tentacle.tentacle_spec.get_tag_mandatory(TAG_MCU)
         )
-        assert retry >= 1
-        assert max_retries >= retry
-        self.report.retry = retry
-        self.report.max_retries = max_retries
 
         if testrun.tentacle_reference is not None:
             self.report.tentacle_reference = testrun.tentacle_reference.label_short
@@ -254,6 +244,7 @@ class ReportTestgroup:
             self.report.msg_skipped = msg
         else:
             self.report.msg_error = msg
+            self.report.msg_skipped = ""
         self._write()
 
     def _write(self) -> None:

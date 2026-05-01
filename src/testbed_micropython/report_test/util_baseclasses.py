@@ -286,9 +286,6 @@ class ResultTestGroup:
     """
     Example: RUN-TESTS_STANDARD
     """
-    retry: int = -1
-    max_retries: int = -1
-
     # tentacle_role: str = ""
     # """
     # Example: second
@@ -327,6 +324,13 @@ class ResultTestGroup:
 
     def __post_init__(self) -> None:
         pass
+
+    @property
+    def is_error(self) -> bool:
+        return self.msg_error != ""
+
+    def is_skip(self) -> bool:
+        return self.msg_skipped != ""
 
     @property
     def results_failed(self) -> list[ResultTestOutcome]:
