@@ -39,7 +39,6 @@ class TentacleSpecVariant:
     tentacle: TentacleMicropython
     variant: str
     role: TestRole
-    testrun_idx0: int = 0
     """
     Example: 0, 1, 2
     If '--count=3' is given, there will be a 'TestRunSpec' for each run!
@@ -49,25 +48,22 @@ class TentacleSpecVariant:
         assert isinstance(self.tentacle, TentacleMicropython)
         assert isinstance(self.variant, str)
         assert isinstance(self.role, TestRole)
-        assert isinstance(self.testrun_idx0, int)
 
     def __repr__(self) -> str:
-        return f"{self.board_variant}({self.testrun_idx0}, {self.role.name})"
+        return f"{self.board_variant}({self.role.name})"
 
     def equals(self, tentacle_variant: TentacleSpecVariant) -> bool:
         assert isinstance(tentacle_variant, TentacleSpecVariant)
-        return (
-            (self.testrun_idx0 == tentacle_variant.testrun_idx0)
-            and (self.board_variant == tentacle_variant.board_variant)
-            and (self.role == tentacle_variant.role)
+        return (self.board_variant == tentacle_variant.board_variant) and (
+            self.role == tentacle_variant.role
         )
 
-    @property
-    def testrun_idx_text(self) -> str:
+    def testrun_idx_text(self, idx0: int) -> str:
         """
         Example: 'a'
         """
-        return chr(ord("a") + self.testrun_idx0)
+        assert idx0 >= 0
+        return chr(ord("a") + idx0)
 
     @property
     def board(self) -> str:
@@ -99,7 +95,6 @@ class TentacleSpecVariant:
 def tentacle_spec_2_tsvs(
     tentacle: TentacleMicropython,
     role: TestRole,
-    count: int,
     flash_skip: bool,
 ) -> list[TentacleSpecVariant]:
     """
@@ -107,7 +102,6 @@ def tentacle_spec_2_tsvs(
     """
     assert isinstance(tentacle, TentacleMicropython)
     assert isinstance(role, TestRole)
-    assert isinstance(count, int)
 
     variants = tentacle.tentacle_spec.build_variants
     if tentacle.tentacle_state.variants_required is not None:
@@ -116,9 +110,7 @@ def tentacle_spec_2_tsvs(
         # This board supports multiple variants: If we do not flash, we do not know the variant...
         variants = [VARIANT_UNKNOWN]
     return [
-        TentacleSpecVariant(tentacle=tentacle, variant=v, role=role, testrun_idx0=idx0)
-        for v in variants
-        for idx0 in range(count)
+        TentacleSpecVariant(tentacle=tentacle, variant=v, role=role) for v in variants
     ]
 
 
@@ -137,7 +129,6 @@ class ConnectedTentacles(list[TentacleMicropython]):
     def get_tsvs(
         self,
         roles: list[TestRole],
-        count: int,
         flash_skip: bool,
     ) -> TentacleSpecVariants:
         s: set[TentacleSpecVariant] = set()
@@ -146,7 +137,6 @@ class ConnectedTentacles(list[TentacleMicropython]):
                 for tsv in tentacle_spec_2_tsvs(
                     tentacle=tentacle,
                     role=role,
-                    count=count,
                     flash_skip=flash_skip,
                 ):
                     s.add(tsv)

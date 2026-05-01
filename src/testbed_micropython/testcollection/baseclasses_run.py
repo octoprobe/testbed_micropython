@@ -60,16 +60,10 @@ class TestRunSpecs(list[TestRunSpec]):
 
         return False
 
-    def assign_tentacles(
-        self,
-        tentacles: ConnectedTentacles,
-        count: int,
-        flash_skip: bool,
-    ) -> None:
+    def assign_tentacles(self, tentacles: ConnectedTentacles, flash_skip: bool) -> None:
         for testrun_spec in self:
             testrun_spec.assign_tentacles(
                 tentacles=tentacles,
-                count=count,
                 flash_skip=flash_skip,
             )
 

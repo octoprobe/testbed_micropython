@@ -56,6 +56,7 @@ class TestRun:
     This is only set if subclass of 'class TestRunReference()' respective 'testrun_spec.requires_reference_tentacle'.
     """
     flash_skip: bool
+    idx0: int = ord("z") - ord("a")
 
     def __post_init__(self) -> None:
         assert isinstance(self.testrun_spec, TestRunSpec)
@@ -66,6 +67,7 @@ class TestRun:
         else:
             self.tentacle_reference = None
         assert isinstance(self.flash_skip, bool)
+        assert isinstance(self.idx0, int)
 
         assert self.tentacle_variant.tentacle != self.tentacle_reference
 
@@ -100,9 +102,9 @@ class TestRun:
     @property
     def label_testrun(self) -> str:
         """
-        Example: 'RUN-TESTS_EXTMOD_HARDWARE#a'
+        Example: 'RUN-TESTS_EXTMOD_HARDWARE,a'
         """
-        return f"{self.testrun_spec.label}{DELIMITER_TESTRUN}{self.tentacle_variant.testrun_idx_text}"
+        return f"{self.testrun_spec.label}{DELIMITER_TESTRUN}{self.tentacle_variant.testrun_idx_text(idx0=self.idx0)}"
 
     @property
     def testid(self) -> str:
@@ -340,7 +342,6 @@ class TestRunSpec:
     def assign_tentacles(
         self,
         tentacles: ConnectedTentacles,
-        count: int,
         flash_skip: bool,
     ) -> None:
         """
@@ -356,7 +357,6 @@ class TestRunSpec:
 
         self.tsvs_todo = selected_tentacles.get_tsvs(
             roles=roles,
-            count=count,
             flash_skip=flash_skip,
         )
         self.tsvs_total_count = len(self.tsvs_todo)
@@ -401,7 +401,6 @@ class TestRunSpec:
                         tentacle=tentacle,
                         variant=tsv.variant,
                         role=tsv.role,
-                        testrun_idx0=tsv.testrun_idx0,
                     )
                     if self.requires_reference_tentacle:
                         if tentacle_variant.tentacle == tentacle_reference:
