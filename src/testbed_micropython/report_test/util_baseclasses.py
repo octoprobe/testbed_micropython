@@ -230,11 +230,13 @@ class ResultContext:
 
     @property
     def time_start_datetime(self) -> datetime:
-        return datetime.strptime(self.time_start, util_constants.TIME_FORMAT)
+        time_str = util_constants.patch_time_format(self.time_start)
+        return datetime.strptime(time_str, util_constants.TIME_FORMAT)
 
     @property
     def time_end_datetime(self) -> datetime:
-        return datetime.strptime(self.time_end, util_constants.TIME_FORMAT)
+        time_str = util_constants.patch_time_format(self.time_end)
+        return datetime.strptime(time_str, util_constants.TIME_FORMAT)
 
     @property
     def time_start_text(self) -> str:

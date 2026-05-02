@@ -5,7 +5,14 @@ FORMAT_HTTP_STARTED_AT = "%Y-%m-%d %H:%M"
 Used on the html-page on the report
 """
 
-TIME_FORMAT = "%Y-%m-%d_%H-%M-%S-%Z"
+TIME_FORMAT = "%Y-%m-%d_%H-%M-%S%z"
+
+
+def patch_time_format(time_str: str) -> str:
+    time_str = time_str.replace("-CET", "+0100")
+    time_str = time_str.replace("-CEST", "+0200")
+    return time_str
+
 
 FILENAME_CONTEXT_JSON = "context.json"
 

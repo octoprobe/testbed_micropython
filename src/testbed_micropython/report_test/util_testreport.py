@@ -24,6 +24,7 @@ from .util_constants import (
     FILENAME_CONTEXT_JSON,
     FILENAME_CONTEXT_TESTGROUP_JSON,
     TIME_FORMAT,
+    patch_time_format,
 )
 from .util_testreport_summary import DataSummaryLine
 
@@ -121,6 +122,7 @@ def now_formatted() -> str:
 
 
 def parse_formatted(time_str: str) -> time.struct_time:
+    time_str = patch_time_format(time_str)
     return time.strptime(time_str, TIME_FORMAT)
 
 
