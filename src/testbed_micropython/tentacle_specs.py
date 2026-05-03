@@ -27,6 +27,11 @@ from octoprobe import (
 from .constants import EnumFut, EnumTentacleType
 from .tentacle_spec import McuConfig, TentacleSpecMicropython
 
+# See "Tier" in https://github.com/micropython/micropython/tree/master
+TAG_TIER1 = ",tier=1"
+TAG_TIER2 = ",tier=2"
+TAG_TIER3 = ",tier=3"
+
 AA_UNASSEMBLED = TentacleSpecMicropython(
     doc="""This tentacle has not been assembled yet""",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
@@ -65,7 +70,8 @@ See: https://micropython.org/download/ADAFRUIT_ITSYBITSY_M0_EXPRESS/
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
     mcu_usb_id=util_mcu_samd.ADAFRUIT_ITSYBITSY_M0_EXPRESS_USB_ID,
-    tags="board=ADAFRUIT_ITSYBITSY_M0_EXPRESS,mcu=samd,programmer=samd_bossac",
+    tags="board=ADAFRUIT_ITSYBITSY_M0_EXPRESS,mcu=samd,programmer=samd_bossac"
+    + TAG_TIER1,
     programmer_args=["--offset=0x2000"],
     # -  Push the reset button twice or call machine.bootloader(). A drive
     #   icon should appear representing a virtual drive.
@@ -108,7 +114,7 @@ See: https://content.arduino.cc/assets/Pinout-NANOble_latest.png
         # EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_nrf.ARDUINO_NANO_33_USB_ID,
-    tags="board=ARDUINO_NANO_33_BLE_SENSE,mcu=nrf,programmer=bossac",
+    tags="board=ARDUINO_NANO_33_BLE_SENSE,mcu=nrf,programmer=bossac" + TAG_TIER1,
     programmer_args=["--offset=0x16000"],
     mcu_config=McuConfig(),
 )
@@ -146,7 +152,7 @@ This dongle uses SWD from PICO_PROBE for programming. This has not been implemen
         # EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_nrf.ARDUINO_NANO_33_USB_ID,
-    tags="board=pca10059,mcu=nrf,programmer=picoprobe",
+    tags="board=pca10059,mcu=nrf,programmer=picoprobe" + TAG_TIER2,
     programmer_args=[""],
     mcu_config=McuConfig(),
 )
@@ -185,7 +191,7 @@ v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp.ESP32_USB_ID,
-    tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool",
+    tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool" + TAG_TIER1,
     programmer_args=[
         "--chip=esp32",
         "--baud=460800",
@@ -236,7 +242,7 @@ v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF o
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp.ESP32_C3_USB_ID,
-    tags="board=ESP32_GENERIC_C3,mcu=esp32,programmer=esptool",
+    tags="board=ESP32_GENERIC_C3,mcu=esp32,programmer=esptool" + TAG_TIER1,
     programmer_args=[
         "--chip=esp32c3",
         "--baud=921600",
@@ -289,7 +295,7 @@ v1.2: Use GPIO0 to allow octoprobe to select bootloader mode
     ],
     mcu_usb_id=util_mcu_esp.ESP32_S3_USB_ID,
     # TODO: board=ESP32_GENERIC_S3:UM_FEATHERS3
-    tags="board=ESP32_GENERIC_S3,mcu=esp32,programmer=esptool",
+    tags="board=ESP32_GENERIC_S3,mcu=esp32,programmer=esptool" + TAG_TIER1,
     # https://micropython.org/download/ESP32_GENERIC_S3/
     programmer_args=[
         "--chip=esp32s3",
@@ -337,7 +343,7 @@ v1.1: Use relais to allow octoprobe to press boot button
         # EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_esp.LOLIN_C3_MINI_USB_ID,
-    tags="board=LOLIN_C3_MINI,mcu=esp32,programmer=esptool",
+    tags="board=LOLIN_C3_MINI,mcu=esp32,programmer=esptool" + TAG_TIER1,
     programmer_args=[
         "--chip=esp32c3",
         "--baud=460800",
@@ -377,7 +383,7 @@ v1.0: initial
         EnumFut.FUT_EXTMOD_HARDWARE,
         EnumFut.FUT_WLAN,
     ],
-    tags="board=ESP8266_GENERIC,mcu=esp8266,programmer=esptool",
+    tags="board=ESP8266_GENERIC,mcu=esp8266,programmer=esptool" + TAG_TIER3,
     programmer_args=[
         "--chip=esp8266",
         "--baud=1000000",
@@ -445,7 +451,7 @@ v1.0: initial
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_pyboard.NUCLEO_WB55_USB_ID,
-    tags="mcu=stm32,programmer=dfu-util",
+    tags="mcu=stm32,programmer=dfu-util" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -480,7 +486,8 @@ v1.0: initial
     ],
     mcu_usb_id=util_mcu_pyboard.PYBOARD_USB_ID,
     # TODO: Enable all board variants when issue fixed: https://github.com/micropython/micropython/issues/16498
-    tags="build_variants=:DP:THREAD:DP_THREAD,mcu=stm32,programmer=dfu-util",
+    tags="build_variants=:DP:THREAD:DP_THREAD,mcu=stm32,programmer=dfu-util"
+    + TAG_TIER1,
     # tags="build_variants=,mcu=stm32,programmer=dfu-util",
     mcu_config=McuConfig(),
 )
@@ -498,7 +505,7 @@ Connections: same as PYBV11
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
-    tags="mcu=stm32,programmer=dfu-util",
+    tags="mcu=stm32,programmer=dfu-util" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -517,7 +524,7 @@ Connections: same as PYBV11
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
-    tags="mcu=stm32,programmer=dfu-util",
+    tags="mcu=stm32,programmer=dfu-util" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -536,7 +543,7 @@ Connections: same as PYBV11
         EnumFut.FUT_WLAN,
         EnumFut.FUT_BLE,
     ],
-    tags="mcu=stm32,programmer=dfu-util",
+    tags="mcu=stm32,programmer=dfu-util" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -553,7 +560,7 @@ Connections: The same as RPI_PICO2_W
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
-    tags="mcu=rp2,programmer=picotool",
+    tags="mcu=rp2,programmer=picotool" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -572,7 +579,7 @@ Connections: The same as RPI_PICO2_W
         EnumFut.FUT_BLE,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
-    tags="mcu=rp2,programmer=picotool",
+    tags="mcu=rp2,programmer=picotool" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -589,7 +596,7 @@ Connections: The same as RPI_PICO2_W
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
-    tags="build_variants=:RISCV,mcu=rp2,programmer=picotool",
+    tags="build_variants=:RISCV,mcu=rp2,programmer=picotool" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -627,7 +634,7 @@ v1.0: initial
     ],
     mcu_usb_id=util_mcu_pico.RPI_PICO2_USB_ID,
     # TODO: No RISCV variant for the RPI_PICO2_W.
-    tags="build_variants=,mcu=rp2,programmer=picotool",
+    tags="build_variants=,mcu=rp2,programmer=picotool" + TAG_TIER1,
     mcu_config=McuConfig(),
 )
 
@@ -668,7 +675,7 @@ v1.0: initial
         EnumFut.FUT_EXTMOD_HARDWARE,
     ],
     mcu_usb_id=util_mcu_mimxrt.TEENSY40_USB_ID,
-    tags="mcu=mimxrt,programmer=teensy_loader_cli",
+    tags="mcu=mimxrt,programmer=teensy_loader_cli" + TAG_TIER1,
     programmer_args=[
         "--mcu=imxrt1062",
     ],
@@ -705,7 +712,7 @@ v1.0: initial
         EnumFut.FUT_BLE,
     ],
     # mcu_usb_id=,
-    tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool",
+    tags="board=ESP32_GENERIC,mcu=esp32,programmer=esptool" + TAG_TIER1,
     programmer_args=[
         "--chip=esp32",
         "--baud=921600",
@@ -744,7 +751,7 @@ v1.0: initial
         EnumFut.FUT_WLAN,
     ],
     # TODO: board_variants=ESP32_GENERIC_S2:UM_FEATHERS2
-    tags="mcu=esp32,programmer=esptool",
+    tags="mcu=esp32,programmer=esptool" + TAG_TIER1,
     programmer_args=[
         "--chip=esp32s2",
         "write-flash",
@@ -783,7 +790,7 @@ v1.0: initial
         EnumFut.FUT_BLE,
     ],
     # TODO: board=ESP32_GENERIC_S3:UM_FEATHERS3
-    tags="mcu=esp32,programmer=esptool",
+    tags="mcu=esp32,programmer=esptool" + TAG_TIER1,
     programmer_args=[
         "--chip=esp32s3",
         "write-flash",

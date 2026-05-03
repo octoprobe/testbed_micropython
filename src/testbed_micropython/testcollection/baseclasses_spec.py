@@ -206,6 +206,30 @@ class ConnectedTentacles(list[TentacleMicropython]):
             selected_boards.intersection_update(board_query_only)
         if len(query.skip_test) > 0:
             selected_boards.difference_update(query.skip_test)
+        if len(query.only_tag) > 0:
+
+            def get_only_tag() -> set[str]:
+                def matched(t: TentacleMicropython) -> bool:
+                    assert isinstance(t, TentacleMicropython)
+                    for tag_spec in query.only_tag:
+                        # Example tag_spec: mcu=rp2
+                        # Example tag_spec: tier=1,2
+                        query_tag, _, query_values = tag_spec.partition("=")
+                        # Example query_tag: tier
+                        # Example query_tag: 1,2
+                        list_query_values = query_values.split(",")
+                        # Example list_query_values: ["1", "2"]
+                        value = t.get_tag(tag=query_tag)
+                        if value not in list_query_values:
+                            logger.debug(
+                                f"{t.label}: '{tag_spec}' not satisfied: Exclude from tests."
+                            )
+                            return False
+                    return True
+
+                return {t.tentacle_spec.tentacle_tag for t in self if matched(t)}
+
+            selected_boards.intersection_update(get_only_tag())
 
         selected_tentacles = [
             t for t in self if t.tentacle_spec.tentacle_tag in sorted(selected_boards)

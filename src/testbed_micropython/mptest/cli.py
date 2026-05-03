@@ -266,6 +266,12 @@ def test(
             autocompletion=complete_only_board,
         ),
     ] = constants.DEFAULT_REFERENCE_BOARD,  # noqa: UP007
+    only_tag: TyperAnnotated[
+        list[str],
+        typer.Option(
+            help="Specify a tag, for example --only_tag='tier=1,2' --only_tag='mcu=nrf' This will select tentacles for tier=1 and tier=2 and mcu=nrf."
+        ),
+    ] = None,  # noqa: UP007 # type: ignore
     only_test: TyperAnnotated[
         list[str],
         typer.Option(help="Run this test only.", autocompletion=complete_only_test),
@@ -364,6 +370,7 @@ def test(
                 skip_test=skip_test,
                 only_fut=only_fut,
                 skip_fut=skip_fut,
+                only_tag=only_tag,
                 arg="tests",
             ),
             query_board=ArgsQuery.factory(
@@ -371,6 +378,7 @@ def test(
                 skip_test=skip_board,
                 only_fut=only_fut,
                 skip_fut=skip_fut,
+                only_tag=only_tag,
                 arg="board",
             ),
             force_multiprocessing=force_multiprocessing,
