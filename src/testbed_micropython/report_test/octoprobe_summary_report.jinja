@@ -32,8 +32,6 @@
 * **Error: {{ result_context.error }}**
 {% endif %}
 
-* group errors: {{ data.group_errors }}
-
 ## Summary
 
 | Test | Groups<br>run | Groups<br>skipped | Groups<br>error | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
@@ -74,7 +72,7 @@ Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 
 | Testgroup (testid) | Test | Logfile |
 | - | - | - |
-{%- for testgroup in data.testgroups_ordered %}
+{%- for testgroup in data.testgroups_success_ordered %}
     {%- for result in testgroup.results_failed %}
 | {{ testgroup.testgroup_markdown(result_context, testid=True) }} | {{ result.name_markdown(result_context) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) |
     {%- endfor %}
@@ -85,7 +83,7 @@ Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 
 | Testgroup (testid) | Logfile | Error |
 | - | - | - |
-{%- for testgroup in data.testgroups_ordered %}
+{%- for testgroup in data.testgroups_error_ordered %}
     {%- if testgroup.msg_error %}
 | {{ testgroup.testgroup_markdown(result_context, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
     {%- endif %}
@@ -95,7 +93,7 @@ Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 
 | Testgroup (testid) | Logfile | Skip Reason |
 | - | - | - |
-{%- for testgroup in data.testgroups_ordered %}
+{%- for testgroup in data.testgroups_success_ordered %}
     {%- if testgroup.msg_skipped %}
 | {{ testgroup.testgroup_markdown(result_context, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_skipped|fix_links }}``` |
     {%- endif %}

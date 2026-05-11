@@ -34,12 +34,13 @@ class DataSummaryLine:
                 dict_summary[testgroup.testgroup] = line
             assert isinstance(line, DataSummaryLine)
 
-            if testgroup.msg_skipped != "":
+            if testgroup.is_skip:
                 line.group_skipped += 1
-            elif testgroup.msg_error != "":
+                continue
+            if testgroup.is_error:
                 line.group_error += 1
-            else:
-                line.group_run += 1
+                continue
+            line.group_run += 1
 
             for result in testgroup.outcomes:
                 if result.outcome == Outcome.FAILED:

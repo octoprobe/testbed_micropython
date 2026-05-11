@@ -331,6 +331,7 @@ class ResultTestGroup:
     def is_error(self) -> bool:
         return self.msg_error != ""
 
+    @property
     def is_skip(self) -> bool:
         return self.msg_skipped != ""
 

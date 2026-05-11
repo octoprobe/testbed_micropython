@@ -54,17 +54,22 @@ class Data:
         return [g for g in self.testgroups if not g.is_error]
 
     @property
-    def testgroups_ordered(self) -> list[ResultTestGroup]:
+    def testgroups_error(self) -> list[ResultTestGroup]:
+        return [g for g in self.testgroups if g.is_error]
+
+    @property
+    def testgroups_success_ordered(self) -> list[ResultTestGroup]:
         return sorted(self.testgroups_success, key=lambda testgroup: testgroup.testid)
 
     @property
-    def group_errors(self) -> int:
-        return sum(tg.is_error for tg in self.testgroups)
+    def testgroups_error_ordered(self) -> list[ResultTestGroup]:
+        return sorted(self.testgroups_error, key=lambda testgroup: testgroup.testid)
 
     @property
     def summary(self) -> list[DataSummaryLine]:
         return DataSummaryLine.factory_summary_lines(
-            self.result_context, self.testgroups_success
+            self.result_context,
+            self.testgroups,
         )
 
     @property
