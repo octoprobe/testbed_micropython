@@ -21,7 +21,7 @@ import typing
 from octoprobe import octoprobe
 from octoprobe.util_constants import DirectoryTag
 
-from .. import util_multiprocessing
+from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..report_task import util_report_tasks
 from ..tentacle_spec import TentacleMicropython
@@ -116,13 +116,15 @@ class TestBartender:
             raise CurrentlyNoTestsException()
 
         selected_testrun = possible_testruns[0]
+        timeout_s = (
+            args.count + constants.TEST_MAX_RETRIES
+        ) * selected_testrun.timeout_s + self.WAIT_FOR_SUBPROCESS_EXIT_TIMEOUT_S
         async_target = AsyncTargetTest(
             args=args,
             ctxtestrun=ctxtestrun,
             testrun=selected_testrun,
             repo_micropython_tests=repo_micropython_tests,
-            timeout_s=selected_testrun.timeout_s
-            + self.WAIT_FOR_SUBPROCESS_EXIT_TIMEOUT_S,
+            timeout_s=timeout_s,
         )
         self._reserve(async_target=async_target)
         return async_target
