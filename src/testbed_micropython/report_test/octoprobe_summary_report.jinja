@@ -34,10 +34,10 @@
 
 ## Summary
 
-| Test | Groups<br>run | Groups<br>skipped | Groups<br>error | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
+| Test | Groups<br>run | Groups<br>skipped | Groups<br>retried | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
 | - | :-: | :-: | :-: | :-: | :-: | :-: |
 {%- for line in data.summary %}
-| {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezerobold }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_failed|hidezerobold }} |
+| {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezero }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_failed|hidezerobold }} |
 {%- endfor %}
 
 ## Failures
@@ -79,7 +79,7 @@ Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 {%- endfor %}
 #}
 
-## Testsgroups which could not run due to an error
+## Testsgroups errors - ignored and retried
 
 | Testgroup (testid) | Logfile | Error |
 | - | - | - |
