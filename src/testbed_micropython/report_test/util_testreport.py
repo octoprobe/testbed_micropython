@@ -218,6 +218,9 @@ class ReportTestgroup:
         )
 
         if testrun.tentacle_reference is not None:
+            # This is the tentacle which is used as a reference.
+            # For example '6038-RPI_PICO_W' in 'RUN-MULTITESTS_MULTIBLUETOOTH' or 'RUN-MULTITESTS_MULTINET'.
+            # This pico is used the test bluetooth against.
             self.report.tentacle_reference = testrun.tentacle_reference.label_short
 
         # Write the file for the case that it will never finish (timeout/crash).

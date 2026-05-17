@@ -198,6 +198,12 @@ class Group(list[OutcomesForOneTest]):
 
     @property
     def tentacle_reference(self) -> str:
+        """
+        Example: 5f2c-RPI_PICO_W
+        This is the tentacle which is used as a reference.
+        For example '6038-RPI_PICO_W' in 'RUN-MULTITESTS_MULTIBLUETOOTH' or 'RUN-MULTITESTS_MULTINET'.
+        This pico is used the test bluetooth against.
+        """
         return self.testgroup.tentacle_reference
 
     @property
