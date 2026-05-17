@@ -18,6 +18,7 @@ class DataSummaryLine:
     tests_skipped: int = 0
     tests_passed: int = 0
     tests_failed: int = 0
+    tests_xfailed: int = 0
 
     @staticmethod
     def factory_summary_lines(
@@ -49,6 +50,9 @@ class DataSummaryLine:
                 if result.outcome == Outcome.SKIPPED:
                     line.tests_skipped += 1
                     continue
+                if result.outcome == Outcome.XFAILED:
+                    line.tests_xfailed += 1
+                    continue
                 assert result.outcome == Outcome.PASSED
                 line.tests_passed += 1
 
@@ -60,6 +64,7 @@ class DataSummaryLine:
             total_line.group_skipped += line.group_skipped
             total_line.group_run += line.group_run
             total_line.tests_failed += line.tests_failed
+            total_line.tests_xfailed += line.tests_xfailed
             total_line.tests_skipped += line.tests_skipped
             total_line.tests_passed += line.tests_passed
         lines.append(total_line)

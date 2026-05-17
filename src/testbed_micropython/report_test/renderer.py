@@ -21,12 +21,18 @@ class ReportRenderer:
         self,
         directory_results: pathlib.Path,
         label: str,
+        xfail_file: str | None,
     ) -> None:
         assert isinstance(directory_results, pathlib.Path)
         assert isinstance(label, str)
+        assert isinstance(xfail_file, str | None)
+
         self.directory_results = directory_results
         self.label = label
-        self.data = Data.gather_json_files(directory_results=directory_results)
+        self.data = Data.gather_json_files(
+            directory_results=directory_results,
+            xfail_file=xfail_file,
+        )
         self.list_directory_expansion: list[tuple[str, str]] = []
         self._init()
 
@@ -44,6 +50,11 @@ class ReportRenderer:
             self.list_directory_expansion.append((directory, expansion))
         # Take the longest path first
         self.list_directory_expansion.sort(key=lambda e: len(e[0]), reverse=True)
+
+    def write_xfail_template(self) -> None:
+        filename_xfail = self.directory_results / "octoprobe_xfail_template.json"
+        r = self.data.get_xfail_list()
+        r.write(filename=filename_xfail)
 
     def render(self, action_url: str | None = None) -> None:
         assert isinstance(action_url, str | None)
@@ -63,6 +74,7 @@ class ReportRenderer:
         jinja_env = JinjaEnv()
         jinja_env.env.filters["hidezero"] = lambda i: "" if i == 0 else i
         jinja_env.env.filters["hidezerobold"] = lambda i: "" if i == 0 else f"**{i}**"
+        jinja_env.env.filters["bold"] = lambda i: f"**{i}**"
         jinja_env.env.filters["md_escape"] = md_escape
         jinja_env.env.filters["indent2"] = lambda text: textwrap.indent(text, "  ")
         jinja_env.env.filters["fix_links"] = self._fix_links

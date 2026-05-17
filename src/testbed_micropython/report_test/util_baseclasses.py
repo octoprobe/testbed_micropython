@@ -8,7 +8,7 @@ import typing
 from datetime import datetime
 
 from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
-from octoprobe.util_constants import DirectoryTag
+from octoprobe.util_constants import DELIMITER_SERIAL_BOARD, DirectoryTag
 
 from ..testcollection.constants import MICROPYTHON_DIRECTORY_TESTS
 from . import util_constants
@@ -18,6 +18,7 @@ from .util_markdown2 import md_escape, md_link
 class Outcome(enum.StrEnum):
     PASSED = "passed"
     FAILED = "failed"
+    XFAILED = "xfailed"
     SKIPPED = "skipped"
 
     @property
@@ -25,6 +26,7 @@ class Outcome(enum.StrEnum):
         return {
             Outcome.PASSED: "pass",
             Outcome.FAILED: "FAIL",
+            Outcome.XFAILED: "XFAIL",
             Outcome.SKIPPED: "skip",
         }[self]
 
@@ -349,6 +351,17 @@ class ResultTestGroup:
     @property
     def results_success(self) -> list[ResultTestOutcome]:
         return self._result_count(Outcome.PASSED)
+
+    @property
+    def board_variant(self) -> str:
+        """
+        Example tentacle_variant: 5f2c-RPI_PICO2-RISCV
+        Return  "RPI_PICO2-RISCV"
+        """
+        _serial, _, board_variant = self.tentacle_variant.partition(
+            DELIMITER_SERIAL_BOARD
+        )
+        return board_variant
 
     # @property
     # def tentacle_role(self) -> str:

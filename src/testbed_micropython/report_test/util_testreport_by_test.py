@@ -20,8 +20,9 @@ import logging
 import typing
 
 from markupsafe import Markup
-from octoprobe.util_constants import DELIMITER_SERIAL_BOARD
+from octoprobe import util_constants
 
+from . import util_xfail
 from .util_baseclasses import Outcome, ResultContext, ResultTestGroup, ResultTestOutcome
 from .util_markdown2 import md_escape
 
@@ -67,8 +68,11 @@ class OutcomesForOneTest(list[TestOutcome]):
         self,
         outcome_column: OutcomeColumn,
         fix_links: typing.Callable[[str], str],
+        xfail_files: util_xfail.XFailFiles,
     ) -> str:
         assert isinstance(outcome_column, OutcomeColumn)
+        assert isinstance(xfail_files, util_xfail.XFailFiles)
+
         outcomes = [
             outcome
             for outcome in self
@@ -76,6 +80,7 @@ class OutcomesForOneTest(list[TestOutcome]):
         ]
         if len(outcomes) == 0:
             return ""
+
         outcomes.sort(key=lambda outcome: outcome.testgroup.testid)
 
         def get_decoration(outcomes: list[TestOutcome]) -> tuple[str, str]:
@@ -85,10 +90,16 @@ class OutcomesForOneTest(list[TestOutcome]):
             for outcome in outcomes:
                 if outcome.test_outcome.outcome == Outcome.FAILED.value:
                     has_failed = True
-                if outcome.test_outcome.outcome == Outcome.PASSED.value:
+                    continue
+                if outcome.test_outcome.outcome in (
+                    Outcome.PASSED.value,
+                    Outcome.XFAILED.value,
+                ):
                     has_passed = True
+                    continue
                 if outcome.test_outcome.outcome == Outcome.SKIPPED.value:
                     has_skipped = True
+                    continue
 
             if has_failed + has_passed + has_skipped == 1:
                 # Exactly one is true:
@@ -109,7 +120,16 @@ class OutcomesForOneTest(list[TestOutcome]):
             outcome_short = Outcome(outcome.test_outcome.outcome).short
             return f"{decoration_begin}[{md_escape(outcome_short)}]({md_escape(fix_links(outcome.testgroup.log_output))}){decoration_end}"
 
-        return " ".join([render_outcome(outcome) for outcome in outcomes])
+        link = " ".join([render_outcome(outcome) for outcome in outcomes])
+
+        for filename in xfail_files.get_filelist(
+            testgroup=self.testgroup.testgroup,
+            test_name=self.test_name,
+            board_variant=outcome_column.board_variant,
+        ):
+            link += f"<br><sub>{md_escape(filename)}</sub>"
+
+        return link
 
     @property
     def interesting(self) -> bool:
@@ -128,6 +148,12 @@ class OutcomeColumn:
     """
     Example: rp2,nrf
     """
+
+    board_variant: str
+    """
+    Example: RPI_PICO2-RISCV
+    """
+
     tentacle_variant_role: str = dataclasses.field(compare=True)
     """
     Example: 3c2a-RPI_PICO2-RISCV-second
@@ -215,7 +241,8 @@ class Group(list[OutcomesForOneTest]):
 
         def format_tentacle_combination(testid_tentacles: OutcomeColumn) -> str:
             tentacle = md_escape(testid_tentacles.tentacle_variant_role).replace(
-                DELIMITER_SERIAL_BOARD, DELIMITER_SERIAL_BOARD + "<br>"
+                util_constants.DELIMITER_SERIAL_BOARD,
+                util_constants.DELIMITER_SERIAL_BOARD + "<br>",
             )
             mcu = md_escape(testid_tentacles.mcu)
             return mcu + "<br>" + tentacle
@@ -259,6 +286,7 @@ class SummaryByTest(list[Group]):
                 group.outcome_columns.add(
                     OutcomeColumn(
                         mcu=testgroup.tentacle_mcu,
+                        board_variant=testgroup.board_variant,
                         tentacle_variant_role=testgroup.tentacle_variant_role,
                     )
                 )

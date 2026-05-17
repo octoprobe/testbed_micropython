@@ -10,6 +10,16 @@
 
 * Duration: {{ result_context.time_duration_text }} {{ data.duration_per_test_text|md_escape }}
 
+{% if data.xfail_file %}
+* XFail: {{ data.xfail_file.filename.name|md_escape }}
+{% endif %}
+
+* Logdirectory: [{{ result_context.log_directory|fix_links|md_escape }}]({{ result_context.log_directory|fix_links|md_escape }})
+* Logoutput: [{{ result_context.log_output|fix_links|md_escape }}]({{ result_context.log_output|fix_links|md_escape }})
+{% if result_context.error %}
+* **Error: {{ result_context.error }}**
+{% endif %}
+
 * Repo Firmware: {{ result_context.ref_firmware2.markdown }} {% if result_context.ref_firmware_metadata %} [{{ result_context.ref_firmware_metadata.commit_comment }}]({{ result_context.ref_firmware_metadata.url_commit_hash }}) {% endif %}
 {% if result_context.ref_firmware_metadata %}
 
@@ -26,18 +36,13 @@
   ```
 
 {% endif %}
-* Logdirectory: [{{ result_context.log_directory|fix_links|md_escape }}]({{ result_context.log_directory|fix_links|md_escape }})
-* Logoutput: [{{ result_context.log_output|fix_links|md_escape }}]({{ result_context.log_output|fix_links|md_escape }})
-{% if result_context.error %}
-* **Error: {{ result_context.error }}**
-{% endif %}
 
 ## Summary
 
-| Test | Groups<br>run | Groups<br>skipped | Groups<br>retried | Tests<br>passed | Tests<br>skipped | Tests<br>failed |
-| - | :-: | :-: | :-: | :-: | :-: | :-: |
+| Test | Groups<br>run | Groups<br>skipped | Groups<br>retried | Tests<br>passed | Tests<br>skipped | Tests<br>xfailed | Tests<br>failed |
+| - | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 {%- for line in data.summary %}
-| {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezero }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_failed|hidezerobold }} |
+| {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezero }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_xfailed|hidezero }} | {{ line.tests_failed|hidezerobold }} |
 {%- endfor %}
 
 ## Failures
@@ -60,7 +65,7 @@ Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 |   {{ outcomes_for_one_test.test_name_link_markup(result_context=result_context) -}}
     {%- for outcome_column in summary_by_test.outcome_columns_sorted -%}
       {#- Column with FAIL/PASS/FLAKY -#}
-|     {{ outcomes_for_one_test.outcome_link(outcome_column, fix_links) }}
+|     {{ outcomes_for_one_test.outcome_link(outcome_column, fix_links, data.xfail_files) }}
     {%- endfor -%}
 |
   {%- endfor %}

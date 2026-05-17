@@ -14,6 +14,7 @@ from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from testbed_micropython.testcollection.testrun_specs import TestRun
 
+from . import util_xfail
 from .util_baseclasses import (
     Outcome,
     ResultContext,
@@ -27,6 +28,7 @@ from .util_constants import (
     patch_time_format,
 )
 from .util_testreport_summary import DataSummaryLine
+from .util_xfail import XFailList
 
 if typing.TYPE_CHECKING:
     from .util_testreport_by_test import SummaryByTest
@@ -47,7 +49,34 @@ class Data:
     * 'mptest' command line parameters
     """
 
+    xfail_files: util_xfail.XFailFiles
+    """
+    The xfail lists under src/testbed_micropython/report_test/*.json
+    """
+
+    xfail_file: util_xfail.XFailFile | None
+    """
+    The xfail file which was applied to mark FAILED as XFAILED
+    """
+
     testgroups: list[ResultTestGroup] = dataclasses.field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        assert isinstance(self.result_context, ResultContext)
+        assert isinstance(self.xfail_files, util_xfail.XFailFiles)
+        assert isinstance(self.testgroups, list)
+
+    def get_xfail_list(self) -> XFailList:
+        r = XFailList()
+        for g in self.testgroups:
+            for outcome in g.outcomes:
+                if outcome.outcome in (Outcome.FAILED, Outcome.XFAILED):
+                    tg = r.get_group(testgroup=g.testgroup)
+                    tg.add(
+                        board_variant=g.board_variant,
+                        test_name=outcome.name,
+                    )
+        return r
 
     @property
     def testgroups_success(self) -> list[ResultTestGroup]:
@@ -88,7 +117,10 @@ class Data:
         )
 
     @staticmethod
-    def gather_json_files(directory_results: pathlib.Path) -> Data:
+    def gather_json_files(
+        directory_results: pathlib.Path,
+        xfail_file: str | None,
+    ) -> Data:
         """
         Loop over all testresults and collect and read json files.
         Return the collected data.
@@ -98,7 +130,11 @@ class Data:
             result_context = ResultContext.factory(
                 directory_results / FILENAME_CONTEXT_JSON
             )
-            return Data(result_context=result_context)
+            return Data(
+                result_context=result_context,
+                xfail_file=util_xfail.XFailFile.factory_template(filename=xfail_file),
+                xfail_files=util_xfail.XFailFiles.factory_from_filesystem(),
+            )
 
         data = collect_top()
 
@@ -117,6 +153,26 @@ class Data:
                 data.testgroups.append(testgroup)
 
         collect()
+
+        def patch_xfailed() -> None:
+            """
+            Replace FAILED with XFAILED
+            """
+            if data.xfail_file is None:
+                return
+
+            for testgroup in data.testgroups:
+                for outcome in testgroup.outcomes:
+                    if outcome.outcome == Outcome.FAILED.value:
+                        if data.xfail_file.xfail_list.match(
+                            testgroup=testgroup.testgroup,
+                            test_name=outcome.name,
+                            board_variant=testgroup.board_variant,
+                        ):
+                            outcome.outcome = Outcome.XFAILED.value
+
+        patch_xfailed()
+
         assert isinstance(data, Data)
         return data
 
@@ -186,6 +242,7 @@ class ReportTests:
         renderer = ReportRenderer(
             directory_results=self.testresults_directory,
             label=self.testresults_directory.name,
+            xfail_file=None,
         )
         renderer.render()
 

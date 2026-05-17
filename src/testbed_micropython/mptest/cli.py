@@ -450,6 +450,12 @@ def report(
             help="Email address. May be more than one.",
         ),
     ] = None,  # type: ignore
+    xfail: TyperAnnotated[
+        str,
+        typer.Option(
+            help="xfail list filename. This will mark FAIL as XFAIL.",
+        ),
+    ] = None,  # type: ignore
 ) -> None:
     init_logging()
     directory_results = assert_valid_testresults(testresults, create=False)
@@ -460,13 +466,18 @@ def report(
         label = DirectoryManualWorkflow.factory_directory_results(
             directory_results
         ).directory_name
-    tar = TarAndHttpsPush(directory=directory_results, label=label)
-    renderer = ReportRenderer(directory_results=directory_results, label=label)
+    renderer = ReportRenderer(
+        directory_results=directory_results,
+        label=label,
+        xfail_file=xfail,
+    )
+    renderer.write_xfail_template()
     renderer.render(action_url=action_url)
     if url == "":
         logger.info("Skipped pushing of the reports: --url=''")
         raise typer.Exit(ExitCode.SUCCESS)
 
+    tar = TarAndHttpsPush(directory=directory_results, label=label)
     rc = tar.https_push(url=url)
 
     if len(emails) > 0:
