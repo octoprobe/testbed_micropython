@@ -34,6 +34,7 @@ from testbed_micropython.report_test.util_push_testresults import (
 from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
+from ..pr_check import util_github, util_pr_check
 from ..report_test import util_email
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..util_firmware_mpbuild_interface import ArgsFirmware
@@ -414,6 +415,47 @@ def test(
     except util_baseclasses.OctoprobeAppExitException as e:
         logger.info(f"Terminating test due to OctoprobeAppExitException: {e}")
         raise typer.Exit(1) from e
+
+
+@app.command(help="Test if a PR requires to be tested. And if yes: Which ports.")
+def pr_check(
+    filename_pr_ports: TyperAnnotated[
+        pathlib.Path,
+        typer.Option(
+            help="Filename for the ports to be tested for this pr",
+        ),
+    ],
+    git_ref: TyperAnnotated[
+        str,
+        typer.Option(
+            help="Url to retrieve repo and PR number. Example https://github.com/micropython/micropython.git~17782",
+        ),
+    ] = "https://github.com/micropython/micropython.git~17782",
+) -> None:
+    init_logging()
+
+    # Call 'gh'
+    json_pr_ports = util_github.gh_read_pr(git_ref=git_ref)
+
+    def raise_exit(rc: int) -> None:
+        json_pr_ports.save_as_json(filename=filename_pr_ports)
+        logger.info(f"See: {filename_pr_ports}!")
+        logger.info(f"returning {rc}")
+        raise typer.Exit(rc)
+
+    commit_hash_tested = json_pr_ports.commit_hash_tested
+    if commit_hash_tested == json_pr_ports.commit_hash:
+        logger.info(
+            f"{git_ref} is on commit '{json_pr_ports.commit_hash}'. This commit was already tested. We may skip testing this PR!"
+        )
+        raise_exit(1)
+
+    logger.info(
+        f"{git_ref} is on commit '{json_pr_ports.commit_hash}'. The last tested version was '{commit_hash_tested}'! We have to run tests on this PR."
+    )
+    json_pr_ports = util_pr_check.pr_check(json_pr_ports=json_pr_ports, git_ref=git_ref)
+    logger.info(f"We have to test these MicroPython ports: {json_pr_ports.ports}")
+    raise_exit(0)
 
 
 @app.command(help="Collect json files and create a report")

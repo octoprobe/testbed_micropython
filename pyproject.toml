@@ -50,6 +50,7 @@ all = []
 
 dev = [
     # "-e .",
+    "types-PyYAML",
 ]
 
 doc = []
