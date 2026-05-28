@@ -96,7 +96,15 @@ jobs:
       with:
         name: octoprobe-testresults-${{ github.workflow }}_${{ github.run_number }}
         path: "./testresults/**"
-  
+
+    - name: Create PR comment
+      if: ${{ inputs.pr_number != '' }}
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        repository: micropython/micropython
+        issue-number: ${{ inputs.pr_number }}
+        body-path: ./testresults/report_pr.md
+
     - name: Send email
       # https://github.com/marketplace/actions/send-email
       if: always() && inputs.email_testreport != ''

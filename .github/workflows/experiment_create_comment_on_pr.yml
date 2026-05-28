@@ -1,0 +1,79 @@
+name: create comment on PR
+
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      repo:
+        description: 'The repo with the PR.'
+        default: 'micropython/micropython'
+        required: true
+        type: string
+
+      pr_number:
+        description: 'Number of the PR to be tested. If != '': Will add a report-comment to the PR.'
+        default: '17782'
+        required: true
+        type: string
+
+permissions:
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump GitHub Context
+      # https://manski.net/articles/github/actions/dump-context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT" | jq -C
+
+    - name: Dump GitHub Context 2
+      # https://youtu.be/-hVG9z0fCac?si=dAAVltMAbmwyMQBu
+      run: echo '${{ toJson(github) }}' | jq -C
+      shell: bash
+
+    - name: Dump GitHub Event
+      # https://youtu.be/-hVG9z0fCac?si=dAAVltMAbmwyMQBu
+      run: echo '${{ toJson(github.event) }}' | jq -C
+      shell: bash
+
+    - name: Dump local environment
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: env
+      shell: bash
+
+    - name: Create comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        issue-number: ${{ inputs.pr_number }}
+        body: |
+          This is a multi-line test comment
+          - With GitHub **Markdown** :sparkles:
+          - Created by [create-or-update-comment][1]
+
+          [1]: https://github.com/peter-evans/create-or-update-comment
+        reactions: '+1'
+
+    - name: Find Comment
+      uses: peter-evans/find-comment@v3  # @v4
+      id: findcommend_id
+      with:
+        issue-number: ${{ inputs.pr_number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: Build output
+
+    - name: Create or update comment
+      uses: peter-evans/create-or-update-comment@v4  # @v5
+      with:
+        comment-id: ${{ steps.findcommend_id.outputs.comment-id }}
+        issue-number: ${{ inputs.pr_number }}
+        body: |
+          Build output
+          ...
+        edit-mode: replace
