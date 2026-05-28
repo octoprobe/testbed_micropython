@@ -92,7 +92,7 @@ jobs:
 
     - name: Upload Artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: octoprobe-testresults-${{ github.workflow }}_${{ github.run_number }}
         path: "./testresults/**"
@@ -100,7 +100,7 @@ jobs:
     - name: Send email
       # https://github.com/marketplace/actions/send-email
       if: always() && inputs.email_testreport != ''
-      uses: dawidd6/action-send-mail@v3
+      uses: dawidd6/action-send-mail@v17
       with:
         server_address: ${{ secrets.SMTP_HOST }}
         server_port: 587
