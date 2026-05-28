@@ -34,7 +34,7 @@ from testbed_micropython.report_test.util_push_testresults import (
 from .. import constants, util_multiprocessing
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
-from ..pr_check import util_github, util_pr_check
+from ..pr_check import util_pr_check
 from ..report_test import util_email
 from ..tentacles_inventory import TENTACLES_INVENTORY
 from ..util_firmware_mpbuild_interface import ArgsFirmware
@@ -434,28 +434,13 @@ def pr_check(
 ) -> None:
     init_logging()
 
-    # Call 'gh'
-    json_pr_ports = util_github.gh_read_pr(git_ref=git_ref)
-
-    def raise_exit(rc: int) -> None:
-        json_pr_ports.save_as_json(filename=filename_pr_ports)
-        logger.info(f"See: {filename_pr_ports}!")
-        logger.info(f"returning {rc}")
-        raise typer.Exit(rc)
-
-    commit_hash_tested = json_pr_ports.commit_hash_tested
-    if commit_hash_tested == json_pr_ports.commit_hash:
-        logger.info(
-            f"{git_ref} is on commit '{json_pr_ports.commit_hash}'. This commit was already tested. We may skip testing this PR!"
-        )
-        raise_exit(1)
-
-    logger.info(
-        f"{git_ref} is on commit '{json_pr_ports.commit_hash}'. The last tested version was '{commit_hash_tested}'! We have to run tests on this PR."
-    )
-    json_pr_ports = util_pr_check.pr_check(json_pr_ports=json_pr_ports, git_ref=git_ref)
-    logger.info(f"We have to test these MicroPython ports: {json_pr_ports.ports}")
-    raise_exit(0)
+    _pr_check = util_pr_check.PrCheck.factory(git_ref=git_ref)
+    _pr_check.json_pr_ports.save_as_json(filename=filename_pr_ports)
+    for line in _pr_check.lines:
+        logger.info(line)
+    logger.info(f"See: {filename_pr_ports}!")
+    logger.info(f"returning {_pr_check.return_code} ({_pr_check.return_text})")
+    raise typer.Exit(_pr_check.return_code)
 
 
 @app.command(help="Collect json files and create a report")

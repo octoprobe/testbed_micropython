@@ -38,7 +38,7 @@ class YamlFile:
             file_posix = pathlib.PurePosixPath(file_modified.lstrip("./"))
             pat = path.lstrip("./")
             if file_posix.match(pat):
-                logger.error(
+                logger.debug(
                     f"matched: file={file_modified} pattern={path} yaml_file={self.filename.name}"
                 )
                 return True
@@ -73,6 +73,11 @@ class YamlFiles(list[YamlFile]):
             for file_modified in files_modified:
                 if yaml_file.hit_file(file_modified=file_modified):
                     set_ports.add(yaml_file.port)
+
+        # set_ports.remove("zephyr")
+        # set_ports.remove("windows")
+        # set_ports.remove("webassembly")
+        # set_ports.remove("unix")
         return sorted(set_ports)
 
     @staticmethod
