@@ -270,7 +270,7 @@ def test(
     only_tag: TyperAnnotated[
         list[str],
         typer.Option(
-            help="Specify a tag, for example --only_tag='tier=1,2' --only_tag='mcu=nrf' This will select tentacles for tier=1 and tier=2 and mcu=nrf."
+            help="Specify a tag, for example --only-tag='tier=1,2' --only-tag='mcu=nrf' This will select tentacles for tier=1 and tier=2 and mcu=nrf."
         ),
     ] = None,  # noqa: UP007 # type: ignore
     only_test: TyperAnnotated[
