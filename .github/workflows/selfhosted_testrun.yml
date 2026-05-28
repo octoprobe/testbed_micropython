@@ -29,6 +29,12 @@ on:
         required: false
         type: string
 
+      pr_number:
+        description: 'Number of the PR to be tested. If != '': Will add a report-comment to the PR.'
+        default: ''
+        required: false
+        type: string
+
 permissions:
   pull-requests: write
   issues: write
