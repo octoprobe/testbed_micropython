@@ -80,7 +80,7 @@ jobs:
 
     # - name: Add summary report
     #   # https://github.com/peter-evans/create-or-update-comment/blob/main/README.md
-    #   uses: peter-evans/create-or-update-comment@v4
+    #   uses: peter-evans/create-or-update-comment@v5
     #   with:
     #     # issue-number: ${{ github.event.issue.number }}
     #     issue-number: 20
@@ -103,13 +103,32 @@ jobs:
         name: octoprobe-testresults-${{ github.workflow }}_${{ github.run_number }}
         path: "./testresults/**"
 
-    - name: Create PR comment
-      if: ${{ inputs.pr_number != '' }}
-      uses: peter-evans/create-or-update-comment@v4
+    # - name: Create PR comment
+    #   if: ${{ inputs.pr_number != '' }}
+    #   uses: peter-evans/create-or-update-comment@v5
+    #   with:
+    #     repository: ${{ inputs.pr_repo }}
+    #     issue-number: ${{ inputs.pr_number }}
+    #     body-path: ./testresults/octoprobe_pr_report.md
+
+    - name: Find PR comment
+      uses: peter-evans/find-comment@v4
+      id: findcommend_id
       with:
-        repository: micropython/micropython
+        repository: ${{ inputs.pr_repo }}
         issue-number: ${{ inputs.pr_number }}
-        body-path: ./testresults/report_pr.md
+        comment-author: 'octoprobe-bot'
+        # JsonCommitHash._MARKER_BEGIN
+        body-includes: '<!-- octoprobe-pr-report:'
+
+    - name: Create/update PR comment
+      uses: peter-evans/create-or-update-comment@v5
+      with:
+        comment-id: ${{ steps.findcommend_id.outputs.comment-id }}
+        repository: ${{ inputs.pr_repo }}
+        issue-number: ${{ inputs.pr_number }}
+        body-path: ./testresults/octoprobe_pr_report.md
+        edit-mode: replace
 
     - name: Send email
       # https://github.com/marketplace/actions/send-email

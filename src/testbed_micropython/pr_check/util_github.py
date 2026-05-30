@@ -27,13 +27,39 @@ def subprocess_json(args: list[str]) -> dict[str, typing.Any] | list[typing.Any]
 
 
 class JsonCommitHash(dict[str, str]):
-    _MARKER_BEGIN = "<!-- octoprobe-meta: "
+    _MARKER_BEGIN = "<!-- octoprobe-pr-report: "
     _MARKER_END = " -->"
     _KEY_sha = "sha"
+    _KEY_STATUS = "status"
+    _KEY_DATETIME = "datetime"
 
     @property
     def sha(self) -> str:
         return self[self._KEY_sha]
+
+    @property
+    def text(self) -> str:
+        return "".join(
+            [
+                self._MARKER_BEGIN,
+                json.dumps(self, indent=None),
+                self._MARKER_END,
+            ]
+        )
+
+    @classmethod
+    def factory_parameters(cls, sha: str, status: str, datetime: str) -> JsonCommitHash:
+        assert isinstance(sha, str)
+        assert isinstance(status, str)
+        assert isinstance(datetime, str)
+
+        return JsonCommitHash(
+            {
+                cls._KEY_sha: sha,
+                cls._KEY_STATUS: status,
+                cls._KEY_DATETIME: datetime,
+            }
+        )
 
     @classmethod
     def factory(cls, body: str) -> JsonCommitHash | None:

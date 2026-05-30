@@ -10,6 +10,7 @@ from datetime import datetime
 from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DELIMITER_SERIAL_BOARD, DirectoryTag
 
+from ..pr_check import util_github
 from ..testcollection.constants import MICROPYTHON_DIRECTORY_TESTS
 from . import util_constants
 from .util_markdown2 import md_escape, md_link
@@ -202,6 +203,33 @@ class ResultContext:
         json_text = filename.read_text()
         json_dict = json.loads(json_text)
         return ResultContext.from_dict(json_dict=json_dict)
+
+    @property
+    def summary_report(self) -> str:
+        link = (
+            self.log_directory
+            + "/"
+            + util_constants.FILENAME_OCTOPROBE_PR_REPORT_STEM
+            + ".md"
+        )
+        link = link.replace("//", "/")
+        return link
+
+    @property
+    def pr_marker(self) -> str:
+
+        def get_sha() -> str:
+            v = self.ref_tests_metadata
+            if v is None:
+                return ""
+            return v.commit_hash
+
+        h = util_github.JsonCommitHash.factory_parameters(
+            sha=get_sha(),
+            status="ok",
+            datetime=self.time_start,
+        )
+        return h.text
 
     @property
     def ref_firmware2(self) -> GitRef:

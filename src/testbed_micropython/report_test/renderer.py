@@ -57,15 +57,16 @@ class ReportRenderer:
         r.write(filename=filename_xfail)
 
     def render(self, action_url: str | None = None) -> None:
+        for filename_stem in (
+            util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM,
+            util_constants.FILENAME_OCTOPROBE_PR_REPORT_STEM,
+        ):
+            self.render_report(filename_stem=filename_stem, action_url=action_url)
+
+    def render_report(self, filename_stem: str, action_url: str | None = None) -> None:
         assert isinstance(action_url, str | None)
-        filename_md = (
-            self.directory_results
-            / f"{util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM}.md"
-        )
-        filename_template = (
-            DIRECTORY_OF_THIS_FILE
-            / f"{util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM}.jinja"
-        )
+        filename_md = self.directory_results / f"{filename_stem}.md"
+        filename_template = DIRECTORY_OF_THIS_FILE / f"{filename_stem}.jinja"
 
         template = filename_template.read_text()
 
