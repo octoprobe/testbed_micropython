@@ -98,6 +98,7 @@ class JsonPrPorts(dict[str, typing.Any]):
     _KEY_MICROPYTHON_PORTS = "micropython_ports"
     _KEY_OCTOPROBE_BOT_USER = "octoprobe_bot_user"
     _KEY_PR_NUMBER = "number"
+    _KEY_PR_REPO = "pr_repo"
     _KEY_COMMIT_HASH = "headRefOid"
     _KEY_COMMENTS = "comments"
     _KEY_FILES = "files"
@@ -125,6 +126,17 @@ class JsonPrPorts(dict[str, typing.Any]):
     @property
     def pr(self) -> int:
         return self._get(int, JsonPrPorts._KEY_PR_NUMBER)
+
+    @property
+    def pr_repo(self) -> str:
+        """
+        Example: micropython/micropython
+        """
+        return self._get(str, JsonPrPorts._KEY_PR_REPO)
+
+    @pr_repo.setter
+    def pr_repo(self, value: str) -> None:
+        self[JsonPrPorts._KEY_PR_REPO] = value
 
     @property
     def octoprobe_bot_user(self) -> str:
@@ -201,4 +213,5 @@ def gh_read_pr(git_ref: str) -> JsonPrPorts:
 
     assert json_pr_ports.pr == int(git_spec.pr)
     json_pr_ports.octoprobe_bot_user = octoprobe_bot_user
+    json_pr_ports.pr_repo = f"{git_spec.user}/{git_spec.repo}"
     return json_pr_ports

@@ -35,6 +35,12 @@ on:
         required: false
         type: string
 
+      pr_repo:
+        description: 'The repo where the PR belongs.'
+        default: ''
+        required: false
+        type: string
+
 permissions:
   pull-requests: write
   issues: write

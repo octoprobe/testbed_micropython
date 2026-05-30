@@ -13,7 +13,7 @@ permissions:
   repository-projects: write
 
 jobs:
-  trace:
+  comment_on_issue:
     runs-on: ubuntu-latest
     steps:
     - name: Dump GitHub Context
