@@ -115,7 +115,8 @@ jobs:
       uses: peter-evans/find-comment@v4
       id: findcommend_id
       with:
-        repository: ${{ inputs.pr_repo }}
+        token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
+        repository: ${{ inputs.repo }}
         issue-number: ${{ inputs.pr_number }}
         comment-author: 'octoprobe-bot'
         # JsonCommitHash._MARKER_BEGIN
@@ -124,6 +125,7 @@ jobs:
     - name: Create/update PR comment
       uses: peter-evans/create-or-update-comment@v5
       with:
+        token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
         comment-id: ${{ steps.findcommend_id.outputs.comment-id }}
         repository: ${{ inputs.pr_repo }}
         issue-number: ${{ inputs.pr_number }}
