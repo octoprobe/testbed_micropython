@@ -34,16 +34,10 @@ class PrCheck:
         * if
         """
         # Call 'gh'
-        p = PrCheck(json_pr_ports=util_github.gh_read_pr(git_ref=git_ref))
+        json_pr_ports = util_github.gh_read_pr(git_ref=git_ref)
+        p = PrCheck(json_pr_ports=json_pr_ports)
 
         commit_hash_tested = p.json_pr_ports.commit_hash_tested
-        if commit_hash_tested == p.json_pr_ports.commit_hash:
-            p.lines.append(
-                f"{git_ref} is on commit '{p.json_pr_ports.commit_hash}'. This commit was already tested."
-            )
-            p.lines.append("We may skip testing this PR!")
-            p.test_required = False
-            return p
 
         p.lines.append(
             f"{git_ref} is on commit '{p.json_pr_ports.commit_hash}'. The last tested version was '{commit_hash_tested}'."
@@ -53,6 +47,14 @@ class PrCheck:
         p.lines.append(
             f"MicroPython ports to be tested: {', '.join(p.json_pr_ports.ports)}"
         )
+        if commit_hash_tested == p.json_pr_ports.commit_hash:
+            p.lines.append("========================================")
+            p.lines.append(
+                f"{git_ref} is on commit '{p.json_pr_ports.commit_hash}'. This commit was already tested."
+            )
+            p.lines.append("!!!!!!!! We may skip testing this PR !!!!!!!!")
+            p.test_required = False
+            return p
         p.test_required = True
         return p
 

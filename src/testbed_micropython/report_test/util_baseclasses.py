@@ -232,6 +232,13 @@ class ResultContext:
         return h.text
 
     @property
+    def pr_link(self) -> str:
+        ref = self.ref_firmware2
+        if ref.pr is None:
+            return None
+        return ref.url_link
+
+    @property
     def ref_firmware2(self) -> GitRef:
         return GitRef.factory(self.ref_firmware)
 

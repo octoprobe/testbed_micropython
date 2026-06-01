@@ -20,6 +20,10 @@
 * **Error: {{ result_context.error }}**
 {% endif %}
 
+{% if result_context.pr_link %}
+* PR:  [{{ result_context.pr_link|fix_links|md_escape }}]({{ result_context.pr_link|fix_links|md_escape }})
+{% endif %}
+
 * Repo Firmware: {{ result_context.ref_firmware2.markdown }} {% if result_context.ref_firmware_metadata %} [{{ result_context.ref_firmware_metadata.commit_comment }}]({{ result_context.ref_firmware_metadata.url_commit_hash }}) {% endif %}
 {% if result_context.ref_firmware_metadata %}
 
