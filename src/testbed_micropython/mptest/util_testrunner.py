@@ -787,7 +787,7 @@ def target_run_one_test_async(
         counter_error = 0
         counter_success = 0
         while True:
-            testid_idx0 = testrun.testid_idx0(idx0=counter_success)
+            testid_idx0 = testrun.testid_idx0(idx0=counter_success + counter_error)
 
             testresults_directory = ResultsDir(
                 directory_top=args.directory_results,
