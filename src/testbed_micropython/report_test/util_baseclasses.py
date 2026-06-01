@@ -209,7 +209,7 @@ class ResultContext:
         link = (
             self.log_directory
             + "/"
-            + util_constants.FILENAME_OCTOPROBE_PR_REPORT_STEM
+            + util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM
             + ".md"
         )
         link = link.replace("//", "/")

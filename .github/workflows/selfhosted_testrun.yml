@@ -116,7 +116,7 @@ jobs:
       id: findcommend_id
       with:
         token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
-        repository: ${{ inputs.repo }}
+        repository: ${{ inputs.pr_repo }}
         issue-number: ${{ inputs.pr_number }}
         comment-author: 'octoprobe-bot'
         # JsonCommitHash._MARKER_BEGIN

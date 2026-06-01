@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
-      repo:
+      pr_repo:
         description: 'The repo with the PR.'
         default: 'micropython/micropython'
         required: true
@@ -48,11 +48,22 @@ jobs:
       run: env
       shell: bash
 
+    - name: Determine PR comment authorization
+      if: always() && inputs.pr_number != '' && inputs.pr_repo != ''
+      run: |
+        if [[ "${{ inputs.pr_repo }}" == "${{ github.repository }}" ]]; then
+          echo "Simple: Same repo: ${{ inputs.pr_repo }} ${{ github.repository }}"
+        elif [[ -n "${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN }}" ]]; then
+          echo "Complex: Repos differ and secrets.OCTOPROBEBOT_GITHUB_TOKEN defined"
+        else
+          echo "Impossible: Repos differ and secrets.OCTOPROBEBOT_GITHUB_TOKEN not defined"
+        fi
+
     - name: Create comment
       uses: peter-evans/create-or-update-comment@v5
       with:
         token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
-        repository: ${{ inputs.repo }}
+        repository: ${{ inputs.pr_repo }}
         issue-number: ${{ inputs.pr_number }}
         body: |
           This is a multi-line test comment
@@ -67,7 +78,7 @@ jobs:
       id: findcommend_id
       with:
         token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
-        repository: ${{ inputs.repo }}
+        repository: ${{ inputs.pr_repo }}
         issue-number: ${{ inputs.pr_number }}
         comment-author: 'github-actions[bot]'
         body-includes: '<!-- octoprobe-pr-report:'
@@ -77,7 +88,7 @@ jobs:
       with:
         token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
         comment-id: ${{ steps.findcommend_id.outputs.comment-id }}
-        repository: ${{ inputs.repo }}
+        repository: ${{ inputs.pr_repo }}
         issue-number: ${{ inputs.pr_number }}
         body: |
           Build output
