@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import pathlib
 import subprocess
 import typing
@@ -8,6 +9,8 @@ import typing
 from octoprobe.util_cached_git_repo import GitSpec
 
 from ..constants import is_url
+
+logger = logging.getLogger(__file__)
 
 T = typing.TypeVar("T")
 
@@ -73,7 +76,13 @@ class JsonCommitHash(dict[str, str]):
         pos_end = body.find(cls._MARKER_END, pos_begin)
         assert pos_end > pos_begin, (pos_begin, pos_end, body)
         json_text = body[pos_begin:pos_end]
-        dict_commit_hash = json.loads(json_text)
+        try:
+            dict_commit_hash = json.loads(json_text)
+        except json.JSONDecodeError as e:
+            logger.warning(
+                f"PR comment: {body}: Expected a json string '{json_text}'. {e!r}"
+            )
+            return None
         return JsonCommitHash(dict_commit_hash)
 
 
