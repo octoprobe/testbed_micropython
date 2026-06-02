@@ -57,20 +57,28 @@ class ReportRenderer:
         r.write(filename=filename_xfail)
 
     def render(self, action_url: str | None = None) -> None:
-        for filename_stem in (
-            util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM,
-            util_constants.FILENAME_OCTOPROBE_PR_REPORT_STEM,
+        for filename_stem, title in (
+            (
+                util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM,
+                "Octoprobe test report",
+            ),
+            (
+                util_constants.FILENAME_OCTOPROBE_PR_REPORT_STEM,
+                "Octoprobe PR report",
+            ),
         ):
-            self.render_report(filename_stem=filename_stem, action_url=action_url)
+            self.render_report(
+                filename_stem=filename_stem, title=title, action_url=action_url
+            )
 
-    def render_report(self, filename_stem: str, action_url: str | None = None) -> None:
+    def render_report(
+        self, filename_stem: str, title: str, action_url: str | None = None
+    ) -> None:
         assert isinstance(action_url, str | None)
         filename_md = self.directory_results / f"{filename_stem}.md"
         filename_template = DIRECTORY_OF_THIS_FILE / f"{filename_stem}.jinja"
 
         template = filename_template.read_text()
-
-        title = "Octoprobe test report"
 
         jinja_env = JinjaEnv()
         jinja_env.env.filters["hidezero"] = lambda i: "" if i == 0 else i

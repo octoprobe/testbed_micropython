@@ -232,7 +232,7 @@ class ResultContext:
         return h.text
 
     @property
-    def pr_link(self) -> str:
+    def pr_link(self) -> str | None:
         ref = self.ref_firmware2
         if ref.pr is None:
             return None
