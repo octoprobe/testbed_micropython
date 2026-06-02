@@ -24,7 +24,13 @@ on:
         type: string
 
       arguments:
-        description: 'Auxiliary arguments to mptest. Example: --git-clean --flash-skip --only-test=RUN-TESTS_EXTMOD_HARDWARE --only-board=RPI_PICO_W'
+        description: 'Auxiliary arguments to mptest test. Example: --git-clean --flash-skip --only-test=RUN-TESTS_EXTMOD_HARDWARE --only-board=RPI_PICO_W'
+        default: ''
+        required: false
+        type: string
+
+      arguments_report:
+        description: 'Auxiliary arguments to mptest report. Example: --xfail=xfail_master_478.json'
         default: ''
         required: false
         type: string
@@ -76,7 +82,7 @@ jobs:
       if: always()
       run: |
         . ~/.profile
-        mptest report --testresults=./testresults --label='github_${{ github.workflow }}_${{ github.run_number }}' --action-url='${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}'
+        mptest report ${{ inputs.arguments_report }} --testresults=./testresults --label='github_${{ github.workflow }}_${{ github.run_number }}' --action-url='${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}'
 
     # - name: Add summary report
     #   # https://github.com/peter-evans/create-or-update-comment/blob/main/README.md
