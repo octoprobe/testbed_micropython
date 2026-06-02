@@ -114,6 +114,7 @@ jobs:
     - name: Find PR comment
       uses: peter-evans/find-comment@v4
       id: findcommend_id
+      if: always() && inputs.pr_number != '' && inputs.pr_repo != ''
       with:
         token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
         repository: ${{ inputs.pr_repo }}
@@ -124,6 +125,7 @@ jobs:
 
     - name: Create/update PR comment
       uses: peter-evans/create-or-update-comment@v5
+      if: always() && inputs.pr_number != '' && inputs.pr_repo != ''
       with:
         token: ${{ secrets.OCTOPROBEBOT_GITHUB_TOKEN || github.token }}
         comment-id: ${{ steps.findcommend_id.outputs.comment-id }}
