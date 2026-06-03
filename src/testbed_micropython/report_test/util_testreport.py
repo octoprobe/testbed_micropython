@@ -79,6 +79,14 @@ class Data:
         return r
 
     @property
+    def ports(self) -> list[str]:
+        return sorted({g.tentacle_mcu for g in self.testgroups})
+
+    @property
+    def ports_md(self) -> str:
+        return " ".join([f"`{p}`" for p in self.ports])
+
+    @property
     def testgroups_success(self) -> list[ResultTestGroup]:
         return [g for g in self.testgroups if not g.is_error]
 

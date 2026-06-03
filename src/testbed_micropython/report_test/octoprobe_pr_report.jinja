@@ -5,7 +5,7 @@
 {{ result_context.pr_marker }}
 
 * Duration: {{ result_context.time_duration_text }}, {{ data.tests_total }} tests run, {{ data.duration_per_test_text|md_escape }}
-* Ports: TODO
+* Tested ports: {{ data.ports_md }}
 * [Summary Report {{ result_context.worflow_job_number }}]({{ result_context.summary_report|fix_links|md_escape }}), [Logdirectory]({{ result_context.log_directory|fix_links|md_escape }})
 
 | Test | Tests<br>passed | Tests<br>skipped | Tests<br>xfailed | Tests<br>failed |
