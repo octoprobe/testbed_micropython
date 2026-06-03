@@ -12,6 +12,7 @@ from testbed_micropython.report_test.util_baseclasses import (
 @dataclasses.dataclass(slots=True)
 class DataSummaryLine:
     label: str
+    label_order: str
     group_run: int = 0
     group_skipped: int = 0
     group_error: int = 0
@@ -31,7 +32,7 @@ class DataSummaryLine:
             if line is None:
                 # Example label: [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
                 label = testgroup.testgroup_markdown(result_context=result_context)
-                line = DataSummaryLine(label=label)
+                line = DataSummaryLine(label=label, label_order=testgroup.label_order)
                 dict_summary[testgroup.testgroup] = line
             assert isinstance(line, DataSummaryLine)
 
@@ -56,9 +57,9 @@ class DataSummaryLine:
                 assert result.outcome == Outcome.PASSED
                 line.tests_passed += 1
 
-        lines = sorted(dict_summary.values(), key=lambda line: line.label)
+        lines = sorted(dict_summary.values(), key=lambda line: line.label_order)
 
-        total_line = DataSummaryLine(label="Total")
+        total_line = DataSummaryLine(label="Total", label_order="zzz")
         for line in lines:
             total_line.group_error += line.group_error
             total_line.group_skipped += line.group_skipped
@@ -68,4 +69,5 @@ class DataSummaryLine:
             total_line.tests_skipped += line.tests_skipped
             total_line.tests_passed += line.tests_passed
         lines.append(total_line)
+
         return lines

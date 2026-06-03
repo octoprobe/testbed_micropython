@@ -207,6 +207,8 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
 _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
     label="TESTPERF",
+    label_intuitive="perfbench.py",
+    label_order="test_yyy",
     helptext="Run perftest on each board.",
     command=["perfbench.py", "run-perfbench.py"],
     required_fut=constants.EnumFut.FUT_MCU_ONLY,
@@ -216,6 +218,8 @@ _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
 )
 _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     label="TESTWLAN",
+    label_intuitive="wlan.py",
+    label_order="test_zzz",
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
     required_fut=constants.EnumFut.FUT_WLAN,

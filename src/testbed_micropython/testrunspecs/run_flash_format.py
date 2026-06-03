@@ -87,6 +87,8 @@ class TestRunFlashFormat(TestRun):
 
 TESTRUNSPEC_RUN_FLASH_FORMAT = TestRunSpec(
     label="RUN-FLASH_FORMAT",
+    label_intuitive="format flash",
+    label_order="a",
     helptext="Reformat the flash (repair broken filesystem)",
     command=["format_flash"],
     required_fut=EnumFut.FUT_MCU_ONLY,

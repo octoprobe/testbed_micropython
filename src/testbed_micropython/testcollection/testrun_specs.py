@@ -319,7 +319,17 @@ class TestRunSpec:
 
     label: str
     """
-    Example: 'RUN-TESTS_EXTMOD_HARDWARE'
+    Example: RUN-TESTS_EXTMOD_HARDWARE
+    """
+    label_intuitive: str
+    """
+    Example: run-tests.py -d extmod_hardware
+    """
+    label_order: str
+    """
+    Example: g_multi_net
+
+    Just some text which may be used to order the groups
     """
     helptext: str
     command: list[str]

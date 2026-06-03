@@ -12,6 +12,7 @@ from octoprobe.util_constants import DELIMITER_SERIAL_BOARD, DirectoryTag
 
 from ..pr_check import util_github
 from ..testcollection.constants import MICROPYTHON_DIRECTORY_TESTS
+from ..testcollection.testrun_specs import TestRunSpec
 from . import util_constants
 from .util_markdown2 import md_escape, md_link
 
@@ -407,6 +408,15 @@ class ResultTestGroup:
         test_results = [r for r in self.outcomes if r.outcome == outcome]
         return sorted(test_results, key=lambda r: r.name)
 
+    @property
+    def testrun_spec(self) -> TestRunSpec | None:
+        """
+        Find the testgroup 'RUN-TESTS_EXTMOD_HARDWARE'
+        """
+        from ..mptest.util_testrunner import get_testrun_spec
+
+        return get_testrun_spec(self.testgroup)
+
     def testgroup_markdown(
         self,
         result_context: ResultContext,
@@ -420,49 +430,46 @@ class ResultTestGroup:
             [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
         """
         assert isinstance(result_context, ResultContext)
-        from ..mptest.util_testrunner import get_testrun_spec
+        assert isinstance(testid, bool)
 
         # Find the testgroup 'RUN-TESTS_EXTMOD_HARDWARE'
-        testspec = get_testrun_spec(self.testgroup)
+        testspec = self.testrun_spec
         if testspec is None:
             return self.testgroup
-        python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + testspec.command_executable
 
-        md = self.testgroup_markdown2(
-            result_context=result_context,
-            python_test=python_test,
-            testid=testid,
+        python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + testspec.command_executable
+        label_intuitive = testspec.label_intuitive
+
+        # Find the git_ref for the micropython tests repository
+        ref_tests = result_context.git_ref.get(DirectoryTag.T, None)
+        if ref_tests is None:
+            return f"{label_intuitive} ({self.testgroup})"
+        ref = GitRef.factory(ref=ref_tests)
+
+        # Build the link
+        label = self.testid if testid else label_intuitive
+
+        md = md_link(
+            label=label,
+            link=ref.link(file=python_test),
+            title=self.testgroup,
         )
+
         # TODO: Is this still required?
         if testid:
             md = md.replace("@", "<br>@")
         return md
 
-    def testgroup_markdown2(
-        self,
-        result_context: ResultContext,
-        python_test: str,
-        testid: bool,
-    ) -> str:
+    @property
+    def label_order(self) -> str:
         """
-        Example return:
-          testid=False:
-            [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
-          testid=True:
-            [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+        Example: e_extmod/RUN-TESTS_EXTMOD_HARDWARE
+        fallback: RUN-TESTS_EXTMOD_HARDWARE
         """
-        assert isinstance(result_context, ResultContext)
-
-        # Find the git_ref for the micropython tests repository
-        ref_tests = result_context.git_ref.get(DirectoryTag.T, None)
-        if ref_tests is None:
-            return f"{self.testgroup} ({python_test})"
-        ref = GitRef.factory(ref=ref_tests)
-
-        # Build the link
-        label = self.testid if testid else self.testgroup
-
-        return md_link(label=label, link=ref.link(file=python_test))
+        testrun_spec = self.testrun_spec
+        if testrun_spec:
+            return testrun_spec.label_order + "/" + self.testgroup
+        return self.testgroup
 
     def test_filename_link(
         self,

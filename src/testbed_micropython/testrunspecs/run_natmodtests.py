@@ -252,6 +252,8 @@ class TestRunRunTests(TestRun):
 
 TESTRUNSPEC_RUN_NATMODTESTS = TestRunSpec(
     label="RUN-NATMODTESTS",
+    label_intuitive="run-natmodtests.py",
+    label_order="c_g",
     helptext="Run tests using native modules in external .mpy files",
     command=["run-natmodtests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,

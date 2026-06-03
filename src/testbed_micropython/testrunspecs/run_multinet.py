@@ -117,6 +117,8 @@ class TestRunReferenceBluetooth(TestRunReference):
 
 TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
     label="RUN-MULTITESTS_MULTINET",
+    label_intuitive="run-multitests.py multi_net/*.py",
+    label_order="g_multi_net",
     helptext="TODO helptext MULTINET",
     command=["run-multitests.py", "multi_net/*.py"],
     required_fut=EnumFut.FUT_WLAN,
@@ -127,6 +129,8 @@ TESTRUNSPEC_RUNTESTS_MULTINET = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_MULTBLUETOOTH = TestRunSpec(
     label="RUN-MULTITESTS_MULTIBLUETOOTH",
+    label_intuitive="run-multitests.py multi_bluetooth/*.py",
+    label_order="g_multi_net",
     helptext="One board connects to another using bluetooth",
     command=["run-multitests.py", "multi_bluetooth/*.py"],
     # command=["run-multitests.py", "multi_bluetooth/ble_characteristic.py"],

@@ -83,6 +83,8 @@ class TestRunRunTests(TestRun):
 
 TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
     label="RUN-TESTS_NET_INET",
+    label_intuitive="run-tests.py --test-dirs=net_inet",
+    label_order="g_multi_inet",
     helptext="TODO: help net inet",
     command=["run-tests.py", "--test-dirs=net_inet"],
     required_fut=EnumFut.FUT_WLAN,
@@ -93,6 +95,8 @@ TESTRUNSPEC_RUNTESTS_NET_INET = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_NET_HOSTED = TestRunSpec(
     label="RUN-TESTS_NET_HOSTED",
+    label_intuitive="run-tests.py --test-dirs=net_hosted",
+    label_order="g_multi_inet",
     helptext="TODO: help net hosted",
     command=["run-tests.py", "--test-dirs=net_hosted"],
     required_fut=EnumFut.FUT_WLAN,

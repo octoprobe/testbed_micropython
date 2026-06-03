@@ -36,7 +36,7 @@
                 "--testresults=${workspaceFolder}/testresults",
                 // "--action-url=..."
                 "--url=",
-                "--xfail=xfail_hans_2026-05-16a.json"
+                // "--xfail=xfail_hans_2026-05-16a.json"
             ],
             "console": "integratedTerminal",
             "env": {

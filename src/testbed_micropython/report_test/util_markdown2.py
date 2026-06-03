@@ -14,11 +14,19 @@ def md_escape(md: str) -> str:
     return md
 
 
-def md_link(label: str, link: str | None) -> str:
+def md_link(label: str, link: str | None, title: str | None = None) -> str:
+    """
+    Example: [OpenAI](https://openai.com "Visit the OpenAI website")
+    label     ^^^^^^
+    link              ^^^^^^^^^^^^^^^^^^
+    title                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    """
     label_escaped = md_escape(label)
     if link is None:
         return label_escaped
     link_escaped = md_escape(link)
+    if title:
+        link_escaped += f' "{md_escape(title)}"'
     return f"[{label_escaped}]({link_escaped})"
 
 

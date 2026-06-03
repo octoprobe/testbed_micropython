@@ -131,6 +131,8 @@ class TestRunRunTests(TestRun):
 
 TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
     label="RUN-TESTS_STANDARD",
+    label_intuitive="run-tests.py",
+    label_order="c_c",
     helptext="Run the standard set of tests",
     command=["run-tests.py"],
     required_fut=EnumFut.FUT_MCU_ONLY,
@@ -141,6 +143,8 @@ TESTRUNSPEC_RUNTESTS_STANDARD = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
     label="RUN-TESTS_STANDARD_VIA_MPY",
+    label_intuitive="run-tests.py --via-mpy",
+    label_order="c_c",
     helptext="Run the standard set of tests via .mpy",
     command=["run-tests.py", "--via-mpy"],
     required_fut=EnumFut.FUT_MCU_ONLY,
@@ -151,6 +155,8 @@ TESTRUNSPEC_RUNTESTS_STANDARD_VIA_MPY = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
     label="RUN-TESTS_STANDARD_NATIVE",
+    label_intuitive="run-tests.py --via-mpy --emit native",
+    label_order="c_c",
     helptext="Run the standard set of tests with the native emitter",
     command=["run-tests.py", "--via-mpy", "--emit", "native"],
     required_fut=EnumFut.FUT_MCU_ONLY,
@@ -161,6 +167,8 @@ TESTRUNSPEC_RUNTESTS_STANDARD_NATIVE = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE",
+    label_intuitive="run-tests.py --test-dirs=extmod_hardware",
+    label_order="e_extmod",
     helptext="Run hardware specific tests",
     command=["run-tests.py", "--test-dirs=extmod_hardware"],
     required_fut=EnumFut.FUT_EXTMOD_HARDWARE,
@@ -171,6 +179,8 @@ TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE = TestRunSpec(
 
 TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE = TestRunSpec(
     label="RUN-TESTS_EXTMOD_HARDWARE_NATIVE",
+    label_intuitive="run-tests.py --test-dirs=extmod_hardware --emit-native",
+    label_order="e_extmod",
     helptext="Run hardware specific tests with the native emitter",
     command=[
         "run-tests.py",
