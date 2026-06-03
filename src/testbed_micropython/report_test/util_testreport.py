@@ -108,8 +108,12 @@ class Data:
         return SummaryByTest.factory(self.testgroups_success)
 
     @property
+    def tests_total(self) -> int:
+        return sum(len(tg.outcomes) - 1 for tg in self.testgroups)
+
+    @property
     def duration_per_test_text(self) -> str:
-        tests_total = sum(len(tg.outcomes) - 1 for tg in self.testgroups)
+        tests_total = self.tests_total
         if tests_total == 0:
             return "-"
         return (

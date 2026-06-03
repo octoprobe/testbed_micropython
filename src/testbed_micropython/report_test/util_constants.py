@@ -22,6 +22,21 @@ FILENAME_OCTOPROBE_PR_REPORT_STEM = "octoprobe_pr_report"
 
 PREFIX_ANCHOR = "anchor_"
 
+GITHUB_EVENT = "workflow_dispatch"
+GITHUB_PREFIX = "github_"
+"""
+This corresponds to
+  .github/workflows/selfhosted_testrun.yml
+    --label='github_${{ github.workflow }}_${{ github.run_number }}'
+"""
+
+if True:
+    GITHUB_WORKFLOW = "selfhosted_testrun"  # .yaml may be omitted
+    GITHUB_REPO = "octoprobe/testbed_micropython"
+else:
+    GITHUB_WORKFLOW = "testbed_micropython"  # .yaml may be omitted
+    GITHUB_REPO = "octoprobe/testbed_micropython_runner_obsolete"
+
 
 def seconds_to_duration(seconds: int) -> str:
     """

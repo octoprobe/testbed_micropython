@@ -175,6 +175,9 @@ class ResultContext:
     git_ref: dict[str, str] = dataclasses.field(default_factory=dict)
     # {"F": "https://github.com/micropython/micropython.git@master"}
 
+    def __post_init__(self) -> None:
+        pass
+
     def set_directory(self, tag: DirectoryTag, directory: str | pathlib.Path) -> None:
         if isinstance(directory, pathlib.Path):
             directory = str(directory)
@@ -291,6 +294,22 @@ class ResultContext:
     def time_duration_s(self) -> float:
         duration = self.time_end_datetime - self.time_start_datetime
         return duration.total_seconds()
+
+    @property
+    def worflow_job_number(self) -> str:
+        log_directory = self.log_directory
+        # Example log_directory:
+        #  https://reports.octoprobe.org/github_selfhosted_testrun_483/
+        #  /home/maerki/work_octoprobe/testbed_micropython/testresults/
+        github_workflow = (
+            f"/{util_constants.GITHUB_PREFIX}{util_constants.GITHUB_WORKFLOW}_"
+        )
+
+        pos = log_directory.find(github_workflow)
+        if pos == -1:
+            return ""
+        job_number = log_directory[pos + len(github_workflow) :]
+        return job_number.rstrip("/")
 
 
 @dataclasses.dataclass(slots=True)
