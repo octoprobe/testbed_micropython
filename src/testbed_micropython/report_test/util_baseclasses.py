@@ -249,7 +249,7 @@ class ResultContext:
 
     @property
     def commandline_markdown(self) -> str:
-        markdown = "<br>".join([f"```{arg}```" for arg in self.commandline.split(" ")])
+        markdown = "<br/>".join([f"```{arg}```" for arg in self.commandline.split(" ")])
 
         # Avoid github to make a link out of
         # https://github.com/micropython/micropython.git@master
@@ -420,17 +420,12 @@ class ResultTestGroup:
     def testgroup_markdown(
         self,
         result_context: ResultContext,
-        testid: bool = False,
     ) -> str:
         """
         Example return:
-          testid=False:
-            [RUN-TESTS_EXTMOD_HARDWARE](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
-          testid=True:
-            [RUN-TESTS_EXTMOD_HARDWARE@5f2a-ADAITSYBITSYM0](https://github.com/micropython/micropython/tree/master/tests/run-tests.py)
+          [run-tests.py --test-dirs=extmod_hardware](https://github.com/micropython/micropython/tree/master/tests/run-tests.py "RUN-TESTS_EXTMOD_HARDWARE")
         """
         assert isinstance(result_context, ResultContext)
-        assert isinstance(testid, bool)
 
         # Find the testgroup 'RUN-TESTS_EXTMOD_HARDWARE'
         testspec = self.testrun_spec
@@ -446,18 +441,11 @@ class ResultTestGroup:
             return f"{label_intuitive} ({self.testgroup})"
         ref = GitRef.factory(ref=ref_tests)
 
-        # Build the link
-        label = self.testid if testid else label_intuitive
-
         md = md_link(
-            label=label,
+            label=label_intuitive,
             link=ref.link(file=python_test),
             title=self.testgroup,
         )
-
-        # TODO: Is this still required?
-        if testid:
-            md = md.replace("@", "<br>@")
         return md
 
     @property

@@ -24,6 +24,7 @@ from octoprobe import util_constants
 
 from . import util_xfail
 from .util_baseclasses import Outcome, ResultContext, ResultTestGroup, ResultTestOutcome
+from .util_constants import PREFIX_ANCHOR
 from .util_markdown2 import md_escape
 
 logger = logging.getLogger(__file__)
@@ -127,7 +128,7 @@ class OutcomesForOneTest(list[TestOutcome]):
             test_name=self.test_name,
             board_variant=outcome_column.board_variant,
         ):
-            link += f"<br><sub>{md_escape(filename)}</sub>"
+            link += f"<br/><sub>{md_escape(filename)}</sub>"
 
         return link
 
@@ -223,6 +224,10 @@ class Group(list[OutcomesForOneTest]):
         return self.testgroup.testgroup
 
     @property
+    def group_anchor(self) -> str:
+        return PREFIX_ANCHOR + self.group_name
+
+    @property
     def tentacle_reference(self) -> str:
         """
         Example: 5f2c-RPI_PICO_W
@@ -242,10 +247,10 @@ class Group(list[OutcomesForOneTest]):
         def format_tentacle_combination(testid_tentacles: OutcomeColumn) -> str:
             tentacle = md_escape(testid_tentacles.tentacle_variant_role).replace(
                 util_constants.DELIMITER_SERIAL_BOARD,
-                util_constants.DELIMITER_SERIAL_BOARD + "<br>",
+                util_constants.DELIMITER_SERIAL_BOARD + "<br/>",
             )
             mcu = md_escape(testid_tentacles.mcu)
-            return mcu + "<br>" + tentacle
+            return mcu + "<br/>" + tentacle
 
         elems_header = [
             format_tentacle_combination(testid_tentacles)

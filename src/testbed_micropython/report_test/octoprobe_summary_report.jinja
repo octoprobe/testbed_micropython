@@ -46,13 +46,16 @@
 | Test | Groups<br>run | Groups<br>skipped | Groups<br>retried | Tests<br>passed | Tests<br>skipped | Tests<br>xfailed | Tests<br>failed |
 | - | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
 {%- for line in data.summary %}
-| {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezero }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_xfailed|hidezero }} | {{ line.tests_failed|hidezerobold }} |
+| {{ line.label }} | {{ line.group_run|hidezero }} | {{ line.group_skipped|hidezero }} | {{ line.group_error|hidezero }} | {{ line.tests_passed|hidezero }} | {{ line.tests_skipped|hidezero }} | {{ line.tests_xfailed|hidezero }} | {{ line.tests_failed_link|hidezerobold }} |
 {%- endfor %}
 
 ## Failures
 
 {%- for summary_by_test in data.summary_by_test %}
+
+<a name="{{ summary_by_test.group_anchor }}"></a>
 ### Group: {{ summary_by_test.testgroup.testgroup_markdown(result_context=result_context) }}
+
 
 {% if summary_by_test.tentacle_reference -%}
 Reference: {{ summary_by_test.tentacle_reference|md_escape }}
@@ -76,34 +79,22 @@ Reference: {{ summary_by_test.tentacle_reference|md_escape }}
 
 {%- endfor %}
 
-{#
-## Tests which failed
-
-| Testgroup (testid) | Test | Logfile |
-| - | - | - |
-{%- for testgroup in data.testgroups_success_ordered %}
-    {%- for result in testgroup.results_failed %}
-| {{ testgroup.testgroup_markdown(result_context, testid=True) }} | {{ result.name_markdown(result_context) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) |
-    {%- endfor %}
-{%- endfor %}
-#}
-
 ## Testsgroups errors - ignored and retried
 
-| Testgroup (testid) | Logfile | Error |
+| Testgroup | Logfile | Error |
 | - | - | - |
 {%- for testgroup in data.testgroups_error_ordered %}
     {%- if testgroup.msg_error %}
-| {{ testgroup.testgroup_markdown(result_context, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
+| {{ testgroup.testgroup_markdown(result_context) }} <br> {{ testgroup.tentacle_variant }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_error|fix_links }}``` |
     {%- endif %}
 {%- endfor %}
 
 ## Testsgroups which where skipped
 
-| Testgroup (testid) | Logfile | Skip Reason |
+| Testgroup | Logfile | Skip Reason |
 | - | - | - |
 {%- for testgroup in data.testgroups_success_ordered %}
     {%- if testgroup.msg_skipped %}
-| {{ testgroup.testgroup_markdown(result_context, testid=True) }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_skipped|fix_links }}``` |
+| {{ testgroup.testgroup_markdown(result_context) }} <br> {{ testgroup.tentacle_variant }} | [logfile]({{ testgroup.log_output|fix_links|md_escape }}) | ```{{ testgroup.msg_skipped|fix_links }}``` |
     {%- endif %}
 {%- endfor %}

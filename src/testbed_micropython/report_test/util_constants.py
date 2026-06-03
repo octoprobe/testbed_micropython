@@ -20,6 +20,8 @@ FILENAME_CONTEXT_TESTGROUP_JSON = "context_testgroup.json"
 FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM = "octoprobe_summary_report"
 FILENAME_OCTOPROBE_PR_REPORT_STEM = "octoprobe_pr_report"
 
+PREFIX_ANCHOR = "anchor_"
+
 
 def seconds_to_duration(seconds: int) -> str:
     """
