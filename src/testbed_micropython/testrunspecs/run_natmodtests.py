@@ -7,7 +7,7 @@ import pathlib
 import shutil
 import sys
 
-from octoprobe.util_cached_git_repo import CachedGitRepo
+from git_cached_repo.git_cached_repo import CachedGitRepo
 from octoprobe.util_constants import relative_cwd
 from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_run
 

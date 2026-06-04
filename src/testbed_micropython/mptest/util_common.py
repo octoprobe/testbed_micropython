@@ -13,6 +13,7 @@ import sys
 import time
 import typing
 
+from git_cached_repo.git_cached_repo import CachedGitRepo
 from octoprobe.lib_mpremote import ExceptionTransport
 from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.lib_tentacle_dut import TentacleDut
@@ -20,7 +21,6 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestException,
     assert_micropython_repo,
 )
-from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 
 from testbed_micropython.testcollection.testrun_specs import TestRun

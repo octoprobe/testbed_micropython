@@ -7,7 +7,7 @@ import pathlib
 import typing
 from datetime import datetime
 
-from octoprobe.util_cached_git_repo import GitMetadata, GitSpec
+from git_cached_repo.git_cached_repo import GitMetadata, GitSpec
 from octoprobe.util_constants import DELIMITER_SERIAL_BOARD, DirectoryTag
 
 from ..pr_check import util_github

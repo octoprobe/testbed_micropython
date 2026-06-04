@@ -3,8 +3,8 @@ import os
 import pathlib
 import typing
 
+from git_cached_repo.git_cached_repo import CachedGitRepo
 from mpbuild.board_database import Database
-from octoprobe.util_cached_git_repo import CachedGitRepo
 from octoprobe.util_firmware_spec import (
     FirmwareBuildSpec,
     FirmwareSpecBase,

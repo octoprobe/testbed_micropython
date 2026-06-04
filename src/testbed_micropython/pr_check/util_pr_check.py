@@ -4,7 +4,7 @@ import dataclasses
 import logging
 import shutil
 
-from octoprobe import util_cached_git_repo
+from git_cached_repo import git_cached_repo
 
 from .. import constants
 from . import util_github, util_ports_from_pr
@@ -72,7 +72,7 @@ def pr_check(
     """
 
     # Clone git repo
-    git_repo = util_cached_git_repo.CachedGitRepo(
+    git_repo = git_cached_repo.CachedGitRepo(
         directory_cache=constants.DIRECTORY_GIT_CACHE,
         git_spec=git_ref,
         prefix="pr_check_",

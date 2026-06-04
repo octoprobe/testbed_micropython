@@ -9,6 +9,10 @@
             "path": "../octoprobe"
         },
         {
+            "name": "git_cached_repo",
+            "path": "../git_cached_repo"
+        },
+        {
             "name": "testbed_micropython_reports",
             "path": "../testbed_micropython_reports"
         }

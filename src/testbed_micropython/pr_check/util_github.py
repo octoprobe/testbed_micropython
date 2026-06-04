@@ -6,7 +6,7 @@ import pathlib
 import subprocess
 import typing
 
-from octoprobe.util_cached_git_repo import GitSpec
+from git_cached_repo.git_cached_repo import GitSpec
 
 from ..constants import is_url
 

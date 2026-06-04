@@ -9,6 +9,11 @@ import sys
 import time
 import typing
 
+from git_cached_repo.git_cached_repo import (
+    CachedGitRepo,
+    GitMetadata,
+    log_git_describe,
+)
 from octoprobe.octoprobe import CtxTestRun
 from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
 from octoprobe.util_baseclasses import (
@@ -16,7 +21,6 @@ from octoprobe.util_baseclasses import (
     OctoprobeTestException,
     OctoprobeTestSkipException,
 )
-from octoprobe.util_cached_git_repo import CachedGitRepo, GitMetadata, log_git_describe
 from octoprobe.util_constants import DIRECTORY_OCTOPROBE_SRC_GIT, DirectoryTag
 from octoprobe.util_firmware_spec import FirmwareBuildSpec
 from octoprobe.util_journalctl import JournalctlObserver
