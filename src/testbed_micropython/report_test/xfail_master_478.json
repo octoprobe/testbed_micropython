@@ -190,6 +190,21 @@
         ]
     },
     "RUN-TESTS_STANDARD": {
+        "extmod/socket_udp_nonblock.py": [
+            "ESP32_C3_DEVKIT",
+            "ESP32_S3_DEVKIT",
+            "LOLIN_C3_MINI",
+            "NUCLEO_WB55",
+            "PYBV11",
+            "PYBV11-DP",
+            "PYBV11-DP_THREAD",
+            "PYBV11-THREAD",
+            "RPI_PICO2",
+            "RPI_PICO2-RISCV",
+            "RPI_PICO2_W",
+            "RPI_PICO_W",
+            "TEENSY40"
+        ],
         "extmod/machine_uart_irq_txidle.py": [
             "ARDUINO_NANO_33"
         ],
@@ -220,6 +235,21 @@
         ]
     },
     "RUN-TESTS_STANDARD_NATIVE": {
+        "extmod/socket_udp_nonblock.py": [
+            "ESP32_C3_DEVKIT",
+            "ESP32_S3_DEVKIT",
+            "LOLIN_C3_MINI",
+            "NUCLEO_WB55",
+            "PYBV11",
+            "PYBV11-DP",
+            "PYBV11-DP_THREAD",
+            "PYBV11-THREAD",
+            "RPI_PICO2",
+            "RPI_PICO2-RISCV",
+            "RPI_PICO2_W",
+            "RPI_PICO_W",
+            "TEENSY40"
+        ],
         "basics/fun_callstardblstar.py": [
             "ADA_ITSYBITSY_M0"
         ],
@@ -292,6 +322,21 @@
         ]
     },
     "RUN-TESTS_STANDARD_VIA_MPY": {
+        "extmod/socket_udp_nonblock.py": [
+            "ESP32_C3_DEVKIT",
+            "ESP32_S3_DEVKIT",
+            "LOLIN_C3_MINI",
+            "NUCLEO_WB55",
+            "PYBV11",
+            "PYBV11-DP",
+            "PYBV11-DP_THREAD",
+            "PYBV11-THREAD",
+            "RPI_PICO2",
+            "RPI_PICO2-RISCV",
+            "RPI_PICO2_W",
+            "RPI_PICO_W",
+            "TEENSY40"
+        ],
         "extmod/machine_uart_irq_txidle.py": [
             "ARDUINO_NANO_33"
         ],
