@@ -8,6 +8,10 @@
 * Tested ports: {{ data.ports_md }}
 * [Summary Report {{ result_context.worflow_job_number }}]({{ result_context.summary_report|fix_links|md_escape }}), [Logdirectory]({{ result_context.log_directory|fix_links|md_escape }})
 
+{% if result_context.error %}
+* **Error: {{ result_context.error }}**
+{% endif %}
+
 | Test | Tests<br>passed | Tests<br>skipped | Tests<br>xfailed | Tests<br>failed |
 | - | :-: | :-: | :-: | :-: |
 {%- for line in data.summary %}

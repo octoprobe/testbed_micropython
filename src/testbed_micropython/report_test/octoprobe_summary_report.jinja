@@ -2,6 +2,10 @@
 
 {% set result_context = data.result_context %}
 
+{% if result_context.error %}
+* **Error: {{ result_context.error }}**
+{% endif %}
+
 * Trigger: {{ result_context.trigger|md_escape }} {% if action_url %}[Github Action]({{ action_url|md_escape }}){% endif %}
 
 * Testbed: {{ result_context.testbed_instance|md_escape }} {{ result_context.testbed_name|md_escape }}
@@ -16,9 +20,6 @@
 
 * Logdirectory: [{{ result_context.log_directory|fix_links|md_escape }}]({{ result_context.log_directory|fix_links|md_escape }})
 * Logoutput: [{{ result_context.log_output|fix_links|md_escape }}]({{ result_context.log_output|fix_links|md_escape }})
-{% if result_context.error %}
-* **Error: {{ result_context.error }}**
-{% endif %}
 
 {% if result_context.pr_link %}
 * PR:  [{{ result_context.pr_link|fix_links|md_escape }}]({{ result_context.pr_link|fix_links|md_escape }})
@@ -26,19 +27,23 @@
 
 * Repo Firmware: {{ result_context.ref_firmware2.markdown }} {% if result_context.ref_firmware_metadata %} [{{ result_context.ref_firmware_metadata.commit_comment }}]({{ result_context.ref_firmware_metadata.url_commit_hash }}) {% endif %}
 {% if result_context.ref_firmware_metadata %}
+  <details><summary>git log</summary>
 
   ```
 {{ result_context.ref_firmware_metadata.command_log.stdout|indent2|md_escape }}
   ```
 
+  </details>
 {% endif %}
 * Repo Tests: {{ result_context.ref_tests2.markdown }} {% if result_context.ref_tests_metadata %} [{{ result_context.ref_tests_metadata.commit_comment }}]({{ result_context.ref_tests_metadata.url_commit_hash }}) {% endif %}
 {% if result_context.ref_tests_metadata %}
+  <details><summary>git log</summary>
 
   ```
 {{ result_context.ref_tests_metadata.command_log.stdout|indent2|md_escape }}
   ```
 
+  </details>
 {% endif %}
 
 ## Summary

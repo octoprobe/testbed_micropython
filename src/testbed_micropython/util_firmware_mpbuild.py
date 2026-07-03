@@ -137,7 +137,7 @@ class Builder:
 
         # Build results
         prefix = f"Firmware '{self.variant.name_normalized}'"
-        logger.info(f"{prefix}: source:  {repo_micropython_firmware}")
+        logger.info(f"{prefix}: source: {repo_micropython_firmware}")
         logger.info(f"{prefix}: docker output: {self.docker_logfile}")
 
         # Call mpbuild

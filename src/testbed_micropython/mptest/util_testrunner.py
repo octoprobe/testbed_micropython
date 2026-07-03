@@ -597,13 +597,16 @@ class TestRunner:
                                 top=self.args.directory_results,
                                 filename=event.logfile,
                             )
-                            msg = f"Firmware build failed: {logfile}"
+                            error = f"Firmware build failed: {logfile}"
                             logger.error(
-                                f"[COLOR_ERROR]{event.target_unique_name}: {msg}"
+                                f"[COLOR_ERROR]{event.target_unique_name}: {error}"
                             )
-                            raise OctoprobeAppExitException(msg)
+                            self.report_testgroup.write_error(error=error)
+                            raise OctoprobeAppExitException(error)
                     else:
-                        raise ValueError("Programming error!")
+                        error = "Programming error!"
+                        self.report_testgroup.write_error(error=error)
+                        raise ValueError(error)
 
         run_all()
 

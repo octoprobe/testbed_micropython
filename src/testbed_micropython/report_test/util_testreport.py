@@ -236,6 +236,10 @@ class ReportTests:
         self.result_context.testbed_name = testbed_name
         self.result_context.testbed_instance = testbed_instance
 
+    def write_error(self, error: str) -> None:
+        self.result_context.error = error
+        self._write()
+
     def write_ok(self) -> None:
         self.result_context.error = ""
         self._write()
