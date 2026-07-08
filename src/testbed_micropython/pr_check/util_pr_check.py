@@ -26,6 +26,12 @@ class PrCheck:
     def return_text(self) -> str:
         return "test required" if self.test_required else "already tested"
 
+    @property
+    def micropython_ports(self) -> list[str]:
+        micropython_ports = self.json_pr_ports["micropython_ports"]
+        assert isinstance(micropython_ports, list)
+        return micropython_ports
+
     @staticmethod
     def factory(git_ref: str) -> PrCheck:
         """
@@ -54,6 +60,7 @@ class PrCheck:
             p.lines.append("!!!!!!!! We may skip testing this PR !!!!!!!!")
             p.test_required = False
             return p
+
         p.lines.append("!!!!!!!! We have to run tests on this PR  !!!!!!!!")
         p.test_required = True
         return p
