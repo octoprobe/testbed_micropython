@@ -155,8 +155,12 @@ class JsonPrPorts(dict[str, typing.Any]):
         return {f["path"] for f in self[self._KEY_FILES]}
 
     @property
-    def author(self) -> str | None:
+    def author(self) -> str:
         return self["author"]["name"]  # type: ignore[no-any-return]
+
+    @property
+    def login(self) -> str:
+        return self["author"]["login"]  # type: ignore[no-any-return]
 
     @property
     def title(self) -> str | None:
