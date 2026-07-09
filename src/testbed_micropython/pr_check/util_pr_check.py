@@ -45,6 +45,8 @@ class PrCheck:
 
         commit_hash_tested = p.json_pr_ports.commit_hash_tested
 
+        p.lines.append(f"PR Author: {p.json_pr_ports.author}")
+        p.lines.append(f"PR Title: {p.json_pr_ports.title}")
         p.lines.append(
             f"{git_ref} is on commit '{p.json_pr_ports.commit_hash}'. The last tested version was '{commit_hash_tested}'."
         )

@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
+      job_title:
+        description: 'For example: PR19453 Free up more space in internal flash'
+        required: false
+        type: string
+
       email_testreport:
         description: 'The email address to sent the testreport to.'
         required: false
