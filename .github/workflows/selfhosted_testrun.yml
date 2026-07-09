@@ -9,6 +9,11 @@ on:
         required: false
         type: string
 
+      micropython_ports:
+        description: 'For example: rp2,esp32'
+        required: false
+        type: string
+
       email_testreport:
         description: 'The email address to sent the testreport to.'
         required: false
