@@ -214,7 +214,12 @@ class MpVersion:
         return match.group("version")
 
     @classmethod
-    def factory(cls, board: Board, build_folder: pathlib.Path) -> MpVersion:
+    def factory(
+        cls,
+        board: Board,
+        variant: str | None,
+        build_folder: pathlib.Path,
+    ) -> MpVersion:
         filename_mpversion_h = build_folder / "genhdr" / "mpversion.h"
         try:
             file_mpversion_h = filename_mpversion_h.read_text()
@@ -241,16 +246,16 @@ class MpVersion:
                 f"Firmware for {board.name}: In {filename_mpversion_h}: Tag '{tag}' not found!"
             )
 
-        assert build_folder.name.startswith(BuildFolder.BUILD_FOLDER_PREFIX)
+        sys_implementation_build = board.name
+        if variant is not None:
+            sys_implementation_build += f"{VARIANT_SEPARATOR}{variant}"
 
         return MpVersion(
             git_tag=lookup(tag="MICROPY_GIT_TAG"),
             git_hash=lookup(tag="MICROPY_GIT_HASH"),
             git_build_date=lookup(tag="MICROPY_BUILD_DATE"),
             version_language=cls._get_python_language_version(board=board),
-            sys_implementation_build=build_folder.name[
-                len(BuildFolder.BUILD_FOLDER_PREFIX) :
-            ],
+            sys_implementation_build=sys_implementation_build,
         )
 
 
@@ -289,7 +294,11 @@ class BuildFolder:
             return self.board.port.directory / build_directory
 
         self.build_folder = get_build_folder()
-        self.mp_version = MpVersion.factory(board=board, build_folder=self.build_folder)
+        self.mp_version = MpVersion.factory(
+            board=board,
+            variant=variant,
+            build_folder=self.build_folder,
+        )
 
     @property
     def firmware_filename(self) -> pathlib.Path:
