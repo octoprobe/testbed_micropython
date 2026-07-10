@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Report</title>
+    <style>
+        table {
+            border: 1px solid gray;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid gray;
+            padding: 8px;
+        }
+        thead th {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <label>
+        <input type="checkbox" id="refreshCheckbox" onclick="toggleRefresh()">auto refresh
+    </label><h1>Timing report</h1><table>
+<thead>
+  <tr>
+    <th style="text-align:right;">start</th>
+    <th style="text-align:right;">duration</th>
+    <th style="text-align:right;">mpbuild</th>
+    <th style="text-align:right;">A</th>
+  </tr>
+</thead>
+<tr>
+  <th style="text-align:right;">0.0s</th>
+  <th style="text-align:right;">+61.5s</th>
+  <th style="text-align:right;">a</th>
+  <th style="text-align:right;">.</th>
+</tr>
+<tr>
+  <th style="text-align:right;">61.5s</th>
+  <th style="text-align:right;">+15.0s</th>
+  <th style="text-align:right;">b</th>
+  <th style="text-align:right;">1(a)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">76.5s</th>
+  <th style="text-align:right;">+23.0s</th>
+  <th style="text-align:right;">b</th>
+  <th style="text-align:right;">.</th>
+</tr>
+<tr>
+  <th style="text-align:right;">99.5s</th>
+  <th style="text-align:right;">+15.5s</th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">2(b)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">115.0s</th>
+  <th style="text-align:right;"></th>
+  <th style="text-align:right;">.</th>
+  <th style="text-align:right;">.</th>
+</tr>
+</table>
+<h2>Legend: Tentacles</h2><table>
+<thead>
+  <tr>
+    <th style="text-align:right;">Tentacle-ID</th>
+    <th style="text-align:left;">Tentacles</th>
+  </tr>
+</thead>
+<tr>
+  <th style="text-align:right;">mpbuild</th>
+  <th style="text-align:left;">mpbuild</th>
+</tr>
+<tr>
+  <th style="text-align:right;">A</th>
+  <th style="text-align:left;">5334-RPI_PICO2</th>
+</tr>
+</table>
+<h2>Legend: Tasks</h2><table>
+<thead>
+  <tr>
+    <th style="text-align:right;">Task-ID</th>
+    <th style="text-align:left;">Task</th>
+    <th style="text-align:left;">Tentacle</th>
+    <th style="text-align:right;">Duration</th>
+  </tr>
+</thead>
+<tr>
+  <th style="text-align:right;">a</th>
+  <th style="text-align:left;">Build RPI_PICO2</th>
+  <th style="text-align:left;"></th>
+  <th style="text-align:right;">61.5s</th>
+</tr>
+<tr>
+  <th style="text-align:right;">b</th>
+  <th style="text-align:left;">Build RPI_PICO2-RISCV</th>
+  <th style="text-align:left;"></th>
+  <th style="text-align:right;">38.0s</th>
+</tr>
+<tr>
+  <th style="text-align:right;">1</th>
+  <th style="text-align:left;">Test RUN-TESTS_EXTMOD_HARDWARE@5334-RPI_PICO2</th>
+  <th style="text-align:left;">5334-RPI_PICO2(RPI_PICO2)</th>
+  <th style="text-align:right;">15.0s</th>
+</tr>
+<tr>
+  <th style="text-align:right;">2</th>
+  <th style="text-align:left;">Test RUN-TESTS_EXTMOD_HARDWARE@5334-RPI_PICO2-RISCV</th>
+  <th style="text-align:left;">5334-RPI_PICO2(RPI_PICO2-RISCV)</th>
+  <th style="text-align:right;">15.5s</th>
+</tr>
+</table>
+<h2>Report input data</h2><table>
+<thead>
+  <tr>
+    <th style="text-align:right;">Start</th>
+    <th style="text-align:right;">End</th>
+    <th style="text-align:right;">Duration</th>
+    <th style="text-align:left;">Task</th>
+    <th style="text-align:left;">Tentacles</th>
+  </tr>
+</thead>
+<tr>
+  <th style="text-align:right;">0.0s</th>
+  <th style="text-align:right;">61.5s</th>
+  <th style="text-align:right;">61.5s</th>
+  <th style="text-align:left;">Build RPI_PICO2</th>
+  <th style="text-align:left;"></th>
+</tr>
+<tr>
+  <th style="text-align:right;">61.5s</th>
+  <th style="text-align:right;">76.5s</th>
+  <th style="text-align:right;">15.0s</th>
+  <th style="text-align:left;">Test RUN-TESTS_EXTMOD_HARDWARE@5334-RPI_PICO2</th>
+  <th style="text-align:left;">5334-RPI_PICO2(RPI_PICO2)</th>
+</tr>
+<tr>
+  <th style="text-align:right;">61.5s</th>
+  <th style="text-align:right;">99.5s</th>
+  <th style="text-align:right;">38.0s</th>
+  <th style="text-align:left;">Build RPI_PICO2-RISCV</th>
+  <th style="text-align:left;"></th>
+</tr>
+<tr>
+  <th style="text-align:right;">99.5s</th>
+  <th style="text-align:right;">115.0s</th>
+  <th style="text-align:right;">15.5s</th>
+  <th style="text-align:left;">Test RUN-TESTS_EXTMOD_HARDWARE@5334-RPI_PICO2-RISCV</th>
+  <th style="text-align:left;">5334-RPI_PICO2(RPI_PICO2-RISCV)</th>
+</tr>
+</table>
+<script>
+        let refreshInterval;
+
+        function toggleRefresh() {
+            const checkbox = document.getElementById('refreshCheckbox');
+            if (checkbox.checked) {
+                const interval = 5000;
+                refreshInterval = setInterval(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.set('refresh', interval);
+                    window.location.href = url.toString();
+                }, interval);
+            } else {
+                clearInterval(refreshInterval);
+                const url = new URL(window.location);
+                url.searchParams.delete('refresh');
+                window.history.replaceState({}, '', url.toString());
+            }
+        }
+
+        function getRefreshIntervalFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('refresh');
+        }
+
+        window.onload = function() {
+            const interval = getRefreshIntervalFromURL();
+            if (interval) {
+                document.getElementById('refreshCheckbox').checked = true;
+                refreshInterval = setInterval(() => {
+                    window.location.reload();
+                }, interval);
+            }
+        }
+    </script>
+</body>
+</html>

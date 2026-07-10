@@ -149,7 +149,7 @@ class AsyncTarget:
         report_tentacles = [
             util_report_tasks.ReportTentacle(
                 label=t.label_short,
-                board=t.tentacle_spec.board,
+                board_variant=t.tentacle_state.firmware_spec.board_variant.name_normalized,
             )
             for t in self.tentacles
         ]

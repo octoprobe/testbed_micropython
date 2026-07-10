@@ -28,7 +28,7 @@ class ReportTentacle:
     """
     Example: 5d21-ESP32_DEVKIT
     """
-    board: str
+    board_variant: str
     """
     Example: ESP32_GENERIC
     """
@@ -41,7 +41,7 @@ class ReportTentacle:
         """
         Example: 5d21-ESP32_DEVKIT(ESP32_GENERIC)
         """
-        return f"{self.label}({self.board})"
+        return f"{self.label}({self.board_variant})"
 
 
 @dataclasses.dataclass(repr=True, slots=True)
@@ -324,9 +324,9 @@ class LegendTasks:
 
     def get_task_id(self, report_tentacle: ReportTentacle) -> str:
         assert isinstance(report_tentacle, ReportTentacle)
-        board = report_tentacle.board
+        board_variant = report_tentacle.board_variant
         for legend_task in self.legend_tasks:
-            if legend_task.task.label == board:
+            if legend_task.task.label == board_variant:
                 return legend_task.task_id
         return "skip flash"
 
