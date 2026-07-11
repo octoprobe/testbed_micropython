@@ -34,6 +34,7 @@ TENTACLES_INVENTORY = (
             ),  # v0.4
             # ("e46340474b17-4429",HwVersion.V03, "v1.0", tentacle_specs.PYBV11), This is for testbed_showcase
             ("e46414481338-3a21", HwVersion.V03, "v1.0", tentacle_specs.PYBV11),
+            ("de655035873b-7b21", HwVersion.V07, "v1.0", tentacle_specs.PYBV11),
             # testbed micropython
             ("e46340474b59-2d2d", HwVersion.V03, "v0.1", tentacle_specs.LOLIN_D1_MINI),
             ("de655035872f-7921", HwVersion.V07, "v0.1", tentacle_specs.LOLIN_D1_MINI),
