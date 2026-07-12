@@ -10,9 +10,7 @@ import logging
 import typing
 
 from octoprobe.lib_tentacle import TentacleUsbPort
-from octoprobe.util_micropython_boards import VARIANT_UNKNOWN
 
-from ..constants import EnumFut
 from ..mpbuild.build_api import BoardVariant
 from ..mptest.util_baseclasses import ArgsQuery
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
@@ -35,7 +33,7 @@ class TestRole(enum.StrEnum):
 
 
 @dataclasses.dataclass(frozen=True, slots=True, unsafe_hash=True, order=True)
-class TentacleSpecVariant:
+class TentacleVariant:
     tentacle: TentacleMicropython
     variant: str
     role: TestRole
@@ -92,26 +90,62 @@ class TentacleSpecVariant:
         return "-" + self.variant
 
 
-def tentacle_spec_2_tsvs(
-    tentacle: TentacleMicropython,
-    role: TestRole,
-    flash_skip: bool,
-) -> list[TentacleSpecVariant]:
+@dataclasses.dataclass(frozen=True, slots=True, unsafe_hash=True, order=True)
+class TentacleSpecVariant:
+    tentacle_spec: TentacleSpecMicropython
+    variant: str
+    role: TestRole
     """
-    ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
+    Example: 0, 1, 2
+    If '--count=3' is given, there will be a 'TestRunSpec' for each run!
     """
-    assert isinstance(tentacle, TentacleMicropython)
-    assert isinstance(role, TestRole)
 
-    variants = tentacle.tentacle_spec.build_variants
-    if tentacle.tentacle_state.variants_required is not None:
-        variants = tentacle.tentacle_state.variants_required
-    if (len(variants) > 1) and flash_skip:
-        # This board supports multiple variants: If we do not flash, we do not know the variant...
-        variants = [VARIANT_UNKNOWN]
-    return [
-        TentacleSpecVariant(tentacle=tentacle, variant=v, role=role) for v in variants
-    ]
+    def __post_init__(self) -> None:
+        assert isinstance(self.tentacle_spec, TentacleSpecMicropython)
+        assert isinstance(self.variant, str)
+        assert isinstance(self.role, TestRole)
+
+    def __repr__(self) -> str:
+        return f"{self.board_variant}({self.role.name})"
+
+    def equals(self, tentacle_variant: TentacleVariant) -> bool:
+        assert isinstance(tentacle_variant, TentacleVariant)
+        return (self.board_variant == tentacle_variant.board_variant) and (
+            self.role == tentacle_variant.role
+        )
+
+    def testrun_idx_text(self, idx0: int) -> str:
+        """
+        Example: 'a'
+        """
+        1 / 0
+        assert idx0 >= 0
+        return chr(ord("a") + idx0)
+
+    @property
+    def board(self) -> str:
+        return self.tentacle_spec.board
+
+    @property
+    def board_variant(self) -> str:
+        """
+        Returns:
+         'RPI_PICO2' for a default variant
+         'RPI_PICO2-RISCV' for a variant
+        """
+        if self.variant == "":
+            return self.board
+        return f"{self.board}-{self.variant}"
+
+    @property
+    def dash_variant(self) -> str:
+        """
+        Example for RPI_PICO2: '' or '-RISCV'
+        """
+        1 / 0
+        if self.variant == "":
+            return ""
+        return "-" + self.variant
 
 
 class TentacleSpecVariants(list[TentacleSpecVariant]):
@@ -126,22 +160,6 @@ class TentacleSpecVariants(list[TentacleSpecVariant]):
 
 
 class ConnectedTentacles(list[TentacleMicropython]):
-    def get_tsvs(
-        self,
-        roles: list[TestRole],
-        flash_skip: bool,
-    ) -> TentacleSpecVariants:
-        s: set[TentacleSpecVariant] = set()
-        for tentacle in self:
-            for role in roles:
-                for tsv in tentacle_spec_2_tsvs(
-                    tentacle=tentacle,
-                    role=role,
-                    flash_skip=flash_skip,
-                ):
-                    s.add(tsv)
-        return TentacleSpecVariants(sorted(s))
-
     def get_exclude_reference(
         self,
         exclude_reference: TentacleMicropython | None,
@@ -150,9 +168,6 @@ class ConnectedTentacles(list[TentacleMicropython]):
             return self
         assert isinstance(exclude_reference, TentacleMicropython)
         return ConnectedTentacles([t for t in self if exclude_reference is not t])
-
-    def get_by_fut(self, fut: EnumFut) -> ConnectedTentacles:
-        return ConnectedTentacles([t for t in self if fut in t.tentacle_spec.futs])
 
     def find_first_tentacle(self, board: str) -> TentacleMicropython | None:
         """

@@ -1,0 +1,26 @@
+## testrun_specs
+  testrunspec['TESTPERF'] tests_todo=2
+    RPI_PICO2(ROLE_INSTANCE0)
+    RPI_PICO2-RISCV(ROLE_INSTANCE0)
+## 0: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=2
+    RPI_PICO2(ROLE_INSTANCE0)
+    RPI_PICO2-RISCV(ROLE_INSTANCE0)
+## 0: possible_testruns
+  TestRun(TESTPERF, RPI_PICO2) / TESTPERF@1c40-RPI_PICO2
+  TestRun(TESTPERF, RPI_PICO2-RISCV) / TESTPERF@1c40-RPI_PICO2-RISCV
+  TestRun(TESTPERF, RPI_PICO2) / TESTPERF@1c41-RPI_PICO2
+  TestRun(TESTPERF, RPI_PICO2-RISCV) / TESTPERF@1c41-RPI_PICO2-RISCV
+### 0: fake_start:1 testrun_next: TestRun(TESTPERF, RPI_PICO2) / TESTPERF@1c40-RPI_PICO2
+### actual_testruns
+      TESTPERF@1c40-RPI_PICO2
+## 1: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=1
+    RPI_PICO2-RISCV(ROLE_INSTANCE0)
+## 1: possible_testruns
+  TestRun(TESTPERF, RPI_PICO2-RISCV) / TESTPERF@1c41-RPI_PICO2-RISCV
+### 1: fake_start:0 testrun_next: TestRun(TESTPERF, RPI_PICO2-RISCV) / TESTPERF@1c41-RPI_PICO2-RISCV
+### actual_testruns
+      TESTPERF@1c40-RPI_PICO2
+      TESTPERF@1c41-RPI_PICO2-RISCV
+jobs_started=2 jobs_done=2

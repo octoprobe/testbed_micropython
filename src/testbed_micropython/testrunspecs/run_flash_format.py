@@ -57,7 +57,7 @@ flash_format()
 
 class TestRunFlashFormat(TestRun):
     def test(self, testargs: TestArgs) -> None:
-        tentacle = self.tentacle_variant.tentacle
+        tentacle = self.tentacle_variant.tentacle_spec
         mcu = tentacle.get_tag(TAG_MCU)
         if mcu is None:
             logger.info(f"{tentacle.label_short}: Skip flash format: Not mcu defined.")

@@ -287,7 +287,9 @@ class ReportTestgroup:
             filename=logfile,
         )
         self.report.tentacle_mcu = (
-            testrun.tentacle_variant.tentacle.tentacle_spec.get_tag_mandatory(TAG_MCU)
+            testrun.tentacle_variant.tentacle_spec.tentacle_spec.get_tag_mandatory(
+                TAG_MCU
+            )
         )
 
         if testrun.tentacle_reference is not None:

@@ -14,11 +14,12 @@ from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from .. import constants
-from ..tentacle_spec import TentacleMicropython
+from ..tentacle_spec import TentacleMicropython, TentacleSpecsMicropython
 from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
     TentacleSpecVariant,
     TentacleSpecVariants,
+    TentacleVariant,
     TestRole,
 )
 from ..testcollection.constants import (
@@ -44,7 +45,7 @@ class TestArgs:
 @dataclasses.dataclass(slots=True, repr=True)
 class TestRun:
     testrun_spec: TestRunSpec
-    tentacle_variant: TentacleSpecVariant
+    tentacle_variant: TentacleVariant
     """
     This includes
     * tentacle
@@ -59,14 +60,21 @@ class TestRun:
 
     def __post_init__(self) -> None:
         assert isinstance(self.testrun_spec, TestRunSpec)
-        assert isinstance(self.tentacle_variant, TentacleSpecVariant)
+        assert isinstance(self.tentacle_variant, TentacleVariant)
         assert isinstance(self.tentacle_reference, TentacleMicropython | None)
         if self.testrun_spec.requires_reference_tentacle:
             assert self.tentacle_reference is not None
         else:
             self.tentacle_reference = None
         assert isinstance(self.flash_skip, bool)
-        assert self.tentacle_variant.tentacle != self.tentacle_reference
+        if self.tentacle_reference is not None:
+            1 / 0
+            assert type(self.tentacle_variant.tentacle.tentacle_spec) is type(
+                self.tentacle_reference
+            )
+            assert (
+                self.tentacle_variant.tentacle.tentacle_spec != self.tentacle_reference
+            )
 
     def mark_as_done(self) -> None:
         self.testrun_spec.mark_as_done(testrun=self)
@@ -376,13 +384,16 @@ class TestRunSpec:
         """
         assert isinstance(tentacles, ConnectedTentacles)
 
-        selected_tentacles = tentacles.get_by_fut(self.required_fut)
+        tentacle_specs: TentacleSpecsMicropython = TentacleSpecsMicropython(
+            {x.tentacle_spec for x in tentacles}
+        )
+        selected_tentacles_specs = tentacle_specs.get_by_fut(self.required_fut)
 
         roles = [TestRole.ROLE_INSTANCE0]
         if self.requires_reference_tentacle:
             roles = [TestRole.ROLE_INSTANCE0, TestRole.ROLE_INSTANCE1]
 
-        self.tsvs_todo = selected_tentacles.get_tsvs(
+        self.tsvs_todo = selected_tentacles_specs.get_tsvs(
             roles=roles,
             flash_skip=flash_skip,
         )
@@ -424,13 +435,13 @@ class TestRunSpec:
                         continue
 
                 if tsv.board == tentacle.tentacle_spec.board:
-                    tentacle_variant = TentacleSpecVariant(
+                    tentacle_variant = TentacleVariant(
                         tentacle=tentacle,
                         variant=tsv.variant,
                         role=tsv.role,
                     )
                     if self.requires_reference_tentacle:
-                        if tentacle_variant.tentacle == tentacle_reference:
+                        if tentacle_variant.tentacle_spec == tentacle_reference:
                             # A tentacle can not be its reference
                             continue
 

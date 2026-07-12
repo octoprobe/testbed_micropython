@@ -1,0 +1,13 @@
+## testrun_specs
+  testrunspec['TESTPERF'] tests_todo=1
+    RPI_PICO(ROLE_INSTANCE0)
+## 0: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=1
+    RPI_PICO(ROLE_INSTANCE0)
+## 0: possible_testruns
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c40-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c41-RPI_PICO
+### 0: fake_start:0 testrun_next: TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c40-RPI_PICO
+### actual_testruns
+      TESTPERF@1c40-RPI_PICO
+jobs_started=1 jobs_done=1

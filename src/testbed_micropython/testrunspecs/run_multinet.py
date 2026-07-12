@@ -78,7 +78,7 @@ class TestRunReference(TestRun):
     def tentacle_instance0(self) -> TentacleMicropython:
         assert self.tentacle_reference is not None
         return (
-            self.tentacle_variant.tentacle
+            self.tentacle_variant.tentacle_spec
             if self.tentacle_variant.role is TestRole.ROLE_INSTANCE0
             else self.tentacle_reference
         )
@@ -87,7 +87,7 @@ class TestRunReference(TestRun):
     def tentacle_instance1(self) -> TentacleMicropython:
         assert self.tentacle_reference is not None
         return (
-            self.tentacle_variant.tentacle
+            self.tentacle_variant.tentacle_spec
             if self.tentacle_variant.role is TestRole.ROLE_INSTANCE1
             else self.tentacle_reference
         )
@@ -99,7 +99,10 @@ class TestRunReferenceMultinet(TestRunReference):
 
         assert self.tentacle_reference is not None
 
-        for dut in (self.tentacle_variant.tentacle.dut, self.tentacle_reference.dut):
+        for dut in (
+            self.tentacle_variant.tentacle_spec.dut,
+            self.tentacle_reference.dut,
+        ):
             util_common.copy_certificates(
                 dut=dut,
                 src=testargs.repo_micropython_tests

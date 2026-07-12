@@ -47,7 +47,7 @@ class TestRunRunTests(TestRun):
                 logger.error(f"Test ID matches '{mocked_error}")
                 raise ValueError(f"Mocked error for testid='{mocked_error}'")
 
-        tentacle = tentacle_variant.tentacle
+        tentacle = tentacle_variant.tentacle_spec
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
 

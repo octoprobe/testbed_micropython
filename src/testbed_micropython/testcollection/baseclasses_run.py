@@ -70,7 +70,7 @@ class TestRunSpecs(list[TestRunSpec]):
         self.sort()
 
     def pytest_print(self, indent: int, file: typing.TextIO) -> None:
-        for testrunspec in self:
+        for testrunspec in sorted(self):
             print(
                 indent * "  "
                 + f"testrunspec['{testrunspec.label}'] tests_todo={testrunspec.tests_todo}",

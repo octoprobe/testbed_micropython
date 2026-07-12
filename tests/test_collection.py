@@ -24,6 +24,7 @@ from testbed_micropython.tentacle_specs import (
     ESP32_C3_DEVKIT,
     LOLIN_D1_MINI,
     RPI_PICO,
+    RPI_PICO2,
 )
 from testbed_micropython.testcollection import baseclasses_run, testrun_specs
 from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacles
@@ -55,6 +56,7 @@ class Ttestparam:
     label: str
     specs: list[TentacleSpecMicropython]
     testrun_specs: baseclasses_run.TestRunSpecs
+    jobs_done: int
     count: int = 1
     flash_skip: bool = False
 
@@ -129,6 +131,8 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
     firmwares_built: set[str] = {
         constants.DEFAULT_REFERENCE_BOARD,
         "RPI_PICO",
+        "RPI_PICO2",
+        "RPI_PICO2-RISCV",
         "ESP32_C3_DEVKIT",
         "ESP32_GENERIC_C3",
         "ESP8266_GENERIC",
@@ -161,6 +165,8 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
         bartender.testrun_done(event)
         testrun_done.fake_join()
 
+    jobs_started = 0
+    jobs_done = 0
     for i in itertools.count():
         if i >= 30:
             print("ERROR: should never get here!", file=file)
@@ -184,6 +190,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                 ctxtestrun=ctxtestrun,
                 repo_micropython_tests=repo_micropython_tests,
             )
+            jobs_started += 1
             assert async_target is not None
             async_target.fake_start()
             print(
@@ -194,6 +201,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
                 title="### actual_testruns", indent=2, file=file
             )
             testrun_done(len_actual_testruns_at_least=2)
+            jobs_done += 1
         except test_bartender.CurrentlyNoTestsException:
             print(i, "CurrentlyNoTestsException")
             testrun_done(len_actual_testruns_at_least=0)
@@ -203,6 +211,10 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
             for testrun in bartender.actual_testruns:
                 print("   ", testrun)
             break
+
+    print(f"{jobs_started=} {jobs_done=}", file=file)
+    file.flush()
+    assert jobs_done == testparam.jobs_done
 
 
 _TESTRUNSPEC_PERFBENCH = testrun_specs.TestRunSpec(
@@ -233,16 +245,19 @@ _TESTPARAM_WLAN_ASYMMETRICAL = Ttestparam(
     label="wlan_asymmetrical",
     specs=[LOLIN_D1_MINI, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=2,
 )
 _TESTPARAM_WLAN_SYMMETRICAL2 = Ttestparam(
     label="wlan_symmetrical2",
     specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=1,
 )
 _TESTPARAM_WLAN_SYMMETRICAL3 = Ttestparam(
     label="wlan_symmetrical3",
     specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=1,
 )
 _TESTPARAM_POTPOURRY = Ttestparam(
     label="potpourry",
@@ -250,12 +265,34 @@ _TESTPARAM_POTPOURRY = Ttestparam(
     testrun_specs=baseclasses_run.TestRunSpecs(
         [_TESTRUNSPEC_WLAN, _TESTRUNSPEC_PERFBENCH]
     ),
+    jobs_done=5,
+)
+_TESTPARAM_2EQTENTACLES = Ttestparam(
+    label="2eqtentacles",
+    specs=[RPI_PICO, RPI_PICO],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
+    jobs_done=1,
+)
+_TESTPARAM_2VARIANTS = Ttestparam(
+    label="2variants",
+    specs=[RPI_PICO2],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
+    jobs_done=2,
+)
+_TESTPARAM_2EQTENTACLES_2VARIANTS = Ttestparam(
+    label="2eqtentacles_2variants",
+    specs=[RPI_PICO2, RPI_PICO2],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
+    jobs_done=2,
 )
 _TESTPARAMS = [
     _TESTPARAM_WLAN_ASYMMETRICAL,
     _TESTPARAM_WLAN_SYMMETRICAL2,
     _TESTPARAM_WLAN_SYMMETRICAL3,
     _TESTPARAM_POTPOURRY,
+    _TESTPARAM_2VARIANTS,
+    _TESTPARAM_2EQTENTACLES,
+    _TESTPARAM_2EQTENTACLES_2VARIANTS,
 ]
 
 
