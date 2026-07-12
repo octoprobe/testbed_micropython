@@ -5,7 +5,7 @@ import sys
 
 from ..constants import EnumFut
 from ..mptest import util_common
-from ..testcollection.baseclasses_spec import TentacleSpecVariant
+from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.constants import (
     ENV_MICROPYTHON_TESTS,
     MICROPYTHON_DIRECTORY_TESTS,
@@ -31,7 +31,7 @@ class TestRunRunTests(TestRun):
     """
 
     def test(self, testargs: TestArgs) -> None:
-        assert isinstance(self.tentacle_variant, TentacleSpecVariant)
+        assert isinstance(self.tentacle_variant, TentacleVariant)
         tentacle = self.tentacle_variant.tentacle
         tentacle_spec = tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
