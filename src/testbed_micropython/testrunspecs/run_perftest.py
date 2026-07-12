@@ -28,8 +28,7 @@ class TestRunPerfTest(TestRun):
 
     def test(self, testargs: TestArgs) -> None:
         assert isinstance(self.tentacle_variant, TentacleSpecVariant)
-        tentacle = self.tentacle_variant.tentacle_spec
-        tentacle_spec = tentacle.tentacle_spec
+        tentacle_spec = self.tentacle_variant.tentacle.tentacle_spec
         assert tentacle_spec.mcu_config is not None
         perftest_args = tentacle_spec.mcu_config.micropython_perftest_args
 
@@ -47,7 +46,7 @@ class TestRunPerfTest(TestRun):
             sys.executable,
             *self.testrun_spec.command,
             f"--result-dir={testargs.testresults_directory.directory_test}",
-            f"--test-instance=port:{tentacle.dut.get_tty()}",
+            f"--test-instance=port:{tentacle_spec.dut.get_tty()}",
             *perftest_args,
         ]
         tentacle_subprocess_run(

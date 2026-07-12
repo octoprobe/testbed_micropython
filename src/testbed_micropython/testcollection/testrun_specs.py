@@ -14,7 +14,7 @@ from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 from octoprobe.util_pytest.util_resultdir import ResultsDir
 
 from .. import constants
-from ..tentacle_spec import TentacleMicropython, TentacleSpecsMicropython
+from ..tentacle_spec import TentacleMicropython
 from ..testcollection.baseclasses_spec import (
     ConnectedTentacles,
     TentacleSpecVariant,
@@ -381,6 +381,7 @@ class TestRunSpec:
         Assign tentacle-variants (board-variants) to be tested.
         """
         assert isinstance(tentacles, ConnectedTentacles)
+        from .baseclasses_spec import TentacleSpecsMicropython
 
         tentacle_specs: TentacleSpecsMicropython = TentacleSpecsMicropython(
             {x.tentacle_spec for x in tentacles}

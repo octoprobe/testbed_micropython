@@ -10,15 +10,17 @@ import logging
 import typing
 
 from octoprobe.lib_tentacle import TentacleUsbPort
+from octoprobe.util_micropython_boards import VARIANT_UNKNOWN
 
+from ..constants import EnumFut
 from ..mpbuild.build_api import BoardVariant
 from ..mptest.util_baseclasses import ArgsQuery
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 
+logger = logging.getLogger(__file__)
+
 if typing.TYPE_CHECKING:
     from ..testcollection.baseclasses_run import TestRunSpecs
-
-logger = logging.getLogger(__file__)
 
 
 class TestRole(enum.StrEnum):
@@ -47,15 +49,6 @@ class TentacleVariant:
         assert isinstance(self.variant, str)
         assert isinstance(self.role, TestRole)
 
-    def __repr__(self) -> str:
-        return f"{self.board_variant}({self.role.name})"
-
-    def equals(self, tentacle_variant: TentacleSpecVariant) -> bool:
-        assert isinstance(tentacle_variant, TentacleSpecVariant)
-        return (self.board_variant == tentacle_variant.board_variant) and (
-            self.role == tentacle_variant.role
-        )
-
     def testrun_idx_text(self, idx0: int) -> str:
         """
         Example: 'a'
@@ -79,15 +72,6 @@ class TentacleVariant:
         if self.variant == "":
             return self.board
         return f"{self.board}-{self.variant}"
-
-    @property
-    def dash_variant(self) -> str:
-        """
-        Example for RPI_PICO2: '' or '-RISCV'
-        """
-        if self.variant == "":
-            return ""
-        return "-" + self.variant
 
 
 @dataclasses.dataclass(frozen=True, slots=True, unsafe_hash=True, order=True)
@@ -114,14 +98,6 @@ class TentacleSpecVariant:
             self.role == tentacle_variant.role
         )
 
-    def testrun_idx_text(self, idx0: int) -> str:
-        """
-        Example: 'a'
-        """
-        1 / 0
-        assert idx0 >= 0
-        return chr(ord("a") + idx0)
-
     @property
     def board(self) -> str:
         return self.tentacle_spec.board
@@ -136,16 +112,6 @@ class TentacleSpecVariant:
         if self.variant == "":
             return self.board
         return f"{self.board}-{self.variant}"
-
-    @property
-    def dash_variant(self) -> str:
-        """
-        Example for RPI_PICO2: '' or '-RISCV'
-        """
-        1 / 0
-        if self.variant == "":
-            return ""
-        return "-" + self.variant
 
 
 class TentacleSpecVariants(list[TentacleSpecVariant]):
@@ -193,7 +159,9 @@ class ConnectedTentacles(list[TentacleMicropython]):
         tentacle_reference: TentacleMicropython | None = None,
     ) -> ConnectedTentacles:
         assert isinstance(query, ArgsQuery)
-        # assert isinstance(testrun_specs, TestRunSpecs)
+        from ..testcollection.baseclasses_run import TestRunSpecs
+
+        assert isinstance(testrun_specs, TestRunSpecs)
         assert isinstance(tentacle_reference, TentacleMicropython | None)
 
         connected_boards = {t.tentacle_spec.tentacle_tag for t in self}
@@ -276,3 +244,52 @@ class ConnectedTentacles(list[TentacleMicropython]):
         return {
             u.usb_port.usb_location: u for t in self for u in t.usb_ports_with_label
         }
+
+
+def tentacle_spec_2_tsvs(
+    tentacle_spec: TentacleSpecMicropython,
+    role: TestRole,
+    flash_skip: bool,
+) -> list[TentacleSpecVariant]:
+    """
+    ["RP_PICO2W-default", "RP_PICO2W-RISCV"]
+    """
+    assert isinstance(tentacle_spec, TentacleSpecMicropython)
+
+    assert isinstance(role, TestRole)
+
+    variants = tentacle_spec.build_variants
+    # if tentacle_spec.tentacle_state.variants_required is not None:
+    #     variants = tentacle_spec.tentacle_state.variants_required
+    # if (len(variants) > 1) and flash_skip:
+    #     # This board supports multiple variants: If we do not flash, we do not know the variant...
+    #     variants = [VARIANT_UNKNOWN]
+    if (len(variants) > 1) and flash_skip:
+        # This board supports multiple variants: If we do not flash, we do not know the variant...
+        variants = [VARIANT_UNKNOWN]
+    return [
+        TentacleSpecVariant(tentacle_spec=tentacle_spec, variant=v, role=role)
+        for v in variants
+    ]
+
+
+class TentacleSpecsMicropython(set[TentacleSpecMicropython]):
+    def get_by_fut(self, fut: EnumFut) -> TentacleSpecsMicropython:
+        return TentacleSpecsMicropython(spec for spec in self if fut in spec.futs)
+
+    def get_tsvs(
+        self,
+        roles: list[TestRole],
+        flash_skip: bool,
+    ) -> TentacleSpecVariants:
+        s: set[TentacleSpecVariant] = set()
+        for tentacle_spec in self:
+            for role in roles:
+                for tsv in tentacle_spec_2_tsvs(
+                    tentacle_spec=tentacle_spec,
+                    role=role,
+                    flash_skip=flash_skip,
+                ):
+                    s.add(tsv)
+
+        return TentacleSpecVariants(sorted(s))

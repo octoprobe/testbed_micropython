@@ -671,7 +671,7 @@ class TestRunner:
             )
 
         assign(
-            tentacle=testrun.tentacle_variant.tentacle_spec,
+            tentacle=testrun.tentacle_variant.tentacle,
             variant=testrun.tentacle_variant.variant,
         )
         if testrun.tentacle_reference is not None:
