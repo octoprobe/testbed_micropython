@@ -1,87 +1,306 @@
 ## testrun_specs
-  testrunspec['TESTPERF'] tests_todo=3
+  testrunspec['TESTPERF'] tests_todo=4
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
     ESP8266_GENERIC(ROLE_INSTANCE0)
     RPI_PICO(ROLE_INSTANCE0)
-  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=6
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
     ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
 ## 0: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=3
+  testrunspec['TESTPERF'] tests_todo=4
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
     ESP8266_GENERIC(ROLE_INSTANCE0)
     RPI_PICO(ROLE_INSTANCE0)
-  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=6
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
     ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
 ## 0: possible_testruns
   TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c40-RPI_PICO
   TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c41-RPI_PICO
   TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF@1c42-LOLIN_D1_MINI
   TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF@1c43-ESP32_C3_DEVKIT
-  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI
-  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT
-### 0: fake_start:4 testrun_next: TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c40-RPI_PICO
+  TestRun(TESTPERF, RPI_PICO_W) / TESTPERF@1c44-RPI_PICO_W
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance0
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### 0: fake_start:9 testrun_next: TestRun(TESTPERF, RPI_PICO) / TESTPERF@1c40-RPI_PICO
 ### actual_testruns
       TESTPERF@1c40-RPI_PICO
 ## 1: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=2
+  testrunspec['TESTPERF'] tests_todo=3
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
     ESP8266_GENERIC(ROLE_INSTANCE0)
-  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=6
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
     ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
 ## 1: possible_testruns
   TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF@1c42-LOLIN_D1_MINI
   TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF@1c43-ESP32_C3_DEVKIT
-  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI
-  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT
-### 1: fake_start:3 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF@1c42-LOLIN_D1_MINI
+  TestRun(TESTPERF, RPI_PICO_W) / TESTPERF@1c44-RPI_PICO_W
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance0
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### 1: fake_start:8 testrun_next: TestRun(TESTPERF, ESP8266_GENERIC) / TESTPERF@1c42-LOLIN_D1_MINI
 ### actual_testruns
       TESTPERF@1c40-RPI_PICO
       TESTPERF@1c42-LOLIN_D1_MINI
 ## 2: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=1
+  testrunspec['TESTPERF'] tests_todo=2
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
-  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=6
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
     ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
 ## 2: possible_testruns
   TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF@1c43-ESP32_C3_DEVKIT
-  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT
-### 2: fake_start:2 testrun_next: TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF@1c43-ESP32_C3_DEVKIT
+  TestRun(TESTPERF, RPI_PICO_W) / TESTPERF@1c44-RPI_PICO_W
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### 2: fake_start:7 testrun_next: TestRun(TESTPERF, ESP32_GENERIC_C3) / TESTPERF@1c43-ESP32_C3_DEVKIT
 ### actual_testruns
       TESTPERF@1c40-RPI_PICO
       TESTPERF@1c42-LOLIN_D1_MINI
       TESTPERF@1c43-ESP32_C3_DEVKIT
 ###  testrun_done: TESTPERF@1c43-ESP32_C3_DEVKIT
 ## 3: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=0
-  testrunspec['TESTWLAN'] tests_todo=2
+  testrunspec['TESTPERF'] tests_todo=1
+    RPI_PICO_W(ROLE_INSTANCE0)
+  testrunspec['TESTWLAN'] tests_todo=6
     ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
     ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
 ## 3: possible_testruns
-  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT
-### 3: fake_start:1 testrun_next: TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT
+  TestRun(TESTPERF, RPI_PICO_W) / TESTPERF@1c44-RPI_PICO_W
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### 3: fake_start:6 testrun_next: TestRun(TESTPERF, RPI_PICO_W) / TESTPERF@1c44-RPI_PICO_W
 ### actual_testruns
       TESTPERF@1c40-RPI_PICO
       TESTPERF@1c42-LOLIN_D1_MINI
-      TESTWLAN@1c43-ESP32_C3_DEVKIT
-###  testrun_done: TESTWLAN@1c43-ESP32_C3_DEVKIT
+      TESTPERF@1c44-RPI_PICO_W
+###  testrun_done: TESTPERF@1c44-RPI_PICO_W
 ## 4: testrun_specs
   testrunspec['TESTPERF'] tests_todo=0
-  testrunspec['TESTWLAN'] tests_todo=1
+  testrunspec['TESTWLAN'] tests_todo=6
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
     ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
 ## 4: possible_testruns
-###  testrun_done: TESTPERF@1c42-LOLIN_D1_MINI
-## 5: testrun_specs
-  testrunspec['TESTPERF'] tests_todo=0
-  testrunspec['TESTWLAN'] tests_todo=1
-    ESP8266_GENERIC(ROLE_INSTANCE0)
-## 5: possible_testruns
-  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI
-### 5: fake_start:0 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### 4: fake_start:5 testrun_next: TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
 ### actual_testruns
       TESTPERF@1c40-RPI_PICO
-      TESTWLAN@1c42-LOLIN_D1_MINI
-jobs_started=5 jobs_done=5
+      TESTPERF@1c42-LOLIN_D1_MINI
+      TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+###  testrun_done: TESTWLAN@1c43-ESP32_C3_DEVKIT-instance0
+## 5: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=5
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+    ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 5: possible_testruns
+  TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### 5: fake_start:4 testrun_next: TestRun(TESTWLAN, ESP32_GENERIC_C3) / TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+### actual_testruns
+      TESTPERF@1c40-RPI_PICO
+      TESTPERF@1c42-LOLIN_D1_MINI
+      TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+###  testrun_done: TESTWLAN@1c43-ESP32_C3_DEVKIT-instance1
+## 6: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=4
+    ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 6: possible_testruns
+###  testrun_done: TESTPERF@1c42-LOLIN_D1_MINI
+## 7: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=4
+    ESP8266_GENERIC(ROLE_INSTANCE0)
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 7: possible_testruns
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance0
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+### 7: fake_start:3 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance0
+### actual_testruns
+      TESTPERF@1c40-RPI_PICO
+      TESTWLAN@1c42-LOLIN_D1_MINI-instance0
+## 8: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=3
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 8: possible_testruns
+###  testrun_done: TESTWLAN@1c42-LOLIN_D1_MINI-instance0
+## 9: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=3
+    ESP8266_GENERIC(ROLE_INSTANCE1)
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 9: possible_testruns
+  TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+### 9: fake_start:2 testrun_next: TestRun(TESTWLAN, ESP8266_GENERIC) / TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+### actual_testruns
+      TESTPERF@1c40-RPI_PICO
+      TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+## 10: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 10: possible_testruns
+###  testrun_done: TESTWLAN@1c42-LOLIN_D1_MINI-instance1
+## 11: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 11: possible_testruns
+###  testrun_done: TESTPERF@1c40-RPI_PICO
+## 12: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 12: possible_testruns
+## 13: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 13: possible_testruns
+## 14: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 14: possible_testruns
+## 15: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 15: possible_testruns
+## 16: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 16: possible_testruns
+## 17: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 17: possible_testruns
+## 18: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 18: possible_testruns
+## 19: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 19: possible_testruns
+## 20: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 20: possible_testruns
+## 21: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 21: possible_testruns
+## 22: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 22: possible_testruns
+## 23: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 23: possible_testruns
+## 24: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 24: possible_testruns
+## 25: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 25: possible_testruns
+## 26: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 26: possible_testruns
+## 27: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 27: possible_testruns
+## 28: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 28: possible_testruns
+## 29: testrun_specs
+  testrunspec['TESTPERF'] tests_todo=0
+  testrunspec['TESTWLAN'] tests_todo=2
+    RPI_PICO_W(ROLE_INSTANCE0)
+    RPI_PICO_W(ROLE_INSTANCE1)
+## 29: possible_testruns
+ERROR: should never get here!
+jobs_started=8 jobs_done=8

@@ -25,6 +25,7 @@ from testbed_micropython.tentacle_specs import (
     LOLIN_D1_MINI,
     RPI_PICO,
     RPI_PICO2,
+    RPI_PICO_W,
 )
 from testbed_micropython.testcollection import baseclasses_run, testrun_specs
 from testbed_micropython.testcollection.baseclasses_spec import ConnectedTentacles
@@ -111,6 +112,10 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     connected_tentacles = ConnectedTentacles(factory())
 
+    tentacle_reference = connected_tentacles.find_first_tentacle(
+        board=constants.DEFAULT_REFERENCE_BOARD
+    )
+
     testrun_specs_.assign_tentacles(
         tentacles=connected_tentacles,
         flash_skip=testparam.flash_skip,
@@ -121,7 +126,7 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     bartender = test_bartender.TestBartender(
         connected_tentacles=connected_tentacles,
-        tentacle_reference=None,
+        tentacle_reference=tentacle_reference,
         testrun_specs=testrun_specs_,
         priority_sorter=testrun_specs.TestRun.priority_sorter,
         directory_results=DIRECTORY_TESTRESULTS,
@@ -130,13 +135,14 @@ def _test_collection2(testparam: Ttestparam, file: typing.TextIO) -> None:
 
     firmwares_built: set[str] = {
         constants.DEFAULT_REFERENCE_BOARD,
-        "RPI_PICO",
-        "RPI_PICO2",
-        "RPI_PICO2-RISCV",
         "ESP32_C3_DEVKIT",
         "ESP32_GENERIC_C3",
-        "ESP8266_GENERIC",
         "ESP8266_GENERIC-FLASH_512K",
+        "ESP8266_GENERIC",
+        "RPI_PICO_W",
+        "RPI_PICO",
+        "RPI_PICO2-RISCV",
+        "RPI_PICO2",
     }
     args = util_testrunner.Args.get_default_args(
         directory_git_cache=constants.DIRECTORY_GIT_CACHE,
@@ -235,49 +241,17 @@ _TESTRUNSPEC_WLAN = testrun_specs.TestRunSpec(
     helptext="Two boards have to access a AP",
     command=["wlan.py", "wlantest.py"],
     required_fut=constants.EnumFut.FUT_WLAN,
-    requires_reference_tentacle=False,
+    requires_reference_tentacle=True,
     testrun_class=runtests.TestRunRunTests,
     timeout_s=5 * 60.0,
 )
 
 
-_TESTPARAM_WLAN_ASYMMETRICAL = Ttestparam(
-    label="wlan_asymmetrical",
-    specs=[LOLIN_D1_MINI, ESP32_C3_DEVKIT],
-    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
-    jobs_done=2,
-)
-_TESTPARAM_WLAN_SYMMETRICAL2 = Ttestparam(
-    label="wlan_symmetrical2",
-    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
-    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
-    jobs_done=1,
-)
-_TESTPARAM_WLAN_SYMMETRICAL3 = Ttestparam(
-    label="wlan_symmetrical3",
-    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
-    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
-    jobs_done=1,
-)
-_TESTPARAM_POTPOURRY = Ttestparam(
-    label="potpourry",
-    specs=[RPI_PICO, RPI_PICO, LOLIN_D1_MINI, ESP32_C3_DEVKIT],
-    testrun_specs=baseclasses_run.TestRunSpecs(
-        [_TESTRUNSPEC_WLAN, _TESTRUNSPEC_PERFBENCH]
-    ),
-    jobs_done=5,
-)
 _TESTPARAM_2EQTENTACLES = Ttestparam(
     label="2eqtentacles",
     specs=[RPI_PICO, RPI_PICO],
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
     jobs_done=1,
-)
-_TESTPARAM_2VARIANTS = Ttestparam(
-    label="2variants",
-    specs=[RPI_PICO2],
-    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
-    jobs_done=2,
 )
 _TESTPARAM_2EQTENTACLES_2VARIANTS = Ttestparam(
     label="2eqtentacles_2variants",
@@ -285,14 +259,53 @@ _TESTPARAM_2EQTENTACLES_2VARIANTS = Ttestparam(
     testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
     jobs_done=2,
 )
+_TESTPARAM_2VARIANTS = Ttestparam(
+    label="2variants",
+    specs=[RPI_PICO2],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_PERFBENCH]),
+    jobs_done=2,
+)
+_TESTPARAM_POTPOURRY = Ttestparam(
+    label="potpourry",
+    specs=[RPI_PICO, RPI_PICO, LOLIN_D1_MINI, ESP32_C3_DEVKIT, RPI_PICO_W],
+    testrun_specs=baseclasses_run.TestRunSpecs(
+        [_TESTRUNSPEC_WLAN, _TESTRUNSPEC_PERFBENCH]
+    ),
+    jobs_done=8,
+)
+_TESTPARAM_WLAN_ASYMMETRICAL = Ttestparam(
+    label="wlan_asymmetrical",
+    specs=[LOLIN_D1_MINI, ESP32_C3_DEVKIT, RPI_PICO_W],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=4,
+)
+_TESTPARAM_WLAN_SYMMETRICAL2 = Ttestparam(
+    label="wlan_symmetrical2",
+    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, RPI_PICO_W],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=2,
+)
+_TESTPARAM_WLAN_SYMMETRICAL3_NOREFERENCE = Ttestparam(
+    label="wlan_symmetrical3_noreference",
+    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, ESP32_C3_DEVKIT],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=0,
+)
+_TESTPARAM_WLAN_SYMMETRICAL3 = Ttestparam(
+    label="wlan_symmetrical3",
+    specs=[ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, ESP32_C3_DEVKIT, RPI_PICO_W],
+    testrun_specs=baseclasses_run.TestRunSpecs([_TESTRUNSPEC_WLAN]),
+    jobs_done=2,
+)
 _TESTPARAMS = [
+    _TESTPARAM_2EQTENTACLES_2VARIANTS,
+    _TESTPARAM_2EQTENTACLES,
+    _TESTPARAM_2VARIANTS,
+    _TESTPARAM_POTPOURRY,
     _TESTPARAM_WLAN_ASYMMETRICAL,
     _TESTPARAM_WLAN_SYMMETRICAL2,
+    _TESTPARAM_WLAN_SYMMETRICAL3_NOREFERENCE,
     _TESTPARAM_WLAN_SYMMETRICAL3,
-    _TESTPARAM_POTPOURRY,
-    _TESTPARAM_2VARIANTS,
-    _TESTPARAM_2EQTENTACLES,
-    _TESTPARAM_2EQTENTACLES_2VARIANTS,
 ]
 
 

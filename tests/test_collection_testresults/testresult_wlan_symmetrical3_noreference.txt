@@ -1,0 +1,156 @@
+## testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 0: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 0: possible_testruns
+## 1: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 1: possible_testruns
+## 2: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 2: possible_testruns
+## 3: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 3: possible_testruns
+## 4: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 4: possible_testruns
+## 5: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 5: possible_testruns
+## 6: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 6: possible_testruns
+## 7: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 7: possible_testruns
+## 8: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 8: possible_testruns
+## 9: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 9: possible_testruns
+## 10: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 10: possible_testruns
+## 11: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 11: possible_testruns
+## 12: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 12: possible_testruns
+## 13: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 13: possible_testruns
+## 14: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 14: possible_testruns
+## 15: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 15: possible_testruns
+## 16: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 16: possible_testruns
+## 17: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 17: possible_testruns
+## 18: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 18: possible_testruns
+## 19: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 19: possible_testruns
+## 20: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 20: possible_testruns
+## 21: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 21: possible_testruns
+## 22: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 22: possible_testruns
+## 23: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 23: possible_testruns
+## 24: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 24: possible_testruns
+## 25: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 25: possible_testruns
+## 26: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 26: possible_testruns
+## 27: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 27: possible_testruns
+## 28: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 28: possible_testruns
+## 29: testrun_specs
+  testrunspec['TESTWLAN'] tests_todo=2
+    ESP32_GENERIC_C3(ROLE_INSTANCE0)
+    ESP32_GENERIC_C3(ROLE_INSTANCE1)
+## 29: possible_testruns
+ERROR: should never get here!
+jobs_started=0 jobs_done=0

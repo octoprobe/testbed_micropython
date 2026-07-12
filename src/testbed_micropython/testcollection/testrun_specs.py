@@ -68,10 +68,8 @@ class TestRun:
             self.tentacle_reference = None
         assert isinstance(self.flash_skip, bool)
         if self.tentacle_reference is not None:
-            1 / 0
-            assert type(self.tentacle_variant.tentacle.tentacle_spec) is type(
-                self.tentacle_reference
-            )
+            assert type(self.tentacle_variant.tentacle) is type(self.tentacle_reference)
+
             assert (
                 self.tentacle_variant.tentacle.tentacle_spec != self.tentacle_reference
             )
@@ -424,8 +422,17 @@ class TestRunSpec:
         tentacle_reference: TentacleMicropython | None,
     ) -> Iterator[TestRun]:
         if self.requires_reference_tentacle:
-            assert tentacle_reference is not None
+            if tentacle_reference is None:
+                logger.warning(
+                    f"{self.label}: tentacle_reference '{tentacle_reference}' not specified/found!"
+                )
             if tentacle_reference not in available_tentacles:
+                available_tentacles_text = ",".join(
+                    [t.label_short for t in available_tentacles]
+                )
+                logger.warning(
+                    f"{self.label}: tentacle_reference '{tentacle_reference}' not in in available_tentacles '{available_tentacles_text}'!"
+                )
                 return
 
         for tentacle in available_tentacles:
@@ -441,7 +448,13 @@ class TestRunSpec:
                         role=tsv.role,
                     )
                     if self.requires_reference_tentacle:
-                        if tentacle_variant.tentacle_spec == tentacle_reference:
+                        if tentacle_reference is None:
+                            # There is no reference: Skip test
+                            continue
+                        if (
+                            tentacle_variant.tentacle.label_short
+                            == tentacle_reference.label_short
+                        ):
                             # A tentacle can not be its reference
                             continue
 
