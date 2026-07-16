@@ -49,11 +49,6 @@ class Data:
     * 'mptest' command line parameters
     """
 
-    xfail_files: util_xfail.XFailFiles
-    """
-    The xfail lists under src/testbed_micropython/report_test/*.json
-    """
-
     xfail_file: util_xfail.XFailFile | None
     """
     The xfail file which was applied to mark FAILED as XFAILED
@@ -63,7 +58,6 @@ class Data:
 
     def __post_init__(self) -> None:
         assert isinstance(self.result_context, ResultContext)
-        assert isinstance(self.xfail_files, util_xfail.XFailFiles)
         assert isinstance(self.testgroups, list)
 
     def get_xfail_list(self) -> XFailList:
@@ -77,6 +71,13 @@ class Data:
                         test_name=outcome.name,
                     )
         return r
+
+    @property
+    def xfail_files(self) -> util_xfail.XFailFiles:
+        """
+        The xfail lists under src/testbed_micropython/report_test/*.json
+        """
+        return util_xfail.XFailFiles.factory_from_filesystem()
 
     @property
     def ports(self) -> list[str]:
@@ -145,7 +146,6 @@ class Data:
             return Data(
                 result_context=result_context,
                 xfail_file=util_xfail.XFailFile.factory_template(filename=xfail_file),
-                xfail_files=util_xfail.XFailFiles.factory_from_filesystem(),
             )
 
         data = collect_top()
