@@ -43,6 +43,7 @@ logger = logging.getLogger(__file__)
 # This should eventually be pushed upstream into mpbuild.
 # BUILD_CONTAINERS["esp32"] = "hmaerki/build-micropython-esp32"
 BUILD_CONTAINERS["dummyarch"] = "dummycontainer"
+BUILD_CONTAINERS["esp8266"] = "hmaerki/build-micropython-esp8266:v4.8.5"
 
 
 class MpbuildException(Exception):
