@@ -451,7 +451,7 @@ class ResultTestGroup:
         if testspec is None:
             return self.testgroup
 
-        python_test = MICROPYTHON_DIRECTORY_TESTS + "/" + testspec.command_executable
+        python_test = testspec.command_subdir + "/" + testspec.command_executable
         label_intuitive = testspec.label_intuitive
 
         # Find the git_ref for the micropython tests repository

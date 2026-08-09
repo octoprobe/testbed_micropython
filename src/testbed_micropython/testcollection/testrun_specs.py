@@ -353,6 +353,11 @@ class TestRunSpec:
     0: low
     10: high
     """
+    command_subdir: str = MICROPYTHON_DIRECTORY_TESTS
+    """
+    Directory (relative to the micropython repo) which contains the command.
+    Example: 'tests' for 'run-tests.py', 'tools/mpremote/tests' for 'run-mpremote-tests.sh'.
+    """
 
     def __post_init__(self) -> None:
         assert isinstance(self.label, str)
@@ -363,6 +368,7 @@ class TestRunSpec:
         assert isinstance(self.timeout_s, float)
         assert isinstance(self.testrun_class, type(TestRun))
         assert isinstance(self.tsvs_todo, TentacleSpecVariants)
+        assert isinstance(self.command_subdir, str)
 
     @property
     def command_executable(self) -> str:

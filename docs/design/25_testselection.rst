@@ -49,12 +49,18 @@ All known tests are registered in the module-level list ``_TESTRUN_SPECS`` in
         runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE,
         runtests.TESTRUNSPEC_RUNTESTS_EXTMOD_HARDWARE_NATIVE,
         run_natmodtests.TESTRUNSPEC_RUN_NATMODTESTS,
+        run_mpremote_tests.TESTRUNSPEC_RUN_MPREMOTE_TESTS,
         run_flash_format.TESTRUNSPEC_RUN_FLASH_FORMAT,
     ]
 
 Each :class:`TestRunSpec` carries a ``label`` (e.g. ``RUN-TESTS_STANDARD``), a
 ``required_fut`` (:class:`EnumFut`), and the ``command`` to execute.  The dict
 ``DICT_TESTRUN_SPECS`` maps every label to its spec and is used for validation.
+
+Most commands live in the ``tests/`` directory of the MicroPython repo.  A spec
+may override this via the ``command_subdir`` field – for example
+``RUN-MPREMOTE_TESTS`` runs ``tools/mpremote/tests/run-mpremote-tests.sh -t
+<port>``.
 
 Run ``mptest list-tests`` to print the current inventory at any time.
 
@@ -147,6 +153,10 @@ Examples
 Run a single test group::
 
     mptest test --only-test=RUN-TESTS_STANDARD
+
+Run the mpremote test suite (``tools/mpremote/tests/run-mpremote-tests.sh``)::
+
+    mptest test --only-test=RUN-MPREMOTE_TESTS
 
 Run a test group with custom arguments (overrides the registered command)::
 
