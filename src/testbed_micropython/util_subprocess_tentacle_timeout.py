@@ -9,7 +9,11 @@ import time
 import typing
 
 from octoprobe.util_constants_uart_flakiness import SUBPROCESS_TERMINATE_PAUSE_S
-from octoprobe.util_subprocess import SubprocessExitCodeException
+from octoprobe.util_subprocess import (
+    SubprocessExitCodeException,
+    TAG_LOG_END,
+    TAG_LOG_START,
+)
 
 from .constants import SUBPROCESS_PROVOKE_RETURNCODE2
 from .testcollection.testrun_specs import TestRun
@@ -142,7 +146,7 @@ def tentacle_subprocess_run(
                     f.write(f"export {k}={v}\n")
             f.write("\n")
             f.write(f"{' '.join(args)}\n")
-            f.write("\n\n")
+            f.write(f"{TAG_LOG_START}\n\n")
             f.flush()
             try:
                 # proc = subprocess.run()
@@ -208,14 +212,15 @@ def tentacle_subprocess_run(
                             )
 
                 proc = sub_run()
+                f.write(f"\n\n{TAG_LOG_END}\n")
                 if SUBPROCESS_PROVOKE_RETURNCODE2:
                     f.write(
                         f"\n\n{SUBPROCESS_PROVOKE_RETURNCODE2=}. This will provoke an error!\n\n"
                     )
-                f.write(f"\n\nreturncode={proc.returncode}\n")
+                f.write(f"returncode={proc.returncode}\n")
                 f.write(f"duration={time.monotonic() - begin_s:0.3f}s\n")
             except subprocess.TimeoutExpired:
-                f.write("\n\n")
+                f.write(f"\n\n{TAG_LOG_END}\n")
                 f.write(f"TimeoutExpired after {timeout_s=}\n")
                 # Does it take some time for the subprocess to fully die?
                 # To be sure, we wait some time.
