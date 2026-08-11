@@ -89,21 +89,16 @@ class TestRunMpremoteTests(TestRun):
                         testoutput_expected
                     )
 
-                args = [
-                    str(test_sh),
-                    "-t",
-                    serial_port,
-                ]
                 logfile_raw_out = logfile.with_stem(test_sh.stem).with_suffix(".txt")
                 with tempfile.TemporaryDirectory() as tmp_dir:
                     env = {
-                        "MPREMOTE": f"{sys.executable} {mp_remote_py}",
+                        "MPREMOTE": f"{sys.executable} {mp_remote_py} connect {serial_port}",
                         "TMP": str(tmp_dir),
                         **ENV_PYTHONUNBUFFERED,
                     }
                     try:
                         tentacle_subprocess_run(
-                            args=args,
+                            args=[str(test_sh)],
                             cwd=test_sh.parent,
                             testrun=self,
                             env=env,

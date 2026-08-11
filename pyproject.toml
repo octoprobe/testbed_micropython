@@ -74,6 +74,12 @@ strict = true
 warn_unused_ignores = false
 
 [[tool.mypy.overrides]]
+# mypy failed on mpbuild/build.py:120 `#         type: idf`
+# Skip it to prevent the failure
+module = "mpbuild.build"
+follow_imports = "skip"
+
+[[tool.mypy.overrides]]
 module = "pallets_sphinx_themes.*"
 ignore_missing_imports = true
 
