@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import logging
-import os
 import pathlib
 import sys
 import tempfile
 
-from octoprobe.util_subprocess import extract_test_output
+from octoprobe.util_subprocess import (
+    SubprocessExitCodeException,
+    extract_test_output,
+)
 
 from ..constants import EnumFut
 from ..testcollection.baseclasses_spec import TentacleVariant
@@ -77,6 +79,15 @@ class TestRunMpremoteTests(TestRun):
                 logger.info(f"Test: {test_sh.name}")
 
                 filename_expected = test_sh.with_suffix(".sh.exp")
+                testoutput_expected = filename_expected.read_text()
+
+                def copy_expected_output() -> None:
+                    """
+                    In case of failure, we write the effective output AND the expected output
+                    """
+                    logfile_raw_out.with_name(filename_expected.name).write_text(
+                        testoutput_expected
+                    )
 
                 args = [
                     str(test_sh),
@@ -90,14 +101,18 @@ class TestRunMpremoteTests(TestRun):
                         "TMP": str(tmp_dir),
                         **ENV_PYTHONUNBUFFERED,
                     }
-                    tentacle_subprocess_run(
-                        args=args,
-                        cwd=test_sh.parent,
-                        testrun=self,
-                        env=env,
-                        logfile=logfile_raw_out,
-                        timeout_s=self.timeout_s,
-                    )
+                    try:
+                        tentacle_subprocess_run(
+                            args=args,
+                            cwd=test_sh.parent,
+                            testrun=self,
+                            env=env,
+                            logfile=logfile_raw_out,
+                            timeout_s=self.timeout_s,
+                        )
+                    except SubprocessExitCodeException:
+                        copy_expected_output()
+                        raise
                 testoutput = extract_test_output(logfile=logfile_raw_out)
                 testoutput = testoutput.replace(str(tmp_dir), "${TMP}")
 
@@ -105,16 +120,14 @@ class TestRunMpremoteTests(TestRun):
                     mp_results.add_skip(test_sh.name)
                     return
 
-                testoutput_expected = filename_expected.read_text()
                 if testoutput.strip() == testoutput_expected.strip():
                     # OK: Output matches expected output
                     mp_results.add_pass(test_sh.name)
                     return
 
                 mp_results.add_fail(test_sh.name, "testoutput differs")
-                # In case of failure, we write the effective output AND the expected output
                 logfile_raw_out.with_suffix(".sh.out").write_text(testoutput)
-                logfile_raw_out.with_suffix(".sh.exp").write_text(testoutput_expected)
+                copy_expected_output()
 
             for test_sh in directory_mpremote_tests.glob("test_*.sh"):
                 run_test(test_sh)
