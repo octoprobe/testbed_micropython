@@ -81,14 +81,6 @@ class TestRunMpremoteTests(TestRun):
                 filename_expected = test_sh.with_suffix(".sh.exp")
                 testoutput_expected = filename_expected.read_text()
 
-                def copy_expected_output() -> None:
-                    """
-                    In case of failure, we write the effective output AND the expected output
-                    """
-                    logfile_raw_out.with_name(filename_expected.name).write_text(
-                        testoutput_expected
-                    )
-
                 logfile_raw_out = logfile.with_stem(test_sh.stem).with_suffix(".txt")
                 with tempfile.TemporaryDirectory() as tmp_dir:
                     env = {
@@ -106,8 +98,11 @@ class TestRunMpremoteTests(TestRun):
                             timeout_s=self.timeout_s,
                         )
                     except SubprocessExitCodeException:
-                        copy_expected_output()
-                        raise
+                        mp_results.add_fail(
+                            test_sh.name, f"{test_sh.name} returned with an error!"
+                        )
+                        return
+
                 testoutput = extract_test_output(logfile=logfile_raw_out)
                 testoutput = testoutput.replace(str(tmp_dir), "${TMP}")
 
@@ -122,8 +117,12 @@ class TestRunMpremoteTests(TestRun):
 
                 mp_results.add_fail(test_sh.name, "testoutput differs")
                 logfile_raw_out.with_suffix(".sh.out").write_text(testoutput)
-                copy_expected_output()
+                # In case of failure, we write the effective output AND the expected output
+                logfile_raw_out.with_name(filename_expected.name).write_text(
+                    testoutput_expected
+                )
 
+            # for test_sh in directory_mpremote_tests.glob("test_filesystem.sh"):
             for test_sh in directory_mpremote_tests.glob("test_*.sh"):
                 run_test(test_sh)
 
