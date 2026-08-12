@@ -102,13 +102,6 @@ class TestRun:
             return
         self.test(testargs=testargs)
 
-    def label_testrun_idx0(self, idx0: int) -> str:
-        """
-        Example: 'RUN-TESTS_EXTMOD_HARDWARE,a'
-        """
-
-        return f"{self.testrun_spec.label}{DELIMITER_TESTRUN}{self.tentacle_variant.testrun_idx_text(idx0=idx0)}"
-
     def testid_idx0(self, idx0: int) -> str:
         """
         Example: run-perfbench.py,a@2d2d-RPI_PICO2-RISCV_GENERIC
@@ -116,9 +109,11 @@ class TestRun:
         """
         return "".join(
             [
-                self.label_testrun_idx0(idx0=idx0),
+                self.label_testrun,
                 DELIMITER_TENTACLE,
                 self.tentacle_variant_role_text,
+                DELIMITER_TESTRUN,
+                self.tentacle_variant.testrun_idx_text(idx0=idx0),
             ]
         )
 
