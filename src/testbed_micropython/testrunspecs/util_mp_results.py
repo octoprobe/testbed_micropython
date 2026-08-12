@@ -38,28 +38,36 @@ This is an example:
 }
 """
 
+import enum
 import json
 import pathlib
 
 
-class MpResults:
+class EnumMpOutcome(enum.StrEnum):
     SKIP = "skip"
     FAIL = "fail"
     PASS = "pass"
 
+
+class MpResults:
     def __init__(self) -> None:
-        self.results: list[tuple[str, str, str]] = []
+        self.results: list[tuple[str, EnumMpOutcome, str]] = []
 
     def add_pass(self, name: str, comment: str = "") -> None:
-        self._add_outcome(name, self.PASS, comment)
+        self._add_outcome(name, EnumMpOutcome.PASS, comment)
 
     def add_skip(self, name: str, comment: str = "") -> None:
-        self._add_outcome(name, self.SKIP, comment)
+        self._add_outcome(name, EnumMpOutcome.SKIP, comment)
 
     def add_fail(self, name: str, comment: str = "") -> None:
-        self._add_outcome(name, self.FAIL, comment)
+        self._add_outcome(name, EnumMpOutcome.FAIL, comment)
 
-    def _add_outcome(self, name: str, outcome: str, comment: str = "") -> None:
+    def _add_outcome(
+        self,
+        name: str,
+        outcome: EnumMpOutcome,
+        comment: str = "",
+    ) -> None:
         self.results.append((name, outcome, comment))
 
     @property
@@ -68,7 +76,7 @@ class MpResults:
             [
                 name
                 for name, outcome, comment in self.results
-                if outcome not in ("ok", "skip")
+                if outcome not in (EnumMpOutcome.PASS, EnumMpOutcome.SKIP)
             ]
         )
 
