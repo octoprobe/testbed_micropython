@@ -110,7 +110,7 @@ class TestRunMpremoteTests(TestRun):
                     mp_results.add_skip(test_sh.name)
                     return
 
-                if testoutput.strip() == testoutput_expected.strip():
+                if testoutput == testoutput_expected:
                     # OK: Output matches expected output
                     mp_results.add_pass(test_sh.name)
                     return
