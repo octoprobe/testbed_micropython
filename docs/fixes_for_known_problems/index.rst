@@ -117,3 +117,41 @@ DUT NUCLEO_WB55: format crashed filesystem
 
     import vfs, pyb
     vfs.VfsFat.mkfs(pyb.Flash(start=0))
+
+
+ARDUINO_NANO_33_BLE_SENSE: Recover broken bootloader
+------------------------------------------------------------------
+
+nrfjprog: Erase flash
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    nrfjprog --family NRF52 --eraseall
+
+nrfjprog: Flash initial bootloader
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    nrfjprog --family NRF52 --program \
+        ~/.arduino15/packages/arduino/hardware/mbed_nano/4.6.0/bootloaders/nano33ble/bootloader.hex \
+        --verify
+
+arduino: Flash correct bootloader and Soft device
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Now follow the instructions on `OpenMV <https://docs.arduino.cc/tutorials/nano-33-ble/getting-started-omv/#updating-the-bootloader>`_.
+Install bootloader and soft device.
+
+bossac: Flash micropython
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Download `bin` from https://micropython.org/download/ARDUINO_NANO_33_BLE_SENSE/
+
+.. code-block:: bash
+
+    bossac -e -w --offset=0x16000 --port=/dev/ttyACM0 -i -d -U -R ARDUINO_NANO_33_BLE_SENSE-20251209-v1.27.0.bin    
+
+
+Now use `mpremote` to get the REPL.
