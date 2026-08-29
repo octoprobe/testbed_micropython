@@ -18,3 +18,4 @@ src/testbed_micropython/mpstress/testresults*/**
 src/testbed_micropython/mpstress/c/mpremote_c
 src/testbed/experiments/*
 testresults*/**
+uv.lock

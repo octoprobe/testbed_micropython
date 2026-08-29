@@ -155,3 +155,26 @@ Download `bin` from https://micropython.org/download/ARDUINO_NANO_33_BLE_SENSE/
 
 
 Now use `mpremote` to get the REPL.
+
+DUT ESP32-S2-DevKitC vs ESP32-S3-DevKitC: Bootmode
+------------------------------------------------------
+
+I had problems to bring into boot mode - here I collect the behaviour.
+
+Measured raise time on tentacle v8 (SLEW_RATE_SOLDER_BRIDGE removed): 7ms
+
+Important: If you measure a rise time of 75ms the the SLEW_RATE_SOLDER_BRIDGE is probably NOT removed. As a consequence the ESP32 is in 'hanging' state where it does NOT respond at all anymore. Only 'RESET' or power cycle with a short raise time will recover it.
+
+Erase Flash: `esptool.py --port /dev/ttyACM0 --baud 460800 erase-flash`
+
+ * Sequence: Power on
+
+    * ESP32-S2-DevKitC: Does NOT appear!
+    * ESP32-S3-DevKitC: 303a,1001 disconnect/connect every 2 s
+
+ * Sequence: BOOT pressed, Power on, BOOT Release
+
+    * ESP32-S2-DevKitC: 303a,1002 appear after Power on
+    * ESP32-S3-DevKitC: 303a,1001 appear after Power on (NO disconnect/connect every 2 s)
+
+Conclusion: This is the boot sequence which is implemented in `src/octoprobe/util_mcu_esp.py`!

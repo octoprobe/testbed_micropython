@@ -9,6 +9,25 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="ch_hans_1",
         tentacles=[
+            # New
+            (
+                "de6530655320-682f",
+                HwVersion.V08,
+                "v1.0",
+                tentacle_specs.ESP32_S2_DEVKIT,
+            ),
+            (
+                "de6530655387-5629",
+                HwVersion.V08,
+                "v1.0",
+                tentacle_specs.ESP32_S2_DEVKIT,
+            ),
+            (
+                "de653065534a-7629",
+                HwVersion.V08,
+                "v1.0",
+                tentacle_specs.ESP32_S2_DEVKIT,
+            ),
             # testbed showcase
             (
                 # PICO_INFRA broken. Replaced by e46340474b4b-5a31

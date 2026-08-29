@@ -206,6 +206,7 @@ v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
     mcu_config=McuConfig(),
 )
 
+
 ESP32_C3_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-C3-DevKitC-02
@@ -257,6 +258,52 @@ v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF o
     mcu_config=McuConfig(),
 )
 
+
+ESP32_S2_DEVKIT = TentacleSpecMicropython(
+    doc="""
+See: ESP32-S2-DevKitC-1-N8R2
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s2/esp32-s2-devkitc-1/index.html
+
+Connections
+
+* GND
+  * Board GND <=> Tentacle GND
+
+* Bootmode
+  * Board GPIO0  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
+* USB DUT is connected to 'USB'
+
+* FUT_EXTMOD_HARDWARE
+  * Board GPIO4 <=> Board GPIO5
+
+* SLEW_RATE_SOLDER_BRIDGE removed
+
+v1.0: Use GPIO0 to allow octoprobe to select bootloader mode
+""",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ESP32_23_DEVKIT",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_WLAN,
+        EnumFut.FUT_BLE,
+    ],
+    mcu_usb_id=util_mcu_esp.ESP32_S2_USB_ID,
+    tags="board=ESP32_GENERIC_S2,mcu=esp32,programmer=esptool" + TAG_TIER1,
+    # https://micropython.org/download/ESP32_GENERIC_S2/
+    programmer_args=[
+        "--chip=esp32s2",
+        "--baud=460800",
+        "write-flash",
+        "0x1000",
+        "--no-progress",
+        "--compress",
+    ],
+    power_on_delay_s=2.0,
+    mcu_config=McuConfig(),
+)
 
 ESP32_S3_DEVKIT = TentacleSpecMicropython(
     doc="""
