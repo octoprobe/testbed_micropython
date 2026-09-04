@@ -217,7 +217,10 @@ Connections
 
 * GND
   * Board GND <=> Tentacle GND
-  * Tentacle v0.6 C217/1uF: unsolder
+
+* Fast Power slew rate to prevent ESP32 to hang forever
+  * Tentacle v0.6, v0.7: unsolder C217/1uF
+  * Tentacle v0.8+: USB DUT is connected to 'USB'
 
 * Bootmode
   * Board GPIO0  <=> Tentacle Relay 1b
@@ -259,6 +262,64 @@ v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF o
 )
 
 
+ESP32_C5_DEVKIT = TentacleSpecMicropython(
+    doc="""
+See: ESP32-C5-DevKitC-1-N8R8
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c5/esp32-c5-devkitc-1/index.html
+
+Connections
+
+* USB DUT is connected to 'USB'
+
+* GND
+  * Board GND <=> Tentacle GND
+
+* Fast Power slew rate to prevent ESP32 to hang forever
+  * Tentacle v0.6, v0.7: unsolder C217/1uF
+  * Tentacle v0.8+: USB DUT is connected to 'USB'
+
+* Bootmode
+  * Board GPIO28  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
+* FUT_EXTMOD_HARDWARE
+  * Board GPIO4/U0RXD/RX <=> GPIO5/U0TXD/TX
+  * Board GPIO12 <=> GPIO13
+
+v1.0: initial
+""",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ESP32_C5_DEVKIT",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_WLAN,
+        EnumFut.FUT_BLE,
+    ],
+    mcu_usb_id=util_mcu_esp.ESP32_C5_USB_ID,
+    tags="board=ESP32_GENERIC_C5,mcu=esp32,programmer=esptool" + TAG_TIER1,
+    programmer_args=[
+        "--chip=esp32c5",
+        "--baud=921600",
+        "--before=default-reset",
+        "--after=hard-reset",
+        "write-flash",
+        "0x2000",
+        "--no-progress",
+        "--compress",
+    ],
+    power_on_delay_s=1.0,
+    mcu_config=McuConfig(),
+)
+
+# ESP32_C6_DEVKIT = TentacleSpecMicropython(
+#     doc="""
+# See: ESP32-C6-DevKitC-1-N8
+# See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/index.html
+# """
+# ):
+#     pass
+
 ESP32_S2_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-S2-DevKitC-1-N8R2
@@ -266,14 +327,18 @@ See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s2/esp32-s2
 
 Connections
 
+* USB DUT is connected to 'USB'
+
 * GND
   * Board GND <=> Tentacle GND
+
+* Fast Power slew rate to prevent ESP32 to hang forever
+  * Tentacle v0.6, v0.7: unsolder C217/1uF
+  * Tentacle v0.8+: USB DUT is connected to 'USB'
 
 * Bootmode
   * Board GPIO0  <=> Tentacle Relay 1b
   * Tentacle Relay 1a <=> Tentacle GND
-
-* USB DUT is connected to 'USB'
 
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> Board GPIO5

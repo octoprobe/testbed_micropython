@@ -9,6 +9,19 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="ch_hans_1",
         tentacles=[
+            # WIP
+            (
+                "de655035875f-3421",
+                HwVersion.V07,
+                "v1.0",
+                tentacle_specs.ESP32_C5_DEVKIT,
+            ),
+            (
+                "de655035875e-6621",
+                HwVersion.V07,
+                "v1.0",
+                tentacle_specs.ESP32_C5_DEVKIT,
+            ),
             # New
             (
                 "de6530655320-682f",
