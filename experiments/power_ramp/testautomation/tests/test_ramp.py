@@ -4,7 +4,10 @@ import logging
 import pathlib
 import time
 
-from esp32ramp.context_measure import MeasureContext
+import dwfpy
+
+from esp32ramp.context_measure import MeasureContext, Scope
+from esp32ramp import constants
 
 # from testautomation import lib_tests
 # from testautomation.context_measure import MeasureContext
@@ -27,11 +30,6 @@ from esp32ramp.context_measure import MeasureContext
 #     main()
 
 
-DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
-DIRECTORY_TESTRESULTS = DIRECTORY_OF_THIS_FILE.parent.parent / "testresults"
-DIRECTORY_TESTRESULTS.mkdir(parents=True, exist_ok=True)
-
-
 logger = logging.getLogger(__name__)
 
 LOGGING_FORMAT = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d %(message)s"
@@ -52,6 +50,27 @@ def main():
                 time.sleep(1.0)
                 mtx.ad3.supply_P.V = float(voltage)
         if True:
+            scope = Scope(ad3=mtx.ad3)
+            scope.channel0.setup()
+            scope.channel1.setup()
+            scope.setup()
+
+            # mtx.ad3.scope_1.setup(range=50.0, offset=0.0, coupling="dc")
+            # mtx.ad3.scope.setup_edge_trigger(
+            #     channel=0,
+            #     slope="rising",
+            #     level=0.75,
+            #     position=0.01,
+            #     mode="auto",
+            # )
+            # mtx.ad3.scope.setup_acquisition(
+            #     mode="single",
+            #     sample_rate=2e5,
+            #     buffer_size=16384,
+            #     configure=True,
+            # )
+            # mtx.ad3.scope.configure(start=True)
+
             mtx.ad3.supply_P.enable = True
             mtx.ad3.supply_P.V = 0.5
             begin_s = time.monotonic()
@@ -65,7 +84,10 @@ def main():
                     time.sleep(time_to_wait_s)
                 print(f"{voltage:0.1f}V {1000 * (time.monotonic() - begin_s):0.1f}ms")
                 mtx.ad3.supply_P.V = voltage
-            time.sleep(10.0)
+
+            mtx.ad3.scope.wait_for_status(dwfpy.Status.DONE, read_data=True)
+            scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html")
+
         if False:
             awg = mtx.ad3.device.analog_output["ch1"]
             awg.setup(function="ramp-up", frequency=0.25, amplitude=2.0, offset=3.0)

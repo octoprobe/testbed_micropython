@@ -16,6 +16,7 @@ dependencies = [
     "dwfpy_ad3@git+https://github.com/petermaerki/experiments_AD3_git.git",
     "mypy",
     "ruff",
+    "altair[save]",
 ]
 
 

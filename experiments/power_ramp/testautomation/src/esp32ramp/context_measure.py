@@ -1,12 +1,87 @@
 from __future__ import annotations
 
 import logging
+import pathlib
 
+import altair
 import dwfpy
 from dwfpy_ad3 import dwfpy_ad3
 
 logger = logging.getLogger(__file__)
 SKIP_VOLTMETER_CALIBRATION = False
+
+
+class ScopeChannel:
+    def __init__(self, scope: Scope, channel0: int) -> None:
+        self.scope = scope
+        self.channel0 = channel0
+        self.channel = dwfpy_ad3.ScopeIdx(ad3=self.scope.ad3, idx=self.channel0)
+
+    def setup(self) -> None:
+        self.channel.setup(
+            range=50.0,
+            offset=0.0,
+            coupling="dc",
+        )
+        self.scope.ad3.scope.setup_edge_trigger(
+            channel=self.channel0,
+            slope="rising",
+            level=0.75,
+            position=0.01,
+            mode="auto",
+        )
+
+class Scope:
+    def __init__(self, ad3: dwfpy_ad3.AD3) -> None:
+        self.ad3 = ad3
+        self.channel0 = ScopeChannel(scope=self, channel0=0)
+        self.channel1 = ScopeChannel(scope=self, channel0=1)
+
+    def setup(self) -> None:
+        self.ad3.scope.setup_acquisition(
+            mode="single",
+            sample_rate=2e5,
+            buffer_size=16384,
+            configure=True,
+        )
+        self.ad3.scope.configure(start=True)
+
+
+    def save(self, filename: pathlib.Path) -> None:
+        sample_rate_hz = self.ad3.device.analog_input.frequency
+        scope_data = []
+        for channel, signal_name in (
+            (self.channel0, "RST"),
+            (self.channel1, "BOOT"),
+        ):
+            samples = channel.channel.get_data()
+            scope_data.extend(
+                {
+                    "time_ms": index / sample_rate_hz * 1000.0 - 10.0,
+                    "voltage_v": float(voltage),
+                    "signal": signal_name,
+                }
+                for index, voltage in enumerate(samples)
+            )
+        chart = (
+            altair.Chart(altair.Data(values=scope_data))
+            .mark_line()
+            .encode(
+                x=altair.X("time_ms:Q", title="Time from ramp start (ms)"),
+                y=altair.Y("voltage_v:Q", title="Scope voltage (V)"),
+                color=altair.Color(
+                    "signal:N",
+                    scale=altair.Scale(
+                        domain=["RST", "BOOT"],
+                        range=["#f28e2b", "#808080"],
+                    ),
+                    legend=altair.Legend(title="Signal"),
+                ),
+            )
+            .properties(title="Positive supply ramp", width=800, height=400)
+        )
+        chart.save(filename)
+        print(f"Scope chart saved to {filename}")
 
 
 class MeasureContext:
