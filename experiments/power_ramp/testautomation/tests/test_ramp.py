@@ -67,7 +67,7 @@ def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> None:
 
 
 def main():
-    ramp_duration_s = 0.2
+    ramp_duration_s = 0.1
 
     with MeasureContext() as mtx:
         supply_pos_eff_V = mtx.power_off(supply_V=BEGIN_V)
@@ -76,7 +76,8 @@ def main():
         scope = Scope(ad3=mtx.ad3)
         scope.channel0.setup()
         scope.channel1.setup()
-        scope.setup(level_V=TRIGGER_V, duration_s=1.5*ramp_duration_s)
+        # scope.setup_trigger(level_V=TRIGGER_V, duration_s=1.5*ramp_duration_s)
+        scope.setup_immediate(duration_s=1.5 * ramp_duration_s)
 
         if False:
             digital_input = mtx.ad3.device.digital_input
@@ -91,13 +92,13 @@ def main():
 
             digital_input.configure(start=True)
 
-        print("Scope: Arm")
+        if False:
+            print("Scope: Arm")
+            scope.arm_trigger()
+            print("Scope: Armed")
+
+        print("Scope: Start")
         mtx.ad3.scope.configure(reconfigure=True, start=True)
-        while True:
-            status = mtx.ad3.scope.read_status(read_data=False)
-            if status == dwfpy.Status.ARMED:
-                break
-        print("Scope: Armed")
 
         # ramp_by_step_duration(mtx=mtx, ramp_duration_s=0.5)
         ramp_fast(mtx=mtx, ramp_duration_s=ramp_duration_s)

@@ -32,7 +32,7 @@ class Scope:
         self.channel0 = ScopeChannel(scope=self, channel0=0)
         self.channel1 = ScopeChannel(scope=self, channel0=1)
 
-    def setup(self, level_V: float, duration_s: float) -> None:
+    def setup_trigger(self, level_V: float, duration_s: float) -> None:
         assert isinstance(level_V, float)
         assert isinstance(duration_s, float)
 
@@ -43,7 +43,7 @@ class Scope:
             channel=0,
             slope="rising",
             level=level_V,
-            position=duration_s/3.0,
+            position=duration_s / 3.0,
             mode="normal",
             hold_off=None,
             hysteresis=None,
@@ -54,6 +54,27 @@ class Scope:
             sample_rate=sample_rate,
             buffer_size=buffer_size,
         )
+
+    def setup_immediate(self, duration_s: float) -> None:
+        assert isinstance(duration_s, float)
+
+        buffer_size = 16384
+        sample_rate = buffer_size / duration_s
+
+        # No trigger: acquisition starts right after `configure(start=True)`.
+        self.ad3.scope.ai.trigger.source = dwfpy.TriggerSource.NONE
+        self.ad3.scope.setup_acquisition(
+            mode="single",
+            sample_rate=sample_rate,
+            buffer_size=buffer_size,
+        )
+
+    def arm_trigger(self) -> None:
+        self.ad3.scope.configure(reconfigure=True, start=True)
+        while True:
+            status = self.ad3.scope.read_status(read_data=False)
+            if status == dwfpy.Status.ARMED:
+                break
 
     def save(self, filename: pathlib.Path) -> None:
         sample_rate_hz = self.ad3.device.analog_input.frequency
