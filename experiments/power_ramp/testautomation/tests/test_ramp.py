@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 BEGIN_V = 0.5
 END_V = 5.0
-TRIGGER_V = 1.5
+TRIGGER_V = 1.0
 
 LOGGING_FORMAT = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d %(message)s"
 LOGGING_DATEFMT = "%H:%M:%S"
@@ -67,20 +67,16 @@ def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> None:
 
 
 def main():
+    ramp_duration_s = 0.2
+
     with MeasureContext() as mtx:
-        # Make sure power is of so trigger happens
-        mtx.ad3.supply_P.V = BEGIN_V
-        mtx.ad3.supply_P.enable = False
-        while True:
-            if mtx.supply_pos_eff_V() < BEGIN_V / 2.0:
-                break
-            time.sleep(0.1)
-        print(f"supply_pos_eff_V={mtx.supply_pos_eff_V():0.3f}V")
+        supply_pos_eff_V = mtx.power_off(supply_V=BEGIN_V)
+        print(f"supply_pos_eff_V={supply_pos_eff_V:0.3f}V")
 
         scope = Scope(ad3=mtx.ad3)
         scope.channel0.setup()
         scope.channel1.setup()
-        scope.setup(level_V=TRIGGER_V)
+        scope.setup(level_V=TRIGGER_V, duration_s=1.5*ramp_duration_s)
 
         if False:
             digital_input = mtx.ad3.device.digital_input
@@ -104,7 +100,7 @@ def main():
         print("Scope: Armed")
 
         # ramp_by_step_duration(mtx=mtx, ramp_duration_s=0.5)
-        ramp_fast(mtx=mtx, ramp_duration_s=0.1)
+        ramp_fast(mtx=mtx, ramp_duration_s=ramp_duration_s)
 
         if False:
             digital_input.wait_for_status(dwfpy.Status.DONE, read_data=True)

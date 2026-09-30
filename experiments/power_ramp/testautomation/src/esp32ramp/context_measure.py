@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import pathlib
+import time
 
 import altair
 import dwfpy
@@ -31,29 +32,27 @@ class Scope:
         self.channel0 = ScopeChannel(scope=self, channel0=0)
         self.channel1 = ScopeChannel(scope=self, channel0=1)
 
-    def setup(self, level_V: float) -> None:
-        # seld.ad3.scope.setup_edge_trigger(
-        #     channel=0,
-        #     slope="rising",
-        #     level=0.75,
-        #     position=0.01,
-        #     mode="auto",
-        # )
+    def setup(self, level_V: float, duration_s: float) -> None:
         assert isinstance(level_V, float)
+        assert isinstance(duration_s, float)
+
+        buffer_size = 16384
+        sample_rate = buffer_size / duration_s
+
         self.ad3.scope.setup_edge_trigger(
             channel=0,
             slope="rising",
             level=level_V,
-            hysteresis=0.1,
-            position=0.0,
-            hold_off=0.1,
+            position=duration_s/3.0,
             mode="normal",
+            hold_off=None,
+            hysteresis=None,
             # mode="auto",
         )
         self.ad3.scope.setup_acquisition(
             mode="single",
-            sample_rate=2e5,
-            buffer_size=16384,
+            sample_rate=sample_rate,
+            buffer_size=buffer_size,
         )
 
     def save(self, filename: pathlib.Path) -> None:
@@ -151,3 +150,15 @@ class MeasureContext:
     def supply_pos_eff_V(self) -> float:
         self.device.analog_io.read_status()
         return self.supplyPos.status
+
+    def power_off(self, supply_V: float) -> float:
+        """
+        Make sure power is off so trigger happens
+        """
+        self.ad3.supply_P.V = supply_V
+        self.ad3.supply_P.enable = False
+        while True:
+            supply_pos_eff_V = self.supply_pos_eff_V()
+            if supply_pos_eff_V < supply_V / 2.0:
+                return supply_pos_eff_V
+            time.sleep(0.1)
