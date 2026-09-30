@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import logging
-import time
 
 import dwfpy
 from dwfpy_ad3 import dwfpy_ad3
 
 logger = logging.getLogger(__file__)
 SKIP_VOLTMETER_CALIBRATION = False
+
 
 class MeasureContext:
     def __init__(self):
@@ -20,7 +20,6 @@ class MeasureContext:
         logger.info(f"Found device: {self.device.name} ({self.device.serial_number})")
         self.ad3 = dwfpy_ad3.AD3(device=self.device)
         self.init()
-
 
     def close(self):
         self.device.close()
@@ -40,9 +39,12 @@ class MeasureContext:
         self.close()
 
     def init(self, switch=True, relais=True, AWG=True) -> None:
-        self.ad3.supply_P.V = 5.0
-        self.ad3.supply_N.V = -5.0
-        time.sleep(1)
+        power_supply = self.ad3.device.analog_io["V+-"]
+        power_supply["Limit"].value = 1.0
+        self.ad3.device.analog_io.configure()
+
+        self.ad3.supply_N.enable = False
+        self.ad3.supply_P.enable = False
         if switch:
             switch_liste = list(range(0, 4)) + list(range(8, 16))
             for i in switch_liste:
