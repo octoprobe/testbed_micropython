@@ -9,31 +9,11 @@ import dwfpy
 from esp32ramp import constants
 from esp32ramp.context_measure import MeasureContext, Scope
 
-# from testautomation import lib_tests
-# from testautomation.context_measure import MeasureContext
-# from testautomation.context_mpremote import RemoteMpContext
-# from testautomation.context_result import ResultContext
-
-
-# def main():
-#     with ResultContext() as rtx:
-#         with MeasureContext() as mtx:
-#             mtx.power_up_device()
-
-#             with RemoteMpContext() as mp:
-#                 mp.load_code_py()
-
-#                 lib_tests.test_calibrate_pogo84_dev(mtx=mtx, mp=mp, rtx=rtx)
-
-
-# if __name__ == "__main__":
-#     main()
-
-
 logger = logging.getLogger(__name__)
 
 BEGIN_V = 0.5
 END_V = 5.0
+TRIGGER_V = 1.5
 
 LOGGING_FORMAT = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d %(message)s"
 LOGGING_DATEFMT = "%H:%M:%S"
@@ -89,14 +69,18 @@ def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> None:
 def main():
     with MeasureContext() as mtx:
         # Make sure power is of so trigger happens
-        mtx.ad3.supply_P.enable = False
         mtx.ad3.supply_P.V = BEGIN_V
-        time.sleep(5.0)
+        mtx.ad3.supply_P.enable = False
+        while True:
+            if mtx.supply_pos_eff_V() < BEGIN_V / 2.0:
+                break
+            time.sleep(0.1)
+        print(f"supply_pos_eff_V={mtx.supply_pos_eff_V():0.3f}V")
 
         scope = Scope(ad3=mtx.ad3)
         scope.channel0.setup()
         scope.channel1.setup()
-        scope.setup()
+        scope.setup(level_V=TRIGGER_V)
 
         if False:
             digital_input = mtx.ad3.device.digital_input
@@ -110,7 +94,14 @@ def main():
             )
 
             digital_input.configure(start=True)
-        mtx.ad3.scope.configure(start=True)
+
+        print("Scope: Arm")
+        mtx.ad3.scope.configure(reconfigure=True, start=True)
+        while True:
+            status = mtx.ad3.scope.read_status(read_data=False)
+            if status == dwfpy.Status.ARMED:
+                break
+        print("Scope: Armed")
 
         # ramp_by_step_duration(mtx=mtx, ramp_duration_s=0.5)
         ramp_fast(mtx=mtx, ramp_duration_s=0.1)
@@ -133,7 +124,10 @@ def main():
                 )
             print(f"Digital recording saved to {digital_recording_path}")
 
-        print("Scope wait...")
+        status = mtx.ad3.scope.read_status(read_data=False)
+        print(f"Scope wait... status={status}")
+        assert status in (dwfpy.Status.TRIGGERED, dwfpy.Status.DONE)
+
         mtx.ad3.scope.wait_for_status(dwfpy.Status.DONE, read_data=True)
         scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html")
 

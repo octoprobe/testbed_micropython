@@ -24,13 +24,14 @@ class ScopeChannel:
             coupling="dc",
         )
 
+
 class Scope:
     def __init__(self, ad3: dwfpy_ad3.AD3) -> None:
         self.ad3 = ad3
         self.channel0 = ScopeChannel(scope=self, channel0=0)
         self.channel1 = ScopeChannel(scope=self, channel0=1)
 
-    def setup(self) -> None:
+    def setup(self, level_V: float) -> None:
         # seld.ad3.scope.setup_edge_trigger(
         #     channel=0,
         #     slope="rising",
@@ -38,11 +39,14 @@ class Scope:
         #     position=0.01,
         #     mode="auto",
         # )
+        assert isinstance(level_V, float)
         self.ad3.scope.setup_edge_trigger(
             channel=0,
             slope="rising",
-            level=1.5,
+            level=level_V,
+            hysteresis=0.1,
             position=0.0,
+            hold_off=0.1,
             mode="normal",
             # mode="auto",
         )
@@ -50,9 +54,7 @@ class Scope:
             mode="single",
             sample_rate=2e5,
             buffer_size=16384,
-            configure=True,
         )
-
 
     def save(self, filename: pathlib.Path) -> None:
         sample_rate_hz = self.ad3.device.analog_input.frequency
@@ -92,15 +94,18 @@ class Scope:
 
 
 class MeasureContext:
-    def __init__(self):
+    def __init__(self) -> None:
         self.device: dwfpy.Device
         self.ad3: dwfpy_ad3.AD3
+        self.supplyPos: dwfpy.analog_io.AnalogIoChannelNode
 
     def open(self):
         self.device = dwfpy.Device()
         self.device.open()
         logger.info(f"Found device: {self.device.name} ({self.device.serial_number})")
         self.ad3 = dwfpy_ad3.AD3(device=self.device)
+        self.supplyPos = self.device.analog_io["V+"]["Voltage"]
+        assert isinstance(self.supplyPos, dwfpy.analog_io.AnalogIoChannelNode)
         self.init()
 
     def close(self):
@@ -142,3 +147,7 @@ class MeasureContext:
         if AWG:
             self.ad3.awg_1.setup(function="dc", offset=0.0, configure=True, start=True)
             self.ad3.awg_2.setup(function="dc", offset=0.0, configure=True, start=True)
+
+    def supply_pos_eff_V(self) -> float:
+        self.device.analog_io.read_status()
+        return self.supplyPos.status
