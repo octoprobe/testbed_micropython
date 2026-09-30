@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import csv
 import logging
-import pathlib
 import time
 
 import dwfpy
 
-from esp32ramp.context_measure import MeasureContext, Scope
 from esp32ramp import constants
+from esp32ramp.context_measure import MeasureContext, Scope
 
 # from testautomation import lib_tests
 # from testautomation.context_measure import MeasureContext
@@ -32,6 +32,9 @@ from esp32ramp import constants
 
 logger = logging.getLogger(__name__)
 
+BEGIN_V = 0.5
+END_V = 5.0
+
 LOGGING_FORMAT = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d %(message)s"
 LOGGING_DATEFMT = "%H:%M:%S"
 logging.basicConfig(
@@ -43,56 +46,96 @@ logger_dwfpy = logging.getLogger("dwfpy")
 logger_dwfpy.setLevel("INFO")
 
 
+def ramp_by_step_duration(mtx: MeasureContext, ramp_duration_s: int) -> None:
+    steps = (1.0, 2.0, 3.0, 4.0, 5.0)
+    step_duration_s = ramp_duration_s / (len(steps) - 1)
+    mtx.ad3.supply_P.enable = True
+    mtx.ad3.supply_P.V = 0.5
+    begin_s = time.monotonic()
+    for idx0, voltage in enumerate(steps):
+        duration_required_s = idx0 * step_duration_s
+        duration_actual_s = time.monotonic() - begin_s
+        time_to_wait_s = duration_required_s - duration_actual_s
+        if time_to_wait_s > 0:
+            time.sleep(time_to_wait_s)
+        print(f"{voltage:0.1f}V {1000 * (time.monotonic() - begin_s):0.1f}ms")
+        mtx.ad3.supply_P.V = voltage
+
+
+def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> None:
+    mtx.ad3.supply_P.V = BEGIN_V
+    mtx.ad3.supply_P.enable = True
+    begin_s = time.monotonic()
+    active = True
+    steps = 0
+    while active:
+        steps += 1
+        duration_actual_s = time.monotonic() - begin_s
+        try:
+            actual_V = BEGIN_V + (END_V - BEGIN_V) * duration_actual_s / ramp_duration_s
+        except ZeroDivisionError:
+            actual_V = END_V
+            active = False
+
+        if actual_V > END_V:
+            actual_V = END_V
+            active = False
+        # print(f"{actual_V:0.3f}V {1000 * (duration_actual_s):0.1f}ms")
+        mtx.ad3.supply_P.V = actual_V
+
+    print(f"{steps=} {1000 * (END_V - BEGIN_V) / steps:0.1f}mV/step")
+
+
 def main():
     with MeasureContext() as mtx:
-        if False:
-            for voltage in range(2, 6):
-                time.sleep(1.0)
-                mtx.ad3.supply_P.V = float(voltage)
-        if True:
-            scope = Scope(ad3=mtx.ad3)
-            scope.channel0.setup()
-            scope.channel1.setup()
-            scope.setup()
+        # Make sure power is of so trigger happens
+        mtx.ad3.supply_P.enable = False
+        mtx.ad3.supply_P.V = BEGIN_V
+        time.sleep(5.0)
 
-            # mtx.ad3.scope_1.setup(range=50.0, offset=0.0, coupling="dc")
-            # mtx.ad3.scope.setup_edge_trigger(
-            #     channel=0,
-            #     slope="rising",
-            #     level=0.75,
-            #     position=0.01,
-            #     mode="auto",
-            # )
-            # mtx.ad3.scope.setup_acquisition(
-            #     mode="single",
-            #     sample_rate=2e5,
-            #     buffer_size=16384,
-            #     configure=True,
-            # )
-            # mtx.ad3.scope.configure(start=True)
-
-            mtx.ad3.supply_P.enable = True
-            mtx.ad3.supply_P.V = 0.5
-            begin_s = time.monotonic()
-            step_duration_s = 0.01
-            # Measured: 8.1ms for 5 steps
-            for idx0, voltage in enumerate((1.0, 2.0, 3.0, 4.0, 5.0)):
-                duration_required_s = idx0 * step_duration_s
-                duration_actual_s = time.monotonic() - begin_s
-                time_to_wait_s = duration_required_s - duration_actual_s
-                if time_to_wait_s > 0:
-                    time.sleep(time_to_wait_s)
-                print(f"{voltage:0.1f}V {1000 * (time.monotonic() - begin_s):0.1f}ms")
-                mtx.ad3.supply_P.V = voltage
-
-            mtx.ad3.scope.wait_for_status(dwfpy.Status.DONE, read_data=True)
-            scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html")
+        scope = Scope(ad3=mtx.ad3)
+        scope.channel0.setup()
+        scope.channel1.setup()
+        scope.setup()
 
         if False:
-            awg = mtx.ad3.device.analog_output["ch1"]
-            awg.setup(function="ramp-up", frequency=0.25, amplitude=2.0, offset=3.0)
-            awg.repeat_count = 1
-            awg.configure(start=True)
+            digital_input = mtx.ad3.device.digital_input
+            digital_input.setup_trigger(source="none")
+            digital_input.setup_acquisition(
+                mode="single",
+                sample_rate=100_000.0,
+                sample_format=8,
+                buffer_size=10_000,
+                configure=True,
+            )
+
+            digital_input.configure(start=True)
+        mtx.ad3.scope.configure(start=True)
+
+        # ramp_by_step_duration(mtx=mtx, ramp_duration_s=0.5)
+        ramp_fast(mtx=mtx, ramp_duration_s=0.1)
+
+        if False:
+            digital_input.wait_for_status(dwfpy.Status.DONE, read_data=True)
+            digital_samples = digital_input.get_data()
+            digital_sample_rate_hz = digital_input.sample_rate
+            digital_recording_path = constants.DIRECTORY_TESTRESULTS / "digital_io.csv"
+            with digital_recording_path.open("w", encoding="ascii", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(("time_s", "digital_0", "digital_1"))
+                writer.writerows(
+                    (
+                        index / digital_sample_rate_hz,
+                        int(sample) & 1,
+                        (int(sample) >> 1) & 1,
+                    )
+                    for index, sample in enumerate(digital_samples)
+                )
+            print(f"Digital recording saved to {digital_recording_path}")
+
+        print("Scope wait...")
+        mtx.ad3.scope.wait_for_status(dwfpy.Status.DONE, read_data=True)
+        scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html")
 
 
 if __name__ == "__main__":

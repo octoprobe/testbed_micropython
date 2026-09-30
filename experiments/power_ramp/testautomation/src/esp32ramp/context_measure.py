@@ -19,16 +19,9 @@ class ScopeChannel:
 
     def setup(self) -> None:
         self.channel.setup(
-            range=50.0,
+            range=10.0,
             offset=0.0,
             coupling="dc",
-        )
-        self.scope.ad3.scope.setup_edge_trigger(
-            channel=self.channel0,
-            slope="rising",
-            level=0.75,
-            position=0.01,
-            mode="auto",
         )
 
 class Scope:
@@ -38,13 +31,27 @@ class Scope:
         self.channel1 = ScopeChannel(scope=self, channel0=1)
 
     def setup(self) -> None:
+        # seld.ad3.scope.setup_edge_trigger(
+        #     channel=0,
+        #     slope="rising",
+        #     level=0.75,
+        #     position=0.01,
+        #     mode="auto",
+        # )
+        self.ad3.scope.setup_edge_trigger(
+            channel=0,
+            slope="rising",
+            level=1.5,
+            position=0.0,
+            mode="normal",
+            # mode="auto",
+        )
         self.ad3.scope.setup_acquisition(
             mode="single",
             sample_rate=2e5,
             buffer_size=16384,
             configure=True,
         )
-        self.ad3.scope.configure(start=True)
 
 
     def save(self, filename: pathlib.Path) -> None:
