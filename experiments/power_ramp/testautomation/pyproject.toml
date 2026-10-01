@@ -17,6 +17,7 @@ dependencies = [
     "mypy",
     "ruff",
     "altair[save]",
+    "pandas",
 ]
 
 

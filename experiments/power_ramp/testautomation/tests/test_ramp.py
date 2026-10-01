@@ -5,6 +5,8 @@ import logging
 import time
 
 import dwfpy
+import numpy
+import pandas
 
 from esp32ramp import constants
 from esp32ramp.context_measure import MeasureContext, Scope
@@ -42,7 +44,10 @@ def ramp_by_step_duration(mtx: MeasureContext, ramp_duration_s: int) -> None:
         mtx.ad3.supply_P.V = voltage
 
 
-def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> None:
+def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> pandas.DataFrame:
+    list_time_ms: list[float] = []
+    list_ramp_V: list[float] = []
+
     mtx.ad3.supply_P.V = BEGIN_V
     mtx.ad3.supply_P.enable = True
     begin_s = time.monotonic()
@@ -60,10 +65,20 @@ def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> None:
         if actual_V > END_V:
             actual_V = END_V
             active = False
+
         # print(f"{actual_V:0.3f}V {1000 * (duration_actual_s):0.1f}ms")
+        list_time_ms.append(1000 * duration_actual_s)
+        list_ramp_V.append(actual_V)
         mtx.ad3.supply_P.V = actual_V
 
     print(f"{steps=} {1000 * (END_V - BEGIN_V) / steps:0.1f}mV/step")
+    return pandas.DataFrame(
+        {
+            "time_ms": list_time_ms,
+            "voltage_v": list_ramp_V,
+            "signal": "VCC",
+        }
+    )
 
 
 def main():
@@ -101,7 +116,7 @@ def main():
         mtx.ad3.scope.configure(reconfigure=True, start=True)
 
         # ramp_by_step_duration(mtx=mtx, ramp_duration_s=0.5)
-        ramp_fast(mtx=mtx, ramp_duration_s=ramp_duration_s)
+        ramp_data = ramp_fast(mtx=mtx, ramp_duration_s=ramp_duration_s)
 
         if False:
             digital_input.wait_for_status(dwfpy.Status.DONE, read_data=True)
@@ -126,7 +141,7 @@ def main():
         assert status in (dwfpy.Status.TRIGGERED, dwfpy.Status.DONE)
 
         mtx.ad3.scope.wait_for_status(dwfpy.Status.DONE, read_data=True)
-        scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html")
+        scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html",ramp_data=ramp_data)
 
 
 if __name__ == "__main__":

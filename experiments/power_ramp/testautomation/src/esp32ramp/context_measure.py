@@ -6,6 +6,8 @@ import time
 
 import altair
 import dwfpy
+import numpy
+import pandas
 from dwfpy_ad3 import dwfpy_ad3
 
 logger = logging.getLogger(__file__)
@@ -76,24 +78,30 @@ class Scope:
             if status == dwfpy.Status.ARMED:
                 break
 
-    def save(self, filename: pathlib.Path) -> None:
+    def save(self, filename: pathlib.Path, ramp_data: pandas.DataFrame) -> None:
+        assert isinstance( filename, pathlib.Path)
+        assert isinstance(ramp_data, pandas.DataFrame)
+
         sample_rate_hz = self.ad3.device.analog_input.frequency
-        scope_data = []
+        frames: list[pandas.DataFrame] = [ramp_data]
         for channel, signal_name in (
             (self.channel0, "RST"),
             (self.channel1, "BOOT"),
         ):
-            samples = channel.channel.get_data()
-            scope_data.extend(
-                {
-                    "time_ms": index / sample_rate_hz * 1000.0 - 10.0,
-                    "voltage_v": float(voltage),
-                    "signal": signal_name,
-                }
-                for index, voltage in enumerate(samples)
+            samples = numpy.asarray(channel.channel.get_data(), dtype=float)
+            time_ms = numpy.arange(samples.size) / sample_rate_hz * 1000.0 - 10.0
+            frames.append(
+                pandas.DataFrame(
+                    {
+                        "time_ms": time_ms,
+                        "voltage_v": samples,
+                        "signal": signal_name,
+                    }
+                )
             )
+        scope_data = pandas.concat(frames, ignore_index=True)
         chart = (
-            altair.Chart(altair.Data(values=scope_data))
+            altair.Chart(scope_data)
             .mark_line()
             .encode(
                 x=altair.X("time_ms:Q", title="Time from ramp start (ms)"),
@@ -101,8 +109,8 @@ class Scope:
                 color=altair.Color(
                     "signal:N",
                     scale=altair.Scale(
-                        domain=["RST", "BOOT"],
-                        range=["#f28e2b", "#808080"],
+                        domain=["RST", "BOOT", "VCC"],
+                        range=["#f28e2b", "#808080", "#000000"],
                     ),
                     legend=altair.Legend(title="Signal"),
                 ),
