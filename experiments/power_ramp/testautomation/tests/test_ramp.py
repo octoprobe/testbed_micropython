@@ -5,7 +5,6 @@ import logging
 import time
 
 import dwfpy
-import numpy
 import pandas
 
 from esp32ramp import constants
@@ -16,6 +15,7 @@ logger = logging.getLogger(__name__)
 BEGIN_V = 0.5
 END_V = 5.0
 TRIGGER_V = 1.0
+EXPERIMENT_DURATION_S = 1.0
 
 LOGGING_FORMAT = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d %(message)s"
 LOGGING_DATEFMT = "%H:%M:%S"
@@ -82,7 +82,7 @@ def ramp_fast(mtx: MeasureContext, ramp_duration_s: int) -> pandas.DataFrame:
 
 
 def main():
-    ramp_duration_s = 0.1
+    ramp_duration_s = 0.2
 
     with MeasureContext() as mtx:
         supply_pos_eff_V = mtx.power_off(supply_V=BEGIN_V)
@@ -92,7 +92,7 @@ def main():
         scope.channel0.setup()
         scope.channel1.setup()
         # scope.setup_trigger(level_V=TRIGGER_V, duration_s=1.5*ramp_duration_s)
-        scope.setup_immediate(duration_s=1.5 * ramp_duration_s)
+        scope.setup_immediate(duration_s=EXPERIMENT_DURATION_S + ramp_duration_s)
 
         if False:
             digital_input = mtx.ad3.device.digital_input
@@ -138,10 +138,16 @@ def main():
 
         status = mtx.ad3.scope.read_status(read_data=False)
         print(f"Scope wait... status={status}")
-        assert status in (dwfpy.Status.TRIGGERED, dwfpy.Status.DONE)
+        assert status in (
+            dwfpy.Status.TRIGGERED,
+            dwfpy.Status.PREFILL,
+            dwfpy.Status.DONE,
+        )
 
         mtx.ad3.scope.wait_for_status(dwfpy.Status.DONE, read_data=True)
-        scope.save(filename=constants.DIRECTORY_TESTRESULTS / "scope.html",ramp_data=ramp_data)
+        scope.save(
+            filename=constants.DIRECTORY_TESTRESULTS / "scope.html", ramp_data=ramp_data
+        )
 
 
 if __name__ == "__main__":
