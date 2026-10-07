@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import difflib
 import logging
 import pathlib
 import sys
@@ -21,7 +22,6 @@ from ..testcollection.testrun_specs import (
     TestRun,
     TestRunSpec,
 )
-from ..util_multiprocessing import EVENTLOGCALLBACK
 from ..util_subprocess_tentacle import tentacle_subprocess_run
 from .util_mp_results import MpResults
 
@@ -65,10 +65,7 @@ class TestRunMpremoteTests(TestRun):
         assert mp_remote_py.is_file()
 
         # Run tests
-        logfile = testargs.testresults_directory("testresults.txt").filename
-        EVENTLOGCALLBACK.log(
-            msg=f"Logfile: {testargs.testresults_directory.render_relative(logfile)}"
-        )
+        directory_test = testargs.testresults_directory.directory_test
 
         def run_tests() -> None:
             """
@@ -81,7 +78,7 @@ class TestRunMpremoteTests(TestRun):
                 filename_expected = test_sh.with_suffix(".sh.exp")
                 testoutput_expected = filename_expected.read_text()
 
-                logfile_raw_out = logfile.with_stem(test_sh.stem).with_suffix(".txt")
+                logfile_raw_out = directory_test / f"{test_sh.stem}.txt"
                 with tempfile.TemporaryDirectory() as tmp_dir:
                     env = {
                         "MPREMOTE": f"{sys.executable} {mp_remote_py} connect {serial_port}",
@@ -128,7 +125,46 @@ class TestRunMpremoteTests(TestRun):
 
         mp_results = MpResults()
         run_tests()
-        mp_results.save_results(directory=logfile.parent)
+        mp_results.save_results(directory=directory_test)
+        try:
+            self._log_testresults(directory_test=directory_test, mp_results=mp_results)
+        except Exception as e:
+            msg = f"_log_testresults() failed with {e}!"
+            logger.debug(msg, exc_info=e)
+            logger.warning(msg)
+
+    def _log_testresults(
+        self,
+        directory_test: pathlib.Path,
+        mp_results: MpResults,
+    ) -> None:
+        def log_failure(testname: str) -> None:
+            try:
+                filename_expected = directory_test / f"{testname}.exp"
+                filename_out = directory_test / f"{testname}.out"
+            except FileNotFoundError as e:
+                logger.warning(f"FAILED '{testname}': {e}")
+                return
+
+            logger.info(f"FAILED: '{testname}'")
+
+            diff = difflib.unified_diff(
+                a=filename_expected.read_text().splitlines(),
+                b=filename_out.read_text().splitlines(),
+                fromfile=str(filename_expected),
+                tofile=str(filename_out),
+            )
+            diff_text = "\n".join(
+                [
+                    "  Diff:",
+                    "".join(diff),
+                ]
+            )
+            logger.info(diff_text)
+
+        logger.info("FAILED TESTS REPORT")
+        for testname in mp_results.failures:
+            log_failure(testname=testname)
 
 
 TESTRUNSPEC_RUN_MPREMOTE_TESTS = TestRunSpec(
