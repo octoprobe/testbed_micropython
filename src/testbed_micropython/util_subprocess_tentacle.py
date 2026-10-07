@@ -12,7 +12,7 @@ from . import util_subprocess_tentacle_timeout
 from .constants import SUBPROCESS_PROVOKE_RETURNCODE2
 from .testcollection.testrun_specs import TestRun
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 def tentacle_subprocess_run(

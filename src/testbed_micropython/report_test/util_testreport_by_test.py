@@ -27,7 +27,7 @@ from .util_baseclasses import Outcome, ResultContext, ResultTestGroup, ResultTes
 from .util_constants import PREFIX_ANCHOR
 from .util_markdown2 import md_escape
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(repr=True, slots=True)

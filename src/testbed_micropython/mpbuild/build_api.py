@@ -37,7 +37,7 @@ from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 
 from .board_tweaks import board_specific_download, tweak_build_folder
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 # Overwrite mpbuild default containers
 # This should eventually be pushed upstream into mpbuild.

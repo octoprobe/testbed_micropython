@@ -27,7 +27,7 @@ from ..testcollection.testrun_specs import (
 from ..util_multiprocessing import EVENTLOGCALLBACK
 from ..util_subprocess_tentacle import tentacle_subprocess_run
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 # bree: git submodule update --init lib/berkeley-db-1.xx
 NATMOD_LIBS = ("btree", "deflate", "framebuf", "heapq", "random", "re")

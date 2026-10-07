@@ -15,7 +15,7 @@ from ..testcollection.testrun_specs import (
     TestRunSpec,
 )
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 CMD_FLASH_FORMAT = """
 import sys

@@ -10,7 +10,7 @@ from git_cached_repo.git_cached_repo import GitSpec
 
 from ..constants import is_url
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 T = typing.TypeVar("T")
 

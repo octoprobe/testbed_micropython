@@ -21,7 +21,7 @@ from ..testcollection.testrun_specs import (
 from ..util_multiprocessing import EVENTLOGCALLBACK
 from ..util_subprocess_tentacle import tentacle_subprocess_run
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class TestRunReference(TestRun):

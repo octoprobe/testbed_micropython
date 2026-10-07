@@ -28,7 +28,7 @@ from queue import Empty
 from .report_task import util_report_tasks
 from .tentacle_spec import TentacleMicropython
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class EventLogCallback:

@@ -17,7 +17,7 @@ from ..mpbuild.build_api import BoardVariant
 from ..mptest.util_baseclasses import ArgsQuery
 from ..tentacle_spec import TentacleMicropython, TentacleSpecMicropython
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 if typing.TYPE_CHECKING:
     from ..testcollection.baseclasses_run import TestRunSpecs

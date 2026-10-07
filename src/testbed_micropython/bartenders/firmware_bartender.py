@@ -19,7 +19,7 @@ from ..mpbuild.build_api import MpbuildDockerException
 from ..testcollection.baseclasses_run import TestRunSpecs
 from ..util_mpycross import copy_mpycross
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(repr=True, slots=True)

@@ -7,7 +7,7 @@ import re
 
 import yaml
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 YAML_ON = True
 """
 This corresponds to the yaml key "on:"

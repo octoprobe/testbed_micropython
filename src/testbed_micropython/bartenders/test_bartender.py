@@ -29,7 +29,7 @@ from ..testcollection.baseclasses_run import TestRunSpecs
 from ..testcollection.baseclasses_spec import ConnectedTentacles
 from ..testcollection.testrun_specs import TestRun
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class CurrentlyNoTestsException(Exception):

@@ -23,7 +23,7 @@ import typing
 from dataclasses import dataclass
 from queue import Empty
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclass(repr=True)
@@ -213,7 +213,9 @@ def target_showcase(arg1: TargetArg1, duration_s: float, time_s: int) -> None:
             raise ValueError(msg)
 
         # Demonstrate a simple log message sent to the main process
-        arg1.queue_log(f"Subprocess log: {time.monotonic()-duration_s:0.1f}s are over")
+        arg1.queue_log(
+            f"Subprocess log: {time.monotonic() - duration_s:0.1f}s are over"
+        )
         time.sleep(1.0)
 
         success = True

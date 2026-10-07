@@ -18,7 +18,7 @@ from .tentacle_spec import (
     TentacleSpecMicropython,
 )
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 _ENV_MICROPY_DIR = "MICROPY_DIR"
 

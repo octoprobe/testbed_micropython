@@ -8,7 +8,7 @@ import typer
 
 from testbed_micropython.constants import EnumFut
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass

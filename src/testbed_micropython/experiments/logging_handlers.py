@@ -3,7 +3,7 @@ import logging
 import typing
 from typing import TextIO
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 LOGGER_PROGRESS = "LOGGER_PROGRESS"
 logger_red = logging.getLogger(LOGGER_PROGRESS)

@@ -14,7 +14,7 @@ from octoprobe.util_constants import ExitCode
 
 from . import util_baseclasses, util_constants
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class TarAndHttpsPush:

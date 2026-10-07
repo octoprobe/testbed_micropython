@@ -19,7 +19,7 @@ _TENTACLE_NONE = "."
 # _QUANTIZE_FACTOR =  5  # 200ms
 _QUANTIZE_FACTOR = 2  # 500ms
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass

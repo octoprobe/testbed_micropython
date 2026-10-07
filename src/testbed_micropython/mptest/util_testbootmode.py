@@ -9,7 +9,7 @@ from octoprobe.util_pyudev import UdevPoller
 
 from .util_testrunner import instantiate_tentacles
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 FILENAME_LOGGING_JSON = DIRECTORY_OF_THIS_FILE / "util_testbootmode_logging.json"

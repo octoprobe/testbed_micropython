@@ -25,7 +25,7 @@ from ..util_multiprocessing import EVENTLOGCALLBACK
 from ..util_subprocess_tentacle import tentacle_subprocess_run
 from .util_mp_results import MpResults
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 MPREMOTE_TESTS_SUBDIR = "tools/mpremote/tests"

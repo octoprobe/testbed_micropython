@@ -18,7 +18,7 @@ from octoprobe.util_subprocess import (
 from .constants import SUBPROCESS_PROVOKE_RETURNCODE2
 from .testcollection.testrun_specs import TestRun
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class TentaclePowerOffTimer:

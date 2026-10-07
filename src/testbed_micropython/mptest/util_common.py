@@ -32,7 +32,7 @@ from ..util_subprocess_tentacle import tentacle_subprocess_run
 if typing.TYPE_CHECKING:
     from ..testcollection.testrun_specs import TestArgs
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass

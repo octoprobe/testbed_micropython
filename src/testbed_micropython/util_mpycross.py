@@ -30,7 +30,7 @@ import shutil
 
 from octoprobe.util_subprocess import subprocess_run
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 FILENAME_MPCROSS = "mpy-cross"
 _DIRECTORY_MPCROSS = "mpy-cross"

@@ -24,7 +24,7 @@ from testbed_micropython import util_multiprocessing as mp
 from testbed_micropython.report_task.util_report_renderer import RendererMarkdown
 from testbed_micropython.report_task.util_report_tasks import TaskReport, Tasks
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 def target_showcase(arg1: mp.TargetArg1, duration_s: float, time_s: int) -> None:
@@ -106,7 +106,6 @@ def submain(multiprocessing: bool) -> None:
         with mp.TargetCtx(
             multiprocessing=multiprocessing, initfunc=initfunc
         ) as target_ctx:
-
             begin_s = time.monotonic()
             for duration_s, timeout_s in (
                 (10, 8.0),

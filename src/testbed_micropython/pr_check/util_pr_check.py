@@ -9,7 +9,7 @@ from git_cached_repo import git_cached_repo
 from .. import constants
 from . import util_github, util_ports_from_pr
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(slots=True)

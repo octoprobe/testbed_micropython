@@ -69,7 +69,7 @@ DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
 _TESTBED_LOCK = TestbedLock()
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(repr=True, slots=True)

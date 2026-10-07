@@ -13,7 +13,7 @@ from octoprobe.util_micropython_boards import BoardVariant
 from .tentacle_spec import TentacleMicropython
 from .util_firmware_mpbuild import collect_firmware_specs
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 PYTEST_OPT_DOWNLOAD_FIRMWARE = "--firmware-json"
 PYTEST_OPT_BUILD_FIRMWARE = "--firmware-build-url"
 PYTEST_OPT_BUILD_FIRMWARE_MOCK = "MOCK"

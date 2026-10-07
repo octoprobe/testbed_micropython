@@ -11,7 +11,7 @@ from testbed_micropython.report_test import util_constants
 from testbed_micropython.report_test.util_markdown2 import markdown2html, md_escape
 from testbed_micropython.report_test.util_testreport import Data
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 

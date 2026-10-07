@@ -41,7 +41,7 @@ from ..util_firmware_mpbuild_interface import ArgsFirmware
 from .util_baseclasses import ArgsQuery
 from .util_testbootmode import do_debugbootmode, get_programmer_labels
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 # 'typer' does not work correctly with typing.Annotated
 # Required is: typing_extensions.Annotated
