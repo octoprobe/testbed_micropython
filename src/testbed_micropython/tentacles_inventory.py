@@ -17,6 +17,12 @@ TENTACLES_INVENTORY = (
                 tentacle_specs.ESP32_S2_DEVKIT,
             ),
             (
+                "de6528b3cb4a-1426",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_H2_DEVKIT,
+            ),
+            (
                 "de6530655387-5629",
                 HwVersion.V08,
                 "v1.0",
@@ -126,12 +132,12 @@ TENTACLES_INVENTORY = (
             ("e46340474b14-1c29", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2),
             ("e46414481318-3d2c", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
             ("e46414481310-2d2a", HwVersion.V03, "v1.1", tentacle_specs.ESP32_DEVKIT),
-            (
-                "e46414481355-442b",
-                HwVersion.V03,
-                "v1.1",
-                tentacle_specs.ESP32_C3_DEVKIT,
-            ),
+            # (
+            #     "e46414481355-442b",
+            #     HwVersion.V03,
+            #     "v1.1",
+            #     tentacle_specs.ESP32_C3_DEVKIT,
+            # ),
             (
                 "e46414481348-1930",
                 HwVersion.V03,
@@ -173,12 +179,12 @@ TENTACLES_INVENTORY = (
         testbed_instance="it_alessandro_1",
         tentacles=[
             ("e46414481340-1d36", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
-            (
-                "e4641448132c-352c",
-                HwVersion.V03,
-                "v1.1",
-                tentacle_specs.ESP32_C3_DEVKIT,
-            ),
+            # (
+            #     "e4641448132c-352c",
+            #     HwVersion.V03,
+            #     "v1.1",
+            #     tentacle_specs.ESP32_C3_DEVKIT,
+            # ),
             ("e46414481310-422a", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
             ("e46414481310-462c", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
         ],
@@ -186,7 +192,7 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="nl_jan_1",
         tentacles=[
-            ("de6528b3cb15-6c34", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO_W),
+            ("de6528b3cb15-6c34", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO),
             ("de6528b3cb49-6038", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO_W),
             (
                 "de6528b3cb15-5c34",
