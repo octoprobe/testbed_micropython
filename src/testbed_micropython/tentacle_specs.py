@@ -173,7 +173,7 @@ Connections
   * Tentacle Relay 1a <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board 5/U0RXD/RX <=> 4/U0TXD/TX
+  * Board 4 <=> 5
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -211,7 +211,7 @@ ESP32_C3_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-C3-DevKitC-02
 See: https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/hw-reference/esp32c3/user-guide-devkitc-02.html
-See: http://adafru.it/5337
+See: https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/_images/esp32-c3-devkitc-02-v1-pinout.png
 
 Connections
 
@@ -224,7 +224,8 @@ Connections
   * Tentacle Relay 1a <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board 5/U0RXD/RX <=> 4/U0TXD/TX
+  * Board 4 <=> 5
+  * Board 6 <=> 7
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -233,6 +234,7 @@ Connections
 v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF on Tentaclce!
+v1.3: Add FUT_EXTMOD_HARDWARE 4-5, 6-7
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C3_DEVKIT",
@@ -263,6 +265,7 @@ ESP32_C5_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-C5-DevKitC-1-N8R8
 See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c5/esp32-c5-devkitc-1/index.html
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c5/_images/esp32-c5-devkitc-1-pin-layout_v1.2.png
 
 Connections
 
@@ -313,6 +316,9 @@ v1.0: initial
 #     doc="""
 # See: ESP32-C6-DevKitC-1-N8
 # See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/index.html
+# See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/_images/esp32-c6-devkitc-1-pin-layout.png
+
+# See: https://github.com/micropython/micropython/pull/19859
 # """
 # ):
 #     pass
@@ -321,6 +327,7 @@ ESP32_S2_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-S2-DevKitC-1-N8R2
 See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s2/esp32-s2-devkitc-1/index.html
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s2/_images/esp32-s2-devkitc-1-v1-pinout.png
 
 Connections
 
@@ -335,6 +342,7 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> Board GPIO5
+  * TODO: 
 
 * SLEW_RATE_SOLDER_BRIDGE removed
 
@@ -380,6 +388,8 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> Board GPIO5
+  * Board GPIO10 <=> Board GPIO11
+  * Board GPIO12 <=> Board GPIO13
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -389,6 +399,7 @@ Connections
 v1.0: USB DUT is connected to 'UART'
 v1.1: USB DUT is connected to 'USB'
 v1.2: Use GPIO0 to allow octoprobe to select bootloader mode
+v1.3: Add FUT_EXTMOD_HARDWARE 10-11, 12-13
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_S3_DEVKIT",
@@ -434,7 +445,9 @@ Connections
   * Tentacle Relay 1a <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board RX/U0RXD/RX <=> TX/U0TXD/TX
+  * Board Pin4 <=> Board Pin5 (uart,pwm,counter)
+  * Board Pin12 <=> Board Pin22 (i2c, encoder)
+  * Board Pin10 <=> Board Pin11 (i2c)
 
 v1.0: initial
 """,
@@ -476,7 +489,7 @@ Connections
   * Board Button 9 close to VBUS <=> Tentacle Relay 1b
 
 * FUT_EXTMOD_HARDWARE
-  * Board 5/U0RXD/RX <=> 4/U0TXD/TX
+  * Board 4 <=> 5
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND

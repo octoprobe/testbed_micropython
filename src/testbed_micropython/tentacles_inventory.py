@@ -70,13 +70,13 @@ TENTACLES_INVENTORY = (
             (
                 "e46414481346-0c30",
                 HwVersion.V03,
-                "v1.1",
+                "v1.3",
                 tentacle_specs.ESP32_C3_DEVKIT,
             ),
             (
                 "e46414481354-472b",
                 HwVersion.V03,
-                "v1.1",
+                "v1.3",
                 tentacle_specs.ESP32_S3_DEVKIT,
             ),
             (
@@ -132,12 +132,12 @@ TENTACLES_INVENTORY = (
             ("e46340474b14-1c29", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2),
             ("e46414481318-3d2c", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
             ("e46414481310-2d2a", HwVersion.V03, "v1.1", tentacle_specs.ESP32_DEVKIT),
-            # (
-            #     "e46414481355-442b",
-            #     HwVersion.V03,
-            #     "v1.1",
-            #     tentacle_specs.ESP32_C3_DEVKIT,
-            # ),
+            (
+                "e46414481355-442b",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.ESP32_C3_DEVKIT,
+            ),
             (
                 "e46414481348-1930",
                 HwVersion.V03,
@@ -179,12 +179,12 @@ TENTACLES_INVENTORY = (
         testbed_instance="it_alessandro_1",
         tentacles=[
             ("e46414481340-1d36", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
-            # (
-            #     "e4641448132c-352c",
-            #     HwVersion.V03,
-            #     "v1.1",
-            #     tentacle_specs.ESP32_C3_DEVKIT,
-            # ),
+            (
+                "e4641448132c-352c",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.ESP32_C3_DEVKIT,
+            ),
             ("e46414481310-422a", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
             ("e46414481310-462c", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
         ],
