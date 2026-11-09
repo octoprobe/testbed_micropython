@@ -234,7 +234,7 @@ Connections
 v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF on Tentaclce!
-v1.3: Add FUT_EXTMOD_HARDWARE 4-5, 6-7
+v1.3: New: FUT_EXTMOD_HARDWARE 4-5, 6-7
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C3_DEVKIT",
@@ -389,7 +389,6 @@ Connections
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> Board GPIO5
   * Board GPIO10 <=> Board GPIO11
-  * Board GPIO12 <=> Board GPIO13
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -399,7 +398,7 @@ Connections
 v1.0: USB DUT is connected to 'UART'
 v1.1: USB DUT is connected to 'USB'
 v1.2: Use GPIO0 to allow octoprobe to select bootloader mode
-v1.3: Add FUT_EXTMOD_HARDWARE 10-11, 12-13
+v1.3: New: FUT_EXTMOD_HARDWARE 4-5, 10-11
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_S3_DEVKIT",
