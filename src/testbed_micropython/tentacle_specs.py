@@ -173,7 +173,7 @@ Connections
   * Tentacle Relay 1a <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board 4 <=> 5
+  * Board 4 <=> Board 5
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -224,8 +224,8 @@ Connections
   * Tentacle Relay 1a <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board 4 <=> 5
-  * Board 6 <=> 7
+  * Board 4 <=> Board 5
+  * Board 6 <=> Board 7
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -477,6 +477,7 @@ v1.0: initial
 LOLIN_C3_MINI = TentacleSpecMicropython(
     doc="""
 See: https://www.wemos.cc/en/latest/c3/c3_mini.html
+See: https://www.wemos.cc/en/latest/_images/c3_mini_v2.1.0_4_16x9.png
 
 Connections
 
@@ -488,7 +489,8 @@ Connections
   * Board Button 9 close to VBUS <=> Tentacle Relay 1b
 
 * FUT_EXTMOD_HARDWARE
-  * Board 4 <=> 5
+  * Board 4 <=> Board 5
+  * Board 0 <=> Board 1
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -497,6 +499,7 @@ Connections
 
 v1.0: initial
 v1.1: Use relais to allow octoprobe to press boot button
+v1.2: New: FUT_EXTMOD_HARDWARE 4-5, 0-1
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="LOLIN_C3_MINI",
