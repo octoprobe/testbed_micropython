@@ -195,9 +195,10 @@ TENTACLES_INVENTORY = (
             ("de6528b3cb15-6c34", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO),
             ("de6528b3cb49-6038", HwVersion.V06, "v1.0", tentacle_specs.RPI_PICO_W),
             (
+                # 2026-11-09: Broken
                 "de6528b3cb15-5c34",
                 HwVersion.V06,
-                "v1.2",
+                "v1.3",
                 tentacle_specs.ESP32_C3_DEVKIT,
             ),
         ],
