@@ -162,6 +162,7 @@ ESP32_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-DevKitC V4
 See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32_devkitC_v4_pinlayout.png
 
 Connections
 
@@ -174,6 +175,7 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board 4 <=> Board 5
+  * Board 12 <=> Board 13
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -181,6 +183,7 @@ Connections
 
 v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
+v1.2: New FUT_EXTMOD_HARDWARE 4-5, 12-13
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_DEVKIT",
@@ -283,7 +286,7 @@ Connections
   * Tentacle Relay 1a <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * Board GPIO4/U0RXD/RX <=> GPIO5/U0TXD/TX
+  * Board GPIO4 <=> GPIO5
   * Board GPIO12 <=> GPIO13
 
 v1.0: initial
@@ -312,16 +315,58 @@ v1.0: initial
     mcu_config=McuConfig(),
 )
 
-# ESP32_C6_DEVKIT = TentacleSpecMicropython(
-#     doc="""
-# See: ESP32-C6-DevKitC-1-N8
-# See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/index.html
-# See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/_images/esp32-c6-devkitc-1-pin-layout.png
+ESP32_C6_DEVKIT = TentacleSpecMicropython(
+    doc="""
+See: ESP32-C6-DevKitC-1-N8
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/esp32-c6-devkitc-1/index.html
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c6/_images/esp32-c6-devkitc-1-pin-layout.png
 
-# See: https://github.com/micropython/micropython/pull/19859
-# """
-# ):
-#     pass
+See: https://github.com/micropython/micropython/pull/19859
+
+Connections
+
+* USB DUT is connected to 'USB'
+
+* GND
+  * Board GND <=> Tentacle GND
+
+* Fast Power slew rate to prevent ESP32 to hang forever
+  * Tentacle v0.6, v0.7: unsolder C217/1uF
+  * Tentacle v0.8+: USB DUT is connected to 'USB'
+
+* Bootmode
+  * Board GPIO9  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
+* FUT_EXTMOD_HARDWARE
+  * Board GPIO4 <=> GPIO5
+  * Board GPIO6 <=> GPIO7
+
+v1.0: initial
+""",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ESP32_C6_DEVKIT",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_WLAN,
+        EnumFut.FUT_BLE,
+    ],
+    mcu_usb_id=util_mcu_esp.ESP32_C6_USB_ID,
+    tags="board=ESP32_GENERIC_C6,mcu=esp32,programmer=esptool" + TAG_TIER1,
+    programmer_args=[
+        "--chip=esp32c6",
+        "--baud=921600",
+        "--before=default-reset",
+        "--after=hard-reset",
+        "write-flash",
+        "0x0000",
+        "--no-progress",
+        "--compress",
+    ],
+    power_on_delay_s=1.0,
+    mcu_config=McuConfig(),
+)
 
 ESP32_S2_DEVKIT = TentacleSpecMicropython(
     doc="""
@@ -342,14 +387,14 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> Board GPIO5
-  * TODO: 
+  * Board GPIO10 <=> Board GPIO11
 
-* SLEW_RATE_SOLDER_BRIDGE removed
+* Tentacle v0.7: SLEW_RATE_SOLDER_BRIDGE removed
 
 v1.0: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
-    tentacle_tag="ESP32_23_DEVKIT",
+    tentacle_tag="ESP32_S2_DEVKIT",
     futs=[
         EnumFut.FUT_MCU_ONLY,
         EnumFut.FUT_EXTMOD_HARDWARE,
@@ -445,8 +490,7 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board Pin4 <=> Board Pin5 (uart,pwm,counter)
-  * Board Pin12 <=> Board Pin22 (i2c, encoder)
-  * Board Pin10 <=> Board Pin11 (i2c)
+  * Board Pin10 <=> Board Pin11 (i2c, encoder)
 
 v1.0: initial
 """,
