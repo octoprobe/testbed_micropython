@@ -97,12 +97,23 @@ def assert_valid_testresults(testresults: str, create: bool = True) -> pathlib.P
     return _testresults
 
 
-@app.command(help="Create a pdf with lables for the bolzone_due")
+@app.command(help="Create a pdf with lables for the bolzone_uno")
 def labels() -> None:
     filename = DIRECTORY_OCTOPROBE_DOWNLOADS / "testbed_labels.pdf"
     label_renderer.create_report(
         filename=filename,
-        layout=label_renderer.RendererLabelBolzoneDuo(),
+        layout_label=label_renderer.LayoutLabelBolzone(),
+        labels=TENTACLES_INVENTORY.labels_data,
+    )
+    print(f"Created: {filename}")
+
+
+@app.command(help="Create a pdf with lables for the bolzone_due")
+def labels_duo() -> None:
+    filename = DIRECTORY_OCTOPROBE_DOWNLOADS / "testbed_labels.pdf"
+    label_renderer.create_report(
+        filename=filename,
+        layout_label=label_renderer.LayoutLabelBolzoneDue(),
         labels=TENTACLES_INVENTORY.labels_data,
     )
     print(f"Created: {filename}")
