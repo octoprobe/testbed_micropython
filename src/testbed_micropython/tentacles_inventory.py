@@ -62,8 +62,8 @@ TENTACLES_INVENTORY = (
             # testbed micropython
             ("e46340474b59-2d2d", HwVersion.V03, "v0.1", tentacle_specs.LOLIN_D1_MINI),
             ("de655035872f-7921", HwVersion.V07, "v0.1", tentacle_specs.LOLIN_D1_MINI),
-            ("e4641448132c-5f2c", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO_W),
-            ("e46414481355-552b", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
+            ("e4641448132c-5f2c", HwVersion.V03, "v1.1", tentacle_specs.RPI_PICO_W),
+            ("e46414481355-552b", HwVersion.V03, "v1.1", tentacle_specs.RPI_PICO2_W),
             ("e46414481342-1830", HwVersion.V03, "v1.2", tentacle_specs.LOLIN_C3_MINI),
             (
                 "e4641448133e-5d21",
@@ -105,6 +105,7 @@ TENTACLES_INVENTORY = (
             # ),
             (
                 # replaces e4641448130f-2f2c
+                # Where is this board?
                 "de6528b3cb15-4434",
                 HwVersion.V06,
                 "v1.1",
@@ -113,7 +114,7 @@ TENTACLES_INVENTORY = (
             (
                 "de6528b3cb4a-2b35",
                 HwVersion.V06,
-                "v1.1",
+                "v1.2",
                 tentacle_specs.NUCLEO_WB55,
             ),
             (
@@ -270,7 +271,7 @@ TENTACLES_INVENTORY = (
             (
                 "de6528b3cb49-6038",
                 HwVersion.V06,
-                "v1.0",
+                "v1.1",
                 tentacle_specs.RPI_PICO_W,
             ),
             (

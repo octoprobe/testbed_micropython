@@ -287,7 +287,7 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board GPIO4 <=> GPIO5
-  * Board GPIO12 <=> GPIO13
+  * Board GPIO6 <=> GPIO7
 
 v1.0: initial
 """,
@@ -421,6 +421,7 @@ ESP32_S3_DEVKIT = TentacleSpecMicropython(
 See: Espressif ESP32-S3-DevKitC-1-N8R8
 See: https://www.adafruit.com/product/5336
 See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/index.html
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/_images/ESP32-S3_DevKitC-1_pinlayout_v1.1.jpg
 
 Connections
 
@@ -617,8 +618,9 @@ NUCLEO_WB55 = TentacleSpecMicropython(
 See: https://micropython.org/download/NUCLEO_WB55/
 See: https://www.st.com/en/evaluation-tools/p-nucleo-wb55.html
 See: https://www.st.com/en/evaluation-tools/nucleo-wb55rg.html
+See: https://www.st.com/resource/en/user_manual/um2819-stm32wb-nucleo64-board-mb1355-stmicroelectronics.pdf
 See: https://stm32python.gitlab.io/en/docs/Micropython/stm32wb55
-See headers: https://os.mbed.com/platforms/ST-Nucleo-WB55RG/
+See headers: https://os.mbed.com/platforms/ST-Nucleo-WB55RG/ (broken)
 See - old doc rev1, but detailed: https://fcc.report/FCC-ID/YCP-MB1355002/5777411.pdf
 See - old doc rev2, but detailed: https://community.st.com/ysqtg83639/attachments/ysqtg83639/mcu-wireless-forum/22082/1/P-NUCLEO-WB55%20User%20Manual%20UM2435%20Rev%202%20April%202019.pdf
 
@@ -632,14 +634,9 @@ Connections
   * Board CN7-pin8(GND) <=> Tentacle GND
 
 * FUT_EXTMOD_HARDWARE
-  * v1.0: Board CN7-pin28(X1/A0) <=> Board CN7-pin30(X2/A1)
-  * v1.1: CN10-pin35(PA2/LPUART1_TX) <=> Board CN10-pin37(PA3/LPUART1_RX)
-
-* Testpoints
-  * Testpoint "GND" <=> Tentacle GND
-  * Testpoint CH0/trigger <=> Board TODO
-  * v1.0: Testpoint CH1/extmod_a <=> Board CN7-pin28(X1/A0)
-  * v1.1: Testpoint CH1/extmod_a <=> Board CN10-pin35(PA2)
+  * Board CN7-pin28(X1/A0) <=> Board CN7-pin30(X2/A1)
+  * Board D0 <=> Board D1
+  * Board D12 <=> Board D13
 
 Board setup:
 * CN1: USB cable
@@ -654,6 +651,9 @@ Board setup:
 * JP6: closed
 
 v1.0: initial
+v1.2: Removed Testpoints.
+      FUT_EXTMOD_HARDWARE
+        Added: D12-D13
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="NUCLEO_WB55",
@@ -689,6 +689,7 @@ Connections
   * Testpoint CH1/extmod_a <=> Board X1
 
 v1.0: initial
+v1.1: TODO: Update according to https://github.com/micropython/micropython/blob/master/tests/target_wiring/PYBx.py#L16
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBV11",
@@ -828,6 +829,8 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board GP0 <=> Board GP1
+  * Board GP4 <=> Board GP6
+  * Board GP5 <=> Board GP7
 
 * Testpoints
   * Testpoint GND <=> Tentacle GND
@@ -835,6 +838,7 @@ Connections
   * Testpoint CH1/extmod_a <=> Board GP0
 
 v1.0: initial
+v1.1: Add GP4 <=> GP6, GP5 <=> GP7
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2_W",
