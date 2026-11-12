@@ -670,6 +670,7 @@ v1.2: Removed Testpoints.
 PYBV11 = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/PYBV11/
+See: https://docs.micropython.org/en/latest/pyboard/quickref.html
 
 Connections
 
@@ -682,6 +683,8 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board X1 <=> Board X2
+  * Board X3 <=> Board X9
+  * Board X4 <=> Board X10
 
 * Testpoints
   * Testpoint "GND" <=> Tentacle GND
@@ -689,7 +692,7 @@ Connections
   * Testpoint CH1/extmod_a <=> Board X1
 
 v1.0: initial
-v1.1: TODO: Update according to https://github.com/micropython/micropython/blob/master/tests/target_wiring/PYBx.py#L16
+v1.1: Added: X3-X9, X4-X10
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBV11",
