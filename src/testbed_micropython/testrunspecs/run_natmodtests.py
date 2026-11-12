@@ -42,8 +42,7 @@ class Arch:
 
 
 # Container names have been copied from: mpbuild/build.py
-ARM_BUILD_CONTAINER = "micropython/build-micropython-arm:bookworm"
-# ARM_BUILD_CONTAINER = "micropython/build-micropython-arm"
+ARM_BUILD_CONTAINER = "micropython/build-micropython-arm:trixie"
 ARCHS = [
     Arch(
         arch="armv6m",
