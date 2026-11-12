@@ -862,7 +862,7 @@ TEENSY40 = TentacleSpecMicropython(
     doc="""
 See: https://www.pjrc.com/store/teensy40.html
 See: https://micropython.org/download/TEENSY40
-See: https://www.pjrc.com/store/teensy40_card10a_rev2.png
+See: https://raw.githubusercontent.com/KurtE/TeensyDocuments/master/Teensy4%20Pins.pdf?utm_source=chatgpt.com
 
 Connections
 
@@ -877,15 +877,11 @@ Connections
   * Board D0 <=> Board D1
   * Board D2 <=> Board D3
   * Board D11 <=> Board D12
-
-* Testpoints
-  * Testpoint "GND" <=> Tentacle GND
-  * Testpoint CH0/trigger <=> Board TODO
-  * Testpoint CH1/extmod_a <=> Board D0
-  * Testpoint CH1/extmod_b <=> Board D2
-  * Testpoint CH1/extmod_c <=> Board D11
+  * Board A3 <=> Board A4
+  * Board A5 <=> Board A6
 
 v1.0: initial
+v1.1: Remove Testpoints. Add A3-A4, A5-A6
 """,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="TEENSY40",

@@ -95,7 +95,12 @@ TENTACLES_INVENTORY = (
                 "v1.0",
                 tentacle_specs.ADA_ITSYBITSY_M0,
             ),
-            ("e46414481354-1133", HwVersion.V03, "v1.0", tentacle_specs.TEENSY40),
+            (
+                "e46414481354-1133",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.TEENSY40,
+            ),
             # (
             #     # PICO_INFRA broken, replaced by de6528b3cb15-4434
             #     "e4641448130f-2f2c",
