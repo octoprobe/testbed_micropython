@@ -34,6 +34,7 @@ TAG_TIER3 = ",tier=3"
 
 AA_UNASSEMBLED = TentacleSpecMicropython(
     doc="""This tentacle has not been assembled yet""",
+    solder_version_latest="",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="",
     futs=[],
@@ -63,6 +64,7 @@ See: https://micropython.org/download/ADAFRUIT_ITSYBITSY_M0_EXPRESS/
   * Testpoint CH0/trigger <=> Board TODO
   * Testpoint CH1/extmod_a <=> Board D0
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ADA_ITSYBITSY_M0",  # ADAFRUIT_ITSYBITSY_M0_EXPRESS
     futs=[
@@ -104,6 +106,7 @@ See: https://content.arduino.cc/assets/Pinout-NANOble_latest.png
   * Testpoint CH0/trigger <=> Board TODO
   * Testpoint CH1/extmod_a <=> Baord TX (P1.03)
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ARDUINO_NANO_33",
     futs=[
@@ -142,6 +145,7 @@ This dongle uses SWD from PICO_PROBE for programming. This has not been implemen
 * Bootmode
   * no wiring
 """,
+    solder_version_latest="v0.1",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ARDUINO_NANO_33",
     futs=[
@@ -185,6 +189,7 @@ v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 v1.2: New FUT_EXTMOD_HARDWARE 4-5, 12-13
 """,
+    solder_version_latest="v1.2",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_DEVKIT",
     futs=[
@@ -239,6 +244,7 @@ v1.1: Use GPIO0 to allow octoprobe to select bootloader mode
 v1.2: Tentacle v0.6 or newer: Ramp of 5V/150ms is too slow - Unsolder C217/1uF on Tentaclce!
 v1.3: New: FUT_EXTMOD_HARDWARE 4-5, 6-7
 """,
+    solder_version_latest="v1.3",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C3_DEVKIT",
     futs=[
@@ -291,6 +297,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C5_DEVKIT",
     futs=[
@@ -344,6 +351,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_C6_DEVKIT",
     futs=[
@@ -393,6 +401,7 @@ Connections
 
 v1.0: Use GPIO0 to allow octoprobe to select bootloader mode
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_S2_DEVKIT",
     futs=[
@@ -446,6 +455,7 @@ v1.1: USB DUT is connected to 'USB'
 v1.2: Use GPIO0 to allow octoprobe to select bootloader mode
 v1.3: New: FUT_EXTMOD_HARDWARE 4-5, 10-11
 """,
+    solder_version_latest="v1.3",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_S3_DEVKIT",
     futs=[
@@ -495,6 +505,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="ESP32_H2_DEVKIT",
     futs=[
@@ -546,6 +557,7 @@ v1.0: initial
 v1.1: Use relais to allow octoprobe to press boot button
 v1.2: New: FUT_EXTMOD_HARDWARE 4-5, 0-1
 """,
+    solder_version_latest="v1.2",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="LOLIN_C3_MINI",
     futs=[
@@ -589,6 +601,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="LOLIN_D1_MINI",
     futs=[
@@ -655,6 +668,7 @@ v1.2: Removed Testpoints.
       FUT_EXTMOD_HARDWARE
         Added: D12-D13
 """,
+    solder_version_latest="v1.2",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="NUCLEO_WB55",
     futs=[
@@ -694,6 +708,7 @@ Connections
 v1.0: initial
 v1.1: Added: X3-X9, X4-X10
 """,
+    solder_version_latest="v1.1",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBV11",
     futs=[
@@ -715,6 +730,7 @@ See: https://store.micropython.org/product/PYBLITEv1.0
 
 Connections: same as PYBV11
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBLITEV10",
     futs=[
@@ -732,6 +748,7 @@ See: https://store.micropython.org/product/PYBD-SF2-W4F2
 
 Connections: same as PYBV11
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBD_SF2",
     futs=[
@@ -751,6 +768,7 @@ See: https://store.micropython.org/product/PYBD-SF6-W4F2
 
 Connections: same as PYBV11
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="PYBD_SF6",
     futs=[
@@ -763,12 +781,15 @@ Connections: same as PYBV11
     mcu_config=McuConfig(),
 )
 
+_RPI_PICO_SOLDER_VERSION_LATEST = "v1.1"
+
 RPI_PICO = TentacleSpecMicropython(
     doc="""
 See: https://micropython.org/download/RPI_PICO
 
 Connections: The same as RPI_PICO2_W
 """,
+    solder_version_latest=_RPI_PICO_SOLDER_VERSION_LATEST,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO",
     futs=[
@@ -786,6 +807,7 @@ See: https://micropython.org/download/RPI_PICO
 
 Connections: The same as RPI_PICO2_W
 """,
+    solder_version_latest=_RPI_PICO_SOLDER_VERSION_LATEST,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO_W",
     futs=[
@@ -805,6 +827,7 @@ See: https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html
 
 Connections: The same as RPI_PICO2_W
 """,
+    solder_version_latest=_RPI_PICO_SOLDER_VERSION_LATEST,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2",
     futs=[
@@ -843,6 +866,7 @@ Connections
 v1.0: initial
 v1.1: Add GP4 <=> GP6, GP5 <=> GP7
 """,
+    solder_version_latest=_RPI_PICO_SOLDER_VERSION_LATEST,
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="RPI_PICO2_W",
     futs=[
@@ -883,6 +907,7 @@ Connections
 v1.0: initial
 v1.1: Remove Testpoints. Add A3-A4, A5-A6
 """,
+    solder_version_latest="v1.1",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="TEENSY40",
     futs=[
@@ -917,6 +942,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="UM_TINYPICO",
     futs=[
@@ -958,6 +984,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="UM_FEATHERS2",
     futs=[
@@ -996,6 +1023,7 @@ Connections
 
 v1.0: initial
 """,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="UM_FEATHERS3",
     futs=[
@@ -1024,10 +1052,11 @@ DOC_TENTACLE_PYBV11 = """
 See: https://github.com/octoprobe/testbed_showcase/tree/main/docs/tentacle_MCU_PYBV11
 """
 MCU_PYBV11 = TentacleSpecMicropython(
+    doc=DOC_TENTACLE_PYBV11,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="MCU_PYBV11",
     futs=[],
-    doc=DOC_TENTACLE_PYBV11,
     mcu_usb_id=util_mcu_pyboard.PYBOARD_USB_ID,
     tags="boards=PYBV11:PYBV11-DP:PYBV11-THREAD:PYBV11-DP_THREAD,mcu=stm32,programmer=dfu-util",
     relays_closed={},
@@ -1039,10 +1068,11 @@ DOC_TENTACLE_RPI_PICO = """
 See: https://github.com/octoprobe/testbed_showcase/tree/main/docs/tentacle_MCU_RPI_PICO
 """
 MCU_RPI_PICO = TentacleSpecMicropython(
+    doc=DOC_TENTACLE_RPI_PICO,
+    solder_version_latest="v1.0",
     tentacle_type=EnumTentacleType.TENTACLE_MCU,
     tentacle_tag="MCU_RPI_PICO",
     futs=[],
-    doc=DOC_TENTACLE_RPI_PICO,
     mcu_usb_id=util_mcu_pico.RPI_PICO_USB_ID,
     tags="boards=RPI_PICO,mcu=rp2,programmer=picotool",
     relays_closed={},

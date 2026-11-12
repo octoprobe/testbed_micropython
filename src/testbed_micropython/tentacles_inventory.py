@@ -60,8 +60,8 @@ TENTACLES_INVENTORY = (
             ("e46414481338-3a21", HwVersion.V03, "v1.1", tentacle_specs.PYBV11),
             ("de655035873b-7b21", HwVersion.V07, "v1.1", tentacle_specs.PYBV11),
             # testbed micropython
-            ("e46340474b59-2d2d", HwVersion.V03, "v0.1", tentacle_specs.LOLIN_D1_MINI),
-            ("de655035872f-7921", HwVersion.V07, "v0.1", tentacle_specs.LOLIN_D1_MINI),
+            ("e46340474b59-2d2d", HwVersion.V03, "v1.0", tentacle_specs.LOLIN_D1_MINI),
+            ("de655035872f-7921", HwVersion.V07, "v1.0", tentacle_specs.LOLIN_D1_MINI),
             ("e4641448132c-5f2c", HwVersion.V03, "v1.1", tentacle_specs.RPI_PICO_W),
             ("e46414481355-552b", HwVersion.V03, "v1.1", tentacle_specs.RPI_PICO2_W),
             ("e46414481342-1830", HwVersion.V03, "v1.2", tentacle_specs.LOLIN_C3_MINI),
@@ -86,7 +86,7 @@ TENTACLES_INVENTORY = (
             (
                 "e46414481311-3c2a",
                 HwVersion.V03,
-                "v0.0",
+                "v1.0",
                 tentacle_specs.ARDUINO_NANO_33,
             ),
             (
@@ -108,14 +108,14 @@ TENTACLES_INVENTORY = (
             #     "v1.1",
             #     tentacle_specs.NUCLEO_WB55,
             # ),
-            (
-                # replaces e4641448130f-2f2c
-                # Where is this board?
-                "de6528b3cb15-4434",
-                HwVersion.V06,
-                "v1.1",
-                tentacle_specs.NUCLEO_WB55,
-            ),
+            # (
+            #     # replaces e4641448130f-2f2c
+            #     # Where is this board?
+            #     "de6528b3cb15-4434",
+            #     HwVersion.V06,
+            #     "v1.1",
+            #     tentacle_specs.NUCLEO_WB55,
+            # ),
             (
                 "de6528b3cb4a-2b35",
                 HwVersion.V06,
@@ -158,7 +158,7 @@ TENTACLES_INVENTORY = (
                 "v1.0",
                 tentacle_specs.ESP32_S2_DEVKIT,
             ),
-            ("e46340474b60-452b", HwVersion.V03, "v0.1", tentacle_specs.LOLIN_D1_MINI),
+            ("e46340474b60-452b", HwVersion.V03, "v1.0", tentacle_specs.LOLIN_D1_MINI),
             ("e46340474b19-2629", HwVersion.V03, "v1.1", tentacle_specs.LOLIN_C3_MINI),
             ("e46340474b58-3521", HwVersion.V03, "v1.1", tentacle_specs.LOLIN_C3_MINI),
             ("e46414481349-1521", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO),
@@ -181,7 +181,7 @@ TENTACLES_INVENTORY = (
             (
                 "e46414481337-1c2a",
                 HwVersion.V03,
-                "v0.0",
+                "v1.0",
                 tentacle_specs.ARDUINO_NANO_33,
             ),
             (
@@ -270,7 +270,7 @@ TENTACLES_INVENTORY = (
             (
                 "de6528b3cb15-6c34",
                 HwVersion.V06,
-                "v1.0",
+                "v1.1",
                 tentacle_specs.RPI_PICO,
             ),
             (

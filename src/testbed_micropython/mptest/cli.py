@@ -120,6 +120,36 @@ def labels_duo() -> None:
 
 
 @app.command(
+    help="List all tentacles with outdated tentacles (requires to be soldered to the latest solder_version)"
+)
+def outdated_tentacles() -> None:
+    def parse_version(version: str) -> tuple[int, ...]:
+        """
+        "v1.2" -> (1, 2)
+        """
+        return tuple(int(x) for x in version.removeprefix("v").split("."))
+
+    print("Tentacles with outdated solder version:")
+
+    for tentacle in sorted(
+        TENTACLES_INVENTORY.values(),
+        key=lambda t: (t.testbed_name, t.testbed_instance, t.serial),
+    ):
+        tentacle_spec = tentacle.tentacle_spec
+        if tentacle_spec.solder_version_latest == "":
+            continue
+        if tentacle.solder_version == tentacle_spec.solder_version_latest:
+            continue
+
+        parts = [
+            f"{tentacle.testbed_name + ' ' + tentacle.testbed_instance:<40}"
+            f"{tentacle.serial + ' ' + tentacle_spec.tentacle_tag:<40} "
+            f"{tentacle.solder_version} -> {tentacle_spec.solder_version_latest}",
+        ]
+        print("    " + " ".join(parts))
+
+
+@app.command(
     help="Debug entering the boot mode. Used to verify, if a device correctly switches into programming mode."
 )
 def debugbootmode(
