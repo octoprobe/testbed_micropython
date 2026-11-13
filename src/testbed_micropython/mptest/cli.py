@@ -24,6 +24,7 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from octoprobe.util_tentacle_label import label_renderer
 
 from testbed_micropython.constants import DIRECTORY_TESTRESULTS_DEFAULT, EnumFut
+from testbed_micropython.mpmcp import util_mcp_logging
 from testbed_micropython.report_test import util_constants
 from testbed_micropython.report_test.renderer import ReportRenderer
 from testbed_micropython.report_test.util_push_testresults import (
@@ -32,6 +33,7 @@ from testbed_micropython.report_test.util_push_testresults import (
 )
 
 from .. import constants, util_multiprocessing
+from ..mpmcp import util_mcp_tentacles
 from ..mptest import util_testrunner
 from ..mptest.util_common import ArgsMpTest
 from ..pr_check import util_pr_check
@@ -167,6 +169,7 @@ def debugbootmode(
 def list_tests() -> None:
     # args = util_testrunner.Args.get_default_args()
     # testrunner = util_testrunner.TestRunner(args=args)
+
     init_logging()
     for testrun_spec in util_testrunner.get_testrun_specs():
         print(f"  {testrun_spec.label}")
@@ -182,8 +185,6 @@ def list_tests() -> None:
 
 @app.command(help="List connected tentacles")
 def list_tentacles() -> None:
-    # args = util_testrunner.Args.get_default_args()
-    # testrunner = util_testrunner.TestRunner(args=args)
     init_logging()
     try:
         connected_tentacles = util_testrunner.query_connected_tentacles_fast()
@@ -195,6 +196,10 @@ def list_tentacles() -> None:
     print("Connected")
     for tentacle in connected_tentacles:
         print(f"  {tentacle.label}")
+        print(f"RP_INFRA: {tentacle.infra.usb_tentacle.serial_port}")
+        print(f"DUT: {tentacle.infra.usb_tentacle.usb_port_dut.device_text}")
+        print(f"RP_PROBE: {tentacle.infra.usb_tentacle.usb_port_probe.device_text}")
+
         print(
             f"      infra: {tentacle.infra.usb_location_infra} {tentacle.infra.usb_tentacle.pico_infra.serial_port}"
         )
@@ -209,13 +214,54 @@ def list_tentacles() -> None:
 
 
 @app.command(help="Flashes all tentacles without running any tests")
+def mcp_flash_tentacle(
+    serial: TyperAnnotated[
+        str,
+        typer.Option(
+            help="The serial number of the tentacle. Might be short or long form ('4721' or 'e4641448133b-4721').",
+        ),
+    ],
+    firmware_build: TyperAnnotated[
+        str,
+        typer.Option(
+            envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD",
+            help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
+        ),
+    ],
+    log_folder: TyperAnnotated[
+        pathlib.Path,
+        typer.Option(
+            help="The directory to store the build and flash logfiles",
+        ),
+    ],
+    board_variant: TyperAnnotated[
+        str,
+        typer.Option(
+            help="The board variant to build.",
+        ),
+    ] = "",
+) -> None:
+    util_mcp_logging.mcp_init_logging(directory_logs=log_folder)
+
+    mscp_build_flash_result = util_mcp_tentacles.mcp_build_and_flash(
+        serial=serial,
+        firmware_build=firmware_build,
+        log_folder=log_folder,
+        board_variant=board_variant,
+    )
+    json_text = util_mcp_tentacles.dataclasses_to_json(mscp_build_flash_result)
+    print(json_text)
+    pass
+
+
+@app.command(help="Flashes all tentacles without running any tests")
 def flash(
     last_variant: TyperAnnotated[
         bool,
         typer.Option(
             help="Build LAST variant if a tentacle supports multiple variants. Not using this option will build the FIRST variant.",
         ),
-    ] = False,  # noqa: UP007    force_flash: TyperAnnotated[
+    ] = False,  # noqa: UP007
     firmware_build: TyperAnnotated[
         str,
         typer.Option(

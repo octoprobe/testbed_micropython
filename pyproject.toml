@@ -44,6 +44,7 @@ Repository = "https://github.com/octoprobe/octoprobe"
 
 [project.scripts]
 mptest = "testbed_micropython.mptest.cli:app"
+mpmcp = "testbed_micropython.mpmcp.server:main"
 
 [project.optional-dependencies]
 
@@ -52,9 +53,14 @@ all = []
 dev = [
     # "-e .",
     "types-PyYAML",
+    "debugpy",
 ]
 
 doc = []
+
+mcp = [
+    "mcp[cli]~=2.3",
+]
 
 [tool.pdm]
 version = { source = "file", path = "src/testbed_micropython/__init__.py" }
