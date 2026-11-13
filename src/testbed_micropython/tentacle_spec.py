@@ -7,7 +7,6 @@ from octoprobe.lib_tentacle import TentacleBase
 from octoprobe.util_baseclasses import TentacleSpecBase
 from octoprobe.util_constants import TAG_MCU
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR, VARIANT_UNKNOWN
-
 from .constants import TAG_BOARD, TAG_BUILD_VARIANTS
 
 
