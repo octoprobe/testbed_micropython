@@ -41,9 +41,18 @@ logger = logging.getLogger(__name__)
 
 # Overwrite mpbuild default containers
 # This should eventually be pushed upstream into mpbuild.
+# TODO: Clean this up as soon as https://github.com/mattytrentini/build-micropython-arm-docker/pull/4 is resolve
+ARM_BUILD_CONTAINER = "micropython/build-micropython-arm:trixie"
 # BUILD_CONTAINERS["esp32"] = "hmaerki/build-micropython-esp32"
 BUILD_CONTAINERS["dummyarch"] = "dummycontainer"
 BUILD_CONTAINERS["esp8266"] = "micropython/build-micropython-esp8266"
+BUILD_CONTAINERS["rp2"] = ARM_BUILD_CONTAINER
+BUILD_CONTAINERS["stm32"] = ARM_BUILD_CONTAINER
+BUILD_CONTAINERS["nrf"] = ARM_BUILD_CONTAINER
+BUILD_CONTAINERS["mimxrt"] = ARM_BUILD_CONTAINER
+BUILD_CONTAINERS["renesas-ra"] = ARM_BUILD_CONTAINER
+BUILD_CONTAINERS["samd"] = ARM_BUILD_CONTAINER
+BUILD_CONTAINERS["alif"] = ARM_BUILD_CONTAINER
 
 
 class MpbuildException(Exception):

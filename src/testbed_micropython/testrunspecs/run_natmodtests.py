@@ -14,6 +14,7 @@ from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_ru
 from testbed_micropython import constants
 
 from ..constants import EnumFut
+from ..mpbuild.build_api import ARM_BUILD_CONTAINER
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.constants import (
     ENV_MICROPYTHON_TESTS,
@@ -42,7 +43,6 @@ class Arch:
 
 
 # Container names have been copied from: mpbuild/build.py
-ARM_BUILD_CONTAINER = "micropython/build-micropython-arm:trixie"
 ARCHS = [
     Arch(
         arch="armv6m",
@@ -68,7 +68,7 @@ ARCHS = [
     ),
     Arch(
         arch="xtensa",
-        container="larsks/esp-open-sdk",
+        container="larsks/esp-open-sdk",  # micropython/build-micropython-esp8266
     ),
     Arch(
         arch="xtensawin",
