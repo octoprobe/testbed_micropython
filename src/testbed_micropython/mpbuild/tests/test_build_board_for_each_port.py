@@ -11,7 +11,7 @@ import pathlib
 from mpbuild.board_database import Database
 from mpbuild.build import MpbuildNotSupportedException
 
-from testbed_micropython.mpbuild.build_api import build
+from testbed_micropython.mpbuild.build_api import MpbuildDockerException, build
 
 THIS_FILE = pathlib.Path(__file__)
 RESULTS_DIRECTORY = THIS_FILE.parent / "testresults"
@@ -50,6 +50,7 @@ def main() -> None:
                         RESULTS_DIRECTORY
                         / f"{THIS_FILE.stem}-{board.name}-{variant_name}.txt"
                     )
+                    print(f"  {logfile}")
                     firmware = build(
                         logfile=logfile,
                         db=db,
@@ -60,6 +61,9 @@ def main() -> None:
                     print(f"  {firmware}")
                 except MpbuildNotSupportedException:
                     print("  Not supported!")
+                except MpbuildDockerException as e:
+                    print(f"   {e!r}")
+                    continue
 
 
 if __name__ == "__main__":

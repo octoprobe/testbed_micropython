@@ -16,6 +16,7 @@ src/testbed_micropython/mpbuild/tests/results/*.txt
 src/testbed_micropython/mpbuild/docker-build-micropython-esp32/esp-idf
 src/testbed_micropython/mpstress/testresults*/**
 src/testbed_micropython/mpstress/c/mpremote_c
+src/testbed_micropython/mpbuild/tests/testresults/*
 src/testbed/experiments/*
 testresults*/**
 uv.lock
