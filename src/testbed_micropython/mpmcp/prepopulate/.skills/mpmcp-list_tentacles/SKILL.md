@@ -1,14 +1,31 @@
-## Set up environment
+---
+name: mpmcp-query
+description: >
+  Queries the octoprobe testbed via the mpmcp MCP server to discover connected tentacles and their status.
+---
 
-Recommended workflow.
+# [Skill title]
 
-Create directory structure
+## Overview
 
-* `<mpmcp_top>` Topfolder where the agent has access to
-* `<mpmcp_top>/micropython` A clone of https://github.com/micropython/micropython.git
-* `<mpmcp_top>/log/mpbuild` The build log files
-* `<mpmcp_top>/log/flash` The flashing log files
+This skill allows the user to query the octoprobe testbed to identify connected tentacles, their board types, power states, and DUT serial ports. The outcome is a comprehensive view of the current testbed status, enabling informed decisions for further actions.
 
+
+## When to use this skill
+
+Use this skill when:
+
+- The user needs to get an overview of the current testbed status, including connected tentacles, their board types, power states, and DUT serial ports.
+- The user wants to run tests on specific tentacles.
+  
+
+## Prerequisites
+
+- The required tentacles must be connected.
+- If the user asks for a tentacle which is not connected, you must tell the user to get the required tentacle and connect it.
+
+
+# JSON-Response Structure
 
 ## mcmcp: list_tentacles
 
@@ -16,7 +33,7 @@ Example of a tentacle:
 
 ```json
 {
-    "label": "4721-ESP32_C5_DEVKIT",
+    "tentacle_label": "4721-ESP32_C5_DEVKIT",
     "tentacle_serial_number": "e4641448133b-4721",
     "tentacle_spec_board": "ESP32_GENERIC_C5",
     "tentacle_spec_build_variants": [""],
@@ -49,24 +66,3 @@ Relevant entries
  
 * tentacle_spec_futs
   Feature under test
-
-## Compile the firmware using mpbuild
-
-## mcmcp: Compile and flash
-
-...
-
-## Start mptest
-
-`mptest --only-board=<tentacle_spec_board>-<tentacle_spec_build_variants>`. Example `mptest --only-board=RPI_PICO2-RISCV`. Default variant: `mptest --only-board=RPI_PICO2`.
-
-Important: You can not specify the tentacle by serial number. `mptest` will find a matching tentacle.
-
-## Connect to a board
-
-`mpremote connect <dut_usb_serial_port>`. Example `mpremote connect /dev/ttyUSB0`.
-
-Use `mpmcp:list_tentacles` to make sure the serial port is visible.
-
-## Powercycling a crashed board
-

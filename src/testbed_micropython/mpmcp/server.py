@@ -46,20 +46,7 @@ def _tool_errors() -> typing.Iterator[None]:
 mcp = MCPServer(
     name="testbed_micropython",
     version=__version__,
-    instructions="""\
-Octoprobe HIL (hardware in the loop) testbed for MicroPython. Documentation: https://www.octoprobe.org
-
-A tentacle is a PCB which hosts a MicroPython board (the DUT: device under test).
-The infrastructure side of the tentacle (PICO_INFRA, a RP2040) controls the switches of the tentacle:
-* 'dut': USB power of the DUT. When powered, the DUT typically provides a serial port like /dev/ttyACM4.
-* 'infra', 'infraboot': Power and boot button of PICO_INFRA.
-* 'proberun', 'probeboot': Run and boot button of PICO_PROBE (tentacle >= v0.6).
-* 'led_error', 'led_active': LEDs.
-* 'relay1'..'relay7': Relays connecting the DUT to the octobus/gadgets.
-
-A tentacle is identified by its serial, for example 'de6528b3cb38-5f33'. A unique suffix like '5f33' is accepted too.
-Use 'query_tentacles' to find the connected tentacles and the serial port of their DUT.
-""",
+    instructions=(DIRECTORY_OF_THIS_FILE / "instructions.md").read_text(),
 )
 
 

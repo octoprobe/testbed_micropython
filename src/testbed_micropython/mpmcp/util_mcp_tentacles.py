@@ -55,7 +55,7 @@ class McpSystemExit(BaseException):
 
 @dataclasses.dataclass(frozen=True)
 class McpConnectedTentacle:
-    label: str
+    tenatcle_label: str
     tentacle_serial_number: str
     tentacle_spec_board: str
     tentacle_spec_build_variants: list[str]
@@ -71,7 +71,7 @@ class McpConnectedTentacle:
     dut_usb_serial_port: str
 
     def __post_init__(self) -> None:
-        assert isinstance(self.label, str)
+        assert isinstance(self.tenatcle_label, str)
         assert isinstance(self.tentacle_serial_number, str)
         assert isinstance(self.tentacle_spec_board, str)
         assert isinstance(self.tentacle_spec_build_variants, list)
@@ -103,7 +103,7 @@ class McpConnectedTentacle:
         last_firmware_flashed = tentacle_state.last_firmware_flashed or ""
 
         return McpConnectedTentacle(
-            label=tentacle.label_short,
+            tenatcle_label=tentacle.label_short,
             tentacle_serial_number=tentacle.tentacle_serial_number,
             tentacle_spec_board=tentacle_spec.board,
             tentacle_spec_build_variants=tentacle_spec.build_variants,
