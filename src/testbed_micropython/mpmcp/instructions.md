@@ -22,18 +22,23 @@ Use 'list_tentacles' to find the connected tentacles and the serial port of thei
 
 The directories created by the mpmcp tools MUST follow this layout:
 
-* ./.skills  # prepopulated by user
-* ./.mcp.json  # prepopulated by user
-
-* ./micropython   # The git clone of https://github.com/micropython/micropython.git
-* ./micropython_tests   # If you have to modifiy the testsuite: You may create a second git clone of https://github.com/micropython/micropython.git
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/log_folder # mpmcp.build_and_flash, `log_folder` parameter
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/agent_results # Agent test results
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/list_tentacles_in.json  # Data sent to mpmcp. Use pretty formatting with indent.
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/list_tentacles_return.json  # Data returned from mpmcp. Use pretty formatting with indent.
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/build_and_flash_in.json  # Data sent to mpmcp
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/build_and_flash_return.json  # Data returned from mpmcp
-* ./results/PROTOCOL.md # Append the prompts and the calls to mpmcp
+```
+.
+├── .skills                          # prepopulated by user
+├── .mcp.json                        # prepopulated by user
+├── micropython/                     # git clone of https://github.com/micropython/micropython.git
+├── micropython_tests/               # optional: modified testsuite clone
+└── results/
+    ├── PROTOCOL.md                  # append prompts and mpmcp calls here
+    └── <tentacle_label>_<commit_tag>_<hhmmss>/
+        ├── log_folder/              # mpmcp.build_and_flash log_folder parameter
+        ├── agent_results/           # agent test results
+        └── mpmcp/
+            ├── list_tentacles_in.json           # data sent to mpmcp (pretty format)
+            ├── list_tentacles_return.json       # data returned from mpmcp (pretty format)
+            ├── build_and_flash_in.json          # data sent to mpmcp
+            └── build_and_flash_return.json      # data returned from mpmcp
+```
 
 Rules:
 
