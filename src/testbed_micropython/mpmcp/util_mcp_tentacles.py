@@ -97,7 +97,7 @@ class McpConnectedTentacle(BaseModel):
                 state.last_firmware_flashed.micropython_full_version_text
             )
         micropython_full_version_text = ""
-        if state.firmware_spec.micropython_full_version_text:
+        if state.has_firmware_spec:
             micropython_full_version_text = (
                 state.firmware_spec.micropython_full_version_text
             )
