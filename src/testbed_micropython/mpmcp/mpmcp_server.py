@@ -63,6 +63,8 @@ def list_tentacles(
     List the tentacles connected via USB: Serial, board, USB locations,
     power state and the serial port of the DUT.
 
+    This corresponds to 'mpmcp list_tentacles'.
+
     poweron: If PICO_INFRA of a tentacle is unpowered, the tentacle is not found.
     poweron=True powers PICO_INFRA on ALL tentacles before querying. Typically NOT required!
 
@@ -70,8 +72,6 @@ def list_tentacles(
     """
     with _tool_errors():
         return util_mcp_tentacles.mcp_list_tentacles(poweron=poweron)
-        # x = util_mcp_tentacles.mcp_list_tentacles(poweron=poweron)
-        # return util_mcp_tentacles.dataclasses_to_json(x)
 
 
 @mcp.tool()
@@ -85,7 +85,7 @@ def build_and_flash(
     """
     Build a firmware and flash it to a tentacle.
 
-    This corresponds to 'mptest mcp_build_andflash'.
+    This corresponds to 'mpmcp build_andflash'.
 
     serial: The serial number of the tentacle. Might be short or long form ('4721' or 'e4641448133b-4721')."
     firmware_build: Directory of MicroPython-Repo to build the firmware from. Typically './micropython'.
