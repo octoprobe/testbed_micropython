@@ -14,11 +14,12 @@ Conventions:
 
 from __future__ import annotations
 
-import dataclasses
 import json
 import logging
 import pathlib
 import typing
+
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from octoprobe import octoprobe
 from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
@@ -49,8 +50,9 @@ class McpSystemExit(BaseException):
     """
 
 
-@dataclasses.dataclass(frozen=True)
-class McpConnectedTentacle:
+class McpConnectedTentacle(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     tenatcle_label: str
     tentacle_serial_number: str
     tentacle_spec_board: str
@@ -66,28 +68,18 @@ class McpConnectedTentacle:
     dut_usb_location: str
     dut_usb_serial_port: str
 
-    def __post_init__(self) -> None:
-        assert isinstance(self.tenatcle_label, str)
-        assert isinstance(self.tentacle_serial_number, str)
-        assert isinstance(self.tentacle_spec_board, str)
-        assert isinstance(self.tentacle_spec_build_variants, list)
-        assert isinstance(self.tentacle_spec_doc, str)
-        assert isinstance(self.tentacle_spec_tags, str)
-        assert isinstance(self.tentacle_spec_futs, list)
-        assert isinstance(self.tentacle_state_last_firmware_flashed, str)
-        assert isinstance(self.infra_usb_location, str)
-        assert isinstance(self.infra_usb_serial_port, str)
-        assert isinstance(self.probe_usb_location, str)
-        assert isinstance(self.probe_usb_serial_port, str)
-        assert isinstance(self.dut_usb_location, str)
-        assert isinstance(self.dut_usb_serial_port, str)
-        for fut in self.tentacle_spec_futs:
-            assert isinstance(fut, str)
-        for variant in self.tentacle_spec_build_variants:
-            assert isinstance(variant, str)
+    @field_validator("tentacle_spec_build_variants", "tentacle_spec_futs", mode="before")
+    @classmethod
+    def validate_list_strings(cls, v: typing.Any) -> list[str]:
+        if not isinstance(v, list):
+            raise ValueError("Must be a list")
+        for item in v:
+            if not isinstance(item, str):
+                raise ValueError("All items must be strings")
+        return v
 
     def as_json_dict(self) -> dict[str, typing.Any]:
-        return dataclasses.asdict(self)
+        return self.model_dump()
 
     @staticmethod
     def factory(tentacle: tentacle_spec.TentacleMicropython) -> McpConnectedTentacle:
@@ -130,8 +122,7 @@ def mcp_list_tentacles(poweron: bool = False) -> list[McpConnectedTentacle]:
     return [McpConnectedTentacle.factory(tentacle) for tentacle in connected_tentacles]
 
 
-@dataclasses.dataclass(repr=True)
-class McpBuildFlashResult:
+class McpBuildFlashResult(BaseModel):
     tentacle: McpConnectedTentacle | None = None
     filename_output_build: str = ""
     filename_output_flash: str = ""
@@ -223,8 +214,8 @@ def mcp_build_and_flash(
 
 
 def dataclasses_to_dict(o: object) -> dict[str, typing.Any] | str:
-    if dataclasses.is_dataclass(o):
-        return dataclasses.asdict(o)
+    if isinstance(o, BaseModel):
+        return o.model_dump()
     return str(0)
 
 
