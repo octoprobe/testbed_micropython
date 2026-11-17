@@ -71,6 +71,7 @@ distribution = true
 package-dir = "src"
 includes = [
     "src/testbed_micropython/",
+    "src/testbed_micropython/mpmcp/prepopulate/**",
 ]
 source-includes = [
     "LICENSE",
