@@ -1,0 +1,46 @@
+ERROR    - Tool 'list_tentacles' raised an unexpected exception
+Traceback (most recent call last):
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/mcp/server/mcpserver/tools/base.py", line 179, in run
+    result = await self.fn_metadata.call_fn(self.fn, self.is_async, validated, pass_directly)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/mcp/server/mcpserver/utilities/func_metadata.py", line 164, in call_fn
+    return await anyio.to_thread.run_sync(functools.partial(fn, **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/anyio/to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 2779, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1124, in run
+    result = context.run(func, *args)
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/src/testbed_micropython/mpmcp/server.py", line 73, in list_tentacles
+    return util_mcp_tentacles.mcp_list_tentacles(poweron=poweron)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/src/testbed_micropython/mpmcp/util_mcp_tentacles.py", line 130, in mcp_list_tentacles
+    return [McpConnectedTentacle.factory(tentacle) for tentacle in connected_tentacles]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/src/testbed_micropython/mpmcp/util_mcp_tentacles.py", line 119, in factory
+    dut_usb_serial_port=tentacle.infra.usb_tentacle.usb_port_dut.serial_port,
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'UsbPort' object has no attribute 'serial_port'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/mcp/server/mcpserver/server.py", line 442, in _handle_call_tool
+    return await self.call_tool(params.name, params.arguments or {}, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/mcp/server/mcpserver/server.py", line 548, in call_tool
+    return await self._tool_manager.call_tool(name, arguments, context, convert_result=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/mcp/server/mcpserver/tools/tool_manager.py", line 87, in call_tool
+    return await tool.run(arguments, context, convert_result=convert_result)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/octoprobe/work_octoprobe/testbed_micropython/.venv/lib/python3.13/site-packages/mcp/server/mcpserver/tools/base.py", line 213, in run
+    raise UnexpectedToolError(f"Error executing tool {self.name}") from exc
+mcp.server.mcpserver.exceptions.UnexpectedToolError: Error executing tool list_tentacles
