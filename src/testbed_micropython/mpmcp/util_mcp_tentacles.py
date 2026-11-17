@@ -208,7 +208,7 @@ def mcp_build_and_flash(
             directory_logs=directories_log,
         )
         connected_tentacle.dut.mp_remote_close()
-        result.dut_serial_port = connected_tentacle.infra.usb_tentacle.serial_port or ""
+        result.dut_serial_port = result.tentacle.dut_usb_serial_port
         result.set_success()
         return result
 
