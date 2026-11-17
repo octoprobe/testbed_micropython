@@ -24,6 +24,7 @@ _GLOBAL = Global()
 
 
 def get_filename_log() -> pathlib.Path:
+    assert _GLOBAL.filename_log is not None
     return _GLOBAL.filename_log
 
 

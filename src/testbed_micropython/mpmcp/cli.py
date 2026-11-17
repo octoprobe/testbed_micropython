@@ -12,10 +12,6 @@ from . import util_mcp_constants, util_mcp_logging, util_mcp_tentacles
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 logger = logging.getLogger(__name__)
 
-# 'typer' does not work correctly with typing.Annotated
-# Required is: typing_extensions.Annotated
-TyperAnnotated = typing.Annotated
-
 app = typer.Typer(pretty_exceptions_enable=False)
 
 
@@ -23,13 +19,13 @@ app = typer.Typer(pretty_exceptions_enable=False)
     help="Populate an empty directory with the initial MCP configuration and skills"
 )
 def populate(
-    directory: TyperAnnotated[
+    directory: typing.Annotated[
         pathlib.Path,
         typer.Argument(
             help="The directory to populate. Must be empty.",
         ),
-    ] = ".",
-    log_folder: TyperAnnotated[
+    ] = pathlib.Path().cwd(),
+    log_folder: typing.Annotated[
         pathlib.Path,
         typer.Option(
             help="The directory to store logfiles",
@@ -62,7 +58,7 @@ def populate(
 
 @app.command(help="List connected tentacles")
 def list_tentacles(
-    log_folder: TyperAnnotated[
+    log_folder: typing.Annotated[
         pathlib.Path,
         typer.Option(
             help="The directory to store the build and flash logfiles",
@@ -78,26 +74,26 @@ def list_tentacles(
 
 @app.command(help="Flashes all tentacles without running any tests")
 def flash_tentacle(
-    serial: TyperAnnotated[
+    serial: typing.Annotated[
         str,
         typer.Option(
             help="The serial number of the tentacle. Might be short or long form ('4721' or 'e4641448133b-4721').",
         ),
     ],
-    firmware_build: TyperAnnotated[
+    firmware_build: typing.Annotated[
         str,
         typer.Option(
             envvar="TESTBED_MICROPYTHON_FIRMWARE_BUILD",
             help="Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1",
         ),
     ],
-    log_folder: TyperAnnotated[
+    log_folder: typing.Annotated[
         pathlib.Path,
         typer.Option(
             help="The directory to store the build and flash logfiles",
         ),
     ] = util_mcp_constants.DIRECTORY_MPMCP_LOGS,
-    board_variant: TyperAnnotated[
+    board_variant: typing.Annotated[
         str,
         typer.Option(
             help="The board variant to build.",

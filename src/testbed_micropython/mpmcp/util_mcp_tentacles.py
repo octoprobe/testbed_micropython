@@ -60,7 +60,8 @@ class McpConnectedTentacle(BaseModel):
     tentacle_spec_doc: str
     tentacle_spec_tags: str
     tentacle_spec_futs: list[str]
-    tentacle_state_last_firmware_flashed: str
+    tentacle_micropython_full_version_last: str
+    tentacle_micropython_full_version_actual: str
     infra_usb_location: str
     infra_usb_serial_port: str
     probe_usb_location: str
@@ -95,6 +96,11 @@ class McpConnectedTentacle(BaseModel):
             last_firmware_flashed = (
                 state.last_firmware_flashed.micropython_full_version_text
             )
+        micropython_full_version_text = ""
+        if state.firmware_spec.micropython_full_version_text:
+            micropython_full_version_text = (
+                state.firmware_spec.micropython_full_version_text
+            )
 
         dut_usb_serial_port = "-"
         if usb.usb_port_dut.device_sysfs:
@@ -108,7 +114,8 @@ class McpConnectedTentacle(BaseModel):
             tentacle_spec_doc=spec.doc,
             tentacle_spec_tags=spec.tags,
             tentacle_spec_futs=[fut.name for fut in spec.futs],
-            tentacle_state_last_firmware_flashed=last_firmware_flashed,
+            tentacle_micropython_full_version_last=last_firmware_flashed,
+            tentacle_micropython_full_version_actual=micropython_full_version_text,
             infra_usb_location=usb.pico_infra.location.short,
             infra_usb_serial_port=usb.pico_infra.serial_port or "",
             probe_usb_location=usb.pico_probe.location.short,
