@@ -16,9 +16,22 @@ import pathlib
 from . import util_mcp_constants
 
 
+class Global:
+    filename_log: pathlib.Path | None = None
+
+
+_GLOBAL = Global()
+
+
+def get_filename_log() -> pathlib.Path:
+    return _GLOBAL.filename_log
+
+
 def mcp_init_logging(directory_logs: pathlib.Path) -> None:
     filename_log = directory_logs / util_mcp_constants.FILENAME_MPMCP_LOG
     filename_log.unlink(missing_ok=True)
+
+    _GLOBAL.filename_log = filename_log
 
     logging_config = {
         "version": 1,

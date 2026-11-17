@@ -239,6 +239,10 @@ class ConnectedTentacles(list[TentacleMicropython]):
 
         return ConnectedTentacles(selected_tentacles)
 
+    def free_resources(self) -> None:
+        for t in self:
+            t.free_resources()
+
     @property
     def usb_ports_with_label(self) -> dict[str, TentacleUsbPort]:
         return {

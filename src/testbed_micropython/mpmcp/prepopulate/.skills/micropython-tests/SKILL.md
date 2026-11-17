@@ -24,5 +24,10 @@ Use this skill when:
 
 1. mpmcp build_and_flash. In the response you will get <dut_usb_serial_port>. Example: `/dev/ttyACM2`.
 2. `cd micropython/tests`
-3. Run the tests using `run-tests.py  --jobs=1 --trace-output --test-dirs=extmod_hardware --result-dir=...--test-instance=port:<dut_usb_serial_port>`
+3. Run the tests using `run-tests.py --jobs=1 --trace-output --test-dirs=extmod_hardware --result-dir=... --test-instance=port:<dut_usb_serial_port>`
 
+## Examples
+
+* run-tests.py --jobs=1 --trace-output --result-dir=... --test-instance=port:/dev/ttyUSB0 --test-dirs=extmod_hardware 
+* run-tests.py --jobs=1 --trace-output --result-dir=... --test-instance=port:/dev/ttyUSB0 --test-dirs=extmod_hardware extmod_hardware/machine_i2c_target.py
+* run-natmodtests.py --result-dir=.. --test-instance=port:/dev/ttyUSB0 extmod/re_sub_unmatched.py 

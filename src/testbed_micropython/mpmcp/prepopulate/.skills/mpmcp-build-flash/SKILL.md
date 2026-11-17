@@ -23,7 +23,9 @@ Use this skill when:
 
 ## Instructions
 
-- Often you have to build to be able to run tests. When running tests on multiple tentacles please maintain this order: Build, flash and test the first tentacle. Now move to the second tentacle.
+- One Tentacle at a time: Often you have to build to be able to run tests. When running tests on multiple tentacles please maintain this order: Build, flash and test the first tentacle. Now move to the second tentacle.
+
+- Create first the folder where the logs have to be stored. Then pass the folder to the 'mpmcp' parameter 'log_folder'.
 
 - The resulting json file has to important fields:
 

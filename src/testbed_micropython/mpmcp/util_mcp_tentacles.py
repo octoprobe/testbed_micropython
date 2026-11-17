@@ -27,8 +27,9 @@ from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 from pydantic import BaseModel, ConfigDict, field_validator
 
 from testbed_micropython import tentacle_spec, util_firmware_mpbuild
-from testbed_micropython.mpmcp import util_mcp_constants
 from testbed_micropython.mptest import util_testrunner
+
+from . import util_mcp_logging
 
 logger = logging.getLogger(__name__)
 
@@ -123,6 +124,8 @@ def mcp_list_tentacles(poweron: bool = False) -> list[McpConnectedTentacle]:
     except Exception as e:
         logger.error(f"Terminating test due to: {e!r}")
         raise McpSystemExit(e) from e
+    finally:
+        connected_tentacles.free_resources()
 
     return [McpConnectedTentacle.factory(tentacle) for tentacle in connected_tentacles]
 
@@ -154,7 +157,7 @@ def mcp_build_and_flash(
 ) -> McpBuildFlashResult:
     try:
         result = McpBuildFlashResult(
-            filename_python_log=str(log_folder / util_mcp_constants.FILENAME_MPMCP_LOG)
+            filename_python_log=str(util_mcp_logging.get_filename_log().absolute())
         )
         usb_tentacles = UsbTentacles.query(poweron=False)
         usb_tentacles_selected = usb_tentacles.select(serials=[serial])
@@ -167,50 +170,57 @@ def mcp_build_and_flash(
             usb_tentacles=usb_tentacles_selected
         )
         assert len(connected_tentacles) == 1
-        connected_tentacle = connected_tentacles[0]
+        try:
+            connected_tentacle = connected_tentacles[0]
 
-        if board_variant not in connected_tentacle.tentacle_spec.build_variants:
-            msg = f"Tentacle '{serial}'/'{connected_tentacle.tentacle_spec.board}' supports {connected_tentacle.tentacle_spec.build_variants} but you provided '{board_variant}'!"
-            logger.warning(msg)
-            result.outcome_error = msg
+            if board_variant not in connected_tentacle.tentacle_spec.build_variants:
+                msg = f"Tentacle '{serial}'/'{connected_tentacle.tentacle_spec.board}' supports {connected_tentacle.tentacle_spec.build_variants} but you provided '{board_variant}'!"
+                logger.warning(msg)
+                result.outcome_error = msg
+                return result
+
+            result.tentacle = McpConnectedTentacle.factory(tentacle=connected_tentacle)
+
+            builder = util_firmware_mpbuild.Builder(
+                variant=BoardVariant(
+                    board=connected_tentacle.tentacle_spec.board,
+                    variant=board_variant,
+                ),
+                mpbuild_artifacts=log_folder / LOG_FOLDER_MPBUILD,
+            )
+            repo_micropython_firmware = (
+                pathlib.Path(firmware_build).expanduser().absolute()
+            )
+            if not repo_micropython_firmware.is_dir():
+                msg = f"Expect '--firmware-build={firmware_build}' to point to a micropython-repo directory. But got: '{firmware_build}!"
+                logger.warning(msg)
+                result.outcome_error = msg
+                return result
+
+            result.filename_output_build = str(builder.docker_logfile.absolute())
+            firmware_build_spec = builder.build(
+                repo_micropython_firmware=repo_micropython_firmware
+            )
+            result.filename_firmware = str(firmware_build_spec.filename.absolute())
+            connected_tentacle.tentacle_state.firmware_spec = firmware_build_spec
+            connected_tentacle.tentacle_state.flash_force = True
+
+            ctx = octoprobe.CtxTestRun(connected_tentacles=connected_tentacles)
+            directories_log = log_folder / LOG_FOLDER_FLASH
+            result.filename_output_flash = str(
+                (directories_log / FILENAME_FLASHING).absolute()
+            )
+            ctx.function_setup_infa_and_dut(
+                udev_poller=UDEV_POLLER_LAZY.udev_poller,
+                tentacle=connected_tentacle,
+                directory_logs=directories_log,
+            )
+            connected_tentacle.dut.mp_remote_close()
+            result.dut_serial_port = result.tentacle.dut_usb_serial_port
+            result.set_success()
             return result
-
-        result.tentacle = McpConnectedTentacle.factory(tentacle=connected_tentacle)
-
-        builder = util_firmware_mpbuild.Builder(
-            variant=BoardVariant(
-                board=connected_tentacle.tentacle_spec.board,
-                variant=board_variant,
-            ),
-            mpbuild_artifacts=log_folder / LOG_FOLDER_MPBUILD,
-        )
-        repo_micropython_firmware = pathlib.Path(firmware_build).expanduser()
-        if not repo_micropython_firmware.is_dir():
-            msg = f"Expect '--firmware-build={firmware_build}' to point to a micropython-repo directory. But got: '{firmware_build}!"
-            logger.warning(msg)
-            result.outcome_error = msg
-            return result
-
-        result.filename_output_build = str(builder.docker_logfile)
-        firmware_build_spec = builder.build(
-            repo_micropython_firmware=repo_micropython_firmware
-        )
-        result.filename_firmware = str(firmware_build_spec.filename)
-        connected_tentacle.tentacle_state.firmware_spec = firmware_build_spec
-        connected_tentacle.tentacle_state.flash_force = True
-
-        ctx = octoprobe.CtxTestRun(connected_tentacles=connected_tentacles)
-        directories_log = log_folder / LOG_FOLDER_FLASH
-        result.filename_output_flash = str(directories_log / FILENAME_FLASHING)
-        ctx.function_setup_infa_and_dut(
-            udev_poller=UDEV_POLLER_LAZY.udev_poller,
-            tentacle=connected_tentacle,
-            directory_logs=directories_log,
-        )
-        connected_tentacle.dut.mp_remote_close()
-        result.dut_serial_port = result.tentacle.dut_usb_serial_port
-        result.set_success()
-        return result
+        finally:
+            connected_tentacle.free_resources()
 
     except Exception as e:
         logger.error(f"Terminating test due to: {e!r}", exc_info=e)

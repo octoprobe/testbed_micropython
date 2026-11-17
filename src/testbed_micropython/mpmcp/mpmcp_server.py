@@ -103,7 +103,8 @@ def build_and_flash(
 
 def main() -> None:
     util_mcp_logging.mcp_init_logging(
-        directory_logs=util_mcp_constants.DIRECTORY_MPMCP_LOGS
+        # directory_logs=util_mcp_constants.DIRECTORY_MPMCP_LOGS
+        directory_logs=pathlib.Path.cwd()
     )
     request_timeout = 300  # 5 minutes in seconds
     mcp.run(request_timeout=request_timeout)  # type: ignore[call-overload]

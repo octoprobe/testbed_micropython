@@ -47,11 +47,10 @@
             // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
             "args": [
                 "flash-tentacle",
-                "flash-tentacle",
-                "--serial=5334",
+                // "--serial=5334",// RPI_PICO
+                "--serial=472b", // ESP32_S5
                 "--firmware-build=~/gits/micropython",
-                "--log-folder=/tmp",
-                "--board-variant=RISCV"
+                // "--board-variant=RISCV"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,
