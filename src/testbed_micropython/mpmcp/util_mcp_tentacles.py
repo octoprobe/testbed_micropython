@@ -19,13 +19,12 @@ import logging
 import pathlib
 import typing
 
-from pydantic import BaseModel, ConfigDict, field_validator
-
 from octoprobe import octoprobe
 from octoprobe.usb_tentacle.usb_tentacle import UsbTentacles
 from octoprobe.util_mcu import FILENAME_FLASHING
 from octoprobe.util_micropython_boards import BoardVariant
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from testbed_micropython import tentacle_spec, util_firmware_mpbuild
 from testbed_micropython.mpmcp import util_mcp_constants

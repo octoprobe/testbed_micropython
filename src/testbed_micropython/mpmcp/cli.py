@@ -6,7 +6,6 @@ import typing
 
 import typer
 
-from ..mptest import util_testrunner
 from . import util_mcp_constants, util_mcp_logging, util_mcp_tentacles
 
 logger = logging.getLogger(__name__)
@@ -33,31 +32,10 @@ def list_tentacles(
     ] = util_mcp_constants.DIRECTORY_MPMCP_LOGS,
 ) -> None:
     util_mcp_logging.mcp_init_logging(directory_logs=log_folder)
-    try:
-        connected_tentacles = util_testrunner.query_connected_tentacles_fast()
-    except Exception as e:
-        logger.error(f"Terminating test due to: {e!r}")
-        raise typer.Exit(1) from e
 
-    print("")
-    print("Connected")
-    for tentacle in connected_tentacles:
-        print(f"  {tentacle.label}")
-        print(f"RP_INFRA: {tentacle.infra.usb_tentacle.serial_port}")
-        print(f"DUT: {tentacle.infra.usb_tentacle.usb_port_dut.device_text}")
-        print(f"RP_PROBE: {tentacle.infra.usb_tentacle.usb_port_probe.device_text}")
-
-        print(
-            f"      infra: {tentacle.infra.usb_location_infra} {tentacle.infra.usb_tentacle.pico_infra.serial_port}"
-        )
-        print(
-            f"      dut:   {tentacle.infra.usb_location_dut} {tentacle.infra.usb_tentacle.usb_port_dut.device_text}"
-        )
-
-        variants = ",".join(tentacle.tentacle_spec.board_build_variants)
-        print(f"    variants={variants}")
-        futs = ",".join([fut.name for fut in tentacle.tentacle_spec.futs])
-        print(f"    futs={futs}")
+    mscp_list_tentacles_result = util_mcp_tentacles.mcp_list_tentacles(poweron=False)
+    json_text = util_mcp_tentacles.dataclasses_to_json(mscp_list_tentacles_result)
+    print(json_text)
 
 
 @app.command(help="Flashes all tentacles without running any tests")
@@ -98,4 +76,3 @@ def flash_tentacle(
     )
     json_text = util_mcp_tentacles.dataclasses_to_json(mscp_build_flash_result)
     print(json_text)
-    pass
