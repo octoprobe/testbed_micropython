@@ -5,13 +5,13 @@ Uses the official MCP python sdk (mcp>=2), where 'FastMCP' was renamed to 'MCPSe
 
 Example configuration for Claude Code (.mcp.json):
 
-    {
-      "mcpServers": {
-        "testbed_micropython": {
-          "command": "mpmcp"
-        }
-      }
-    }
+"mpmcp_server": {
+    "command": "python",
+    "args": [
+        "-m",
+        "testbed_micropython.mpmcp.mpmcp_server"
+    ]
+}
 """
 
 from __future__ import annotations

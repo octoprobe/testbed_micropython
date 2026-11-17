@@ -1,3 +1,3 @@
-from testbed_micropython.mpmcp.server import main
+from testbed_micropython.mpmcp.mpmcp_server import main
 
 main()

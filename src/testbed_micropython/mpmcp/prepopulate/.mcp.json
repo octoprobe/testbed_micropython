@@ -1,10 +1,10 @@
 {
     "mcpServers": {
-        "mpmcp": {
+        "mpmcp_server": {
             "command": "python",
             "args": [
                 "-m",
-                "testbed_micropython.mpmcp.server"
+                "testbed_micropython.mpmcp.mpmcp_server"
             ]
         }
     }

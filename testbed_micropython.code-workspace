@@ -51,7 +51,26 @@
         },
         "files.exclude": {
             "**/.venv": true
-        }
+        },
+        "python.autoComplete.extraPaths": [
+            "${workspaceFolder}/sources/poky/bitbake/lib",
+            "${workspaceFolder}/sources/poky/meta/lib"
+        ],
+        "python.analysis.extraPaths": [
+            "${workspaceFolder}/sources/poky/bitbake/lib",
+            "${workspaceFolder}/sources/poky/meta/lib"
+        ],
+        "files.associations": {
+            "*.conf": "bitbake",
+            "*.inc": "bitbake"
+        },
+        "torizon_psswd": "",
+        "torizon_login": "",
+        "torizon_ip": "",
+        "torizon_ssh_port": "",
+        "host_ip": "",
+        "torizon_gpu": "",
+        "torizon_arch": ""
     },
     "extensions": {
         "recommendations": [

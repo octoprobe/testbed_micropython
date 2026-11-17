@@ -1,3 +1,5 @@
+# pylint: disable=too-many-lines
+
 """
 12pin Testpoints
 ----------------

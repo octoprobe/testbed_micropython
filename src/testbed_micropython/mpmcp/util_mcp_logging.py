@@ -13,11 +13,8 @@ from __future__ import annotations
 import logging.config
 import pathlib
 
-FILENAME_LOG = "mpmcp_logging.txt"
 
-
-def mcp_init_logging(directory_logs: pathlib.Path) -> None:
-    filename_log = directory_logs / FILENAME_LOG
+def mcp_init_logging(filename_log: pathlib.Path) -> None:
     filename_log.unlink(missing_ok=True)
 
     logging_config = {
