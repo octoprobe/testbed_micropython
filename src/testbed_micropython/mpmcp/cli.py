@@ -29,7 +29,15 @@ def populate(
             help="The directory to populate. Must be empty.",
         ),
     ] = ".",
+    log_folder: TyperAnnotated[
+        pathlib.Path,
+        typer.Option(
+            help="The directory to store logfiles",
+        ),
+    ] = util_mcp_constants.DIRECTORY_MPMCP_LOGS,
 ) -> None:
+    util_mcp_logging.mcp_init_logging(directory_logs=log_folder)
+
     directory = directory.expanduser().resolve()
 
     if directory.exists():

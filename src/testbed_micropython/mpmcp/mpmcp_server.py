@@ -64,7 +64,7 @@ def list_tentacles(
     power state and the serial port of the DUT.
 
     poweron: If PICO_INFRA of a tentacle is unpowered, the tentacle is not found.
-    poweron=True powers PICO_INFRA on ALL tentacles before querying.
+    poweron=True powers PICO_INFRA on ALL tentacles before querying. Typically NOT required!
 
     This corresponds to 'mptest list-tentacles'.
     """
