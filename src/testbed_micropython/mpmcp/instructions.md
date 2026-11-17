@@ -16,7 +16,7 @@ Use 'list_tentacles' to find the connected tentacles and the serial port of thei
 
 ## Parallelims NOT supported
 
-* New run mpmcp_server actions in parallel!
+* Never run mpmcp_server actions in parallel! Wait till one is finished and then start the new one.
 
 ## Directory structure
 
@@ -30,6 +30,7 @@ The directories created by the mpmcp tools MUST follow this layout:
 ├── micropython_tests/               # optional: modified testsuite clone
 └── results/
     ├── PROTOCOL.md                  # append prompts and mpmcp calls here
+    ├── TESTRESULTS_SUMMARY.md
     └── <tentacle_label>_<commit_tag>_<hhmmss>/
         ├── log_folder/              # mpmcp.build_and_flash log_folder parameter
         ├── agent_results/           # agent test results
@@ -56,3 +57,14 @@ When working in a git repository (e.g. a MicroPython clone):
 * A <commit_tag> has the structure: <yyyy-MM-dd>_<label>. The <label> could be `last_working_commit` or `first_commit_with_error`. Full example: `2026-11-15_last_working_commit`
 * If a commit is related to a PR (for example https://github.com/micropython/micropython/pull/19967): Add the PR number to the <commit_tag>. For example: `2026-11-15_PR19967` or `2026-11-15_last_commit_before_PR19967`
 * Never push to git.
+
+
+## TESTRESULTS_SUMMARY.md
+
+Create a table with columns:
+* Tentacle: <tentacle_label>
+* Commit: <commit_tag>
+* Time: <hhmmss>
+* Outcome: For example 'Same crash as issue'
+
+After each test running against a tentacle append a line to this table

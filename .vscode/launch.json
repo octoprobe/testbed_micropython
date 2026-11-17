@@ -30,34 +30,30 @@
             "name": "mpmcp list_tentacles",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed_micropython.mpmcp.util_mcp_tentacles",
+            "module": "testbed_micropython.mpmcp.cli",
             "cwd": "${workspaceFolder}",
-            "args": [],
+            "args": [
+                "list-tentacles"
+            ],
             "console": "integratedTerminal",
-            "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
-                "JINJA2_DEBUG": "1"
-            },
-            "justMyCode": false
+            "justMyCode": false,
         },
         {
-            "name": "mpmcp mcp-flash-tentacle",
+            "name": "mpmcp flash-tentacle",
             "type": "debugpy",
             "request": "launch",
-            "module": "testbed_micropython.mptest.cli",
+            "module": "testbed_micropython.mpmcp.cli",
             "cwd": "${workspaceFolder}",
             // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
             "args": [
-                "mcp-flash-tentacle",
+                "flash-tentacle",
+                "flash-tentacle",
                 "--serial=5334",
                 "--firmware-build=~/gits/micropython",
-                "--log-folder=/tmp/mpmcp",
+                "--log-folder=/tmp",
                 "--board-variant=RISCV"
             ],
             "console": "integratedTerminal",
-            "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
-            },
             "justMyCode": false,
         },
         {
@@ -125,7 +121,7 @@
             "env": {
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
-            "justMyCode": false
+            "justMyCode": false,
         },
         {
             "name": "mptest list-tentacles",
@@ -140,7 +136,7 @@
             "env": {
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
-            "justMyCode": false
+            "justMyCode": false,
         },
         {
             "name": "mptest list-tests",
@@ -155,7 +151,7 @@
             "env": {
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
-            "justMyCode": false
+            "justMyCode": false,
         },
         {
             "name": "mptest debugbootmode",

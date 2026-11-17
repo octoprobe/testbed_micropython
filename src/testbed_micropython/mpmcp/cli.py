@@ -14,11 +14,6 @@ logger = logging.getLogger(__name__)
 # Required is: typing_extensions.Annotated
 TyperAnnotated = typing.Annotated
 
-# mypy: disable-error-code="valid-type"
-# This will disable this warning:
-#   op.py:58: error: Variable "octoprobe.scripts.op.TyperAnnotated" is not valid as a type  [valid-type]
-#   op.py:58: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
-
 app = typer.Typer(pretty_exceptions_enable=False)
 
 
@@ -76,3 +71,7 @@ def flash_tentacle(
     )
     json_text = util_mcp_tentacles.dataclasses_to_json(mscp_build_flash_result)
     print(json_text)
+
+
+if __name__ == "__main__":
+    app()

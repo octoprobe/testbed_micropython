@@ -20,3 +20,16 @@ Use this skill when:
 ## Prerequisites
 
 - The correct commit has been checked out in the MicroPython repository.
+
+## Instructions
+
+- Often you have to build to be able to run tests. When running tests on multiple tentacles please maintain this order: Build, flash and test the first tentacle. Now move to the second tentacle.
+
+- The resulting json file has to important fields:
+
+```json
+  "outcome_error": "TransportError('failed to access /dev/ttyACM15')",
+  "outcome_success": false
+```
+
+You must stop processing if `"outcome_success": false`!
