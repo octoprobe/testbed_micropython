@@ -7,7 +7,7 @@ import typing
 import typer
 
 from ..mptest import util_testrunner
-from . import util_mcp_logging, util_mcp_tentacles
+from . import util_mcp_constants, util_mcp_logging, util_mcp_tentacles
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ def list_tentacles(
         typer.Option(
             help="The directory to store the build and flash logfiles",
         ),
-    ] = util_mcp_logging.DIRECTORY_MPMCP_LOGS,
+    ] = util_mcp_constants.DIRECTORY_MPMCP_LOGS,
 ) -> None:
     util_mcp_logging.mcp_init_logging(directory_logs=log_folder)
     try:
@@ -80,7 +80,7 @@ def flash_tentacle(
         typer.Option(
             help="The directory to store the build and flash logfiles",
         ),
-    ] = util_mcp_logging.DIRECTORY_MPMCP_LOGS,
+    ] = util_mcp_constants.DIRECTORY_MPMCP_LOGS,
     board_variant: TyperAnnotated[
         str,
         typer.Option(

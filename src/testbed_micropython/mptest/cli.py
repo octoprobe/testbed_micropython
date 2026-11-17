@@ -123,11 +123,6 @@ def labels_duo() -> None:
     help="List all tentacles with outdated tentacles (requires to be soldered to the latest solder_version)"
 )
 def outdated_tentacles() -> None:
-    def parse_version(version: str) -> tuple[int, ...]:
-        """
-        "v1.2" -> (1, 2)
-        """
-        return tuple(int(x) for x in version.removeprefix("v").split("."))
 
     print("Tentacles with outdated solder version:")
 

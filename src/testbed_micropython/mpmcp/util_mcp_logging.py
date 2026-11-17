@@ -13,8 +13,11 @@ from __future__ import annotations
 import logging.config
 import pathlib
 
+from . import util_mcp_constants
 
-def mcp_init_logging(filename_log: pathlib.Path) -> None:
+
+def mcp_init_logging(directory_logs: pathlib.Path) -> None:
+    filename_log = directory_logs / util_mcp_constants.FILENAME_MPMCP_LOG
     filename_log.unlink(missing_ok=True)
 
     logging_config = {

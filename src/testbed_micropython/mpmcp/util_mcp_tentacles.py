@@ -26,11 +26,9 @@ from octoprobe.util_mcu import FILENAME_FLASHING
 from octoprobe.util_micropython_boards import BoardVariant
 from octoprobe.util_pyudev import UDEV_POLLER_LAZY
 
-from testbed_micropython import util_firmware_mpbuild
-from testbed_micropython.mpmcp import util_mcp_logging
+from testbed_micropython import tentacle_spec, util_firmware_mpbuild
+from testbed_micropython.mpmcp import util_mcp_constants
 from testbed_micropython.mptest import util_testrunner
-from testbed_micropython.tentacle_spec import TentacleSpecMicropython
-from testbed_micropython.testcollection import baseclasses_spec
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +47,6 @@ class McpSystemExit(BaseException):
     If the function was called by 'mptest ...', the this will trigger a SystemExit(1) exception.
     If the function was called by the mcp server, then this will become the 'outcome' property of the McpXyResult.
     """
-
-    pass
 
 
 @dataclasses.dataclass(frozen=True)
@@ -94,29 +90,33 @@ class McpConnectedTentacle:
         return dataclasses.asdict(self)
 
     @staticmethod
-    def factory(tentacle: baseclasses_spec.TentacleMicropython) -> McpConnectedTentacle:
-        tentacle_spec = tentacle.tentacle_spec
-        assert isinstance(tentacle_spec, TentacleSpecMicropython)
-        tentacle_state = tentacle.tentacle_state
-        usb_tentacle = tentacle.infra.usb_tentacle
+    def factory(tentacle: tentacle_spec.TentacleMicropython) -> McpConnectedTentacle:
+        spec = tentacle.tentacle_spec
+        assert isinstance(spec, tentacle_spec.TentacleSpecMicropython)
+        state = tentacle.tentacle_state
+        usb = tentacle.infra.usb_tentacle
 
-        last_firmware_flashed = tentacle_state.last_firmware_flashed or ""
+        last_firmware_flashed = ""
+        if state.last_firmware_flashed:
+            last_firmware_flashed = (
+                state.last_firmware_flashed.micropython_full_version_text
+            )
 
         return McpConnectedTentacle(
             tenatcle_label=tentacle.label_short,
             tentacle_serial_number=tentacle.tentacle_serial_number,
-            tentacle_spec_board=tentacle_spec.board,
-            tentacle_spec_build_variants=tentacle_spec.build_variants,
-            tentacle_spec_doc=tentacle_spec.doc,
-            tentacle_spec_tags=tentacle_spec.tags,
-            tentacle_spec_futs=[fut.name for fut in tentacle_spec.futs],
+            tentacle_spec_board=spec.board,
+            tentacle_spec_build_variants=spec.build_variants,
+            tentacle_spec_doc=spec.doc,
+            tentacle_spec_tags=spec.tags,
+            tentacle_spec_futs=[fut.name for fut in spec.futs],
             tentacle_state_last_firmware_flashed=last_firmware_flashed,
-            infra_usb_location=usb_tentacle.pico_infra.location.short,
-            infra_usb_serial_port=usb_tentacle.pico_infra.serial_port,
-            probe_usb_location=usb_tentacle.pico_probe.location.short,
-            probe_usb_serial_port=usb_tentacle.pico_probe.serial_port or "",
+            infra_usb_location=usb.pico_infra.location.short,
+            infra_usb_serial_port=usb.pico_infra.serial_port or "",
+            probe_usb_location=usb.pico_probe.location.short,
+            probe_usb_serial_port=usb.pico_probe.serial_port or "",
             dut_usb_location=tentacle.infra.usb_location_dut,
-            dut_usb_serial_port=tentacle.infra.usb_tentacle.usb_port_dut.serial_port,
+            dut_usb_serial_port=tentacle.infra.usb_tentacle.serial_port or "",
         )
 
 
@@ -158,7 +158,7 @@ def mcp_build_and_flash(
 ) -> McpBuildFlashResult:
     try:
         result = McpBuildFlashResult(
-            filename_python_log=str(log_folder / util_mcp_logging.FILENAME_LOG)
+            filename_python_log=str(log_folder / util_mcp_constants.FILENAME_MPMCP_LOG)
         )
         usb_tentacles = UsbTentacles.query(poweron=False)
         usb_tentacles_selected = usb_tentacles.select(serials=[serial])
@@ -212,9 +212,7 @@ def mcp_build_and_flash(
             directory_logs=directories_log,
         )
         connected_tentacle.dut.mp_remote_close()
-        result.dut_serial_port = (
-            connected_tentacle.infra.usb_tentacle.usb_port_dut.serial_port
-        )
+        result.dut_serial_port = connected_tentacle.infra.usb_tentacle.serial_port or ""
         result.set_success()
         return result
 
