@@ -5,20 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mcp list_tentacles",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "testbed_micropython.mpmcp.util_mcp_tentacles",
-            "cwd": "${workspaceFolder}",
-            "args": [],
-            "console": "integratedTerminal",
-            "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
-                "JINJA2_DEBUG": "1"
-            },
-            "justMyCode": false,
-        },
-        {
             // VS Code waits on port 5678 for the MCP server to connect
             "name": "mcp debug: listen",
             "type": "debugpy",
@@ -39,6 +25,40 @@
             "env": {
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             }
+        },
+        {
+            "name": "mpmcp list_tentacles",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpmcp.util_mcp_tentacles",
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "JINJA2_DEBUG": "1"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "mpmcp mcp-flash-tentacle",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mptest.cli",
+            "cwd": "${workspaceFolder}",
+            // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
+            "args": [
+                "mcp-flash-tentacle",
+                "--serial=5334",
+                "--firmware-build=~/gits/micropython",
+                "--log-folder=/tmp/mpmcp",
+                "--board-variant=RISCV"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "justMyCode": false,
         },
         {
             "name": "mptest pr-check",
@@ -103,9 +123,9 @@
             ],
             "console": "integratedTerminal",
             "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
-            "justMyCode": false,
+            "justMyCode": false
         },
         {
             "name": "mptest list-tentacles",
@@ -114,13 +134,13 @@
             "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
-                "list-tentacles",
+                "list-tentacles"
             ],
             "console": "integratedTerminal",
             "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
-            "justMyCode": false,
+            "justMyCode": false
         },
         {
             "name": "mptest list-tests",
@@ -129,13 +149,13 @@
             "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
-                "list-tests",
+                "list-tests"
             ],
             "console": "integratedTerminal",
             "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
-            "justMyCode": false,
+            "justMyCode": false
         },
         {
             "name": "mptest debugbootmode",
@@ -168,26 +188,6 @@
                 // "--last-variant",
                 // "--firmware-build=${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
                 "--firmware-build=~/gits/micropython",
-            ],
-            "console": "integratedTerminal",
-            "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
-            },
-            "justMyCode": false,
-        },
-        {
-            "name": "mptest mcp-flash-tentacle",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "testbed_micropython.mptest.cli",
-            "cwd": "${workspaceFolder}",
-            // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
-            "args": [
-                "mcp-flash-tentacle",
-                "--serial=5334",
-                "--firmware-build=~/gits/micropython",
-                "--log-folder=/tmp/mpmcp",
-                "--board-variant=RISCV"
             ],
             "console": "integratedTerminal",
             "env": {

@@ -88,7 +88,7 @@ def build_and_flash(
     This corresponds to 'mptest mcp_build_andflash'.
 
     serial: The serial number of the tentacle. Might be short or long form ('4721' or 'e4641448133b-4721')."
-    firmware_build: Directory of MicroPython-Repo to build the firmware from. Example: ~/micropython or  https://github.com/micropython/micropython.git@v1.24.1
+    firmware_build: Directory of MicroPython-Repo to build the firmware from. Typically './micropython'.
     log_folder: The directory to store the build and flash logfiles
     board_variant: The board variant to build
     """

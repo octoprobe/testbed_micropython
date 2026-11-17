@@ -14,6 +14,10 @@ The infrastructure side of the tentacle (PICO_INFRA, a RP2040) controls the swit
 A tentacle is identified by its serial, for example 'de6528b3cb38-5f33'. A unique suffix like '5f33' is accepted too.
 Use 'list_tentacles' to find the connected tentacles and the serial port of their DUT.
 
+## Parallelims NOT supported
+
+* New run mpmcp_server actions in parallel!
+
 ## Directory structure
 
 The directories created by the mpmcp tools MUST follow this layout:
@@ -23,11 +27,10 @@ The directories created by the mpmcp tools MUST follow this layout:
 
 * ./micropython   # The git clone of https://github.com/micropython/micropython.git
 * ./micropython_tests   # If you have to modifiy the testsuite: You may create a second git clone of https://github.com/micropython/micropython.git
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/build # mpmcp.build_and_flash, `firmware_build` parameter
 * ./results/<tentacle_label>_<commit_tag>_<hhmmss>/log_folder # mpmcp.build_and_flash, `log_folder` parameter
 * ./results/<tentacle_label>_<commit_tag>_<hhmmss>/agent_results # Agent test results
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/list_tentacles_in.json  # Data sent to mpmcp
-* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/list_tentacles_return.json  # Data returned from mpmcp
+* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/list_tentacles_in.json  # Data sent to mpmcp. Use pretty formatting with indent.
+* ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/list_tentacles_return.json  # Data returned from mpmcp. Use pretty formatting with indent.
 * ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/build_and_flash_in.json  # Data sent to mpmcp
 * ./results/<tentacle_label>_<commit_tag>_<hhmmss>/mpmcp/build_and_flash_return.json  # Data returned from mpmcp
 * ./results/PROTOCOL.md # Append the prompts and the calls to mpmcp

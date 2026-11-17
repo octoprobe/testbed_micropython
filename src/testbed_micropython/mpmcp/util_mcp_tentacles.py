@@ -67,7 +67,9 @@ class McpConnectedTentacle(BaseModel):
     dut_usb_location: str
     dut_usb_serial_port: str
 
-    @field_validator("tentacle_spec_build_variants", "tentacle_spec_futs", mode="before")
+    @field_validator(
+        "tentacle_spec_build_variants", "tentacle_spec_futs", mode="before"
+    )
     @classmethod
     def validate_list_strings(cls, v: typing.Any) -> list[str]:
         if not isinstance(v, list):
@@ -93,6 +95,10 @@ class McpConnectedTentacle(BaseModel):
                 state.last_firmware_flashed.micropython_full_version_text
             )
 
+        dut_usb_serial_port = "-"
+        if usb.usb_port_dut.device_sysfs:
+            dut_usb_serial_port = usb.usb_port_dut.device_sysfs.device
+
         return McpConnectedTentacle(
             tenatcle_label=tentacle.label_short,
             tentacle_serial_number=tentacle.tentacle_serial_number,
@@ -107,7 +113,7 @@ class McpConnectedTentacle(BaseModel):
             probe_usb_location=usb.pico_probe.location.short,
             probe_usb_serial_port=usb.pico_probe.serial_port or "",
             dut_usb_location=tentacle.infra.usb_location_dut,
-            dut_usb_serial_port=tentacle.infra.usb_tentacle.serial_port or "",
+            dut_usb_serial_port=dut_usb_serial_port,
         )
 
 
