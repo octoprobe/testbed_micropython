@@ -25,8 +25,7 @@ from mcp.server.mcpserver.exceptions import ToolError
 
 from testbed_micropython import __version__
 
-from . import util_mcp_tentacles
-from .util_mcp_logging import mcp_init_logging
+from . import util_mcp_constants, util_mcp_logging, util_mcp_tentacles
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 
@@ -79,7 +78,8 @@ def list_tentacles(
 def build_and_flash(
     serial: str,
     firmware_build: str,
-    log_folder: pathlib.Path,
+    log_folder: pathlib.Path = util_mcp_constants.DIRECTORY_MPMCP_LOGS
+    / util_mcp_constants.FILENAME_MPMCP_LOG,
     board_variant: str = "",
 ) -> util_mcp_tentacles.McpBuildFlashResult:
     """
@@ -102,7 +102,9 @@ def build_and_flash(
 
 
 def main() -> None:
-    mcp_init_logging(directory_logs=DIRECTORY_OF_THIS_FILE)
+    util_mcp_logging.mcp_init_logging(
+        directory_logs=util_mcp_constants.DIRECTORY_MPMCP_LOGS
+    )
     request_timeout = 300  # 5 minutes in seconds
     mcp.run(request_timeout=request_timeout)  # type: ignore[call-overload]
 
