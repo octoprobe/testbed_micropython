@@ -1,9 +1,10 @@
 ---
 name: mpremote
-description: >
+description: >-
   How to use the mpremote tool to connect to a tentacle DUT and manage it, including powercycling and flashing firmware.
 ---
 
+# Connect with mpremote
 
 ## Connect to a board
 

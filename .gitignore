@@ -20,3 +20,4 @@ src/testbed_micropython/mpbuild/tests/testresults/*
 src/testbed/experiments/*
 testresults*/**
 uv.lock
+mpmcp_log.txt

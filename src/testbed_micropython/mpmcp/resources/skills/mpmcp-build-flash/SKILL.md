@@ -1,10 +1,10 @@
 ---
 name: mpmcp-build-flash
-description: >
+description: >-
   How to use the mpmcp 'build_and_flash' tool to build MicroPython firmware and flash it onto a tentacle DUT.
 ---
 
-# [Skill title]
+# Build and Flash MicroPython
 
 ## Overview
 

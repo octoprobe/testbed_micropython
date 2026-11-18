@@ -1,10 +1,10 @@
 ---
 name: mpmcp-powercycle-dut
-description: >
+description: >-
   Powercycles the DUT on the tentacle given by serial.
 ---
 
-# [Skill title]
+# Power-Cycle a DUT
 
 ## Overview
 

@@ -1,14 +1,28 @@
 # MCP (Model Context Protocol) server for testbed_micropython.
 
+```json
+{
+    "mcpServers": {
+        "mpmcp_server": {
+            "command": "${HOME}/work_octoprobe/testbed_micropython/.venv/bin/python",
+            "args": [
+                "-m",
+                "testbed_micropython.mpmcp.mpmcp_server"
+            ]
+        }
+    }
+}
+```
+
 Install with
 ```bash
 pip install -e ".[mcp]"
 ```
 
-
+```bash
 python -m testbed_micropython.mpmcp.server
 npx @modelcontextprotocol/inspector python -m testbed_micropython.mpmcp.server
-
+```
 
 ## VSCode launch configuration for debugging
 

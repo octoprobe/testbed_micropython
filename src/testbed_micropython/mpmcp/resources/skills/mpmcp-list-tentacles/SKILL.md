@@ -1,10 +1,10 @@
 ---
 name: mpmcp-list-tentacles
-description: >
+description: >-
   Queries the octoprobe testbed via the mpmcp MCP server to discover connected tentacles and their status.
 ---
 
-# [Skill title]
+# List Connected Tentacles
 
 ## Overview
 

@@ -1,10 +1,10 @@
 ---
 name: mptest
-description: >
+description: >-
   mptest may run tests on all connected tentacles.
 ---
 
-# [Skill title]
+# Run Tests with mptest
 
 ## Overview
 

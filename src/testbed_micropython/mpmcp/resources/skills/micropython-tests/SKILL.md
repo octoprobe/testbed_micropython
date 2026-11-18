@@ -1,10 +1,10 @@
 ---
 name: micropython-tests
-description: >
+description: >-
   Runs tests from the upstream MicroPython test suite (micropython/tests) on a tentacle DUT.
 ---
 
-# [Skill title]
+# Run the MicroPython Test Suite
 
 ## Overview
 

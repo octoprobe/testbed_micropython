@@ -1,10 +1,10 @@
 ---
 name: git
-description: >
-  [How to clone the MicroPython repository].
+description: >-
+  How to clone the MicroPython repository.
 ---
 
-# [Skill title]
+# Clone the MicroPython Repository
 
 ## Overview
 
