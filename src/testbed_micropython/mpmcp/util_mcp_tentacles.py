@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import logging
 import pathlib
+import time
 import typing
 
 from octoprobe import octoprobe
@@ -40,7 +41,9 @@ class McpResultException(BaseException):
     If the function was called by 'mptest ...', the this will trigger a SystemExit(0) exception.
     """
 
-    mcp_result: typing.Any
+    def __init__(self, *args: typing.Any, mcp_result: BaseModel, **kwargs: typing.Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.mcp_result = mcp_result
 
 
 class McpSystemExit(BaseException):
@@ -137,23 +140,79 @@ def mcp_list_tentacles(poweron: bool = False) -> list[McpConnectedTentacle]:
     return [McpConnectedTentacle.factory(tentacle) for tentacle in connected_tentacles]
 
 
-class McpBuildFlashResult(BaseModel):
+class McpPowercycleResult(BaseModel):
     tentacle: McpConnectedTentacle | None = None
-    filename_output_build: str = ""
-    filename_output_flash: str = ""
     filename_python_log: str = ""
-    filename_firmware: str = ""
-    dut_serial_port: str = ""
     outcome_error: str = "early failure"
     outcome_success: bool = False
+    dut_serial_port: str = ""
 
     def set_success(self) -> None:
         self.outcome_error = ""
         self.outcome_success = True
 
 
+class McpBuildFlashResult(McpPowercycleResult):
+    filename_output_build: str = ""
+    filename_output_flash: str = ""
+    filename_firmware: str = ""
+
+
 LOG_FOLDER_MPBUILD = "mpbuild"
 LOG_FOLDER_FLASH = "flash"
+
+
+def get_usb_tentacle(
+    result: McpPowercycleResult,
+    serial: str,
+) -> tentacle_spec.TentacleMicropython:
+    usb_tentacles = UsbTentacles.query(poweron=False)
+    usb_tentacles_selected = usb_tentacles.select(serials=[serial])
+    if len(usb_tentacles_selected) != 1:
+        msg = f"Tentacle with serial '{serial}' is not connected!"
+        logger.warning(msg)
+        result.outcome_error = msg
+        raise McpResultException(mcp_result=result)
+    connected_tentacles = util_testrunner.instantiate_tentacles(
+        usb_tentacles=usb_tentacles_selected
+    )
+    assert len(connected_tentacles) == 1
+    connected_tentacle = connected_tentacles[0]
+    result.tentacle = McpConnectedTentacle.factory(tentacle=connected_tentacle)
+    return connected_tentacle
+
+
+def mcp_powercycle_dut(serial: str) -> McpPowercycleResult:
+    try:
+        result = McpPowercycleResult(
+            filename_python_log=str(util_mcp_logging.get_filename_log())
+        )
+        connected_tentacle = get_usb_tentacle(result=result, serial=serial)
+        try:
+            connected_tentacle.infra.load_base_code_if_needed()
+            # Power off
+            connected_tentacle.infra.switches.dut = False
+            time.sleep(1.0)
+            # Power on and wait for UDEV-event
+            tty = connected_tentacle.dut.dut_mcu.application_mode_power_up(
+                tentacle=connected_tentacle,
+                udev=UDEV_POLLER_LAZY.udev_poller,
+            )
+
+            result.dut_serial_port = tty
+            result.set_success()
+            return result
+        finally:
+            connected_tentacle.free_resources()
+
+    except McpResultException as e:
+        assert result is e.mcp_result
+        return result
+
+    except Exception as e:
+        logger.error(f"Terminating test due to: {e!r}", exc_info=e)
+        result.outcome_error = repr(e)
+        return result
 
 
 def mcp_build_and_flash(
@@ -164,29 +223,15 @@ def mcp_build_and_flash(
 ) -> McpBuildFlashResult:
     try:
         result = McpBuildFlashResult(
-            filename_python_log=str(util_mcp_logging.get_filename_log().absolute())
+            filename_python_log=str(util_mcp_logging.get_filename_log())
         )
-        usb_tentacles = UsbTentacles.query(poweron=False)
-        usb_tentacles_selected = usb_tentacles.select(serials=[serial])
-        if len(usb_tentacles_selected) != 1:
-            msg = f"Tentacle with serial '{serial}' is not connected!"
-            logger.warning(msg)
-            result.outcome_error = msg
-            return result
-        connected_tentacles = util_testrunner.instantiate_tentacles(
-            usb_tentacles=usb_tentacles_selected
-        )
-        assert len(connected_tentacles) == 1
+        connected_tentacle = get_usb_tentacle(result=result, serial=serial)
         try:
-            connected_tentacle = connected_tentacles[0]
-
             if board_variant not in connected_tentacle.tentacle_spec.build_variants:
                 msg = f"Tentacle '{serial}'/'{connected_tentacle.tentacle_spec.board}' supports {connected_tentacle.tentacle_spec.build_variants} but you provided '{board_variant}'!"
                 logger.warning(msg)
                 result.outcome_error = msg
                 return result
-
-            result.tentacle = McpConnectedTentacle.factory(tentacle=connected_tentacle)
 
             builder = util_firmware_mpbuild.Builder(
                 variant=BoardVariant(
@@ -195,39 +240,40 @@ def mcp_build_and_flash(
                 ),
                 mpbuild_artifacts=log_folder / LOG_FOLDER_MPBUILD,
             )
-            repo_micropython_firmware = (
-                pathlib.Path(firmware_build).expanduser().absolute()
-            )
+            repo_micropython_firmware = pathlib.Path(firmware_build).expanduser()
             if not repo_micropython_firmware.is_dir():
                 msg = f"Expect '--firmware-build={firmware_build}' to point to a micropython-repo directory. But got: '{firmware_build}!"
                 logger.warning(msg)
                 result.outcome_error = msg
                 return result
 
-            result.filename_output_build = str(builder.docker_logfile.absolute())
+            result.filename_output_build = str(builder.docker_logfile)
             firmware_build_spec = builder.build(
                 repo_micropython_firmware=repo_micropython_firmware
             )
-            result.filename_firmware = str(firmware_build_spec.filename.absolute())
+            result.filename_firmware = str(firmware_build_spec.filename)
             connected_tentacle.tentacle_state.firmware_spec = firmware_build_spec
             connected_tentacle.tentacle_state.flash_force = True
 
-            ctx = octoprobe.CtxTestRun(connected_tentacles=connected_tentacles)
+            ctx = octoprobe.CtxTestRun(connected_tentacles=[connected_tentacle])
             directories_log = log_folder / LOG_FOLDER_FLASH
-            result.filename_output_flash = str(
-                (directories_log / FILENAME_FLASHING).absolute()
-            )
+            result.filename_output_flash = str(directories_log / FILENAME_FLASHING)
             ctx.function_setup_infa_and_dut(
                 udev_poller=UDEV_POLLER_LAZY.udev_poller,
                 tentacle=connected_tentacle,
                 directory_logs=directories_log,
             )
             connected_tentacle.dut.mp_remote_close()
-            result.dut_serial_port = result.tentacle.dut_usb_serial_port
+            if result.tentacle is not None:
+                result.dut_serial_port = result.tentacle.dut_usb_serial_port
             result.set_success()
             return result
         finally:
             connected_tentacle.free_resources()
+
+    except McpResultException as e:
+        assert result is e.mcp_result
+        return result
 
     except Exception as e:
         logger.error(f"Terminating test due to: {e!r}", exc_info=e)

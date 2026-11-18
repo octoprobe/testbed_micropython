@@ -75,6 +75,19 @@ def list_tentacles(
 
 
 @mcp.tool()
+def powercycle(serial: str) -> util_mcp_tentacles.McpPowercycleResult:
+    """
+    Powercycle a tentacle with the given serial. This might be used when a cpu crashed and has to be recovered.
+
+    This corresponds to 'mpmcp powercycle'.
+
+    serial: The serial number of the tentacle. Might be short or long form ('4721' or 'e4641448133b-4721')."
+    """
+    with _tool_errors():
+        return util_mcp_tentacles.mcp_powercycle_dut(serial=serial)
+
+
+@mcp.tool()
 def build_and_flash(
     serial: str,
     firmware_build: str,

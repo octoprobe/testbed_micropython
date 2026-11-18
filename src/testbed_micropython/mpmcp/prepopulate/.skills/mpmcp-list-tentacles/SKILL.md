@@ -1,5 +1,5 @@
 ---
-name: mpmcp-list_tentacles
+name: mpmcp-list-tentacles
 description: >
   Queries the octoprobe testbed via the mpmcp MCP server to discover connected tentacles and their status.
 ---

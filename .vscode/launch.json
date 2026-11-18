@@ -39,6 +39,19 @@
             "justMyCode": false,
         },
         {
+            "name": "mpmcp powercycle_dut",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpmcp.cli",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "powercycle-dut",
+                "--serial=5334", // RPI_PICO2
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+        },
+        {
             "name": "mpmcp flash-tentacle",
             "type": "debugpy",
             "request": "launch",
@@ -47,10 +60,9 @@
             // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
             "args": [
                 "flash-tentacle",
-                // "--serial=5334",// RPI_PICO
-                "--serial=472b", // ESP32_S5
+                "--serial=5334", // RPI_PICO2
                 "--firmware-build=~/gits/micropython",
-                // "--board-variant=RISCV"
+                 "--board-variant=RISCV"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,
