@@ -34,7 +34,7 @@ dependencies = [
     # "mpbuild@git+https://github.com/mattytrentini/mpbuild.git",
     "requests~=2.32",
     "types-requests~=2.32",
-    "markdown2~=2.5.3",
+    "markdown2~=2.5.5",
 ]
 
 [project.urls]
@@ -44,6 +44,13 @@ Repository = "https://github.com/octoprobe/octoprobe"
 
 [project.scripts]
 mptest = "testbed_micropython.mptest.cli:app"
+mpmcp = "testbed_micropython.mpmcp.cli:app"
+mpmcp_server = "testbed_micropython.mpmcp.mpmcp_server:main"
+
+# Only define these entry points when mcp extra is installed
+# [tool.pdm.build.entry-points.console_scripts]
+# mpmcp = {module = "testbed_micropython.mpmcp.cli", attr = "app", optional = true, extras = ["mcp"]}
+# mpmcp_server = {module = "testbed_micropython.mpmcp.mpmcp_server", attr = "main", optional = true, extras = ["mcp"]}
 
 [project.optional-dependencies]
 
@@ -52,9 +59,14 @@ all = []
 dev = [
     # "-e .",
     "types-PyYAML",
+    "debugpy",
 ]
 
 doc = []
+
+mcp = [
+    "mcp[cli]~=2.3",
+]
 
 [tool.pdm]
 version = { source = "file", path = "src/testbed_micropython/__init__.py" }
@@ -64,6 +76,7 @@ distribution = true
 package-dir = "src"
 includes = [
     "src/testbed_micropython/",
+    "src/testbed_micropython/mpmcp/prepopulate/**",
 ]
 source-includes = [
     "LICENSE",
@@ -163,6 +176,7 @@ ignore = [
     "E501",  # line too long, handled by black
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
+    "SIM102",  # collapsible-if
     # "W191",  # indentation contains tabs
     "D",     # enable docstring checks
     "B027",  #  empty method in an abstract base class

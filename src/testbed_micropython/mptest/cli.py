@@ -123,11 +123,6 @@ def labels_duo() -> None:
     help="List all tentacles with outdated tentacles (requires to be soldered to the latest solder_version)"
 )
 def outdated_tentacles() -> None:
-    def parse_version(version: str) -> tuple[int, ...]:
-        """
-        "v1.2" -> (1, 2)
-        """
-        return tuple(int(x) for x in version.removeprefix("v").split("."))
 
     print("Tentacles with outdated solder version:")
 
@@ -167,6 +162,7 @@ def debugbootmode(
 def list_tests() -> None:
     # args = util_testrunner.Args.get_default_args()
     # testrunner = util_testrunner.TestRunner(args=args)
+
     init_logging()
     for testrun_spec in util_testrunner.get_testrun_specs():
         print(f"  {testrun_spec.label}")
@@ -182,8 +178,6 @@ def list_tests() -> None:
 
 @app.command(help="List connected tentacles")
 def list_tentacles() -> None:
-    # args = util_testrunner.Args.get_default_args()
-    # testrunner = util_testrunner.TestRunner(args=args)
     init_logging()
     try:
         connected_tentacles = util_testrunner.query_connected_tentacles_fast()
@@ -215,7 +209,7 @@ def flash(
         typer.Option(
             help="Build LAST variant if a tentacle supports multiple variants. Not using this option will build the FIRST variant.",
         ),
-    ] = False,  # noqa: UP007    force_flash: TyperAnnotated[
+    ] = False,  # noqa: UP007
     firmware_build: TyperAnnotated[
         str,
         typer.Option(

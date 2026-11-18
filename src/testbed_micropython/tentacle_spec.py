@@ -152,3 +152,6 @@ class TentacleMicropython(TentacleBase):
     #     Example: 5f2c-RPI_PICO2_W-unknown
     #     """
     #     return f"{self.label_short}{self.variant}"
+
+    def free_resources(self) -> None:
+        self.infra.mp_remote_close()

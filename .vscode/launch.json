@@ -5,6 +5,69 @@
     "version": "0.2.0",
     "configurations": [
         {
+            // VS Code waits on port 5678 for the MCP server to connect
+            "name": "mcp debug: listen",
+            "type": "debugpy",
+            "request": "attach",
+            "listen": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "justMyCode": false,
+        },
+        {
+            // Starts the MCP Inspector; the server connects back to the debugger
+            "name": "mcp debug: inspector",
+            "type": "node-terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "command": "npx @modelcontextprotocol/inspector ${workspaceFolder}/.venv/bin/python -m debugpy --connect localhost:5678 -m testbed_micropython.mpmcp.mpmcp_server",
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            }
+        },
+        {
+            "name": "mpmcp list_tentacles",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpmcp.cli",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "list-tentacles"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+        },
+        {
+            "name": "mpmcp powercycle_dut",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpmcp.cli",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "powercycle-dut",
+                "--serial=5334", // RPI_PICO2
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+        },
+        {
+            "name": "mpmcp flash-tentacle",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "testbed_micropython.mpmcp.cli",
+            "cwd": "${workspaceFolder}",
+            // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
+            "args": [
+                "flash-tentacle",
+                "--serial=5334", // RPI_PICO2
+                "--firmware-build=~/gits/micropython",
+                 "--board-variant=RISCV"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+        },
+        {
             "name": "mptest pr-check",
             "type": "debugpy",
             "request": "launch",
@@ -67,7 +130,7 @@
             ],
             "console": "integratedTerminal",
             "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
             "justMyCode": false,
         },
@@ -78,11 +141,11 @@
             "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
-                "list-tentacles",
+                "list-tentacles"
             ],
             "console": "integratedTerminal",
             "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
             "justMyCode": false,
         },
@@ -93,11 +156,11 @@
             "module": "testbed_micropython.mptest.cli",
             "cwd": "${workspaceFolder}",
             "args": [
-                "list-tests",
+                "list-tests"
             ],
             "console": "integratedTerminal",
             "env": {
-                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
             },
             "justMyCode": false,
         },
@@ -125,10 +188,13 @@
             "type": "debugpy",
             "request": "launch",
             "module": "testbed_micropython.mptest.cli",
-            "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
+            "cwd": "${workspaceFolder}",
+            // "cwd": "${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
             "args": [
                 "flash",
                 // "--last-variant",
+                // "--firmware-build=${userHome}/octoprobe_downloads/git-cache/worktree/firmware_github-com-micropython-micropython",
+                "--firmware-build=~/gits/micropython",
             ],
             "console": "integratedTerminal",
             "env": {
@@ -148,7 +214,7 @@
                 "--micropython-tests=https://github.com/micropython/micropython.git@master",
                 // "--micropython-tests=https://github.com/dpgeorge/micropython.git@tests-run-tests-results-combined-list",
                 // "--micropython-tests=https://github.com/dpgeorge/micropython.git@master",
-                "--firmware-build=https://github.com/micropython/micropython.git@master",
+                "--firmware-build=https://github.com/micropython/micropython.git~17782",
                 // "--firmware-build=https://github.com/micropython/micropython.git@v1.25.0",
                 // "--firmware-build=/home/octoprobe/gits/micropython",
                 // "--firmware-build=/home/octoprobe/octoprobe_downloads/git-cache/worktree/tests_github-com-micropython-micropython",
@@ -166,11 +232,11 @@
                 // "--only-test=RUN-MULTITESTS_MULTIBLUETOOTH",
                 // "--only-test=RUN-MULTITESTS_MULTINET",
                 // "--only-test=RUN-TESTS_NET_INET",
-                "--only-test=RUN-TESTS_STANDARD",
+                // "--only-test=RUN-TESTS_STANDARD",
                 // "--only-test=RUN-TESTS_STANDARD_NATIVE",
                 // "--only-test=RUN-TESTS_STANDARD_VIA_MPY",
                 "--only-test=RUN-TESTS_EXTMOD_HARDWARE",
-                "--only-test=RUN-FLASH_FORMAT",
+                // "--only-test=RUN-FLASH_FORMAT",
                 // "--only-test=RUN-PERFBENCH",
                 // "--only-test=RUN-TESTS_STANDARD_NATIVE",
                 // "--only-test=RUN-TESTS_STANDARD",
@@ -182,7 +248,8 @@
                 // "--skip-test=RUN-MULTITESTS_MULTINET",
                 // "--only-test=RUN-NATMODTESTS",
                 // "--only-board=LOLIN_C3_MINI",
-                // "--only-board=LOLIN_D1_MINI",
+                // "--only-board=LOLIN_C3_MINI",
+                "--only-board=ESP32_H2_DEVKIT",
                 // "--only-fut=FUT_WLAN",
                 // "--skip-fut=FUT_WLAN",
                 // "--skip-fut=FUT_BLE",
@@ -191,7 +258,7 @@
                 "--no-multiprocessing",
                 // "--jobs=5",
                 // "--flash-force",
-                "--flash-skip",
+                // "--flash-skip",
                 // "--count=24",
                 // "--no-git-clean",
                 // "--debug-skip-tests",
@@ -333,6 +400,17 @@
             ],
             "justMyCode": false,
             "subProcess": false,
+        }
+    ],
+    "compounds": [
+        {
+            // Open the Inspector URL and click 'Connect'
+            "name": "mcp debug: inspector + debugger",
+            "configurations": [
+                "mcp debug: listen",
+                "mcp debug: inspector"
+            ],
+            "stopAll": true
         }
     ]
 }
