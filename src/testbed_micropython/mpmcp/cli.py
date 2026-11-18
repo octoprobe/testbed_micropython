@@ -2,58 +2,15 @@ from __future__ import annotations
 
 import logging
 import pathlib
-import shutil
 import typing
 
 import typer
 
 from . import util_mcp_constants, util_mcp_logging, util_mcp_tentacles
 
-DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
-DIRECTORY_CURRENT = pathlib.Path().cwd()
 logger = logging.getLogger(__name__)
 
 app = typer.Typer(pretty_exceptions_enable=False)
-
-
-@app.command(
-    help="Populate an empty directory with the initial MCP configuration and skills"
-)
-def populate(
-    directory: typing.Annotated[
-        pathlib.Path,
-        typer.Argument(
-            help="The directory to populate. Must be empty.",
-        ),
-    ] = DIRECTORY_CURRENT,
-    log_folder: typing.Annotated[
-        pathlib.Path,
-        typer.Option(
-            help="The directory to store logfiles",
-        ),
-    ] = util_mcp_constants.DIRECTORY_MPMCP_LOGS,
-) -> None:
-    util_mcp_logging.mcp_init_logging(directory_logs=log_folder)
-
-    directory = directory.expanduser().resolve()
-
-    if directory.exists() and list(directory.iterdir()):
-        typer.echo(f"Error: Directory {directory} is not empty", err=True)
-        raise typer.Exit(code=1)
-
-    directory.mkdir(parents=True, exist_ok=True)
-
-    prepopulate_dir = DIRECTORY_OF_THIS_FILE / "prepopulate"
-
-    assert prepopulate_dir.exists(), str(prepopulate_dir)
-
-    for item in prepopulate_dir.iterdir():
-        if item.is_dir():
-            shutil.copytree(item, directory / item.name, dirs_exist_ok=True)
-        else:
-            shutil.copy2(item, directory / item.name)
-
-    typer.echo(f"Successfully populated {directory}")
 
 
 @app.command(help="List connected tentacles")

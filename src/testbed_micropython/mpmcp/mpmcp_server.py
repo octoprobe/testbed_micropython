@@ -3,7 +3,6 @@ MCP server for testbed_micropython.
 
 Uses the official MCP python sdk (mcp>=2), where 'FastMCP' was renamed to 'MCPServer'.
 
-Example configuration for Claude Code (.mcp.json) see src/testbed_micropython/mpmcp/prepopulate/.mcp.json
 """
 
 from __future__ import annotations
@@ -17,9 +16,15 @@ from mcp.server.mcpserver.exceptions import ToolError
 
 from testbed_micropython import __version__
 
-from . import util_mcp_constants, util_mcp_logging, util_mcp_tentacles
+from . import (
+    util_mcp_constants,
+    util_mcp_logging,
+    util_mcp_skills,
+    util_mcp_tentacles,
+)
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
+DIRECTORY_RESOURCES = DIRECTORY_OF_THIS_FILE / "resources"
 
 
 @contextlib.contextmanager
@@ -37,7 +42,8 @@ def _tool_errors() -> typing.Iterator[None]:
 mcp = MCPServer(
     name="testbed_micropython",
     version=__version__,
-    instructions=(DIRECTORY_OF_THIS_FILE / "instructions.md").read_text(),
+    instructions=(DIRECTORY_RESOURCES / "instructions.md").read_text(),
+    extensions=[util_mcp_skills.Skills(DIRECTORY_RESOURCES / "skills")],
 )
 
 

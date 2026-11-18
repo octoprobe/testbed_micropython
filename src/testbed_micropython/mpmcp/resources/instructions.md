@@ -24,8 +24,6 @@ The directories created by the mpmcp tools MUST follow this layout:
 
 ```
 .
-├── .skills                          # prepopulated by user
-├── .mcp.json                        # prepopulated by user
 ├── micropython/                     # git clone of https://github.com/micropython/micropython.git
 ├── micropython_tests/               # optional: modified testsuite clone
 └── results/
