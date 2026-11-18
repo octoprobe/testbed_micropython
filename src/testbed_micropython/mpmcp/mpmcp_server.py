@@ -25,6 +25,7 @@ from . import (
 
 DIRECTORY_OF_THIS_FILE = pathlib.Path(__file__).parent
 DIRECTORY_RESOURCES = DIRECTORY_OF_THIS_FILE / "resources"
+SKILL_CATALOG = util_mcp_skills.SkillCatalog(DIRECTORY_RESOURCES / "skills")
 
 
 @contextlib.contextmanager
@@ -43,7 +44,8 @@ mcp = MCPServer(
     name="testbed_micropython",
     version=__version__,
     instructions=(DIRECTORY_RESOURCES / "instructions.md").read_text(),
-    extensions=[util_mcp_skills.Skills(DIRECTORY_RESOURCES / "skills")],
+    resources=list(SKILL_CATALOG.resources()),
+    extensions=[SKILL_CATALOG.extension()],
 )
 
 
