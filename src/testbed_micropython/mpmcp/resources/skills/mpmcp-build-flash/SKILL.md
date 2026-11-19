@@ -35,3 +35,5 @@ Use this skill when:
 ```
 
 You must stop processing if `"outcome_success": false`!
+
+- Important: Never cache `dut_serial_port`, it may change! Call always `build-flash`, `list-tentacles` or `powercycle-dut` and use the fresh value of `dut_serial_port`@
