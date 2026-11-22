@@ -9,30 +9,6 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="ch_hans_1",
         tentacles=[
-            (
-                "de655035875e-6621",
-                HwVersion.V07,
-                "v1.0",
-                tentacle_specs.ESP32_C5_DEVKIT,
-            ),
-            (
-                "de6528b3cb4c-2926",
-                HwVersion.V09,
-                "v1.0",
-                tentacle_specs.ESP32_C6_DEVKIT,
-            ),
-            (
-                "de6528b3cb2c-5c37",
-                HwVersion.V09,
-                "v1.0",
-                tentacle_specs.ESP32_H2_DEVKIT,
-            ),
-            (
-                "de6530655387-5629",
-                HwVersion.V08,
-                "v1.0",
-                tentacle_specs.ESP32_S2_DEVKIT,
-            ),
             # testbed showcase
             (
                 # PICO_INFRA broken. Replaced by e46340474b4b-5a31
@@ -72,10 +48,40 @@ TENTACLES_INVENTORY = (
                 tentacle_specs.ESP32_DEVKIT,
             ),
             (
+                "de6528b3cb2c-5c37",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_H2_DEVKIT,
+            ),
+            (
+                "e46414481336-202a",
+                HwVersion.V03,
+                "v1.0",
+                tentacle_specs.ESP32_P4_WIFI6_WAVESHARE,
+            ),
+            (
                 "e46414481346-0c30",
                 HwVersion.V03,
                 "v1.3",
                 tentacle_specs.ESP32_C3_DEVKIT,
+            ),
+            (
+                "de655035875e-6621",
+                HwVersion.V07,
+                "v1.0",
+                tentacle_specs.ESP32_C5_DEVKIT,
+            ),
+            (
+                "de6528b3cb4c-2926",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_C6_DEVKIT,
+            ),
+            (
+                "de6530655387-5629",
+                HwVersion.V08,
+                "v1.0",
+                tentacle_specs.ESP32_S2_DEVKIT,
             ),
             (
                 "e46414481354-472b",
@@ -151,6 +157,12 @@ TENTACLES_INVENTORY = (
                 HwVersion.V09,
                 "v1.0",
                 tentacle_specs.ESP32_H2_DEVKIT,
+            ),
+            (
+                "e46414481335-1c2a",
+                HwVersion.V03,
+                "v1.0",
+                tentacle_specs.ESP32_P4_WIFI6_WAVESHARE,
             ),
             (
                 "de653065534a-7629",

@@ -532,6 +532,57 @@ v1.0: initial
     mcu_config=McuConfig(),
 )
 
+
+ESP32_P4_WIFI6_WAVESHARE = TentacleSpecMicropython(
+    doc="""
+See: Waveshare SKU35800 ESP32-P4-WIFI6-DB
+See: https://docs.waveshare.com/ESP32-P4-WIFI6-DB
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32h2/_images/esp32-h2-devkitm-1-v1.2_pinlayout.png
+See: https://github.com/waveshareteam/ESP32-P4-WIFI6-DB/raw/main/hardware/ESP32-P4-WIFI6-DB.pdf
+
+Connections
+
+* Board ESP32-P4 USB <=> Tentacle USB
+
+* GND
+  * Board GND <=> Tentacle GND
+
+* Bootmode
+  * Board BOOT button  <=> Tentacle Relay 1a
+  * Tentacle Relay 1b <=> Tentacle GND
+
+* FUT_EXTMOD_HARDWARE
+  * Board Pin4 <=> Board Pin5 (uart,pwm,counter)
+  * Board Pin2 <=> Board Pin3 (i2c, encoder)
+
+v1.0: initial
+""",
+    solder_version_latest="v1.0",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ESP32_P4_DEVKIT",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_WLAN,
+        EnumFut.FUT_BLE,
+    ],
+    mcu_usb_id=util_mcu_esp.ESP32_P4_USB_ID,
+    tags="board=ESP32_GENERIC_P4,build_variants=C5_WIFI,mcu=esp32,programmer=esptool"
+    + TAG_TIER1,
+    programmer_args=[
+        "--chip=esp32p4",
+        "--baud=460800",
+        "--before=default-reset",
+        "--after=hard-reset",
+        "write-flash",
+        "0x2000",
+        "--no-progress",
+        "--compress",
+    ],
+    power_on_delay_s=1.0,
+    mcu_config=McuConfig(),
+)
+
 LOLIN_C3_MINI = TentacleSpecMicropython(
     doc="""
 See: https://www.wemos.cc/en/latest/c3/c3_mini.html

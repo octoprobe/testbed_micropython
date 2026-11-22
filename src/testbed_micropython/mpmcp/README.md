@@ -1,5 +1,7 @@
 # MCP (Model Context Protocol) server for testbed_micropython.
 
+Filename: `.mcp.json`
+
 ```json
 {
     "mcpServers": {
