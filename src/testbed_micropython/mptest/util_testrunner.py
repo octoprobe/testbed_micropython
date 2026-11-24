@@ -32,6 +32,8 @@ from octoprobe.util_serialnumber import assert_serialdelimted_valid
 from octoprobe.util_subprocess import SubprocessExitCodeException
 from octoprobe.util_testbed_lock import TestbedLock
 
+from testbed_micropython.report_test import util_constants
+
 from .. import constants, util_multiprocessing
 from ..mptest.util_common import ArgsMpTest
 from ..report_task import util_report_renderer, util_report_tasks
@@ -325,6 +327,7 @@ class TestRunner:
         self.report_testgroup = ReportTests(
             testresults_directory=args.directory_results,
             log_output=logs.filename,
+            url_reports=util_constants.URL_REPORTS,
             ref_firmware=args.firmware.ref_firmware,
             ref_tests=ref_tests,
         )

@@ -493,13 +493,13 @@ def report(
             envvar="TESTBED_MICROPYTHON_RESULTS_URL",
             help="Where to push the results. Empty string will skip.",
         ),
-    ] = "https://reports.octoprobe.org/upload",
-    url_report: TyperAnnotated[
+    ] = util_constants.URL_REPORTS_UPLOAD,
+    url_reports: TyperAnnotated[
         str,
         typer.Option(
             help="Location of the final reports. This is where the links in the reports should point to.",
         ),
-    ] = "https://reports.octoprobe.org",
+    ] = util_constants.URL_REPORTS,
     label: TyperAnnotated[
         str,
         typer.Option(

@@ -30,6 +30,9 @@ This corresponds to
     --label='github_${{ github.workflow }}_${{ github.run_number }}'
 """
 
+URL_REPORTS = "https://reports.octoprobe.org"
+URL_REPORTS_UPLOAD = "https://reports.octoprobe.org/upload"
+
 if True:
     GITHUB_WORKFLOW = "selfhosted_testrun"  # .yaml may be omitted
     GITHUB_REPO = "octoprobe/testbed_micropython"

@@ -204,10 +204,12 @@ class ReportTests:
         self,
         testresults_directory: pathlib.Path,
         log_output: pathlib.Path,
+        url_reports: str,
         ref_firmware: str,
         ref_tests: str,
     ) -> None:
         self.testresults_directory = testresults_directory
+        self.url_reports = url_reports
         self.result_context = ResultContext()
         self.result_context.time_start = now_formatted()
         self.result_context.commandline = " ".join(sys.argv)
@@ -258,6 +260,7 @@ class ReportTests:
         renderer = ReportRenderer(
             directory_results=self.testresults_directory,
             label=self.testresults_directory.name,
+            url_reports=self.url_reports,
             xfail_file=None,
         )
         renderer.render()
