@@ -96,10 +96,10 @@ class ReportRenderer:
             fix_links=self._fix_links,
         )
 
-        filename_md.write_text(report_md)
+        filename_md.write_text(report_md, encoding="utf-8")
 
         filename_html = filename_md.with_suffix(".html")
-        filename_html.write_text(markdown2html(report_md, title=title))
+        filename_html.write_text(markdown2html(report_md, title=title), encoding="utf-8")
 
     def _fix_links(self, report_text: str) -> str:
         for directory, expansion in self.list_directory_expansion:
