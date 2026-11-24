@@ -71,6 +71,10 @@ class ReportRenderer:
                 util_constants.FILENAME_OCTOPROBE_PR_REPORT_STEM,
                 "Octoprobe PR report",
             ),
+            (
+                util_constants.FILENAME_OCTOPROBE_PR_COMPACT_STEM,
+                "Octoprobe PR compact report",
+            ),
         ):
             self.render_report(
                 filename_stem=filename_stem, title=title, action_url=action_url

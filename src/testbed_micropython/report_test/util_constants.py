@@ -19,6 +19,7 @@ FILENAME_CONTEXT_JSON = "context.json"
 FILENAME_CONTEXT_TESTGROUP_JSON = "context_testgroup.json"
 FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM = "octoprobe_summary_report"
 FILENAME_OCTOPROBE_PR_REPORT_STEM = "octoprobe_pr_report"
+FILENAME_OCTOPROBE_PR_COMPACT_STEM = "octoprobe_pr_compact"
 
 PREFIX_ANCHOR = "anchor_"
 

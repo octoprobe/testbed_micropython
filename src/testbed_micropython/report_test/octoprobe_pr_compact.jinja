@@ -1,0 +1,18 @@
+### {{ title|md_escape }}
+
+{% set result_context = data.result_context %}
+
+{{ result_context.pr_marker }}
+
+* Duration: {{ result_context.time_duration_text }}, {{ data.tests_total }} tests run, {{ data.duration_per_test_text|md_escape }}
+* [Summary Report {{ result_context.worflow_job_number }}]({{ result_context.summary_report|fix_links|md_escape }}), [Logdirectory]({{ result_context.log_directory|fix_links|md_escape }})
+
+{% if result_context.error %}
+* **Error: {{ result_context.error }}**
+{% endif %}
+
+| FeatureUnderTest | Port | Board |
+| - | - | - |
+{%- for line in data.summary_compact %}
+| {{ line.emoji }} {{ line.fut_text|md_escape }} | {{ line.port|md_escape }} | {{ line.board|md_escape }} |
+{%- endfor %}
