@@ -62,7 +62,7 @@
                 "flash-tentacle",
                 "--serial=5334", // RPI_PICO2
                 "--firmware-build=~/gits/micropython",
-                 "--board-variant=RISCV"
+                "--board-variant=RISCV"
             ],
             "console": "integratedTerminal",
             "justMyCode": false,
@@ -249,7 +249,8 @@
                 // "--only-test=RUN-NATMODTESTS",
                 // "--only-board=LOLIN_C3_MINI",
                 // "--only-board=LOLIN_C3_MINI",
-                "--only-board=ESP32_H2_DEVKIT",
+                // "--only-board=ESP32_H2_DEVKIT",
+                // "--only-board=ESP32_H2_DEVKIT",
                 // "--only-fut=FUT_WLAN",
                 // "--skip-fut=FUT_WLAN",
                 // "--skip-fut=FUT_BLE",

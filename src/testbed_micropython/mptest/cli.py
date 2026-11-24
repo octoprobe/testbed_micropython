@@ -537,7 +537,7 @@ def report(
     renderer = ReportRenderer(
         directory_results=directory_results,
         label=label,
-        url_report=url_report,
+        url_reports=url_reports,
         xfail_file=xfail,
     )
     renderer.write_xfail_template()
@@ -560,6 +560,45 @@ def report(
         )
 
     raise typer.Exit(rc)
+
+
+@app.command(
+    help="Loop over a folder containing reports. Rebuild the report for every folder. "
+)
+def reports(
+    reports: TyperAnnotated[
+        str,
+        typer.Option(
+            help="reports directory containing directories of results",
+        ),
+    ] = ".",
+    url_reports: TyperAnnotated[
+        str,
+        typer.Option(
+            help="Location of the final reports. This is where the links in the reports should point to.",
+        ),
+    ] = "https://reports.octoprobe.org",
+) -> None:
+    init_logging()
+    directory_reports = pathlib.Path(reports).expanduser()
+    assert directory_reports.is_dir()
+
+    directories_reports = [d for d in directory_reports.iterdir() if d.is_dir()]
+    directories_reports.sort(reverse=True)
+    for i, directory_results in enumerate(directories_reports):
+        if i > 20:
+            break
+
+        logger.info(f"Rebuilding report: {directory_results}")
+        renderer = ReportRenderer(
+            directory_results=directory_results,
+            label=directory_results.name,
+            url_reports=url_reports,
+            xfail_file=None,
+        )
+        renderer.render()
+
+    raise typer.Exit(ExitCode.SUCCESS)
 
 
 if __name__ == "__main__":
