@@ -3,9 +3,8 @@ from __future__ import annotations
 import dataclasses
 
 from ..constants import EnumFut
+from . import util_constants
 from .util_baseclasses import ResultTestGroup
-
-_FUTS_HIDDEN = (EnumFut.FUT_MCU_ONLY,)
 
 _FUT_LABELS = {
     EnumFut.FUT_BLE: "BT",
@@ -16,7 +15,6 @@ def _fut_label(fut: EnumFut) -> str:
     """
     Example: FUT_EXTMOD_HARDWARE -> EXTMOD_HARDWARE
     """
-    return fut.name
     label = _FUT_LABELS.get(fut, None)
     if label is not None:
         return label
@@ -24,54 +22,84 @@ def _fut_label(fut: EnumFut) -> str:
 
 
 @dataclasses.dataclass(slots=True)
-class DataCompactLine:
+class DataCompactRow:
     """
-    One line in the compact PR report:
-    | ✅ EXTMOD_HARDWARE | esp32 | ESP32_C3_DEVKIT |
+    One row in the compact PR report:
+    | ✅ | ✅ | ✅ | esp32 | ESP32_C3_DEVKIT |
     """
 
-    fut: EnumFut
     port: str
     board: str
-    ok: bool = True
+    ok_by_fut: dict[EnumFut, bool] = dataclasses.field(default_factory=dict)
+    testgroup_by_fut: dict[EnumFut, str] = dataclasses.field(default_factory=dict)
+    """
+    The testgroup the anchor points to. If a testgroup failed, it takes precedence.
+    """
+
+    def emoji(self, fut: EnumFut) -> str:
+        """
+        Empty string: This fut was not tested on this board.
+        """
+        ok = self.ok_by_fut.get(fut, None)
+        if ok is None:
+            return ""
+        return "✅" if ok else "❌"
+
+    def anchor(self, fut: EnumFut) -> str:
+        """
+        Example: anchor_RUN-NATMODTESTS
+        The anchor in the summary report.
+        """
+        testgroup = self.testgroup_by_fut.get(fut, None)
+        if testgroup is None:
+            return ""
+        return util_constants.PREFIX_ANCHOR + testgroup
+
+
+@dataclasses.dataclass(slots=True)
+class DataCompactTable:
+    """
+    One column per tested fut, one row per tested board.
+    """
+
+    futs: list[EnumFut]
+    rows: list[DataCompactRow]
 
     @property
-    def fut_text(self) -> str:
-        return _fut_label(self.fut)
-
-    @property
-    def emoji(self) -> str:
-        return "✅" if self.ok else "❌"
+    def fut_labels(self) -> list[str]:
+        return [_fut_label(fut) for fut in self.futs]
 
     @staticmethod
-    def factory_compact_lines(
-        testgroups: list[ResultTestGroup],
-    ) -> list[DataCompactLine]:
-        dict_lines: dict[tuple[EnumFut, str, str], DataCompactLine] = {}
+    def factory(testgroups: list[ResultTestGroup]) -> DataCompactTable:
+        dict_rows: dict[tuple[str, str], DataCompactRow] = {}
+        futs: set[EnumFut] = set()
         for testgroup in testgroups:
             testrun_spec = testgroup.testrun_spec
             if testrun_spec is None:
                 continue
             fut = testrun_spec.required_fut
-            if fut in _FUTS_HIDDEN:
-                continue
             if testgroup.is_skip:
                 continue
-            key = (fut, testgroup.tentacle_mcu, testgroup.board_variant)
-            line = dict_lines.get(key, None)
-            if line is None:
-                line = DataCompactLine(
-                    fut=fut,
+            futs.add(fut)
+
+            key = (testgroup.tentacle_mcu, testgroup.board_variant)
+            row = dict_rows.get(key, None)
+            if row is None:
+                row = DataCompactRow(
                     port=testgroup.tentacle_mcu,
                     board=testgroup.board_variant,
                 )
-                dict_lines[key] = line
+                dict_rows[key] = row
 
-            if testgroup.is_error or len(testgroup.results_failed) > 0:
-                line.ok = False
+            ok = (not testgroup.is_error) and len(testgroup.results_failed) == 0
+            prev_ok = row.ok_by_fut.get(fut, True)
+            if (fut not in row.testgroup_by_fut) or (prev_ok and not ok):
+                # The anchor of a failed testgroup takes precedence
+                row.testgroup_by_fut[fut] = testgroup.testgroup
+            row.ok_by_fut[fut] = prev_ok and ok
 
         futs_ordered = list(EnumFut)
-        return sorted(
-            dict_lines.values(),
-            key=lambda line: (futs_ordered.index(line.fut), line.port, line.board),
+        return DataCompactTable(
+            futs=sorted(futs, key=futs_ordered.index),
+            rows=sorted(dict_rows.values(), key=lambda row: (row.port, row.board)),
         )

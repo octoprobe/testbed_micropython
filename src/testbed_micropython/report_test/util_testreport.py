@@ -27,7 +27,7 @@ from .util_constants import (
     TIME_FORMAT,
     patch_time_format,
 )
-from .util_testreport_compact import DataCompactLine
+from .util_testreport_compact import DataCompactTable
 from .util_testreport_summary import DataSummaryLine
 from .util_xfail import XFailList
 
@@ -111,8 +111,8 @@ class Data:
         )
 
     @property
-    def summary_compact(self) -> list[DataCompactLine]:
-        return DataCompactLine.factory_compact_lines(self.testgroups)
+    def summary_compact(self) -> DataCompactTable:
+        return DataCompactTable.factory(self.testgroups)
 
     @property
     def summary_by_test(self) -> SummaryByTest:

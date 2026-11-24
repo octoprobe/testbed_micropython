@@ -11,8 +11,10 @@
 * **Error: {{ result_context.error }}**
 {% endif %}
 
-| FeatureUnderTest | Port | Board |
-| - | - | - |
-{%- for line in data.summary_compact %}
-| {{ line.emoji }} {{ line.fut_text|md_escape }} | {{ line.port|md_escape }} | {{ line.board|md_escape }} |
+{% set table = data.summary_compact -%}
+{% set summary_report_link = result_context.summary_report_html|fix_links|md_escape -%}
+|{% for fut_label in table.fut_labels %} {{ fut_label|md_escape }} |{% endfor %} Port | Board |
+|{% for fut_label in table.fut_labels %} :-: |{% endfor %} :-: | - |
+{%- for row in table.rows %}
+|{% for fut in table.futs %} {% if row.emoji(fut) %}[{{ row.emoji(fut) }}]({{ summary_report_link }}#{{ row.anchor(fut)|md_escape }}){% endif %} |{% endfor %} {{ row.port|md_escape }} | {{ row.board|md_escape }} |
 {%- endfor %}

@@ -220,6 +220,17 @@ class ResultContext:
         return link
 
     @property
+    def summary_report_html(self) -> str:
+        link = (
+            self.log_directory
+            + "/"
+            + util_constants.FILENAME_OCTOPROBE_SUMMARY_REPORT_STEM
+            + ".html"
+        )
+        link = link.replace("//", "/")
+        return link
+
+    @property
     def pr_marker(self) -> str:
 
         def get_sha() -> str:
