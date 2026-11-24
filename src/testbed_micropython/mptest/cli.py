@@ -578,6 +578,10 @@ def reports(
             help="Location of the final reports. This is where the links in the reports should point to.",
         ),
     ] = "https://reports.octoprobe.org",
+    count: TyperAnnotated[
+        int,
+        typer.Option(help="How many reports to render."),
+    ] = 1,  # noqa: UP007
 ) -> None:
     init_logging()
     directory_reports = pathlib.Path(reports).expanduser()
@@ -586,7 +590,7 @@ def reports(
     directories_reports = [d for d in directory_reports.iterdir() if d.is_dir()]
     directories_reports.sort(reverse=True)
     for i, directory_results in enumerate(directories_reports):
-        if i > 20:
+        if i >= count:
             break
 
         logger.info(f"Rebuilding report: {directory_results}")
