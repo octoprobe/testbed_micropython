@@ -21,14 +21,17 @@ class ReportRenderer:
         self,
         directory_results: pathlib.Path,
         label: str,
+        url_reports: str,
         xfail_file: str | None,
     ) -> None:
         assert isinstance(directory_results, pathlib.Path)
         assert isinstance(label, str)
+        assert isinstance(url_reports, str)
         assert isinstance(xfail_file, str | None)
 
         self.directory_results = directory_results
         self.label = label
+        self.url_reports = url_reports
         self.data = Data.gather_json_files(
             directory_results=directory_results,
             xfail_file=xfail_file,
@@ -37,8 +40,10 @@ class ReportRenderer:
         self._init()
 
     def _init(self) -> None:
+        assert not self.url_reports.endswith("/")
+        # Example self.url_reports: https://reports.octoprobe.org
         dict_expansions: dict[str, str] = {
-            DirectoryTag.R: f"https://reports.octoprobe.org/{self.label}/",
+            DirectoryTag.R: f"{self.url_reports}/{self.label}/",
             DirectoryTag.P: "",
         }
         for tag, directory in self.data.result_context.directories.items():

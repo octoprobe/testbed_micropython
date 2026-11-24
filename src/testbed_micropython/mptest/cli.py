@@ -494,6 +494,12 @@ def report(
             help="Where to push the results. Empty string will skip.",
         ),
     ] = "https://reports.octoprobe.org/upload",
+    url_report: TyperAnnotated[
+        str,
+        typer.Option(
+            help="Location of the final reports. This is where the links in the reports should point to.",
+        ),
+    ] = "https://reports.octoprobe.org",
     label: TyperAnnotated[
         str,
         typer.Option(
@@ -531,6 +537,7 @@ def report(
     renderer = ReportRenderer(
         directory_results=directory_results,
         label=label,
+        url_report=url_report,
         xfail_file=xfail,
     )
     renderer.write_xfail_template()
