@@ -65,20 +65,12 @@ def complete_only_fut() -> list[str]:
 
 
 def complete_only_board() -> list[str]:
-    if False:
-        args = util_testrunner.Args.get_default_args(
-            pathlib.Path.cwd(), pathlib.Path.cwd()
-        )
-        testrunner = util_testrunner.TestRunner(args=args)
+    """
+    Returns 'tentacle_tag' for all connected tentacles.
+    """
+    connected_tentacles = util_testrunner.query_connected_tentacles_fast()
 
-        connected_tentacles = testrunner.bartender.connected_tentacles
-    else:
-        connected_tentacles = util_testrunner.query_connected_tentacles_fast()
-
-    return sorted({t.tentacle_spec.board for t in connected_tentacles})
-
-    tsvs = connected_tentacles.get_tsvs()
-    return sorted([t.board_variant for t in tsvs])
+    return sorted({t.tentacle_spec.tentacle_tag for t in connected_tentacles})
 
 
 def assert_valid_testresults(testresults: str, create: bool = True) -> pathlib.Path:
@@ -284,21 +276,21 @@ def test(
     only_board: TyperAnnotated[
         list[str],
         typer.Option(
-            help="Run tests only on this board (tentacles). Examples: 'RPI-PICO2-RISCV' will only test variant 'RISCV'. 'RPI_PICO2-' will only test variant ''. 'RPI_PICO2' will test all variants.",
+            help="Selected 'tentacle_tag' property: Run tests only on this board (tentacles). Examples: 'RPI-PICO2-RISCV' will only test variant 'RISCV'. 'RPI_PICO2-' will only test variant ''. 'RPI_PICO2' will test all variants.",
             autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UP007 # type: ignore
     skip_board: TyperAnnotated[
         list[str],
         typer.Option(
-            help="Skip tests on this board (tentacles).",
+            help="Selected 'tentacle_tag' property: Skip tests on this board (tentacles).",
             autocompletion=complete_only_board,
         ),
     ] = None,  # noqa: UP007 # type: ignore
     reference_board: TyperAnnotated[
         str | None,
         typer.Option(
-            help=f"The board to be used as WLAN/bluetooth reference. Any board is used as reference if this parameter is set to '{constants.ANY_REFERENCE_BOARD}'.",
+            help=f"Selected 'tentacle_tag' property: The board to be used as WLAN/bluetooth reference. Any board is used as reference if this parameter is set to '{constants.ANY_REFERENCE_BOARD}'.",
             autocompletion=complete_only_board,
         ),
     ] = constants.DEFAULT_REFERENCE_BOARD,  # noqa: UP007
