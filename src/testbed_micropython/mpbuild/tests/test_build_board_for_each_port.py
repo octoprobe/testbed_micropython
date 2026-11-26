@@ -8,10 +8,10 @@ Goal is a high test coverage of the boards.
 import os
 import pathlib
 
+from mpbuild import build
 from mpbuild.board_database import Database
-from mpbuild.build import MpbuildNotSupportedException
 
-from testbed_micropython.mpbuild.build_api import MpbuildDockerException, build
+from testbed_micropython.mpbuild.build_api import MpbuildDockerException, docker_build
 
 THIS_FILE = pathlib.Path(__file__)
 RESULTS_DIRECTORY = THIS_FILE.parent / "testresults"
@@ -51,7 +51,7 @@ def main() -> None:
                         / f"{THIS_FILE.stem}-{board.name}-{variant_name}.txt"
                     )
                     print(f"  {logfile}")
-                    firmware = build(
+                    firmware = docker_build(
                         logfile=logfile,
                         db=db,
                         board=board,
@@ -59,7 +59,7 @@ def main() -> None:
                         do_clean=False,
                     )
                     print(f"  {firmware}")
-                except MpbuildNotSupportedException:
+                except build.MpbuildNotSupportedException:
                     print("  Not supported!")
                 except MpbuildDockerException as e:
                     print(f"   {e!r}")

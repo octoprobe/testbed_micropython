@@ -26,12 +26,8 @@ import subprocess
 import time
 from dataclasses import dataclass
 
+from mpbuild import build
 from mpbuild.board_database import Board, Database
-from mpbuild.build import (
-    BUILD_CONTAINERS,
-    MpbuildNotSupportedException,
-    docker_build_cmd,
-)
 from octoprobe.lib_tentacle_dut import VERSION_IMPLEMENTATION_SEPARATOR
 from octoprobe.util_micropython_boards import VARIANT_SEPARATOR
 
@@ -39,20 +35,28 @@ from .board_tweaks import board_specific_download, tweak_build_folder
 
 logger = logging.getLogger(__name__)
 
-# Overwrite mpbuild default containers
-# This should eventually be pushed upstream into mpbuild.
-# TODO: Clean this up as soon as https://github.com/mattytrentini/build-micropython-arm-docker/pull/4 is resolve
+
 ARM_BUILD_CONTAINER = "micropython/build-micropython-arm:trixie"
-# BUILD_CONTAINERS["esp32"] = "hmaerki/build-micropython-esp32"
-BUILD_CONTAINERS["dummyarch"] = "dummycontainer"
-BUILD_CONTAINERS["esp8266"] = "micropython/build-micropython-esp8266"
-BUILD_CONTAINERS["rp2"] = ARM_BUILD_CONTAINER
-BUILD_CONTAINERS["stm32"] = ARM_BUILD_CONTAINER
-BUILD_CONTAINERS["nrf"] = ARM_BUILD_CONTAINER
-BUILD_CONTAINERS["mimxrt"] = ARM_BUILD_CONTAINER
-BUILD_CONTAINERS["renesas-ra"] = ARM_BUILD_CONTAINER
-BUILD_CONTAINERS["samd"] = ARM_BUILD_CONTAINER
-BUILD_CONTAINERS["alif"] = ARM_BUILD_CONTAINER
+ESP32_IDF_VERSON = "v5.5.5"
+ESP32_BUILD_CONTAINER = f"{build.ESP_IDF_CONTAINER}:{ESP32_IDF_VERSON}"
+
+
+def patch_build_containers() -> None:
+    # Overwrite mpbuild default containers
+    # This should eventually be pushed upstream into mpbuild.
+    # TODO: Clean this up as soon as https://github.com/mattytrentini/build-micropython-arm-docker/pull/4 is resolve
+    build.detect_idf_version = lambda a, b: ESP32_IDF_VERSON
+    build.BUILD_CONTAINERS["esp32"] = ESP32_BUILD_CONTAINER
+
+    build.BUILD_CONTAINERS["dummyarch"] = "dummycontainer"
+    build.BUILD_CONTAINERS["esp8266"] = "micropython/build-micropython-esp8266"
+    build.BUILD_CONTAINERS["rp2"] = ARM_BUILD_CONTAINER
+    build.BUILD_CONTAINERS["stm32"] = ARM_BUILD_CONTAINER
+    build.BUILD_CONTAINERS["nrf"] = ARM_BUILD_CONTAINER
+    build.BUILD_CONTAINERS["mimxrt"] = ARM_BUILD_CONTAINER
+    build.BUILD_CONTAINERS["renesas-ra"] = ARM_BUILD_CONTAINER
+    build.BUILD_CONTAINERS["samd"] = ARM_BUILD_CONTAINER
+    build.BUILD_CONTAINERS["alif"] = ARM_BUILD_CONTAINER
 
 
 class MpbuildException(Exception):
@@ -317,7 +321,7 @@ class BuildFolder:
         """
         filename = _FIRMWARE_FILENAMES.get(self.board.port.name, None)
         if filename is None:
-            raise MpbuildNotSupportedException(
+            raise build.MpbuildNotSupportedException(
                 f"Entry port='{self.board.port.name}' missing in 'FIRMWARE_FILENAMES'!"
             )
 
@@ -359,7 +363,7 @@ class BuildFolder:
         return VERSION_IMPLEMENTATION_SEPARATOR.join(versions)
 
 
-def build(
+def docker_build(
     logfile: pathlib.Path,
     db: Database,
     board: Board,
@@ -371,7 +375,9 @@ def build(
     """
     board_specific_download(logfile=logfile, db=db, board=board, variant=variant)
 
-    build_cmd = docker_build_cmd(
+    patch_build_containers()
+
+    build_cmd = build.docker_build_cmd(
         board=board,
         variant=variant,
         do_clean=do_clean,
@@ -461,7 +467,7 @@ def build_by_variant_normalized(
 
     variant = None if board_variant.variant == "" else board_variant.variant
 
-    return build(
+    return docker_build(
         logfile=logfile,
         db=db,
         board=board,

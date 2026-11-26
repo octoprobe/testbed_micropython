@@ -14,7 +14,7 @@ from octoprobe.util_subprocess import SubprocessExitCodeException, subprocess_ru
 from testbed_micropython import constants
 
 from ..constants import EnumFut
-from ..mpbuild.build_api import ARM_BUILD_CONTAINER
+from ..mpbuild import build_api
 from ..testcollection.baseclasses_spec import TentacleVariant
 from ..testcollection.constants import (
     ENV_MICROPYTHON_TESTS,
@@ -46,20 +46,20 @@ class Arch:
 ARCHS = [
     Arch(
         arch="armv6m",
-        container=ARM_BUILD_CONTAINER,
+        container=build_api.ARM_BUILD_CONTAINER,
         extra_args="LINK_RUNTIME=1",
     ),
     Arch(
         arch="armv7m",
-        container=ARM_BUILD_CONTAINER,
+        container=build_api.ARM_BUILD_CONTAINER,
     ),
     Arch(
         arch="armv7emsp",
-        container=ARM_BUILD_CONTAINER,
+        container=build_api.ARM_BUILD_CONTAINER,
     ),
     Arch(
         arch="armv7emdp",
-        container=ARM_BUILD_CONTAINER,
+        container=build_api.ARM_BUILD_CONTAINER,
     ),
     Arch(
         arch="rv32imc",
@@ -72,7 +72,7 @@ ARCHS = [
     ),
     Arch(
         arch="xtensawin",
-        container="espressif/idf:v5.4.2",
+        container=build_api.ESP32_BUILD_CONTAINER,
     ),
 ]
 
