@@ -537,7 +537,7 @@ ESP32_P4_WIFI6_WAVESHARE = TentacleSpecMicropython(
     doc="""
 See: Waveshare SKU35800 ESP32-P4-WIFI6-DB
 See: https://docs.waveshare.com/ESP32-P4-WIFI6-DB
-See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32h2/_images/esp32-h2-devkitm-1-v1.2_pinlayout.png
+See: https://docs.waveshare.com/assets/images/ESP32-P4-WIFI6-DB-details-inter-bf65f5316f0b173d1344f9ab9da78ec3.webp
 See: https://github.com/waveshareteam/ESP32-P4-WIFI6-DB/raw/main/hardware/ESP32-P4-WIFI6-DB.pdf
 
 Connections
@@ -553,7 +553,7 @@ Connections
 
 * FUT_EXTMOD_HARDWARE
   * Board Pin4 <=> Board Pin5 (uart,pwm,counter)
-  * Board Pin2 <=> Board Pin3 (i2c, encoder)
+  * Board Pin20 <=> Board Pin21 (i2c, encoder)
 
 v1.0: initial
 """,
