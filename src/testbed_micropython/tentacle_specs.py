@@ -217,6 +217,53 @@ v1.2: New FUT_EXTMOD_HARDWARE 4-5, 12-13
 )
 
 
+ESP32_C2_DEVKIT = TentacleSpecMicropython(
+    doc="""
+See: ESP8684-DevKitC-02C-N4X
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c2/esp8684-devkitc-02/user_guide.html
+See: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32c2/_images/esp8684-devkitc-02-pinout_v1.0.png
+
+Connections
+
+* GND
+  * Board GND <=> Tentacle GND
+
+* Bootmode
+  * Board GPIO8  <=> Tentacle Relay 1b
+  * Tentacle Relay 1a <=> Tentacle GND
+
+* FUT_EXTMOD_HARDWARE
+  * Board 4 <=> Board 5
+  * Board 6 <=> Board 7
+
+
+v1.0: initial
+""",
+    solder_version_latest="v1.0",
+    tentacle_type=EnumTentacleType.TENTACLE_MCU,
+    tentacle_tag="ESP32_C2_DEVKIT",
+    futs=[
+        EnumFut.FUT_MCU_ONLY,
+        EnumFut.FUT_EXTMOD_HARDWARE,
+        EnumFut.FUT_WLAN,
+        EnumFut.FUT_BLE,
+    ],
+    mcu_usb_id=util_mcu_esp.ESP32_C2_USB_ID,
+    tags="board=ESP32_GENERIC_C2,mcu=esp32,programmer=esptool" + TAG_TIER1,
+    programmer_args=[
+        "--chip=esp32c2",
+        "--baud=921600",
+        "--before=default-reset",
+        "--after=hard-reset",
+        "write-flash",
+        "0x0",
+        "--no-progress",
+        "--compress",
+    ],
+    power_on_delay_s=1.0,
+    mcu_config=McuConfig(),
+)
+
 ESP32_C3_DEVKIT = TentacleSpecMicropython(
     doc="""
 See: ESP32-C3-DevKitC-02
@@ -236,10 +283,6 @@ Connections
 * FUT_EXTMOD_HARDWARE
   * Board 4 <=> Board 5
   * Board 6 <=> Board 7
-
-* Testpoints
-  * Testpoint "GND" <=> Tentacle GND
-  * Testpoint "extmod" <=> Board 5/U0RXD/RX
 
 v1.0: initial
 v1.1: Use GPIO0 to allow octoprobe to select bootloader mode

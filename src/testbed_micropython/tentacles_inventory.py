@@ -60,6 +60,13 @@ TENTACLES_INVENTORY = (
                 tentacle_specs.ESP32_P4_WIFI6_WAVESHARE,
             ),
             (
+                "de6528b3cb61-2a2b",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_C2_DEVKIT,
+                True,
+            ),
+            (
                 "e46414481346-0c30",
                 HwVersion.V03,
                 "v1.3",
@@ -127,6 +134,7 @@ TENTACLES_INVENTORY = (
                 HwVersion.V06,
                 "v1.2",
                 tentacle_specs.NUCLEO_WB55,
+                True,
             ),
             (
                 # Replaced R1503 0R with 1K
@@ -140,6 +148,19 @@ TENTACLES_INVENTORY = (
     .add_testbed_instance(
         testbed_instance="au_damien_1",
         tentacles=[
+            (
+                "de6528b3cb57-1938",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_C2_DEVKIT,
+                True,
+            ),
+            (
+                "e46414481355-442b",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.ESP32_C3_DEVKIT,
+            ),
             (
                 "e4641448133b-4721",
                 HwVersion.V03,
@@ -170,6 +191,12 @@ TENTACLES_INVENTORY = (
                 "v1.0",
                 tentacle_specs.ESP32_S2_DEVKIT,
             ),
+            (
+                "e46414481348-1930",
+                HwVersion.V03,
+                "v1.2",
+                tentacle_specs.ESP32_S3_DEVKIT,
+            ),
             ("e46340474b60-452b", HwVersion.V03, "v1.0", tentacle_specs.LOLIN_D1_MINI),
             ("e46340474b19-2629", HwVersion.V03, "v1.1", tentacle_specs.LOLIN_C3_MINI),
             ("e46340474b58-3521", HwVersion.V03, "v1.1", tentacle_specs.LOLIN_C3_MINI),
@@ -178,18 +205,6 @@ TENTACLES_INVENTORY = (
             ("e46340474b14-1c29", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2),
             ("e46414481318-3d2c", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
             ("e46414481310-2d2a", HwVersion.V03, "v1.1", tentacle_specs.ESP32_DEVKIT),
-            (
-                "e46414481355-442b",
-                HwVersion.V03,
-                "v1.1",
-                tentacle_specs.ESP32_C3_DEVKIT,
-            ),
-            (
-                "e46414481348-1930",
-                HwVersion.V03,
-                "v1.2",
-                tentacle_specs.ESP32_S3_DEVKIT,
-            ),
             (
                 "e46414481337-1c2a",
                 HwVersion.V03,
@@ -242,6 +257,19 @@ TENTACLES_INVENTORY = (
                 tentacle_specs.ESP32_C5_DEVKIT,
             ),
             (
+                "de6528b3cb57-3e38",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_C2_DEVKIT,
+                True,
+            ),
+            (
+                "e4641448132c-352c",
+                HwVersion.V03,
+                "v1.1",
+                tentacle_specs.ESP32_C3_DEVKIT,
+            ),
+            (
                 "de6528b3cb98-6536",
                 HwVersion.V09,
                 "v1.0",
@@ -260,12 +288,6 @@ TENTACLES_INVENTORY = (
                 tentacle_specs.ESP32_S2_DEVKIT,
             ),
             ("e46414481340-1d36", HwVersion.V03, "v1.0", tentacle_specs.RPI_PICO2_W),
-            (
-                "e4641448132c-352c",
-                HwVersion.V03,
-                "v1.1",
-                tentacle_specs.ESP32_C3_DEVKIT,
-            ),
             ("e46414481310-422a", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
             ("e46414481310-462c", HwVersion.V03, "v1.0", tentacle_specs.AA_UNASSEMBLED),
         ],
@@ -290,6 +312,13 @@ TENTACLES_INVENTORY = (
                 HwVersion.V06,
                 "v1.1",
                 tentacle_specs.RPI_PICO_W,
+            ),
+            (
+                "de6528b3cb60-122b",
+                HwVersion.V09,
+                "v1.0",
+                tentacle_specs.ESP32_C2_DEVKIT,
+                True,
             ),
             (
                 # 2026-11-09: Broken
